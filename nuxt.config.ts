@@ -9,7 +9,8 @@ export default defineNuxtConfig({
     '@vee-validate/nuxt',
     '@nuxt/eslint',
     '@nuxtjs/tailwindcss',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@nuxtjs/seo',
   ],
   eslint: {
     config: {

@@ -35,6 +35,8 @@ import { routes } from '~/utils/routes';
             <NuxtLink :to="routes.company.login()">ep1-1 企業登入頁面</NuxtLink>
             <NuxtLink :to="routes.company.landing()">ep6 所有計畫申請列表頁面</NuxtLink>
             <NuxtLink :to="routes.company.programDetail(1)">ep7 單一計畫詳情頁</NuxtLink>
+            <NuxtLink :to="routes.company.applicants(1)">ep8 體驗者申請列表頁面</NuxtLink>
+            <NuxtLink :to="routes.company.applicantDetail(1)">ep9 體驗者申請審核頁面</NuxtLink>
           </div>
         </div>
       </nav>
