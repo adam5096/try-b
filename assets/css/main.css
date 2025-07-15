@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* For Layer 2: Blue shape, fades from left to right (sharper fade) */
+  .mask-gradient-to-right {
+    mask-image: linear-gradient(to right, black 60%, transparent 80%);
+    -webkit-mask-image: linear-gradient(to right, black 60%, transparent 80%);
+  }
+
+  /* For Layer 1: Background image, fades out from the center to the left (sharper fade) */
+  .mask-fade-from-center-to-left {
+    mask-image: linear-gradient(to left, black 50%, transparent 80%);
+    -webkit-mask-image: linear-gradient(to left, black 50%, transparent 80%);
+  }
+}
+
