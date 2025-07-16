@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 
 definePageMeta({
   name: 'index',
@@ -8,10 +8,15 @@ definePageMeta({
 const isMenuOpen = ref(false);
 
 watch(isMenuOpen, (isOpen) => {
-  if (process.client) { // Ensure this runs only on the client-side
+  if (process.client) {
     if (isOpen) {
+      // 鎖定滾動並補償滾動條寬度以防止畫面位移
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
       document.body.style.overflow = 'hidden';
     } else {
+      // 解除鎖定
+      document.body.style.paddingRight = '';
       document.body.style.overflow = '';
     }
   }
@@ -20,11 +25,25 @@ watch(isMenuOpen, (isOpen) => {
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value;
 }
+
+const handleResize = () => {
+  if (window.innerWidth >= 1024) {
+    isMenuOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize);
+});
 </script>
 
 <template>
   <!-- header -->
-  <header class="nav-shadow sticky bg-white">
+  <header class="nav-shadow sticky bg-white z-40">
     <div class="h-main-header w-full max-w-screen-full-hd mx-auto p-12">
       <nav class="flex h-full items-center justify-between gap-8">
         <!-- 商標 Section -->
@@ -55,7 +74,7 @@ function toggleMenu() {
 
           <!-- 右側導覽 -->
           <div :class="[
-              'fixed top-0 left-0 z-30 h-screen w-full transform overflow-y-auto bg-white p-8 transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:flex lg:h-auto lg:w-auto lg:transform-none lg:overflow-y-visible lg:p-0 lg:bg-transparent',
+              'fixed top-0 left-0 z-50 h-1/2 w-full transform overflow-y-auto bg-white p-8 transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:flex lg:h-auto lg:w-auto lg:transform-none lg:overflow-y-visible lg:p-0 lg:bg-transparent',
               isMenuOpen ? 'translate-y-0' : '-translate-y-full',
             ]" class="flex flex-col gap-8 lg:flex-row lg:items-center">
             <!-- Close button for mobile -->
@@ -91,7 +110,7 @@ function toggleMenu() {
           </div>
         </div>
         <!-- 遮罩 -->
-        <div v-if="isMenuOpen" class="fixed inset-0 z-20 bg-black/30 lg:hidden" @click="toggleMenu"></div>
+        <div v-if="isMenuOpen" class="fixed inset-0 z-45 bg-black/30 lg:hidden" @click="toggleMenu"></div>
       </nav>
     </div>
   </header>
@@ -99,23 +118,24 @@ function toggleMenu() {
   <!-- main -->
   <main>
     <!-- hero -->
-    <section class="relative h-hero-section text-white">
+    <section class="relative h-hero-section text-white ">
       <!-- Layer 1: Background Image -->
       <div class="absolute inset-0 z-10 mask-fade-from-center-to-left">
-        <img src="~/assets/img/hero-background-worker.png" alt="Office working environment"
-          class="h-full w-full object-cover" />
+        <img src="~/assets/img/hero-background-worker.webp" alt="Office working environment"
+          class="h-full w-full  object-cover" />
       </div>
 
       <!-- Layer 2: Blue Shape with Gradient Mask -->
       <div class="absolute inset-0 z-20 mask-gradient-to-right">
-        <img src="~/assets/img/hero-background.png" alt="Blue decorative shape" class="h-full w-full object-fill" />
+        <img src="~/assets/img/hero-background.webp" alt="Blue decorative shape"
+          class="h-full w-full  object-cover lg:object-fill" />
       </div>
 
       <!-- Layer 3: Foreground Content Layer -->
       <div class="absolute inset-0 z-30">
         <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12">
           <div class="flex h-full flex-col  justify-center items-center 2xl:items-start">
-            <h1 class="text-3xl font-bold sm:text-4xl lg:text-5xl xl:text-6xl">
+            <h1 class="text-2xl font-bold sm:text-3xl lg:text-4xl xl:text-5xl">
               Try Before You Dive
             </h1>
             <p class="mt-4 max-w-xl text-sm sm:text-base lg:text-lg">
@@ -133,6 +153,110 @@ function toggleMenu() {
             </button>
           </div>
         </div>
+      </div>
+    </section>
+
+
+
+    <!-- 誰適合使用 TRY -->
+    <section class="py-section-padding bg-brand-gray">
+      <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">誰適合使用 TRY β</h2>
+        <p class="relative z-10 text-lg sm:text-xl md:text-2xl">TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會</p>
+      </div>
+
+      <!-- Cards Container -->
+      <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 ">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Card 1: 學生與新鮮人 -->
+          <div class=" p-6 pt-10 text-left">
+            <div class="flex justify-center mb-4">
+              <div>
+                <img src="~/assets/img/誰適合使用_01.webp" alt="學生與新鮮人">
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">學生與新鮮人</h3>
+            <p class="text-center text-gray-500 mb-4">先大量體驗，快速累積品</p>
+            <div class="flex justify-center lg:justify-start">
+              <ul class="space-y-2">
+                <li class="flex items-start min-h-[3.5rem]">
+                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <span>實習與專案合作機會</span>
+                </li>
+                <li class="flex items-start min-h-[3.5rem]">
+                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <span>職涯探索工作坊</span>
+                </li>
+                <li class="flex items-start min-h-[3.5rem]">
+                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <span>業界導師一對一指導，並提供深度對談</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Card 2: 兼職與轉職者 -->
+          <div class="p-6 pt-10 text-left">
+            <div class="flex justify-center mb-4">
+              <div>
+                <img src="~/assets/img/誰適合使用_02.webp" alt="兼職與轉職者">
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
+            <p class="text-center text-gray-500 mb-4">低成本試錯，高效率轉職</p>
+            <div class="flex justify-center lg:justify-start">
+              <ul class="space-y-2">
+                <li class="flex items-start min-h-[3.5rem]">
+                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <span>彈性時段職業體驗專案</span>
+                </li>
+                <li class="flex items-start min-h-[3.5rem]">
+                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <span>多元職務角色體驗計畫</span>
+                </li>
+                <li class="flex items-start min-h-[3.5rem]">
+                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <span>快速找尋就職方向</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Card 3: 創意工作者、中小企業 -->
+          <div class="p-6 pt-10 text-left">
+            <div class="flex justify-center mb-4">
+              <div>
+                <img src="~/assets/img/誰適合使用_03.webp" alt="創意工作者、中小企業">
+              </div>
+            </div>
+            <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">創意工作者、中小企業</h3>
+            <p class="text-center text-gray-500 mb-4">錯聘成本太高？先 β 再正聘</p>
+            <div class="flex justify-center lg:justify-start">
+              <ul class="space-y-2">
+                <li class="flex items-start min-h-[3.5rem]">
+                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <span>先體驗，後合作</span>
+                </li>
+                <li class="flex items-start min-h-[3.5rem]">
+                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <span>展現企業魅力，不再浪費培訓預算</span>
+                </li>
+                <li class="flex items-start min-h-[3.5rem]">
+                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <span>零長期成本，高回報人才管道</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 熱門體驗活動 -->
+    <section class="py-section-padding bg-brand-gray">
+      <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">熱門體驗活動</h2>
+        <p class="text-lg sm:text-xl md:text-2xl">TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會</p>
       </div>
     </section>
 

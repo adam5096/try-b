@@ -21,10 +21,14 @@ module.exports = {
       spacing: {
         // "content-offset": "360px", // No longer needed, replaced by container
       },
+      padding: {
+        "section-padding": "80px",
+      },
       colors: {
         "btn-yellow": "#FFE70C",
         "btn-black": "#0D2C43",
         "brand-blue": "#158AD9",
+        "brand-gray": "#F8F9FB",
       },
       fontFamily: {
         sans: ["Inter", ...defaultTheme.fontFamily.sans],
