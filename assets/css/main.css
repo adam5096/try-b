@@ -20,5 +20,12 @@
   .bg-testimonial-pattern {
     background-image: url('~/assets/img/home-testimonial-bg.webp');
   }
+
+  .text-stroke-background {
+    color: transparent;
+    -webkit-text-stroke: 1px theme('colors.gray.200');
+    text-stroke: 1px theme('colors.gray.200');
+    paint-order: stroke fill;
+  }
 }
 

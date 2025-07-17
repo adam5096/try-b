@@ -27,8 +27,9 @@ module.exports = {
       colors: {
         "btn-yellow": "#FFE70C",
         "btn-black": "#0D2C43",
-        "brand-blue": "#158AD9",
+        "major-blue": "#158AD9",
         "brand-gray": "#F8F9FB",
+        "major-blue-light": "#39B1EE",
       },
       fontFamily: {
         sans: ["Inter", ...defaultTheme.fontFamily.sans],
@@ -49,6 +50,8 @@ module.exports = {
       height: {
         "main-header": "158px",
         "hero-section": "811px", // Re-enabled for fixed-height layout
+        "site-logo-width": "252px",
+        "site-logo-height": "62px",
       },
     },
   },

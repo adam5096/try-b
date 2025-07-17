@@ -1,12 +1,20 @@
 <template>
-  <!-- <svg
+  <svg
+    width="1em"
+    height="1em"
+    viewBox="0 0 100 100"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 28 24"
-    fill="currentColor"
   >
-    <path
-      d="M13.8,17.4c0.16,0,0.32,0,0.48,0c1.76,0,2.8-1.04,2.8-2.48c0-1.28-0.88-2.28-2.48-2.28h-2.12v4.76H13.8z M13.8,4 h-2.12v7.12h1.64c1.76,0,3.28-1.04,3.28-2.96C16.6,6.04,15.4,4,13.8,4z"
-    />
-  </svg> -->
-  <span>β</span>
+    <text
+      x="50%"
+      y="50%"
+      dominant-baseline="central"
+      text-anchor="middle"
+      class="fill-major-blue-light/20 stroke-major-blue-light/30"
+      stroke-width="1"
+      style="font-size: 100px; font-weight: 900; font-family: 'Helvetica Neue', 'Arial', sans-serif; paint-order: stroke;"
+    >
+      β
+    </text>
+  </svg>
 </template> 

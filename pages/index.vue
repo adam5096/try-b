@@ -36,6 +36,25 @@ function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value;
 }
 
+const testimonials = [
+  {
+    avatar: 'https://i.imgur.com/JS4g6z4.png',
+    name: '某某股份有限公司',
+    title: '創意總監',
+    rating: 5,
+    quote: '「TRY B 幫助我們找到了對品牌設計有幫助的靈感資料，中間還促成了兩個提案出現時的對齊標準，最終我們客戶的 GIG 曝光率提升了 40%。現在她已經成為我們的幕後設計師。」',
+    date: '2025年11月'
+  },
+  {
+    avatar: 'https://i.imgur.com/AhGjW3y.png',
+    name: '某某個人工作室',
+    title: '永續教育顧問',
+    rating: 4.5,
+    quote: '「TRY B 的形象平台讓我覺得是很靈活體驗，不僅僅是加速準備素材圖像，協助我們設計了更適合年輕群體的課程教案流程。名目負責後來對於簡參與我們的志工培訓計畫。」',
+    date: '2025年11月'
+  }
+]
+
 const handleResize = () => {
   if (window.innerWidth >= 1024) {
     isMenuOpen.value = false;
@@ -49,6 +68,21 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize);
 });
+
+const successStories = [
+  {
+    title: '新創企業營運助理體驗計畫',
+    description: '一間快速成長的新創企業，為尋找具潛力的營運助理，透過本平台招募體驗者參與短期體驗計畫。企業在體驗過程中即時評估體驗者能力與適配度，減少錯誤錄用風險。',
+    result: '體驗者轉正率達50%，用人決策時間縮短30%。',
+    link: '#'
+  },
+  {
+    title: 'ESG顧問公司招募兼職專案助理',
+    description: '一家ESG顧問公司需要快速招募短期專案助理，利用平台發布職業體驗計畫，吸引有志轉職者參加。企業在體驗過程中發現其中單位體驗者具備高潛力，後續直接延攬為長期合作人選。',
+    result: '人才媒合成功率提升60%，專案執行進度提前完成。',
+    link: '#'
+  }
+]
 </script>
 
 <template>
@@ -58,12 +92,8 @@ onBeforeUnmount(() => {
       <nav class="flex h-full items-center justify-between gap-8">
         <!-- 商標 Section -->
         <h1 class="flex flex-none items-center gap-2 text-2xl">
-          <span class="text-4xl font-black">TRY
-            <BetaIcon />
-          </span>
-          <div class="flex flex-col text-sm">
-            <div class="font-bold"> 短期職業</div>
-            <div class="font-bold">體驗媒合平台</div>
+          <div class="w-site-logo-width h-site-logo-height">
+            <img src="~/assets/img/Try-beta-logo.webp" alt="TRYB Logo" class="w-full h-auto object-cover">
           </div>
         </h1>
 
@@ -171,7 +201,7 @@ onBeforeUnmount(() => {
     <!-- 誰適合使用 TRY -->
     <section class="py-section-padding bg-brand-gray">
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">誰適合使用 TRY β</h2>
+        <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">誰適合使用 TRY β</h2>
         <p class="relative z-10 text-lg sm:text-xl md:text-2xl">TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會</p>
       </div>
 
@@ -265,7 +295,7 @@ onBeforeUnmount(() => {
     <!-- 熱門體驗活動 -->
     <section class="py-section-padding bg-brand-gray">
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">熱門體驗活動</h2>
+        <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">熱門體驗活動</h2>
         <p class="text-lg sm:text-xl md:text-2xl">TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會</p>
       </div>
 
@@ -377,7 +407,7 @@ onBeforeUnmount(() => {
     >
       <!-- Content -->
       <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">體驗者的聲音</h2>
+        <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">體驗者的聲音</h2>
         <p class="text-lg sm:text-xl md:text-2xl text-gray-700">聽聽其他人怎麼說</p>
       
         <!-- Testimonial Cards Container -->
@@ -458,36 +488,154 @@ onBeforeUnmount(() => {
     </section>
 
 
-    <!-- 當前實作區塊：我們的合作夥伴 -->
-    <section class="relative py-section-padding">
-      <!-- Background Image with Opacity -->
-      <!-- 當前元素背景的常用樣式 class="absolute inset-0 z-0" -->
-      <!-- opacity-30 元素淡化與透明 -->
-      <div class="absolute inset-0 z-0">
-        <img
-          src="~/assets/img/home-testimonial-bg.webp"
-          alt="Decorative background"
-          class="h-full w-full object-cover opacity-30"
-        />
+    <!-- 我們的合作夥伴 -->
+    <section class="relative overflow-hidden py-section-padding bg-brand-gray">
+      <!-- Background Text -->
+      <div
+        class="
+          pointer-events-none absolute inset-0 z-0
+          flex items-center justify-center
+          whitespace-nowrap font-black leading-none
+          text-stroke-background
+          text-6xl sm:text-8xl md:text-9xl lg:text-[150px] xl:text-[200px]
+        "
+        aria-hidden="true"
+      >
+        Try Before You Dive
       </div>
-      
+
       <!-- Foreground Content -->
-      <div class="relative z-10 mx-auto h-full w-full  px-6 md:px-12 text-center">
-        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+      <div class="relative z-10 mx-auto h-full w-full px-6 text-center md:px-12">
+        <h2 class="text-major-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
           我們的合作夥伴
         </h2>
-        <div class="mx-auto mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-10 sm:gap-x-12 lg:gap-x-16">
-          <div v-for="partner in partners" :key="partner.name" class="flex h- w-[176px] h-[44px] items-center justify-center">
+        <div
+          class="mx-auto mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-10 sm:gap-x-12 lg:gap-x-16"
+        >
+          <div
+            v-for="partner in partners"
+            :key="partner.name"
+            class="flex h-[44px] w-[176px] items-center justify-center"
+          >
             <img
-              class="max-h-full max-w-full object-cover"
+              class="max-h-full max-w-full object-contain"
               :src="partner.logo"
               :alt="partner.name"
-            >
+            />
           </div>
         </div>
       </div>
     </section>
 
-    <section class="h-[1000px]"></section>
+    <!-- 企業客戶評價 -->
+    <section class="relative py-section-padding bg-brand-gray overflow-hidden">
+      <!-- Giant Beta Icon - REMOVED -->
+
+      <div class="relative z-20 mx-auto h-full w-full max-w-container-main px-6 md:px-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
+          <!-- Left Column: Title and Navigation -->
+          <div class="lg:col-span-1 text-left flex flex-col justify-center">
+            <div>
+              <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">企業客戶評價</h2>
+              <p class="text-lg sm:text-xl md:text-2xl max-w-3xl">
+                探索我們企業客戶的真實體驗和反饋，了解 TRY β 如何幫助企業和探索者創造價值
+              </p>
+              <div class="mt-8 flex items-center gap-4">
+                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
+                </button>
+                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Testimonial Cards -->
+          <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+            <!-- Testimonial Card -->
+            <div v-for="(testimonial, index) in testimonials" :key="index" class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden">
+              <div class="absolute top-8 -right-8 z-0   pointer-events-none">
+                <BetaIcon class="w-80 h-full text-blue-50" />
+              </div>
+              <div class="relative z-10 flex items-center gap-4">
+                <img :src="testimonial.avatar" alt="Client Avatar" class="w-16 h-16 rounded-full object-cover">
+                <div>
+                  <h3 class="font-bold text-lg">{{ testimonial.name }}</h3>
+                  <p class="text-gray-500">{{ testimonial.title }}</p>
+                </div>
+              </div>
+              <div class="relative z-10 flex items-center">
+                <template v-for="i in 5" :key="i">
+                  <StarIcon v-if="testimonial.rating >= i" class="w-5 h-5 text-yellow-400" />
+                  <StarIcon v-else-if="testimonial.rating > i - 1" class="w-5 h-5 text-yellow-400" :style="{ clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)' }" />
+                  <StarIcon v-else class="w-5 h-5 text-gray-300" />
+                </template>
+              </div>
+              <p class="relative z-10 text-gray-700 leading-relaxed flex-grow">{{ testimonial.quote }}</p>
+              <div class="relative z-10 flex items-center gap-2 text-gray-500 mt-auto pt-4">
+                <CalendarIcon class="w-5 h-5" />
+                <span>{{ testimonial.date }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- 成功案例 區塊 -->
+    <section class="py-section-padding bg-brand-gray overflow-hidden">
+      <div class="relative z-20 mx-auto h-full w-full max-w-container-main px-6 md:px-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
+         
+
+          <!-- Left Column: Success Story Cards -->
+          <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch order-2 lg:order-1">
+            <div v-for="(story, index) in successStories" :key="index" class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden min-h-[400px]">
+              <div class="absolute top-8 -right-8 z-0 pointer-events-none">
+                <BetaIcon class="w-80 h-full text-blue-50" />
+              </div>
+
+              <div class="relative z-10 flex flex-col flex-grow">
+                <h3 class="font-bold text-lg mb-4 min-h-[3.5rem]">{{ story.title }}</h3>
+                <p class="text-gray-700 leading-relaxed flex-grow">{{ story.description }}</p>
+                <p class="mt-4 text-gray-700">
+                  <span class="font-bold text-major-blue-light">結果：</span>
+                  <span class="font-bold text-major-blue-light">{{ story.result }}</span>
+                </p>
+                <a :href="story.link" class="mt-6 inline-flex items-center justify-center rounded-md bg-btn-yellow px-6 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white self-start">
+                  <span>查看詳細案例</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+           <!-- Right Column: Title and Navigation -->
+           <div class="lg:col-span-1 text-left flex flex-col justify-center order-1 lg:order-2">
+            <div>
+              <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">成功案例</h2>
+              <p class="text-lg sm:text-xl md:text-2xl max-w-3xl">
+                探索我們如何幫助企業實現目標
+              </p>
+              <div class="mt-8 flex items-center gap-4">
+                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
+                </button>
+                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="h-[100px]"></section>
   </main>
 </template>
