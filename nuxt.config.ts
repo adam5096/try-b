@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxt/fonts',
     '@nuxt/eslint',
+    '@nuxtjs/seo',
   ],
   fonts: {
     families: [

@@ -3,9 +3,10 @@ import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 
 definePageMeta({
   name: 'index',
+  layout: 'main',
 });
 
-const isMenuOpen = ref(false);
+// Header-related logic has been moved to layouts/main.vue
 
 const partners = [
   { name: 'Scuba Schools International', logo: '/img/home/home-SSI-logo.webp' },
@@ -17,24 +18,14 @@ const partners = [
   { name: 'Microsoft', logo: '/img/home/home-Microsoft-logo.webp' }
 ]
 
-watch(isMenuOpen, (isOpen) => {
-  if (process.client) {
-    if (isOpen) {
-      // 鎖定滾動並補償滾動條寬度以防止畫面位移
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-      document.body.style.overflow = 'hidden';
-    } else {
-      // 解除鎖定
-      document.body.style.paddingRight = '';
-      document.body.style.overflow = '';
-    }
-  }
-});
-
-function toggleMenu() {
-  isMenuOpen.value = !isMenuOpen.value;
-}
+// Footer State ---
+const quickLinks = ref([
+  { name: '關於 TRY B', link: '#' },
+  { name: '合作夥伴', link: '#' },
+  { name: '隱私權政策', link: '#' },
+  { name: '服務條款', link: '#' },
+  { name: '聯絡我們', link: '#' }
+]);
 
 const testimonials = [
   {
@@ -57,7 +48,7 @@ const testimonials = [
 
 const handleResize = () => {
   if (window.innerWidth >= 1024) {
-    isMenuOpen.value = false;
+    // isMenuOpen.value = false; // This state is now managed by layouts/main.vue
   }
 };
 
@@ -83,81 +74,21 @@ const successStories = [
     link: '#'
   }
 ]
+
+const stats = [
+  { value: '10,000+', label: '活躍體驗者' },
+  { value: '500+', label: '合作企業' },
+  { value: '2,500+', label: '成功體驗' },
+  { value: '98%', label: '滿意度' }
+]
 </script>
 
 <template>
-  <!-- header -->
-  <header class="nav-shadow sticky bg-white z-40">
-    <div class="h-main-header w-full max-w-screen-full-hd mx-auto p-12">
-      <nav class="flex h-full items-center justify-between gap-8">
-        <!-- 商標 Section -->
-        <h1 class="flex flex-none items-center gap-2 text-2xl">
-          <div class="w-site-logo-width h-site-logo-height">
-            <img src="~/assets/img/Try-beta-logo.webp" alt="TRYB Logo" class="w-full h-auto object-cover">
-          </div>
-        </h1>
-
-        <!-- Desktop Search Bar 搜尋欄 -->
-        <div class="hidden lg:flex flex-1 justify-center px-4">
-          <div
-            class="w-full min-w-[150px] max-w-[1000px] flex items-center justify-center mx-auto border border-gray-200 rounded-lg p-2 transition-colors focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
-            <input type="text" placeholder="搜尋職業體驗機會..." class="w-full bg-transparent focus:outline-none">
-          </div>
-        </div>
-
-        <!-- 右側導覽 -->
-        <div class="flex items-center">
-          <!-- Mobile Menu Button -->
-          <button class="lg:hidden" @click="toggleMenu">
-            <HamburgerIcon class="h-8 w-8 text-gray-700" />
-          </button>
-
-          <!-- 右側導覽 -->
-          <div :class="[
-              'fixed top-0 left-0 z-50 h-1/2 w-full transform overflow-y-auto bg-white p-8 transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:flex lg:h-auto lg:w-auto lg:transform-none lg:overflow-y-visible lg:p-0 lg:bg-transparent',
-              isMenuOpen ? 'translate-y-0' : '-translate-y-full',
-            ]" class="flex flex-col gap-8 lg:flex-row lg:items-center">
-            <!-- Close button for mobile -->
-            <button class="absolute top-8 right-8 lg:hidden" @click="toggleMenu">
-              <CloseIcon class="h-8 w-8 text-gray-700" />
-            </button>
-
-            <!-- 搜尋欄 (Mobile Only) -->
-            <div
-              class="mt-16 flex w-full justify-center border border-gray-200 rounded-lg p-2 transition-colors focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 lg:hidden">
-              <input type="text" placeholder="搜尋職業體驗機會..." class="w-full bg-transparent focus:outline-none">
-            </div>
-
-            <!-- 右側導覽 -->
-            <div class="flex flex-col gap-8 lg:flex-row lg:items-center">
-              <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                探索我們
-              </a>
-              <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                方案
-              </a>
-              <div class="px-4 py-2 flex items-center gap-2">
-                <UserIcon class="w-6 h-6" />
-                <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                  登入
-                </a>
-                <span class="text-gray-400">/</span>
-                <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                  註冊
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 遮罩 -->
-        <div v-if="isMenuOpen" class="fixed inset-0 z-45 bg-black/30 lg:hidden" @click="toggleMenu"></div>
-      </nav>
-    </div>
-  </header>
+  <!-- The <header> has been moved to layouts/main.vue -->
 
   <!-- main -->
   <main>
-    <!-- hero -->
+    <!-- Hero Section -->
     <section class="relative h-hero-section text-white ">
       <!-- Layer 1: Background Image -->
       <div class="absolute inset-0 z-10 mask-fade-from-center-to-left">
@@ -196,9 +127,7 @@ const successStories = [
       </div>
     </section>
 
-
-
-    <!-- 誰適合使用 TRY -->
+    <!-- User Personas Section -->
     <section class="py-section-padding bg-brand-gray">
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
         <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">誰適合使用 TRY β</h2>
@@ -292,7 +221,7 @@ const successStories = [
       </div>
     </section>
 
-    <!-- 熱門體驗活動 -->
+    <!-- Featured Programs Section -->
     <section class="py-section-padding bg-brand-gray">
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
         <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">熱門體驗活動</h2>
@@ -401,7 +330,7 @@ const successStories = [
       </div>
     </section>
 
-    <!-- 體驗者的聲音 -->
+    <!-- User Testimonials Section -->
     <section 
         class="relative py-section-padding overflow-hidden bg-cover bg-center bg-testimonial-pattern"
     >
@@ -488,7 +417,7 @@ const successStories = [
     </section>
 
 
-    <!-- 我們的合作夥伴 -->
+    <!-- Partners Section -->
     <section class="relative overflow-hidden py-section-padding bg-brand-gray">
       <!-- Background Text -->
       <div
@@ -527,7 +456,7 @@ const successStories = [
       </div>
     </section>
 
-    <!-- 企業客戶評價 -->
+    <!-- Client Testimonials Section -->
     <section class="relative py-section-padding bg-brand-gray overflow-hidden">
       <!-- Giant Beta Icon - REMOVED -->
 
@@ -555,7 +484,7 @@ const successStories = [
           <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
             <!-- Testimonial Card -->
             <div v-for="(testimonial, index) in testimonials" :key="index" class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden">
-              <div class="absolute top-8 -right-8 z-0   pointer-events-none">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
                 <BetaIcon class="w-80 h-full text-blue-50" />
               </div>
               <div class="relative z-10 flex items-center gap-4">
@@ -585,16 +514,16 @@ const successStories = [
 
 
 
-    <!-- 成功案例 區塊 -->
-    <section class="py-section-padding bg-brand-gray overflow-hidden">
-      <div class="relative z-20 mx-auto h-full w-full max-w-container-main px-6 md:px-12">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
+    <!-- Success Stories Section -->
+     <section class="py-section-padding bg-brand-gray overflow-hidden">
+       <div class="relative z-20 mx-auto h-full w-full max-w-container-main px-6 md:px-12">
+         <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
          
 
           <!-- Left Column: Success Story Cards -->
           <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch order-2 lg:order-1">
             <div v-for="(story, index) in successStories" :key="index" class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden min-h-[400px]">
-              <div class="absolute top-8 -right-8 z-0 pointer-events-none">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
                 <BetaIcon class="w-80 h-full text-blue-50" />
               </div>
 
@@ -636,6 +565,46 @@ const successStories = [
       </div>
     </section>
 
-    <section class="h-[100px]"></section>
+
+    <!-- Stats Section -->
+     <section class="relative overflow-hidden py-section-padding bg-brand-gray">
+       <!-- Background Text -->
+       <div
+        class="
+          pointer-events-none absolute inset-0 z-0
+          flex items-center justify-center
+          whitespace-nowrap font-black leading-none
+          text-stroke-background
+          text-6xl sm:text-8xl md:text-9xl lg:text-[150px] xl:text-[200px]
+        "
+        aria-hidden="true"
+      >
+        Try Before You Dive
+      </div>
+
+      <!-- Foreground Content -->
+      <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 text-center md:px-12">
+        <h2 class="text-major-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+          已有萬人在使用TRY β
+        </h2>
+        <p class="mx-auto max-w-2xl text-lg text-gray-700 sm:text-xl">
+          探索我們如何幫助企業實現目標
+        </p>
+
+        <!-- Stats -->
+        <div class="mt-12 grid grid-cols-2 gap-y-10 gap-x-6 text-center md:grid-cols-4">
+          <div v-for="stat in stats" :key="stat.label">
+            <p class="text-4xl font-bold text-gray-900 lg:text-5xl">{{ stat.value }}</p>
+            <p class="mt-2 text-base text-gray-600">{{ stat.label }}</p>
+          </div>
+        </div>
+        
+        <button
+          class="mt-12 rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white"
+        >
+          企業開始體驗
+        </button>
+      </div>
+    </section>
   </main>
 </template>

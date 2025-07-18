@@ -1,0 +1,13 @@
+import { library, config } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faFacebook, faInstagram, faLine } from '@fortawesome/free-brands-svg-icons'
+
+// 這很重要，我們會讓 Nuxt 來處理 CSS，而不是 Font Awesome 自己
+config.autoAddCss = false
+
+// 在這裡加入您想使用的圖示
+library.add(faFacebook, faInstagram, faLine)
+
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon)
+})
