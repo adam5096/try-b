@@ -52,6 +52,8 @@ module.exports = {
         "hero-section": "811px", // Re-enabled for fixed-height layout
         "site-logo-width": "252px",
         "site-logo-height": "62px",
+        "partner-logo-width": "176px",
+        "partner-logo-height": "44px",
       },
     },
   },

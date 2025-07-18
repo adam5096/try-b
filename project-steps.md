@@ -16,4 +16,10 @@
 ## User Testimonials
 ## Partners
 ## Client Testimonials
+## Success Stories
+## Stats
 ## footer
+
+# 加入 font awsome
+
+# 新增 layouts/main

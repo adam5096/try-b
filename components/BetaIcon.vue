@@ -1,5 +1,5 @@
 <template>
-  <svg
+  <!-- <svg
     width="1em"
     height="1em"
     viewBox="0 0 100 100"
@@ -16,5 +16,6 @@
     >
       β
     </text>
-  </svg>
+  </svg> -->
+  <img src="~assets/img/home/β-card-bg.webp" alt="Beta Icon" />
 </template> 

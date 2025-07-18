@@ -419,32 +419,24 @@ const stats = [
 
     <!-- Partners Section -->
     <section class="relative overflow-hidden py-section-padding bg-brand-gray">
-      <!-- Background Text -->
-      <div
-        class="
-          pointer-events-none absolute inset-0 z-0
-          flex items-center justify-center
-          whitespace-nowrap font-black leading-none
-          text-stroke-background
-          text-6xl sm:text-8xl md:text-9xl lg:text-[150px] xl:text-[200px]
-        "
-        aria-hidden="true"
-      >
-        Try Before You Dive
-      </div>
-
       <!-- Foreground Content -->
       <div class="relative z-10 mx-auto h-full w-full px-6 text-center md:px-12">
+       
+
         <h2 class="text-major-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
           我們的合作夥伴
         </h2>
         <div
-          class="mx-auto mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-10 sm:gap-x-12 lg:gap-x-16"
+            class="relative h-[247px] mx-auto mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-10 sm:gap-x-12 lg:gap-x-16"
         >
+          <!-- Background Text -->
+          <div class="absolute inset-0 z-0">
+            <img src="~assets/img/home/try-before-you-dive-bg.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
+          </div>
           <div
             v-for="partner in partners"
             :key="partner.name"
-            class="flex h-[44px] w-[176px] items-center justify-center"
+            class="flex max-h-partner-logo-height max-w-partner-logo-width items-center justify-center"
           >
             <img
               class="max-h-full max-w-full object-contain"
@@ -485,7 +477,7 @@ const stats = [
             <!-- Testimonial Card -->
             <div v-for="(testimonial, index) in testimonials" :key="index" class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden">
               <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
-                <BetaIcon class="w-80 h-full text-blue-50" />
+                <BetaIcon class="w-full h-full object-contain" />
               </div>
               <div class="relative z-10 flex items-center gap-4">
                 <img :src="testimonial.avatar" alt="Client Avatar" class="w-16 h-16 rounded-full object-cover">
@@ -524,7 +516,7 @@ const stats = [
           <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch order-2 lg:order-1">
             <div v-for="(story, index) in successStories" :key="index" class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden min-h-[400px]">
               <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
-                <BetaIcon class="w-80 h-full text-blue-50" />
+                <BetaIcon class="w-full h-full object-contain" />
               </div>
 
               <div class="relative z-10 flex flex-col flex-grow">
@@ -568,20 +560,10 @@ const stats = [
 
     <!-- Stats Section -->
      <section class="relative overflow-hidden py-section-padding bg-brand-gray">
-       <!-- Background Text -->
-       <div
-        class="
-          pointer-events-none absolute inset-0 z-0
-          flex items-center justify-center
-          whitespace-nowrap font-black leading-none
-          text-stroke-background
-          text-6xl sm:text-8xl md:text-9xl lg:text-[150px] xl:text-[200px]
-        "
-        aria-hidden="true"
-      >
-        Try Before You Dive
-      </div>
-
+      <!-- Background Text -->
+      <div class="absolute inset-0 z-0">
+            <img src="~assets/img/home/try-before-you-dive-bg.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
+          </div>
       <!-- Foreground Content -->
       <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 text-center md:px-12">
         <h2 class="text-major-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
@@ -592,7 +574,8 @@ const stats = [
         </p>
 
         <!-- Stats -->
-        <div class="mt-12 grid grid-cols-2 gap-y-10 gap-x-6 text-center md:grid-cols-4">
+        <div class="relative h-[247px] mt-12 grid grid-cols-2 gap-y-10 gap-x-6 text-center md:grid-cols-4">
+          
           <div v-for="stat in stats" :key="stat.label">
             <p class="text-4xl font-bold text-gray-900 lg:text-5xl">{{ stat.value }}</p>
             <p class="mt-2 text-base text-gray-600">{{ stat.label }}</p>
