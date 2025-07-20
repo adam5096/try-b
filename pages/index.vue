@@ -9,13 +9,13 @@ definePageMeta({
 // Header-related logic has been moved to layouts/main.vue
 
 const partners = [
-  { name: 'Scuba Schools International', logo: '/img/home/home-SSI-logo.webp' },
-  { name: 'Google', logo: '/img/home/home-Google-logo.webp' },
-  { name: 'Hexschool', logo: '/img/home/home-Hexschool-logo.webp' },
-  { name: 'LinkedIn', logo: '/img/home/home-LinkedIn-logo.webp' },
+  { name: 'Scuba Schools International', logo: '/img/home/home-ssi-logo.webp' },
+  { name: 'Google', logo: '/img/home/home-google-logo.webp' },
+  { name: 'Hexschool', logo: '/img/home/home-hexschool-logo.webp' },
+  { name: 'LinkedIn', logo: '/img/home/home-linkedin-logo.webp' },
   { name: '104 Job Bank', logo: '/img/home/home-104-logo.webp' },
-  { name: 'Cathay United Bank', logo: '/img/home/home-CathayBK-logo.webp' },
-  { name: 'Microsoft', logo: '/img/home/home-Microsoft-logo.webp' }
+  { name: 'Cathay United Bank', logo: '/img/home/home-cathaybk-logo.webp' },
+  { name: 'Microsoft', logo: '/img/home/home-microsoft-logo.webp' }
 ]
 
 // Footer State ---
