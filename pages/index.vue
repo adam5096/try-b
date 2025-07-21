@@ -431,7 +431,7 @@ const stats = [
         >
           <!-- Background Text -->
           <div class="absolute inset-0 z-0">
-            <img src="@/assets/img/home/try-before-you-dive-bg.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
+            <img src="@/assets/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
           </div>
           <div
             v-for="partner in partners"
@@ -562,7 +562,7 @@ const stats = [
      <section class="relative overflow-hidden py-section-padding bg-brand-gray">
       <!-- Background Text -->
       <div class="absolute inset-0 z-0">
-            <img src="@/assets/img/home/try-before-you-dive-bg.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
+            <img src="@/assets/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
           </div>
       <!-- Foreground Content -->
       <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 text-center md:px-12">
