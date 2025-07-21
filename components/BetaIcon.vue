@@ -17,5 +17,5 @@
       β
     </text>
   </svg> -->
-  <img src="~assets/img/home/β-card-bg.webp" alt="Beta Icon" />
+  <img src="~assets/img/home/beta-card-bg.webp" alt="Beta Icon" />
 </template> 
