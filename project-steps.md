@@ -23,3 +23,5 @@
 # 加入 font awsome
 
 # 新增 layouts/main
+
+# 修復 git push 新內容時，gitgub 拿取新內容失敗問題
