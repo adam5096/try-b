@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import ssiLogo from '@/assets/img/home/partners/ssi-logo.webp';
+import googleLogo from '@/assets/img/home/partners/google-logo.webp';
+import hexschoolLogo from '@/assets/img/home/partners/hexschool-logo.webp';
+import linkedinLogo from '@/assets/img/home/partners/linkedin-logo.webp';
+import logo104 from '@/assets/img/home/partners/104-logo.webp';
+import cathaybkLogo from '@/assets/img/home/partners/cathaybk-logo.webp';
+import microsoftLogo from '@/assets/img/home/partners/microsoft-logo.webp';
+
 
 definePageMeta({
   name: 'index',
@@ -9,13 +17,13 @@ definePageMeta({
 // Header-related logic has been moved to layouts/main.vue
 
 const partners = [
-  { name: 'Scuba Schools International', logo: '/img/home/home-ssi-logo.webp' },
-  { name: 'Google', logo: '/img/home/home-google-logo.webp' },
-  { name: 'Hexschool', logo: '/img/home/home-hexschool-logo.webp' },
-  { name: 'LinkedIn', logo: '/img/home/home-linkedin-logo.webp' },
-  { name: '104 Job Bank', logo: '/img/home/home-104-logo.webp' },
-  { name: 'Cathay United Bank', logo: '/img/home/home-cathaybk-logo.webp' },
-  { name: 'Microsoft', logo: '/img/home/home-microsoft-logo.webp' }
+  { name: 'Scuba Schools International', logo: ssiLogo },
+  { name: 'Google', logo: googleLogo },
+  { name: 'Hexschool', logo: hexschoolLogo },
+  { name: 'LinkedIn', logo: linkedinLogo },
+  { name: '104 Job Bank', logo: logo104 },
+  { name: 'Cathay United Bank', logo: cathaybkLogo },
+  { name: 'Microsoft', logo: microsoftLogo }
 ]
 
 // Footer State ---
