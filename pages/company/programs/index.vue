@@ -105,6 +105,77 @@ const plans: Plan[] = [
     applicants: 0,
     applicant_status: '拒絕',
   },
+  {
+    title: '軟體工程師體驗日',
+    status: '審核中',
+    status_tag: 'info',
+    description: '體驗前端與後端開發工作，了解軟體工程師的日常工作內容與挑戰',
+    industry: '資訊科技',
+    location: '台北市信義區松仁路100號',
+    headcount: '5-10人',
+    applicants: 0,
+    applicant_status: '開放',
+  },
+  {
+    title: '數位行銷實務工作坊',
+    status: '已發佈',
+    status_tag: 'success',
+    description: '學習數位行銷策略規劃、社群媒體經營與數據分析，體驗行銷人員的工作日常',
+    industry: '行銷廣告',
+    date: '2025/10/12',
+    location: '台北市大安區忠孝東路四段',
+    headcount: '8-15人',
+    applicants: '已額滿',
+    applicant_status: '額滿',
+  },
+  {
+    title: '金融分析師一日體驗',
+    status: '待發佈',
+    status_tag: 'warning',
+    description: '體驗金融市場分析、投資組合管理，了解金融分析師的專業技能與工作內容',
+    industry: '金融服務',
+    date: '2025/10/08',
+    location: '台北市信義區松智路17號',
+    headcount: '4-8人',
+    applicants: 0,
+    applicant_status: '開放',
+  },
+  {
+    title: '人力資源專員工作體驗',
+    status: '待發佈',
+    status_tag: 'warning',
+    description: '了解招聘流程、員工培訓與績效管理，體驗HR專業人員的日常工作',
+    industry: '人力資源',
+    date: '2025/10/05',
+    location: '台北市內湖區瑞光路399號',
+    headcount: '5-10人',
+    applicants: 0,
+    applicant_status: '開放',
+  },
+  {
+    title: '產品設計師工作坊',
+    status: '已發佈',
+    status_tag: 'success',
+    description: '體驗UI/UX設計流程, 學習使用者研究與原型設計, 了解產品設計師的工作職責',
+    industry: '設計創意',
+    date: '2025/10/03',
+    location: '台北市松山區南京東路三段',
+    headcount: '5-10人',
+    applicants: 5,
+    applicant_status: '開放',
+  },
+  {
+    title: '客戶服務體驗日',
+    status: '已拒絕',
+    status_tag: 'danger',
+    description: '體驗客戶服務流程, 學習溝通技巧與問題解決能力, 了解客服人員的工作挑戰',
+    industry: '客戶服務',
+    date: '2025/09/28',
+    location: '新北市板橋區民生路三段',
+    headcount: '10-20人',
+    applicants: 0,
+    applicant_status: '拒絕',
+  },
 ];
 </script>
 
@@ -133,7 +204,7 @@ const plans: Plan[] = [
       <!-- Filters -->
       <el-card class="mt-4">
         <div class="flex items-center gap-4">
-          <el-input v-model="searchForm.name" placeholder="搜尋計畫名稱..." />
+          <el-input v-model="searchForm.name" placeholder="搜尋計畫名稱..." :prefix-icon="Search" />
           <el-select v-model="searchForm.industry" placeholder="產業類別">
             <el-option label="資訊科技" value="tech" />
             <el-option label="行銷廣告" value="marketing" />
