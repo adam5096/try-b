@@ -100,13 +100,13 @@ const stats = [
     <section class="relative h-hero-section text-white ">
       <!-- Layer 1: Background Image -->
       <div class="absolute inset-0 z-10 mask-fade-from-center-to-left">
-        <img src="~/assets/img/hero-background-worker.webp" alt="Office working environment"
+        <img src="@/assets/img/home/home-worker-bg.webp" alt="Office working environment"
           class="h-full w-full  object-cover" />
       </div>
 
       <!-- Layer 2: Blue Shape with Gradient Mask -->
       <div class="absolute inset-0 z-20 mask-gradient-to-right">
-        <img src="~/assets/img/hero-background.webp" alt="Blue decorative shape"
+        <img src="@/assets/img/home/hero-bg.webp" alt="Blue decorative shape"
           class="h-full w-full  object-cover lg:object-fill" />
       </div>
 
@@ -149,7 +149,7 @@ const stats = [
           <div class=" p-6 pt-10 text-left">
             <div class="flex justify-center mb-4">
               <div>
-                <img src="~/assets/img/who-is-the-user-01.webp" alt="學生與新鮮人">
+                <img src="~/assets/img/home/who-is-the-user-01.webp" alt="學生與新鮮人">
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">學生與新鮮人</h3>
@@ -176,7 +176,7 @@ const stats = [
           <div class="p-6 pt-10 text-left">
             <div class="flex justify-center mb-4">
               <div>
-                <img src="~/assets/img/who-is-the-user-02.webp" alt="兼職與轉職者">
+                <img src="~/assets/img/home/who-is-the-user-02.webp" alt="兼職與轉職者">
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
@@ -203,7 +203,7 @@ const stats = [
           <div class="p-6 pt-10 text-left">
             <div class="flex justify-center mb-4">
               <div>
-                  <img src="~/assets/img/who-is-the-user-03.webp" alt="創意工作者、中小企業">
+                  <img src="~/assets/img/home/who-is-the-user-03.webp" alt="創意工作者、中小企業">
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">創意工作者、中小企業</h3>
