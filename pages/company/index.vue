@@ -23,7 +23,7 @@ interface Plan {
 
 definePageMeta({
   layout: 'company',
-  name: 'company-programs-list',
+  name: 'company-index',
 });
 
 const searchForm = {
@@ -286,3 +286,7 @@ const plans: Plan[] = [
     </div>
   </div>
 </template>
+
+<style scoped>
+
+</style> 
