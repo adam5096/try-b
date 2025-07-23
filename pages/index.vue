@@ -100,7 +100,7 @@ const stats = [
     <section class="relative h-hero-section text-white ">
       <!-- Layer 1: Background Image -->
       <div class="absolute inset-0 z-10 mask-fade-from-center-to-left">
-        <img src="~/assets/img/hero-background-worker.webp" alt="Office working environment"
+        <img src="@/assets/img/home/home-worker-bg.webp" alt="Office working environment"
           class="h-full w-full  object-cover" />
       </div>
 
