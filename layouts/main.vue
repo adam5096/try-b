@@ -63,7 +63,6 @@ const socialLinks = ref([
           <!-- 商標 Section -->
           <h1 class="flex flex-none items-center gap-2 text-2xl">
             <div class="w-site-logo-width h-site-logo-height">
-              <img src="~/assets/img/try-beta-logo.webp" alt="TRYB Logo" class="w-full h-auto object-cover">
             </div>
           </h1>
 
@@ -132,7 +131,7 @@ const socialLinks = ref([
     <footer class="relative text-white bg-cover bg-center overflow-hidden">
       <!-- Background Image Layer -->
       <div class="absolute inset-0 z-0">
-        <img src="~/assets/img/hero-background-worker.webp" alt="Footer background" class="w-full h-full object-cover object-center" />
+        <img src="@/assets/img/home/home-worker-bg.webp" alt="Footer background" class="w-full h-full object-cover object-center" />
       </div>
 
       <!-- Blue Overlay Layer -->
@@ -150,7 +149,7 @@ const socialLinks = ref([
           <!-- Column 1: Logo and Socials -->
           <div class="flex flex-col items-center md:items-start">
             <div class="flex items-center gap-4">
-              <img src="~/assets/img/try-beta-logo.webp" alt="TRYB Logo" class="w-40 h-auto filter-to-white">
+              <img src="@/assets/img/home/try-beta-logo.webp" alt="TRYB Logo" class="w-40 h-auto filter-to-white">
             </div>
             <div class="mt-6 flex gap-6">
               <a v-for="link in socialLinks" :key="link.name" :href="link.href" class="text-white hover:text-btn-yellow transition-colors">

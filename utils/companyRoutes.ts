@@ -7,7 +7,7 @@
  */
 export const companyRoutes = {
   login: () => ({ name: 'companyLogin' }),
-  landing: () => ({ name: 'companyPrograms' }),
+  landing: () => ({ name: 'company-index' }),
   programDetail: (programId: string | number) => ({
     name: 'companyProgramsDetail',
     params: { programId },

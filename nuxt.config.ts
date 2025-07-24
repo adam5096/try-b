@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
   compatibilityDate: '2025-07-16',
@@ -7,6 +8,8 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/eslint',
     '@nuxtjs/seo',
+    '@element-plus/nuxt',
+    '@nuxt/image',
   ],
   fonts: {
     families: [
@@ -29,6 +32,10 @@ export default defineNuxtConfig({
     exposeConfig: false,
     // injectPosition: 0,
     viewer: false,
+  },
+  vite: {
+    plugins: [
+    ],
   },
   // build: {
   //   transpile: ['dayjs', 'dayjs-nuxt'],
