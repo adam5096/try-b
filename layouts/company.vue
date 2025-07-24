@@ -17,7 +17,7 @@ const programsPath = router.resolve(r.landing()).path;
 </script>
 
 <template>
-  <div class="common-layout h-screen">
+  <el-container class="h-screen">
     <!-- Header -->
     <el-header class="fixed top-0 left-0 right-0 z-20 flex items-center justify-between bg-white border-b px-6">
       <div class="flex items-center gap-2">
@@ -81,7 +81,7 @@ const programsPath = router.resolve(r.landing()).path;
         <slot />
       </el-main>
     </el-container>
-  </div>
+  </el-container>
 </template>
 
 <style>
