@@ -1,5 +1,8 @@
+<!-- ep10-3 企業方案頁面 -->
+
 <script setup lang="ts">
 import { ref } from 'vue'
+import { Check } from '@element-plus/icons-vue'
 
 definePageMeta({
   layout: 'company',
@@ -114,7 +117,7 @@ const activeStep = ref(0)
 
     <!-- Plan Selection -->
     <div>
-      <div class="flex justify-between items-center mb-4">
+      <div class="flex flex-col items-start gap-4 xl:flex-row xl:justify-between xl:items-center mb-4">
         <div>
           <h2 class="text-xl font-bold">
             方案總覽
@@ -123,7 +126,7 @@ const activeStep = ref(0)
             不限刊登次數，可同時刊登多種體驗
           </p>
         </div>
-        <div class="w-1/3">
+        <div class="w-full xl:w-1/2">
           <el-steps :active="activeStep" finish-status="success" simple>
             <el-step title="選擇方案" />
             <el-step title="付款方式" />
@@ -164,6 +167,8 @@ const activeStep = ref(0)
 </template>
 
 <style scoped>
-/* Add any additional styles if needed */
+:deep(.el-step.is-simple .el-step__title) {
+  @apply whitespace-nowrap;
+}
 </style>
 

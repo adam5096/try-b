@@ -434,4 +434,42 @@ Vite 和 Vue 之間是**上下游的接力關係**，而非共同開會。
 *   在 `pages/index.vue` 的 `<script setup>` 中，為每一張 Logo 圖片編寫 `import` 語句，並將匯入的模組直接用於 `partners` 陣列。
 *   這個方案讓 Vite 在建置期就能識別、優化並正確打包所有圖片資源，從而徹底解決了 Vercel 上的部署失敗問題。
 
+# EP10 開發偵錯紀錄：從樣式告警到 SSR 錯誤的完整解決方案
 
+### 1. Element Plus API 棄用警告
+- **問題現象**: 專案啟動後，終端機出現大量 `[el-radio] [API] label act as value is about to be deprecated...` 的警告。
+- **分析**: 這是因為 Element Plus 在新版本中，推薦使用 `value` 屬性來取代 `label` 屬性，以作為 `el-radio` 的唯一值標識。這是一個為了 API 一致性和向前相容性的變更。
+- **解決方案**: 在 `pages/company/purchase/payment.vue` 中，將所有 `<el-radio>` 元件的 `label="..."` 屬性，全部替換為 `value="..."`。
+
+### 2. Font Awesome 圖示缺失錯誤
+- **問題現象**: 瀏覽器主控台報錯 `Could not find one or more icon(s) { prefix: 'fab', iconName: 'cc-visa' }`，導致信用卡 Logo 無法顯示。
+- **偵錯與分析**:
+  1.  初步判斷是圖示未被註冊。
+  2.  在 `plugins/fontawesome.ts` 中嘗試引入圖示，但錯誤地引入了需要額外付費或安裝其他套件的 `solid` 和 `regular` 圖示庫，導致了 `Cannot find module` 的 linter 錯誤。
+  3.  透過檢查 `package.json`，確認 `@fortawesome/free-brands-svg-icons` 套件已安裝。
+  4.  最終確認問題根源是：**圖示雖然來自已安裝的套件，但沒有在 `fontawesome.ts` 的 `library.add()` 中被正確註冊。**
+- **解決方案**: 修改 `plugins/fontawesome.ts`，從 `@fortawesome/free-brands-svg-icons` 中明確匯入 `faCcVisa`, `faCcMastercard`, `faCcJcb`，並將它們加入到 `library` 中。
+
+### 3. SSR 水合作用不匹配錯誤 (Hydration Mismatch)
+- **問題現象**: 瀏覽器主控台報錯 `Cannot read properties of null (reading 'ce')`，且錯誤堆疊指向 Element Plus 的 `header` 元件。
+- **分析**:
+  - 這是一個典型的 SSR Hydration 錯誤，意指伺服器端渲染出的 HTML 結構，與瀏覽器端 Vue.js 預期要「激活」的結構不一致。
+  - 問題根源在於共用的佈局檔案 `layouts/company.vue`。根據 Element Plus 官方文件，`<el-header>` 元件必須是 `<el-container>` 的直接子層。但在我們的程式碼中，它被錯誤地放置在了 `<el-container>` 之外。
+- **解決方案**:
+  1.  修改 `layouts/company.vue` 的根元素，將其從 `<div>` 改為 `<el-container>`。
+  2.  調整內部結構，確保 `<el-header>` 和另一個包含 `<el-aside>` 及 `<el-main>` 的 `<el-container>`，都成為頂層 `<el-container>` 的直接子元素，使其完全符合官方文件的結構規範。
+
+### 4. `@apply` 語法告警與編譯錯誤
+- **問題現象**:
+  1.  在 `<style>` 區塊中使用 `@apply` 時，編輯器 (VS Code) 出現 `Unknown at rule @apply` 的告警。
+  2.  為了解決告警而加上 `lang="scss"` 後，開發伺服器報錯 `Preprocessor dependency "sass-embedded" not found`。
+- **分析**:
+  - **`@apply` 告警**：這是因為編輯器預設將 `<style>` 視為標準 CSS，而不認識 `@apply` 這個屬於 Tailwind CSS 的特殊指令。
+  - **`sass` 依賴缺失**：當我們加上 `lang="scss"` 時，等於是告訴 Nuxt/Vite 要使用 SCSS 預處理器來編譯這段樣式。這個動作啟用了更完整的 PostCSS 處理流程（這才能讓 `@apply` 生效），但也同時觸發了對 `sass` 編譯工具本身的依賴檢查。由於專案中並未安裝 `sass`，因此編譯失敗。
+- **解決方案 (探索過程)**:
+  1.  **安裝依賴**: 執行 `pnpm add -D sass`，為專案補上 SCSS 預處理器。
+  2.  **添加語言標籤**: 在 `.vue` 檔案的 `<style>` 標籤中加入 `lang="scss"`。
+  3.  **配置編輯器**: 為了讓 VS Code 本身也認識 `@apply`，在專案根目錄的 `.vscode/settings.json` 中，加入 `"css.lint.unknownAtRules": "ignore"`。
+- **最終實踐**:
+  - 考量到專案以 Tailwind CSS 為核心，為了避免未來因 `lang="scss"` 標籤而無意中引入 SCSS 語法，導致樣式管理複雜化，最終採取了更簡潔的策略。
+  - **我們移除了 `index.vue` 與 `payment.vue` 中 `<style>` 標籤的 `lang="scss"` 屬性，並接受了編輯器層級的 `@apply` 視覺告警**，因為它不影響專案的實際編譯與運行，以此換取了更純粹、單一的樣式技術棧。
