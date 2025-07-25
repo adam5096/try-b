@@ -6,7 +6,7 @@
 
     <div class="bg-white p-6 md:p-10 rounded-lg shadow">
       <h2 class="text-xl font-bold mb-6 text-center">
-        方案總攬
+        方案總覽
       </h2>
       <el-steps :active="3" finish-status="success" align-center class="mb-10">
         <el-step title="選擇方案" />

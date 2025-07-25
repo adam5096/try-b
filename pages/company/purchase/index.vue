@@ -117,22 +117,18 @@ const activeStep = ref(0)
 
     <!-- Plan Selection -->
     <div>
-      <div class="flex flex-col items-start gap-4 xl:flex-row xl:justify-between xl:items-center mb-4">
-        <div>
-          <h2 class="text-xl font-bold">
-            方案總覽
-          </h2>
-          <p class="text-sm text-gray-500">
-            不限刊登次數，可同時刊登多種體驗
-          </p>
-        </div>
-        <div class="w-full xl:w-1/2">
-          <el-steps :active="activeStep" finish-status="success" simple>
-            <el-step title="選擇方案" />
-            <el-step title="付款方式" />
-            <el-step title="完成付款" />
-          </el-steps>
-        </div>
+      <h2 class="text-xl font-bold text-center">
+        方案總覽
+      </h2>
+      <p class="text-sm text-gray-500 text-center mb-4">
+        不限刊登次數，可同時刊登多種體驗
+      </p>
+      <div class="mb-4">
+        <el-steps :active="0" finish-status="success" align-center>
+          <el-step title="選擇方案" />
+          <el-step title="付款方式" />
+          <el-step title="完成付款" />
+        </el-steps>
       </div>
 
       <div class="space-y-4">
@@ -169,6 +165,17 @@ const activeStep = ref(0)
 <style scoped>
 :deep(.el-step.is-simple .el-step__title) {
   @apply whitespace-nowrap;
+}
+:deep(.el-step__head.is-success) {
+  .el-step__line {
+    @apply bg-green-500;
+  }
+  .el-step__icon {
+    @apply bg-green-500 text-white;
+  }
+}
+:deep(.el-step__title.is-success) {
+  @apply text-green-500;
 }
 </style>
 

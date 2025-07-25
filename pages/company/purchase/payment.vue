@@ -24,20 +24,14 @@ const paymentMethod = ref('creditCard')
 
     <div>
       <!-- Header -->
-      <div class="flex flex-col items-start gap-4 xl:flex-row xl:justify-between xl:items-center mb-4">
-        <div>
-          <h2 class="text-xl font-bold">
-            方案總覽
-          </h2>
-        </div>
-        <div class="w-full xl:w-1/2">
-          <el-steps :active="1" finish-status="success" simple>
-            <el-step title="選擇方案" />
-            <el-step title="付款方式" />
-            <el-step title="完成付款" />
-          </el-steps>
-        </div>
-      </div>
+      <h2 class="text-xl font-bold mb-6 text-center">
+        方案總覽
+      </h2>
+      <el-steps :active="1" finish-status="success" align-center class="mb-10">
+        <el-step title="選擇方案" />
+        <el-step title="付款方式" />
+        <el-step title="完成付款" />
+      </el-steps>
 
       <!-- Plan Summary -->
       <div class="border border-gray-200 rounded-lg p-6 mb-8">
@@ -186,17 +180,6 @@ const paymentMethod = ref('creditCard')
 
 <style scoped>
 /* Custom styles for el-steps */
-:deep(.el-step__head.is-success) {
-  .el-step__line {
-    @apply bg-gray-800;
-  }
-  .el-step__icon {
-    @apply bg-gray-800 text-white;
-  }
-}
-:deep(.el-step__title.is-success) {
-  @apply text-gray-800;
-}
 :deep(.el-step__title.is-process) {
   @apply font-bold;
 }
