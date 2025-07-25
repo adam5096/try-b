@@ -156,10 +156,9 @@ const sortOptions = ref([
                   <span>已申請人數：{{ program.applicants }} 人</span>
                   <span>申請截止還有 {{ program.deadline }} 天</span>
                 </div>
-                <div class="mt-2 text-right text-blue-500 font-bold">
-                  <span v-if="program.status">{{ program.status }}</span>
-                  <span v-else>&nbsp;</span>
-                </div>
+                 <div class="mt-2 text-right text-blue-500 font-bold min-h-5">
+                   <span v-if="program.status">{{ program.status }}</span>
+                 </div>
               </div>
               <template #footer>
                 <el-button type="primary" class="w-full">查看詳情</el-button>
