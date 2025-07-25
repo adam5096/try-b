@@ -8,6 +8,17 @@ import {
   faCcMastercard,
   faCcJcb,
 } from '@fortawesome/free-brands-svg-icons'
+import {
+  faMapMarkerAlt,
+  faPhoneAlt,
+  faEnvelope,
+  faBell,
+  faUserCircle,
+  faSignOutAlt,
+  faListAlt,
+  faHeart,
+  faQuestionCircle
+} from '@fortawesome/free-solid-svg-icons'
 
 // 這很重要，我們會讓 Nuxt 來處理 CSS，而不是 Font Awesome 自己
 config.autoAddCss = false
@@ -20,6 +31,15 @@ library.add(
   faCcVisa,
   faCcMastercard,
   faCcJcb,
+  faMapMarkerAlt,
+  faPhoneAlt,
+  faEnvelope,
+  faBell,
+  faUserCircle,
+  faSignOutAlt,
+  faListAlt,
+  faHeart,
+  faQuestionCircle
 )
 
 export default defineNuxtPlugin((nuxtApp) => {
