@@ -7,7 +7,7 @@ definePageMeta({
 
 const popularPrograms = ref([
   { id: 1, title: '軟體工程師體驗營', company: '科技公司 A', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop' },
-  { id: 2, title: '咖啡師職人體驗', company: '文青咖啡館', image: 'https://images.unsplash.com/photo-1511920183353-34e85a7420e9?q=80&w=1974&auto=format&fit=crop' },
+  { id: 2, title: '咖啡師職人體驗', company: '文青咖啡館', image: 'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?q=80&w=1974&auto=format&fit=crop' },
   { id: 3, title: '數位行銷實戰體驗', company: '電商平台 B', image: 'https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=2071&auto=format&fit=crop' },
   { id: 4, title: '永續農業見習', company: '有機農場 C', image: 'https://images.unsplash.com/photo-1492496913980-501348b61469?q=80&w=1974&auto=format&fit=crop' },
 ]);
