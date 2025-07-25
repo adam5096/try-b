@@ -17,7 +17,8 @@ import {
   faSignOutAlt,
   faListAlt,
   faHeart,
-  faQuestionCircle
+  faQuestionCircle,
+  faCalendarAlt
 } from '@fortawesome/free-solid-svg-icons'
 
 // 這很重要，我們會讓 Nuxt 來處理 CSS，而不是 Font Awesome 自己
@@ -39,7 +40,8 @@ library.add(
   faSignOutAlt,
   faListAlt,
   faHeart,
-  faQuestionCircle
+  faQuestionCircle,
+  faCalendarAlt
 )
 
 export default defineNuxtPlugin((nuxtApp) => {
