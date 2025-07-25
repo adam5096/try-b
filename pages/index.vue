@@ -157,15 +157,15 @@ const stats = [
             <div class="flex justify-center lg:justify-start">
               <ul class="space-y-2">
                 <li class="flex items-start min-h-[3.5rem]">
-                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>實習與專案合作機會</span>
                 </li>
                 <li class="flex items-start min-h-[3.5rem]">
-                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>職涯探索工作坊</span>
                 </li>
                 <li class="flex items-start min-h-[3.5rem]">
-                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>業界導師一對一指導，並提供深度對談</span>
                 </li>
               </ul>
@@ -184,15 +184,15 @@ const stats = [
             <div class="flex justify-center lg:justify-start">
               <ul class="space-y-2">
                 <li class="flex items-start min-h-[3.5rem]">
-                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>彈性時段職業體驗專案</span>
                 </li>
                 <li class="flex items-start min-h-[3.5rem]">
-                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>多元職務角色體驗計畫</span>
                 </li>
                 <li class="flex items-start min-h-[3.5rem]">
-                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>快速找尋就職方向</span>
                 </li>
               </ul>
@@ -211,15 +211,15 @@ const stats = [
             <div class="flex justify-center lg:justify-start">
               <ul class="space-y-2">
                 <li class="flex items-start min-h-[3.5rem]">
-                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>先體驗，後合作</span>
                 </li>
                 <li class="flex items-start min-h-[3.5rem]">
-                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>展現企業魅力，不再浪費培訓預算</span>
                 </li>
                 <li class="flex items-start min-h-[3.5rem]">
-                  <CheckIcon class="mr-2 flex-shrink-0" />
+                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>零長期成本，高回報人才管道</span>
                 </li>
               </ul>
