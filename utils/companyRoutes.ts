@@ -9,7 +9,7 @@ export const companyRoutes = {
   login: () => ({ name: 'companyLogin' }),
   landing: () => ({ name: 'company-index' }),
   programDetail: (programId: string | number) => ({
-    name: 'companyProgramsDetail',
+    name: 'company-programs-detail',
     params: { programId },
   }),
   applicants: (programId: string | number) => ({
