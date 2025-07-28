@@ -9,7 +9,7 @@
  * 路由名稱 (name) 透過各頁面中的 definePageMeta 設定，與檔案路徑解耦。
  */
 export const userRoutes = {
-  landing: () => ({ name: 'userLanding' }),
+  landing: () => ({ name: 'index' }),
   login: () => ({ name: 'userLogin' }),
   applications: () => ({ name: 'userApplications' }),
   comments: () => ({ name: 'userComments' }),
