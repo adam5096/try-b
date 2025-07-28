@@ -13,7 +13,7 @@ import {
 import { companyRoutes as r } from '~/utils/companyRoutes';
 
 const router = useRouter();
-const programsPath = router.resolve(r.landing()).path;  // 計畫列表
+const programsPath = router.resolve(r.landing()).path;
 </script>
 
 <template>
@@ -77,10 +77,8 @@ const programsPath = router.resolve(r.landing()).path;  // 計畫列表
       </el-aside>
 
       <!-- Page Content -->
-      <el-main class="bg-zinc-100 ml-[240px] overflow-y-auto">
-        <div class="mx-auto max-w-7xl">
-          <slot />
-        </div>
+      <el-main class="bg-gray-50 ml-[240px] overflow-y-auto">
+        <slot />
       </el-main>
     </el-container>
   </el-container>
