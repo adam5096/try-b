@@ -13,7 +13,8 @@ import {
 import { companyRoutes as r } from '~/utils/companyRoutes';
 
 const router = useRouter();
-const programsPath = router.resolve(r.landing()).path;  // 計畫列表
+const programsPath = router.resolve(r.programs()).path;
+const applicantsPath = router.resolve(r.applicants('1')).path;
 </script>
 
 <template>
@@ -51,6 +52,10 @@ const programsPath = router.resolve(r.landing()).path;  // 計畫列表
           <el-menu-item :index="programsPath">
             <el-icon><icon-menu /></el-icon>
             <span>計畫列表</span>
+          </el-menu-item>
+          <el-menu-item :index="applicantsPath">
+            <el-icon><Document /></el-icon>
+            <span>申請列表</span>
           </el-menu-item>
           <el-menu-item index="#">
             <el-icon><Plus /></el-icon>

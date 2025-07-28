@@ -6,18 +6,16 @@
  * 路由名稱 (name) 透過各頁面中的 definePageMeta 設定，與檔案路徑解耦。
  */
 export const companyRoutes = {
-  login: () => ({ name: 'companyLogin' }),
-  landing: () => ({ name: 'company-index' }),
-  programDetail: (programId: string | number) => ({
-    name: 'company-programs-detail',
-    params: { programId },
-  }),
+  landing: () => '/company',
+
+  // plans
+  programs: () => '/company/programs',
   applicants: (programId: string | number) => ({
-    name: 'companyProgramsApplicants',
+    name: 'company-programs-applicants',
     params: { programId },
   }),
   applicantDetail: (applicantId: string | number) => ({
-    name: 'companyProgramsApplicantsDetail',
+    name: 'company-programs-applicants-applicantId',
     params: { applicantId },
   }),
 }; 
