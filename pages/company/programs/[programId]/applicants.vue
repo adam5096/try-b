@@ -106,7 +106,7 @@ const approvedApplicants = [
 
     <!-- Page Header -->
     <div class="mb-6 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
-      <h1 class="text-2xl font-bold text-zinc-900">
+      <h1 class="text-2xl font-bold text-zinc-900 flex-shrink-0 whitespace-nowrap">
         體驗者申請列表
       </h1>
       <el-input placeholder="搜尋申請者姓名、計畫名稱..." class="w-full md:w-72">
@@ -125,49 +125,51 @@ const approvedApplicants = [
           待審核申請 (5)
         </h2>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-zinc-500">排序方式：</span>
+          <span class="text-sm text-zinc-500 whitespace-nowrap">排序方式：</span>
           <el-select placeholder="日期 - 新到舊" size="small" class="w-36">
             <el-option label="日期 - 新到舊" value="date-desc" />
             <el-option label="日期 - 舊到新" value="date-asc" />
           </el-select>
         </div>
       </div>
-      <el-table :data="pendingApplicants" style="width: 100%">
-        <el-table-column label="申請者" width="180">
-          <template #default="{ row }">
-            <div class="flex items-center gap-2">
-              <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-              <div>
-                <p class="font-bold">
-                  {{ row.name }}
-                </p>
-                <p class="text-sm text-zinc-500">
-                  {{ row.title }}
-                </p>
+      <div>
+        <el-table :data="pendingApplicants" style="width: 100%">
+          <el-table-column label="申請者" width="180">
+            <template #default="{ row }">
+              <div class="flex items-center gap-2">
+                <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                <div>
+                  <p class="font-bold">
+                    {{ row.name }}
+                  </p>
+                  <p class="text-sm text-zinc-500">
+                    {{ row.title }}
+                  </p>
+                </div>
               </div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="計畫名稱">
-          <template #default="{ row }">
-            <p>{{ row.program }}</p>
-            <p class="text-sm text-zinc-500">
-              {{ row.department }}
-            </p>
-          </template>
-        </el-table-column>
-        <el-table-column prop="date" label="申請日期" />
-        <el-table-column label="狀態">
-          <template #default="{ row }">
-            <span class="tag-amber">{{ row.status }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <el-button type="primary">
-            查看
-          </el-button>
-        </el-table-column>
-      </el-table>
+            </template>
+          </el-table-column>
+          <el-table-column label="計畫名稱">
+            <template #default="{ row }">
+              <p>{{ row.program }}</p>
+              <p class="text-sm text-zinc-500">
+                {{ row.department }}
+              </p>
+            </template>
+          </el-table-column>
+          <el-table-column prop="date" label="申請日期" />
+          <el-table-column label="狀態">
+            <template #default="{ row }">
+              <span class="tag-amber">{{ row.status }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <el-button type="primary">
+              查看
+            </el-button>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
 
     <!-- Approved Applicants -->
@@ -176,16 +178,16 @@ const approvedApplicants = [
         <h2 class="card-title">
           已審核申請 (4)
         </h2>
-        <div class="flex items-center gap-4">
+        <div class="flex flex-wrap items-center justify-end gap-4">
           <div class="flex items-center gap-2">
-            <span class="text-sm text-zinc-500">排序方式：</span>
+            <span class="text-sm text-zinc-500 whitespace-nowrap">排序方式：</span>
             <el-select placeholder="日期 - 新到舊" size="small" class="w-36">
               <el-option label="日期 - 新到舊" value="date-desc" />
               <el-option label="日期 - 舊到新" value="date-asc" />
             </el-select>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-sm text-zinc-500">狀態：</span>
+            <span class="text-sm text-zinc-500 whitespace-nowrap">狀態：</span>
             <el-select placeholder="全部" size="small" class="w-28">
               <el-option label="全部" value="all" />
               <el-option label="已通過" value="approved" />
@@ -194,43 +196,45 @@ const approvedApplicants = [
           </div>
         </div>
       </div>
-      <el-table :data="approvedApplicants" style="width: 100%">
-        <el-table-column label="申請者" width="180">
-          <template #default="{ row }">
-            <div class="flex items-center gap-2">
-              <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-              <div>
-                <p class="font-bold">
-                  {{ row.name }}
-                </p>
-                <p class="text-sm text-zinc-500">
-                  {{ row.title }}
-                </p>
+      <div>
+        <el-table :data="approvedApplicants" style="width: 100%">
+          <el-table-column label="申請者" width="180">
+            <template #default="{ row }">
+              <div class="flex items-center gap-2">
+                <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+                <div>
+                  <p class="font-bold">
+                    {{ row.name }}
+                  </p>
+                  <p class="text-sm text-zinc-500">
+                    {{ row.title }}
+                  </p>
+                </div>
               </div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="計畫名稱">
-          <template #default="{ row }">
-            <p>{{ row.program }}</p>
-            <p class="text-sm text-zinc-500">
-              {{ row.department }}
-            </p>
-          </template>
-        </el-table-column>
-        <el-table-column prop="applyDate" label="申請日期" />
-        <el-table-column prop="approveDate" label="審核日期" />
-        <el-table-column label="狀態">
-          <template #default="{ row }">
-            <span :class="{ 'tag-green': row.status === '已通過', 'tag-red': row.status === '已拒絕' }">{{ row.status }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <el-button type="primary">
-            查看
-          </el-button>
-        </el-table-column>
-      </el-table>
+            </template>
+          </el-table-column>
+          <el-table-column label="計畫名稱">
+            <template #default="{ row }">
+              <p>{{ row.program }}</p>
+              <p class="text-sm text-zinc-500">
+                {{ row.department }}
+              </p>
+            </template>
+          </el-table-column>
+          <el-table-column prop="applyDate" label="申請日期" />
+          <el-table-column prop="approveDate" label="審核日期" />
+          <el-table-column label="狀態">
+            <template #default="{ row }">
+              <span :class="{ 'tag-green': row.status === '已通過', 'tag-red': row.status === '已拒絕' }">{{ row.status }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <el-button type="primary">
+              查看
+            </el-button>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
 
     <!-- Pagination -->
