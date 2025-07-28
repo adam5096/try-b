@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
 definePageMeta({
   name: 'company-programs-applicants',
   layout: 'company',
@@ -94,6 +96,10 @@ const approvedApplicants = [
     status: '已通過',
   },
 ]
+
+const pendingSort = ref('date-desc')
+const approvedSort = ref('date-desc')
+const approvedStatus = ref('all')
 </script>
 
 <template>
@@ -126,17 +132,18 @@ const approvedApplicants = [
         </h2>
         <div class="flex items-center gap-2">
           <span class="text-sm text-zinc-500 whitespace-nowrap">排序方式：</span>
-          <el-select placeholder="日期 - 新到舊" size="small" class="w-36">
-            <el-option label="日期 - 新到舊" value="date-desc" />
-            <el-option label="日期 - 舊到新" value="date-asc" />
-          </el-select>
+          <ClientOnly>
+            <el-select v-model="pendingSort" size="small" class="w-36">
+              <el-option label="日期 - 新到舊" value="date-desc" />
+              <el-option label="日期 - 舊到新" value="date-asc" />
+            </el-select>
+          </ClientOnly>
         </div>
       </div>
-      <div>
-        <el-table :data="pendingApplicants" style="width: 100%">
-          <el-table-column label="申請者" width="180">
-            <template #default="{ row }">
-              <div class="flex items-center gap-2">
+      <el-table :data="pendingApplicants" style="width: 100%">
+        <el-table-column label="申請者" width="180">
+          <template #default="{ row }">
+            <div class="flex items-center gap-2">
                 <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
                 <div>
                   <p class="font-bold">
@@ -170,7 +177,6 @@ const approvedApplicants = [
           </el-table-column>
         </el-table>
       </div>
-    </div>
 
     <!-- Approved Applicants -->
     <div class="card-base mb-6 bg-white">
@@ -181,26 +187,29 @@ const approvedApplicants = [
         <div class="flex flex-wrap items-center justify-end gap-4">
           <div class="flex items-center gap-2">
             <span class="text-sm text-zinc-500 whitespace-nowrap">排序方式：</span>
-            <el-select placeholder="日期 - 新到舊" size="small" class="w-36">
-              <el-option label="日期 - 新到舊" value="date-desc" />
-              <el-option label="日期 - 舊到新" value="date-asc" />
-            </el-select>
+            <ClientOnly>
+              <el-select v-model="approvedSort" size="small" class="w-36">
+                <el-option label="日期 - 新到舊" value="date-desc" />
+                <el-option label="日期 - 舊到新" value="date-asc" />
+              </el-select>
+            </ClientOnly>
           </div>
           <div class="flex items-center gap-2">
             <span class="text-sm text-zinc-500 whitespace-nowrap">狀態：</span>
-            <el-select placeholder="全部" size="small" class="w-28">
-              <el-option label="全部" value="all" />
-              <el-option label="已通過" value="approved" />
-              <el-option label="已拒絕" value="rejected" />
-            </el-select>
+            <ClientOnly>
+              <el-select v-model="approvedStatus" size="small" class="w-28">
+                <el-option label="全部" value="all" />
+                <el-option label="已通過" value="approved" />
+                <el-option label="已拒絕" value="rejected" />
+              </el-select>
+            </ClientOnly>
           </div>
         </div>
       </div>
-      <div>
-        <el-table :data="approvedApplicants" style="width: 100%">
-          <el-table-column label="申請者" width="180">
-            <template #default="{ row }">
-              <div class="flex items-center gap-2">
+      <el-table :data="approvedApplicants" style="width: 100%">
+        <el-table-column label="申請者" width="180">
+          <template #default="{ row }">
+            <div class="flex items-center gap-2">
                 <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
                 <div>
                   <p class="font-bold">
@@ -235,7 +244,6 @@ const approvedApplicants = [
           </el-table-column>
         </el-table>
       </div>
-    </div>
 
     <!-- Pagination -->
     <div class="flex items-center justify-between">
