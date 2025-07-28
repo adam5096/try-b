@@ -70,6 +70,10 @@ const applicantsPath = router.resolve(r.applicants('1')).path;
             <span>帳戶設定</span>
           </el-menu-item>
           <div class="grow" />
+          <el-menu-item index="/company/test">
+            <el-icon><Setting /></el-icon>
+            <span class="text-red-500">測試頁面</span>
+          </el-menu-item>
           <el-menu-item index="#">
             <el-icon><Briefcase /></el-icon>
             <span>方案</span>
