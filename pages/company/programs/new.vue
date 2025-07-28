@@ -36,19 +36,19 @@ function addDescriptionField() {
 
 <template>
   <div class="p-6 bg-white rounded-lg shadow-sm">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold">
-        新增體驗計畫
-      </h2>
-      <el-button type="primary" plain>
+    
+
+    <div class="mb-6 flex justify-between items-center" role="alert">
+      <div class="text-sm text-red-500">
+        目前的方案 <span class="font-medium">已過期</span> 體驗人數 <span class="font-medium">已達上限</span>
+      </div>
+      <el-button class="btn-brand-yellow">
         購買方案
       </el-button>
     </div>
-
-    <div class="p-4 mb-6 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
-      目前的方案 <span class="font-medium">已過期</span> 體驗人數 <span class="font-medium">已達上限</span>
-    </div>
-
+    <h2 class="text-2xl font-bold mb-6">
+      新增體驗計畫
+    </h2>
     <el-form :model="form" label-position="top">
       <el-form-item label="體驗名稱 (最多10個字)">
         <el-input v-model="form.title" placeholder="計劃輸入匡" />

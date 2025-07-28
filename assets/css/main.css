@@ -17,11 +17,11 @@
     -webkit-mask-image: linear-gradient(to left, black 50%, transparent 80%);
   }
 
-  .btn-brand-yellow {
+  .el-button.btn-brand-yellow {
     @apply bg-btn-yellow text-black font-bold py-2 px-4 rounded transition-transform duration-300;
   }
 
-  .btn-brand-yellow:hover {
+  .el-button.btn-brand-yellow:hover {
     color: #FF0000;
     transform: scale(1.2);
   }
