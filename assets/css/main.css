@@ -18,12 +18,9 @@
   }
 
   .el-button.btn-brand-yellow {
-    @apply bg-btn-yellow text-black font-bold py-2 px-4 rounded transition-transform duration-300;
-  }
-
-  .el-button.btn-brand-yellow:hover {
-    color: #FF0000;
-    transform: scale(1.2);
+    @apply bg-btn-yellow text-black font-bold py-2 px-4 rounded 
+           transition-all duration-300 
+           hover:bg-[#ffe70c] hover:scale-105;
   }
 
   .btn-danger-outline {

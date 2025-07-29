@@ -9,6 +9,7 @@ definePageMeta({
 
 const form = ref({
   title: '',
+  summary: '',
   industry: '',
   jobCategory: '',
   location: '',
@@ -42,7 +43,7 @@ function addDescriptionField() {
       <div class="text-sm text-red-500">
         目前的方案 <span class="font-medium">已過期</span> 體驗人數 <span class="font-medium">已達上限</span>
       </div>
-      <el-button class="btn-brand-yellow">
+      <el-button type="primary">
         購買方案
       </el-button>
     </div>
@@ -51,18 +52,15 @@ function addDescriptionField() {
     </h2>
     <el-form :model="form" label-position="top">
       <el-form-item label="體驗名稱 (最多10個字)">
-        <el-input v-model="form.title" placeholder="計劃輸入匡" />
+        <el-input v-model="form.title" placeholder="計劃輸入框" />
       </el-form-item>
-      <el-form-item label="體驗名稱 (最多10個字)">
-        <div class="p-4 border rounded-md bg-gray-50 w-full">
-          <p>您可以描述</p>
-          <ul class="list-decimal list-inside text-gray-500">
-            <li>體驗計畫的內容與目標</li>
-            <li>師資陣容與經歷</li>
-            <li>行前須知和注意事項</li>
-            <li>參加體驗的門檻或限制</li>
-          </ul>
-        </div>
+      <el-form-item label="體驗介紹">
+        <el-input
+          v-model="form.summary"
+          type="textarea"
+          :rows="6"
+          placeholder="您可以描述&#10;1. 體驗計畫的內容與目標&#10;2. 師資陣容與經歷&#10;3. 行前須知和注意事項&#10;4. 參加體驗的門檻或限制"
+        />
       </el-form-item>
 
       <el-row :gutter="20">
