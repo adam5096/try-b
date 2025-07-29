@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import Step1 from '~/components/company/register/Step1.vue';
+import Step2 from '~/components/company/register/Step2.vue';
 
 definePageMeta({
   layout: 'main',
@@ -47,6 +48,12 @@ const scaleOptions = [
 function nextStep() {
   if (currentStep.value < 3) {
     currentStep.value++;
+  }
+}
+
+function previousStep() {
+  if (currentStep.value > 1) {
+    currentStep.value--;
   }
 }
 </script>
@@ -110,7 +117,13 @@ function nextStep() {
         :scale-options="scaleOptions"
         @next="nextStep"
       />
-      <!-- Step 2 will be added here -->
+      <Step2
+        v-if="currentStep === 2"
+        :form-data="formData"
+        @previous="previousStep"
+        @next="nextStep"
+      />
+      <!-- Step 3 will be added here -->
     </div>
   </div>
 </template>
