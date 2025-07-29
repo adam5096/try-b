@@ -2,6 +2,7 @@
 import { ref, reactive } from 'vue';
 import Step1 from '~/components/company/register/Step1.vue';
 import Step2 from '~/components/company/register/Step2.vue';
+import Step3 from '~/components/company/register/Step3.vue';
 
 definePageMeta({
   layout: 'main',
@@ -123,7 +124,7 @@ function previousStep() {
         @previous="previousStep"
         @next="nextStep"
       />
-      <!-- Step 3 will be added here -->
+      <Step3 v-if="currentStep === 3" />
     </div>
   </div>
 </template>
