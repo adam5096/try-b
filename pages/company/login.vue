@@ -1,4 +1,10 @@
 <script setup lang="ts">
+const router = useRouter();
+
+function handleLogin() {
+  router.push('/company');
+}
+
 definePageMeta({
   name: 'companyLogin',
   layout: 'blank',
@@ -37,7 +43,7 @@ definePageMeta({
           </p>
         </div>
 
-        <form>
+        <form @submit.prevent="handleLogin">
           <div class="mb-4">
             <label for="email" class="mb-1 block text-sm font-medium text-gray-700">
               帳號 / 電子郵件

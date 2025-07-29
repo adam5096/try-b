@@ -138,3 +138,12 @@
 - **元件建構與 UI**: 根據設計稿，建立了註冊流程最後一步的 `components/company/register/Step3.vue` 元件，負責顯示靜態的註冊成功訊息。
 - **流程完成**: 將 `Step3.vue` 整合至 `pages/company/register.vue` 流程控制器中，當使用者完成第二步並點擊「註冊」後，流程狀態會推進至第三步，顯示成功頁面，從而完成了整個註冊流程的 UI 建構。
 - **架構一致性**: 延續了先前建立的「容器/展示」元件模式，保持了程式碼結構的清晰、單一職責與高可維護性，並為未來串接後端 API 預留了清晰的邏輯切入點。
+
+# 2025-07-30
+### EP1-2: 企業登入流程 (原型)
+- **登入導航實作**: 為 `pages/company/login.vue` 的登入表單建立了臨時導航功能，以滿足 MVP 階段的快速開發需求。
+- **流程定義**: 透過在 `<form>` 元素綁定 `@submit.prevent` 事件，當使用者觸發提交時，會從起始元件 `pages/company/login.vue` 直接導向至目標元件 `pages/company/index.vue`，完成了核心登入流程的串接。
+
+### EP-Nav: 企業後台側邊欄導航
+- **路由標準化**: 為了串接側邊欄導航，在 `utils/companyRoutes.ts` 中為方案頁面新增了 `purchase` 路由定義，確保全站能以一致的方式引用該頁面。
+- **導航串接**: 修改起始元件 `layouts/company.vue`，將側邊欄選單中的「方案」按鈕，透過綁定其 `index` 屬性，成功連結至目標元件 `pages/company/purchase/index.vue`。

@@ -21,4 +21,5 @@ export const companyRoutes = {
     params: { applicantId },
   }),
   newProgram: () => ({ name: 'company-programs-new' }),
+  purchase: () => ({ name: 'company-purchase-index' }),
 }; 

@@ -15,6 +15,7 @@ import { companyRoutes as r } from '~/utils/companyRoutes';
 const router = useRouter();
 const programsPath = router.resolve(r.landing()).path;  // 計畫列表
 const newProgramPath = router.resolve(r.newProgram()).path; // 新增體驗
+const purchasePath = router.resolve(r.purchase()).path; // 方案
 </script>
 
 <template>
@@ -66,7 +67,7 @@ const newProgramPath = router.resolve(r.newProgram()).path; // 新增體驗
             <span>帳戶設定</span>
           </el-menu-item>
           <div class="grow" />
-          <el-menu-item index="#">
+          <el-menu-item :index="purchasePath">
             <el-icon><Briefcase /></el-icon>
             <span>方案</span>
           </el-menu-item>
