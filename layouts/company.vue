@@ -14,6 +14,7 @@ import { companyRoutes as r } from '~/utils/companyRoutes';
 
 const router = useRouter();
 const programsPath = router.resolve(r.landing()).path;  // 計畫列表
+const newProgramPath = router.resolve(r.newProgram()).path; // 新增體驗
 </script>
 
 <template>
@@ -52,7 +53,7 @@ const programsPath = router.resolve(r.landing()).path;  // 計畫列表
             <el-icon><icon-menu /></el-icon>
             <span>計畫列表</span>
           </el-menu-item>
-          <el-menu-item index="#">
+          <el-menu-item :index="newProgramPath">
             <el-icon><Plus /></el-icon>
             <span>新增體驗</span>
           </el-menu-item>

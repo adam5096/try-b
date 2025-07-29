@@ -20,4 +20,5 @@ export const companyRoutes = {
     name: 'companyProgramsApplicantsDetail',
     params: { applicantId },
   }),
+  newProgram: () => ({ name: 'company-programs-new' }),
 }; 

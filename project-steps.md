@@ -84,3 +84,20 @@
 - **路由問題修復**：
   - 解決了因 `definePageMeta` 的 `name` 與 `userRoutes.ts` 中定義不一致而導致的 `No match found` 路由錯誤。
   - 統一了專案內的路由命名風格，將駝峰式命名改為 kebab-case，提升了可讀性與一致性。
+
+# 2025-07-28
+### EP10: 新增體驗計畫頁面
+- **頁面建立與路由設定**：
+  - 建立了「新增體驗計畫」頁面檔案 `pages/company/programs/new.vue`，並設定其使用 `company` 佈局。
+  - 在 `utils/companyRoutes.ts` 中為新頁面新增了路由 `newProgram`，並在頁面中透過 `definePageMeta` 進行綁定。
+  - 更新了 `layouts/company.vue` 中的側邊導覽列，將「新增體驗」按鈕正確連結至新頁面。
+- **表單介面實作**：
+  - 在 `pages/company/programs/new.vue` 中，根據設計稿使用 Element Plus 元件 (`el-form`, `el-input`, `el-select`, `el-date-picker`, `el-upload` 等) 建構了完整的表單結構。
+  - 實作了頁面頂部的「方案狀態」提示橫幅。
+  - 完成了包含所有欄位、按鈕與基本版面配置的頁面初版。
+
+# 2025-07-29
+### EP10: 新增體驗計畫頁面
+- **表單元件優化**:
+  - 根據設計稿，將 `pages/company/programs/new.vue` 中的靜態提示區塊，重構為一個功能性的多行文字輸入框 (`<el-input type="textarea">`)。
+  - 為新的輸入框新增了 `summary` 狀態，並將原有的提示文字轉換為 `placeholder`，提升了表單的互動性與可用性。
