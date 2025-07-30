@@ -22,4 +22,5 @@ export const companyRoutes = {
   }),
   newProgram: () => ({ name: 'company-programs-new' }),
   purchase: () => ({ name: 'company-purchase-index' }),
+  comments: () => ({ name: 'company-comments' })
 }; 
