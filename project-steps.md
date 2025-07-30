@@ -147,8 +147,9 @@
 ### EP-Nav: 企業後台側邊欄導航
 - **路由標準化**: 為了串接側邊欄導航，在 `utils/companyRoutes.ts` 中為方案頁面新增了 `purchase` 路由定義，確保全站能以一致的方式引用該頁面。
 - **導航串接**: 修改起始元件 `layouts/company.vue`，將側邊欄選單中的「方案」按鈕，透過綁定其 `index` 屬性，成功連結至目標元件 `pages/company/purchase/index.vue`。
-
 ### EP5: 體驗者評價管理頁面
 - **頁面建構與 UI 切版**: 根據設計稿，在 `pages/company/comments/index.vue` 中使用 Element Plus 元件完成了「體驗者評價管理」頁面的完整 UI，包含篩選器、評價列表與分頁功能。
 - **佈局應用**: 設定頁面使用 `company` 全域佈局，確保後台風格一致。
 - **資料模擬**: 為了加速前端開發，頁面內已包含模擬的評價資料與分頁狀態。
+- **路由標準化**: 為「體驗者評價管理」頁面在 `utils/companyRoutes.ts` 中新增了 `comments` 路由定義，並於 `pages/company/comments/index.vue` 完成綁定。
+- **導航串接**: 修改 `layouts/company.vue`，將側邊欄選單中的「評價管理」按鈕成功連結至對應頁面。
