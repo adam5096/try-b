@@ -109,7 +109,8 @@
 import { reactive, ref } from 'vue'
 
 definePageMeta({
-  layout: 'company'
+  layout: 'company',
+  name: 'company-comments'
 })
 
 const filters = reactive({
