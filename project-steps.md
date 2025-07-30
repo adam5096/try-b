@@ -153,3 +153,9 @@
 - **資料模擬**: 為了加速前端開發，頁面內已包含模擬的評價資料與分頁狀態。
 - **路由標準化**: 為「體驗者評價管理」頁面在 `utils/companyRoutes.ts` 中新增了 `comments` 路由定義，並於 `pages/company/comments/index.vue` 完成綁定。
 - **導航串接**: 修改 `layouts/company.vue`，將側邊欄選單中的「評價管理」按鈕成功連結至對應頁面。
+### EP3: 企業帳戶設定頁面
+- **UI 建構與切版**: 根據設計稿，在 `pages/company/settings/index.vue` 中使用 Element Plus 元件 (`el-card`, `el-form`) 完整實作了「帳戶設定」頁面的 UI，包含企業資料、變更密碼、聯絡人與危險操作等多個區塊。
+- **路由整合**:
+  - 在 `utils/companyRoutes.ts` 中為新頁面新增了 `settings` 路由定義，以實現路由標準化。
+  - 修改 `layouts/company.vue`，將側邊欄的「帳戶設定」連結至新建立的頁面，完成後台導航的串接。
+  - 透過 `definePageMeta` 設定頁面使用 `company` 佈局，確保後台風格一致性。

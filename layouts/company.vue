@@ -17,6 +17,7 @@ const programsPath = router.resolve(r.landing()).path;  // 計畫列表
 const newProgramPath = router.resolve(r.newProgram()).path; // 新增體驗
 const purchasePath = router.resolve(r.purchase()).path; // 方案
 const commentsPath = router.resolve(r.comments()).path; // 評價管理
+const settingsPath = router.resolve(r.settings()).path; // 帳戶設定
 </script>
 
 <template>
@@ -63,7 +64,7 @@ const commentsPath = router.resolve(r.comments()).path; // 評價管理
             <el-icon><Star /></el-icon>
             <span>評價管理</span>
           </el-menu-item>
-          <el-menu-item index="#">
+          <el-menu-item :index="settingsPath">
             <el-icon><Setting /></el-icon>
             <span>帳戶設定</span>
           </el-menu-item>
