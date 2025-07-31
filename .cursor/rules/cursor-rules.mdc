@@ -1,0 +1,86 @@
+# 專案規則與慣例 (try-b)
+
+本文件旨在為 AI 助理提供開發本專案時所需遵循的規則和慣例，確保程式碼的一致性與品質。
+
+---
+
+## 1. 專案技術棧
+
+- **框架**: [Nuxt 3](https://nuxt.com/)
+- **語言**: TypeScript
+- **樣式**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI 元件**: 使用 `components/` 目錄下的 Vue 元件。
+
+---
+
+## 2. 路由與導航 (Routing & Navigation)
+
+本專案使用集中式的路由管理，定義於 `utils/` 目錄下。
+
+### 核心檔案
+
+- `utils/routes.ts`: 路由的主要匯出點。
+- `utils/userRoutes.ts`: 體驗者（使用者）端的路由。
+- `utils/companyRoutes.ts`: 企業端的路由。
+
+### 使用方式
+
+在專案中進行頁面導航時，**必須**使用 `routes` 物件搭配 `navigateTo` 函式。這樣可以確保路由名稱的集中管理與型別安全。
+
+**正確範例 ✅**
+```typescript
+import { routes } from '~/utils/routes';
+
+// 不帶參數的導航
+navigateTo(routes.user.login());
+
+// 帶有參數的導航
+const programId = 123;
+navigateTo(routes.company.programDetail(programId));
+```
+
+**錯誤範例 ❌**
+```typescript
+// 請勿直接使用字串路徑或路由名稱
+navigateTo('/company/login'); 
+navigateTo({ name: 'companyLogin' });
+```
+
+### 新增路由
+
+1.  在 `pages/` 目錄下建立對應的 `.vue` 檔案。
+2.  在頁面中使用 `definePageMeta` 來設定唯一的 `name`。
+3.  將新的路由函式加入 `utils/userRoutes.ts` 或 `utils/companyRoutes.ts` 中。
+
+---
+
+## 3. 元件 (Components)
+
+### 元件結構
+
+- `components/`: 存放全域共用的基礎元件 (如 `BetaIcon.vue`, `CalendarIcon.vue`)。
+- `components/company/`: 存放僅供企業端使用的元件。
+
+### 命名慣例
+
+- 使用 PascalCase (大駝峰式) 命名，例如 `UserProfileCard.vue`。
+- Icon 元件以 `...Icon.vue` 結尾。
+
+---
+
+## 4. 樣式 (Styling)
+
+- 主要使用 Tailwind CSS 進行樣式設計。設定檔為 `tailwind.config.js`。
+- 全域的基礎樣式可添加至 `assets/css/main.css`。
+- 盡可能使用 Tailwind 的 utility classes，避免撰寫過多自訂 CSS。
+
+---
+
+## 5. 圖片資源 (Assets)
+
+- 專案圖片存放於 `assets/img/`。
+- 按頁面或功能進行子目錄分類，例如 `assets/img/home/`。
+- 優先使用 `.webp` 格式以獲得更好的效能。
+description: how to add or edit Cursor rules in your project
+alwaysApply: false
+---
