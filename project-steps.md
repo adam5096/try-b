@@ -159,3 +159,18 @@
   - 在 `utils/companyRoutes.ts` 中為新頁面新增了 `settings` 路由定義，以實現路由標準化。
   - 修改 `layouts/company.vue`，將側邊欄的「帳戶設定」連結至新建立的頁面，完成後台導航的串接。
   - 透過 `definePageMeta` 設定頁面使用 `company` 佈局，確保後台風格一致性。
+
+
+# 2025-07-31
+### MGT: 專案規則與慣例建立
+- **元規則建立**:
+  - 建立了 `.cursor/rules/self-improved.mdc` 作為團隊撰寫所有 `cursor rules` 的標準範本與指導原則，確保所有規則檔案都具備高可讀性、高可維護性與高重用性。
+  - 建立了 `.cursor/rules/cursor-rules.mdc` 作為專案的「規則索引」，定義了規則的命名結構、存放位置與應用策略，並提供了四象限模型來輔助決策。
+- **協作流程定義**:
+  - 建立了 `.cursor/rules/nuxt3-dev.mdc` (後更名為 `project-collaboration-guide.mdc`，最終內容整合回 `nuxt3-dev.mdc`)，明確定義了 AI 在開發前、中、後各階段與開發者的標準作業流程 (SOP)，確保溝通順暢與實作精準。
+- **具體規則實作**:
+  - 根據業界最佳實踐 (Conventional Commits) 建立了 `project-commit-msg.mdc`，統一了專案的 Git 提交訊息格式。
+  - 根據專案需求建立了 `fe-tailwind-guide.mdc`，定義了響應式斷點、間距系統，並釐清了 Element Plus 與 Tailwind CSS 的使用優先級。
+  - 建立了 `fe-JavaScript-style-guide.mdc`，為 Vue/JavaScript 的開發提供了程式碼風格、命名慣例與結構順序的具體規範。
+- **版本控制策略**:
+  - 討論並確認了 `.cursor/` 目錄應被納入版本控制，不加入 `.gitignore`，以實現團隊間規則的共享與同步。
