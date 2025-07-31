@@ -12,7 +12,8 @@ globs:
 
 ## 1. 核心原則
 
-*   **Utility-First 優先**: 應最大限度地利用 Tailwind CSS 內建的 utility classes 來建構 UI，以保持樣式的一致性與可維護性。
+*   **UI 框架優先 (UI Framework First)**: 在開發 `pages/company/`, `pages/users/`, `pages/admin/` 目錄下的頁面時，應優先使用 **Element Plus** UI 框架來進行切版。
+*   **Tailwind 為輔 (Utility-First as Secondary)**: 當 Element Plus 元件無法滿足需求，或開發非上述目錄的頁面時，才使用 Tailwind CSS utility classes 為主進行開發。
 *   **遵循設計系統**: 嚴格遵守預設的響應式斷點與間距單位，確保所有頁面與元件的視覺表現一致。
 *   **受控的客製化**: 僅在內建 utility 無法滿足設計稿要求時，才考慮在指定檔案中以受控的方式新增客製化樣式。
 
