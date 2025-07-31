@@ -1,18 +1,6 @@
-# 專案規則與慣例 (try-b)
-
-本文件旨在為 AI 助理提供開發本專案時所需遵循的規則和慣例，確保程式碼的一致性與品質。
-
 ---
-
-## 1. 專案技術棧
-
-- **框架**: [Nuxt 3](https://nuxt.com/)
-- **語言**: TypeScript
-- **樣式**: [Tailwind CSS](https://tailwindcss.com/)
-- **UI 元件**: 使用 `components/` 目錄下的 Vue 元件。
-
+alwaysApply: true
 ---
-
 ## 2. 路由與導航 (Routing & Navigation)
 
 本專案使用集中式的路由管理，定義於 `utils/` 目錄下。
