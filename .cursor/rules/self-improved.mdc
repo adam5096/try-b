@@ -59,28 +59,8 @@ alwaysApply: false
 
 ---
 
-## 3. 程式碼範例 (Do's and Don'ts)
 
-提供清晰的正反範例是讓規則容易被理解的最佳方式。
-
-**✅ 正確範例 (Do)**
-```typescript
-// 說明為何這是正確的寫法
-import { routes } from '~/utils/routes';
-
-navigateTo(routes.company.programDetail(123));
-```
-
-**❌ 錯誤範例 (Don't)**
-```typescript
-// 說明為何這是錯誤的寫法
-navigateTo('/company/programs/123'); // 禁止使用硬編碼的路徑
-navigateTo({ name: 'company-programs-detail' }); // 禁止直接使用路由名稱字串
-```
-
----
-
-## 4. 相關資源
+## 3. 相關資源
 
 *   [相關的內部文件連結]
 *   [相關的外部官方文件連結]
