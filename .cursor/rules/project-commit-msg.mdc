@@ -83,6 +83,4 @@ fix user profile
 # 主題句結尾有句號
 feat: add dark mode.
 ```
-
-alwaysApply: false
 ---

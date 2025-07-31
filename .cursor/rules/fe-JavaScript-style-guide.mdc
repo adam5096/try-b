@@ -99,7 +99,4 @@ export default {
 }
 </script>
 ```
-description:
-globs:
-alwaysApply: false
 ---
