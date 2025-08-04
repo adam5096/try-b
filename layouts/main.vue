@@ -37,8 +37,8 @@ onBeforeUnmount(() => {
 
 // --- Footer State ---
 const quickLinks = ref([
-  { text: '首頁', href: '#' },
-  { text: '企業方案', href: '#' },
+  { text: '首頁', href: '/' },
+  { text: '企業方案', href: '/plan' },
 ]);
 
 const contactInfo = ref({
@@ -107,13 +107,9 @@ const socialLinks = ref([
                 </a>
                 <div class="px-4 py-2 flex items-center gap-2">
                   <UserIcon class="w-6 h-6" />
-                  <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                    登入
-                  </a>
-                  <span class="text-gray-400">/</span>
-                  <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                    註冊
-                  </a>
+                  <NuxtLink to="/roles" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                    登入 / 註冊
+                  </NuxtLink>
                 </div>
               </div>
             </div>
@@ -163,7 +159,7 @@ const socialLinks = ref([
             <h3 class="font-bold text-lg mb-4">快速連結</h3>
             <ul class="space-y-2">
               <li v-for="link in quickLinks" :key="link.text">
-                <a :href="link.href" class="hover:text-btn-yellow transition-colors">{{ link.text }}</a>
+                <NuxtLink :to="link.href" class="hover:text-btn-yellow transition-colors">{{ link.text }}</NuxtLink>
               </li>
             </ul>
           </div>

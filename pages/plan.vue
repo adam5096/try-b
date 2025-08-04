@@ -124,7 +124,7 @@ const statsCards = [
           </div>
           
           <div class="mt-10 text-center">
-            <NuxtLink to="/roles" class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-12 rounded-full transition-colors">
+            <NuxtLink to="/roles" class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white">
               我有興趣
             </NuxtLink>
           </div>
