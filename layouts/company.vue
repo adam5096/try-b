@@ -13,6 +13,7 @@ import {
 import { companyRoutes as r } from '~/utils/companyRoutes';
 
 const router = useRouter();
+
 const programsPath = router.resolve(r.landing()).path;  // 計畫列表
 const newProgramPath = router.resolve(r.newProgram()).path; // 新增體驗
 const purchasePath = router.resolve(r.purchase()).path; // 方案
@@ -81,10 +82,8 @@ const settingsPath = router.resolve(r.settings()).path; // 帳戶設定
       </el-aside>
 
       <!-- Page Content -->
-      <el-main class="bg-zinc-100 ml-[240px] overflow-y-auto">
-        <div class="mx-auto max-w-7xl">
-          <slot />
-        </div>
+      <el-main class="bg-gray-50 ml-[240px] overflow-y-auto">
+        <slot />
       </el-main>
     </el-container>
   </el-container>
