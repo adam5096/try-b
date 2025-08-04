@@ -61,9 +61,16 @@ const socialLinks = ref([
       <div class="h-main-header w-full max-w-screen-full-hd mx-auto p-12">
         <nav class="flex h-full items-center justify-between gap-8">
           <!-- 商標 Section -->
-          <h1 class="flex flex-none items-center gap-2 text-2xl">
-            <div class="w-site-logo-width h-site-logo-height">
-            </div>
+          <h1 class="flex flex-none items-center text-2xl">
+            <NuxtLink to="/" class="flex items-center gap-2">
+              <div class="w-site-logo-width h-site-logo-height">
+                <img
+                  src="@/assets/img/home/try-beta-logo.webp"
+                  alt="TRY Beta 網站商標"
+                  class="h-full w-full object-contain"
+                />
+              </div>
+            </NuxtLink>
           </h1>
 
           <!-- Desktop Search Bar 搜尋欄 -->
@@ -131,7 +138,7 @@ const socialLinks = ref([
       </div>
 
       <!-- Blue Overlay Layer -->
-      <div class="absolute inset-0 z-10 bg-major-blue opacity-90"></div>
+      <div class="absolute inset-0 z-10 bg-primary-blue opacity-90"></div>
       
       <!-- Beta Icon Layer -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none opacity-20">

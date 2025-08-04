@@ -127,7 +127,7 @@ const stats = [
               開啟職場任意門，體驗你的無限可能。
             </h2>
             <button
-              class="mt-8 rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white">
+              class="mt-8 rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white">
               開始體驗
             </button>
           </div>
@@ -138,60 +138,64 @@ const stats = [
     <!-- User Personas Section -->
     <section class="py-section-padding bg-brand-gray">
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">誰適合使用 TRY β</h2>
+        <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">誰適合使用 TRY β</h2>
         <p class="relative z-10 text-lg sm:text-xl md:text-2xl">TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會</p>
       </div>
 
       <!-- Cards Container -->
-      <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 ">
+      <div class="mx-auto mt-12 h-full w-full max-w-container-main px-6 md:px-12">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <!-- Card 1: 學生與新鮮人 -->
-          <div class=" p-6 pt-10 text-left">
+          <div
+            class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
+          >
             <div class="flex justify-center mb-4">
               <div>
-                <img src="~/assets/img/home/who-is-the-user-01.webp" alt="學生與新鮮人">
+                <img src="~/assets/img/home/who-is-the-user-01.webp" alt="學生與新鮮人" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">學生與新鮮人</h3>
-            <p class="text-center text-gray-500 mb-4">先大量體驗，快速累積品</p>
-            <div class="flex justify-center lg:justify-start">
-              <ul class="space-y-2">
-                <li class="flex items-start min-h-[3.5rem]">
+            <p class="text-center text-gray-600 mb-4">先大量體驗，快速累積品</p>
+            <div class="flex justify-center mt-auto">
+              <ul class="space-y-2 text-left">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>實習與專案合作機會</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>職涯探索工作坊</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>業界導師一對一指導，並提供深度對談</span>
+                  <span>業界導師一對一指導與深度對談</span>
                 </li>
               </ul>
             </div>
           </div>
 
           <!-- Card 2: 兼職與轉職者 -->
-          <div class="p-6 pt-10 text-left">
+          <div
+            class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
+          >
             <div class="flex justify-center mb-4">
               <div>
-                <img src="~/assets/img/home/who-is-the-user-02.webp" alt="兼職與轉職者">
+                <img src="~/assets/img/home/who-is-the-user-02.webp" alt="兼職與轉職者" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
-            <p class="text-center text-gray-500 mb-4">低成本試錯，高效率轉職</p>
-            <div class="flex justify-center lg:justify-start">
-              <ul class="space-y-2">
-                <li class="flex items-start min-h-[3.5rem]">
+            <p class="text-center text-gray-600 mb-4">低成本試錯，高效率轉職</p>
+            <div class="flex justify-center mt-auto">
+              <ul class="space-y-2 text-left">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>彈性時段職業體驗專案</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>多元職務角色體驗計畫</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>快速找尋就職方向</span>
                 </li>
@@ -200,25 +204,29 @@ const stats = [
           </div>
 
           <!-- Card 3: 創意工作者、中小企業 -->
-          <div class="p-6 pt-10 text-left">
+          <div
+            class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
+          >
             <div class="flex justify-center mb-4">
               <div>
-                  <img src="~/assets/img/home/who-is-the-user-03.webp" alt="創意工作者、中小企業">
+                <img src="~/assets/img/home/who-is-the-user-03.webp" alt="創意工作者、中小企業" />
               </div>
             </div>
-            <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">創意工作者、中小企業</h3>
-            <p class="text-center text-gray-500 mb-4">錯聘成本太高？先 β 再正聘</p>
-            <div class="flex justify-center lg:justify-start">
-              <ul class="space-y-2">
-                <li class="flex items-start min-h-[3.5rem]">
+            <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">
+              創意工作者、中小企業
+            </h3>
+            <p class="text-center text-gray-600 mb-4">錯聘成本太高？先 β 再正聘</p>
+            <div class="flex justify-center mt-auto">
+              <ul class="space-y-2 text-left">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>先體驗，後合作</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>展現企業魅力，不再浪費培訓預算</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>零長期成本，高回報人才管道</span>
                 </li>
@@ -232,7 +240,7 @@ const stats = [
     <!-- Featured Programs Section -->
     <section class="py-section-padding bg-brand-gray">
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">熱門體驗活動</h2>
+        <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">熱門體驗活動</h2>
         <p class="text-lg sm:text-xl md:text-2xl">TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會</p>
       </div>
 
@@ -265,7 +273,7 @@ const stats = [
                 <span>已申請人數：0 人</span>
                 <span>申請截止還有 40 天</span>
               </div>
-              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-btn-black hover:text-white">
+              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
                 查看詳情
               </button>
             </div>
@@ -297,7 +305,7 @@ const stats = [
                 <span>已申請人數：0 人</span>
                 <span>申請截止還有 10 天</span>
               </div>
-              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-btn-black hover:text-white">
+              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
                 查看詳情
               </button>
             </div>
@@ -329,7 +337,7 @@ const stats = [
                 <span>已申請人數：0 人</span>
                 <span>申請截止還有 10 天</span>
               </div>
-              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-btn-black hover:text-white">
+              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
                 查看詳情
               </button>
             </div>
@@ -344,7 +352,7 @@ const stats = [
     >
       <!-- Content -->
       <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">體驗者的聲音</h2>
+        <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">體驗者的聲音</h2>
         <p class="text-lg sm:text-xl md:text-2xl text-gray-700">聽聽其他人怎麼說</p>
       
         <!-- Testimonial Cards Container -->
@@ -381,7 +389,7 @@ const stats = [
                 <p class="text-sm text-gray-500">上班族 | 35歲</p>
               </div>
             </div>
-            <p class="text-gray-600 flex-grow">「TRY 讓我有夠分享我的消費經驗和見解，同時感覺自己的聲音有被聽見的。每次完成任務後收到的反饋讓我覺得自己的意見被重視。」</p>
+            <p class="text-gray-600 flex-grow">「TRY β 讓我有夠分享我的消費經驗和見解，同時感覺自己的聲音有被聽見的。每次完成任務後收到的反饋讓我覺得自己的意見被重視。」</p>
             <div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
               <div class="flex items-center gap-1 text-yellow-500">
                 <StarIcon class="w-5 h-5" />
@@ -404,7 +412,7 @@ const stats = [
                 <p class="text-sm text-gray-500">退休人士 | 68歲</p>
               </div>
             </div>
-            <p class="text-gray-600 flex-grow">「即使是我這樣的銀髮族，也能在 TRY 找到適合的測試任務。這讓我保持對科技的關連性，也讓我感覺自己的經驗和觀點仍然有價值。」</p>
+            <p class="text-gray-600 flex-grow">「即使是我這樣的銀髮族，也能在 TRY  找到適合的測試任務。這讓我保持對科技的關連性，也讓我感覺自己的經驗和觀點仍然有價值。」</p>
             <div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
               <div class="flex items-center gap-1 text-yellow-500">
                 <StarIcon class="w-5 h-5" />
@@ -428,7 +436,7 @@ const stats = [
       <div class="relative z-10 mx-auto h-full w-full px-6 text-center md:px-12">
        
 
-        <h2 class="text-major-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+        <h2 class="text-primary-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
           我們的合作夥伴
         </h2>
         <div
@@ -462,15 +470,15 @@ const stats = [
           <!-- Left Column: Title and Navigation -->
           <div class="lg:col-span-1 text-left flex flex-col justify-center">
             <div>
-              <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">企業客戶評價</h2>
+              <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">企業客戶評價</h2>
               <p class="text-lg sm:text-xl md:text-2xl max-w-3xl">
                 探索我們企業客戶的真實體驗和反饋，了解 TRY β 如何幫助企業和探索者創造價值
               </p>
               <div class="mt-8 flex items-center gap-4">
-                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
                 </button>
-                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </button>
               </div>
@@ -528,10 +536,10 @@ const stats = [
                 <h3 class="font-bold text-lg mb-4 min-h-[3.5rem]">{{ story.title }}</h3>
                 <p class="text-gray-700 leading-relaxed flex-grow">{{ story.description }}</p>
                 <p class="mt-4 text-gray-700">
-                  <span class="font-bold text-major-blue-light">結果：</span>
-                  <span class="font-bold text-major-blue-light">{{ story.result }}</span>
+                  <span class="font-bold text-primary-blue-light">結果：</span>
+                  <span class="font-bold text-primary-blue-light">{{ story.result }}</span>
                 </p>
-                <a :href="story.link" class="mt-6 inline-flex items-center justify-center rounded-md bg-btn-yellow px-6 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white self-start">
+                <a :href="story.link" class="mt-6 inline-flex items-center justify-center rounded-md bg-btn-yellow px-6 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white self-start">
                   <span>查看詳細案例</span>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -544,15 +552,15 @@ const stats = [
            <!-- Right Column: Title and Navigation -->
            <div class="lg:col-span-1 text-left flex flex-col justify-center order-1 lg:order-2">
             <div>
-              <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">成功案例</h2>
+              <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">成功案例</h2>
               <p class="text-lg sm:text-xl md:text-2xl max-w-3xl">
                 探索我們如何幫助企業實現目標
               </p>
               <div class="mt-8 flex items-center gap-4">
-                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
                 </button>
-                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </button>
               </div>
@@ -571,7 +579,7 @@ const stats = [
           </div>
       <!-- Foreground Content -->
       <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 text-center md:px-12">
-        <h2 class="text-major-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+        <h2 class="text-primary-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
           已有萬人在使用TRY β
         </h2>
         <p class="mx-auto max-w-2xl text-lg text-gray-700 sm:text-xl">
@@ -589,7 +597,7 @@ const stats = [
         
         <NuxtLink
           to="/plan"
-          class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white"
+          class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
         >
           企業開始體驗
         </NuxtLink>

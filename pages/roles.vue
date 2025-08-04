@@ -28,7 +28,7 @@ const roles = ref([
   <div class="bg-brand-gray">
     <div class="container mx-auto px-4 py-20 lg:py-24">
       <header class="mb-12 text-center">
-        <h2 class="text-3xl font-bold text-btn-black">
+        <h2 class="text-3xl font-bold text-primary-blue-dark">
           選擇您的角色
         </h2>
       </header>
@@ -43,7 +43,7 @@ const roles = ref([
           <div class="mb-6 flex h-32 w-48 items-center justify-center rounded bg-gray-200 text-gray-500">
             圖片
           </div>
-          <h3 class="mb-2 text-2xl font-bold text-btn-black">
+          <h3 class="mb-2 text-2xl font-bold text-primary-blue-dark">
             {{ role.title }}
           </h3>
           <p class="mb-6 text-gray-600">
@@ -56,7 +56,7 @@ const roles = ref([
               class="flex items-start"
             >
               <div class="flex-shrink-0">
-                <HomeCheckIcon class="mr-3 h-5 w-5 text-major-blue" />
+                <HomeCheckIcon class="mr-3 h-5 w-5 text-primary-blue" />
               </div>
               <span>{{ feature }}</span>
             </li>
