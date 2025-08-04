@@ -587,11 +587,12 @@ const stats = [
           </div>
         </div>
         
-        <button
-          class="mt-12 rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white"
+        <NuxtLink
+          to="/plan"
+          class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white"
         >
           企業開始體驗
-        </button>
+        </NuxtLink>
       </div>
     </section>
   </main>
