@@ -138,7 +138,7 @@ const socialLinks = ref([
       </div>
 
       <!-- Blue Overlay Layer -->
-      <div class="absolute inset-0 z-10 bg-major-blue opacity-90"></div>
+      <div class="absolute inset-0 z-10 bg-primary-blue opacity-90"></div>
       
       <!-- Beta Icon Layer -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none opacity-20">

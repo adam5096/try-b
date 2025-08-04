@@ -3,5 +3,5 @@ import { CircleCheckFilled } from '@element-plus/icons-vue'
 </script>
 
 <template>
-  <CircleCheckFilled class="w-6 h-6 text-major-blue-light" />
+  <CircleCheckFilled class="w-6 h-6 text-primary-blue-light" />
 </template>

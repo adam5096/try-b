@@ -63,7 +63,7 @@ const statsCards = [
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <!-- Left Column: Text Content -->
           <div class="text-left">
-            <h1 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-8">為企業打造專業人才體驗平台</h1>
+            <h1 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-8">為企業打造專業人才體驗平台</h1>
             <div class="space-y-4 text-lg text-gray-700">
               <p>提升品牌形象，發掘優質人才</p>
               <p>幫助企業透過真實職業體驗吸引潛在人才</p>
@@ -81,7 +81,7 @@ const statsCards = [
               新企業專屬優惠
             </h2>
             <p class="text-gray-700 leading-relaxed">
-              企業新註冊可享<strong class="text-major-blue-light">「30日內免費刊登不限次數、體驗人數上限10人」</strong>。
+              企業新註冊可享<strong class="text-primary-blue-light">「30日內免費刊登不限次數、體驗人數上限10人」</strong>。
               <span class="block mt-2 text-sm text-gray-500">(不同類型的體驗計畫可共用人數額度)</span>
             </p>
           </div>
@@ -94,7 +94,7 @@ const statsCards = [
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div v-for="stat in statsCards" :key="stat.percentage" class="bg-white rounded-lg shadow-lg p-8 text-center flex flex-col items-center">
-            <p class="text-5xl font-bold text-major-blue-dark mb-4">{{ stat.percentage }}</p>
+            <p class="text-5xl font-bold text-primary-blue-dark mb-4">{{ stat.percentage }}</p>
             <p class="mt-2 text-lg text-gray-700 flex-grow" style="min-height: 4.5rem;">{{ stat.description }}</p>
             <div class="mt-8 w-40 h-40 bg-gray-300 rounded-md flex items-center justify-center">
               <span class="text-gray-500 text-2xl">圖片</span>
@@ -107,7 +107,7 @@ const statsCards = [
     <!-- Section 3: Bottom - Pricing Options -->
     <section class="py-section-padding bg-brand-gray">
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">選擇適合您的方案</h2>
+        <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">選擇適合您的方案</h2>
         <p class="text-lg text-gray-700">好人才需要好機會，雙向體驗最真實！</p>
 
         <div class="mt-12 bg-white rounded-xl shadow-lg p-8 lg:p-12 text-left">

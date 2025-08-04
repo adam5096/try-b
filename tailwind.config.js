@@ -26,8 +26,8 @@ module.exports = {
       },
       colors: {
         "btn-yellow": "#FFE70C",
-        "major-blue": "#158AD9",
-        "major-blue-light": "#39B1EE",
+        "primary-blue": "#158AD9",
+        "primary-blue-light": "#39B1EE",
         "primary-blue-dark": "#0D2C43",
         "brand-gray": "#F8F9FB",
       },

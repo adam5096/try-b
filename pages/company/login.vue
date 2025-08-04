@@ -31,7 +31,7 @@ definePageMeta({
               class="flex h-10 w-10 items-center justify-center border border-gray-400 p-1 text-xs"
             >
               <span class="font-bold">TRY</span>
-              <span class="font-bold text-major-blue">β</span>
+              <span class="font-bold text-primary-blue">β</span>
             </div>
             <span class="text-lg font-bold">TRYβ職業體驗平台</span>
           </div>
@@ -52,7 +52,7 @@ definePageMeta({
               id="email"
               type="email"
               placeholder="請輸入您的帳號或電子郵件"
-              class="w-full rounded-md border border-gray-300 p-3 focus:border-major-blue focus:outline-none focus:ring-1 focus:ring-major-blue"
+              class="w-full rounded-md border border-gray-300 p-3 focus:border-primary-blue focus:outline-none focus:ring-1 focus:ring-primary-blue"
             />
           </div>
 
@@ -61,7 +61,7 @@ definePageMeta({
               <label for="password" class="mb-1 block text-sm font-medium text-gray-700">
                 密碼
               </label>
-              <a href="#" class="text-sm text-major-blue hover:underline">
+              <a href="#" class="text-sm text-primary-blue hover:underline">
                 忘記密碼？
               </a>
             </div>
@@ -69,7 +69,7 @@ definePageMeta({
               id="password"
               type="password"
               placeholder="請輸入您的密碼"
-              class="w-full rounded-md border border-gray-300 p-3 focus:border-major-blue focus:outline-none focus:ring-1 focus:ring-major-blue"
+              class="w-full rounded-md border border-gray-300 p-3 focus:border-primary-blue focus:outline-none focus:ring-1 focus:ring-primary-blue"
             />
           </div>
 
@@ -77,7 +77,7 @@ definePageMeta({
             <input
               id="remember-me"
               type="checkbox"
-              class="h-4 w-4 rounded border-gray-300 text-major-blue focus:ring-major-blue"
+              class="h-4 w-4 rounded border-gray-300 text-primary-blue focus:ring-primary-blue"
             />
             <label for="remember-me" class="ml-2 block text-sm text-gray-900">
               記住我的帳號
@@ -94,7 +94,7 @@ definePageMeta({
           <div class="mt-6 text-center">
             <p class="text-sm text-gray-600">
               還沒有帳戶？
-              <a href="#" class="font-medium text-major-blue hover:underline">
+              <a href="#" class="font-medium text-primary-blue hover:underline">
                 立即註冊
               </a>
             </p>

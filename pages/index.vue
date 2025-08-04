@@ -138,7 +138,7 @@ const stats = [
     <!-- User Personas Section -->
     <section class="py-section-padding bg-brand-gray">
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">誰適合使用 TRY β</h2>
+        <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">誰適合使用 TRY β</h2>
         <p class="relative z-10 text-lg sm:text-xl md:text-2xl">TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會</p>
       </div>
 
@@ -182,7 +182,7 @@ const stats = [
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
             <p class="text-center text-gray-500 mb-4">低成本試錯，高效率轉職</p>
             <div class="flex justify-center">
-              <ul class="outline outline-1 outline-gray-600 space-y-2">
+              <ul class="space-y-2">
                 <li class="flex items-center min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>彈性時段職業體驗專案</span>
@@ -232,7 +232,7 @@ const stats = [
     <!-- Featured Programs Section -->
     <section class="py-section-padding bg-brand-gray">
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">熱門體驗活動</h2>
+        <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">熱門體驗活動</h2>
         <p class="text-lg sm:text-xl md:text-2xl">TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會</p>
       </div>
 
@@ -344,7 +344,7 @@ const stats = [
     >
       <!-- Content -->
       <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">體驗者的聲音</h2>
+        <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">體驗者的聲音</h2>
         <p class="text-lg sm:text-xl md:text-2xl text-gray-700">聽聽其他人怎麼說</p>
       
         <!-- Testimonial Cards Container -->
@@ -428,7 +428,7 @@ const stats = [
       <div class="relative z-10 mx-auto h-full w-full px-6 text-center md:px-12">
        
 
-        <h2 class="text-major-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+        <h2 class="text-primary-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
           我們的合作夥伴
         </h2>
         <div
@@ -462,15 +462,15 @@ const stats = [
           <!-- Left Column: Title and Navigation -->
           <div class="lg:col-span-1 text-left flex flex-col justify-center">
             <div>
-              <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">企業客戶評價</h2>
+              <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">企業客戶評價</h2>
               <p class="text-lg sm:text-xl md:text-2xl max-w-3xl">
                 探索我們企業客戶的真實體驗和反饋，了解 TRY β 如何幫助企業和探索者創造價值
               </p>
               <div class="mt-8 flex items-center gap-4">
-                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
                 </button>
-                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </button>
               </div>
@@ -528,8 +528,8 @@ const stats = [
                 <h3 class="font-bold text-lg mb-4 min-h-[3.5rem]">{{ story.title }}</h3>
                 <p class="text-gray-700 leading-relaxed flex-grow">{{ story.description }}</p>
                 <p class="mt-4 text-gray-700">
-                  <span class="font-bold text-major-blue-light">結果：</span>
-                  <span class="font-bold text-major-blue-light">{{ story.result }}</span>
+                  <span class="font-bold text-primary-blue-light">結果：</span>
+                  <span class="font-bold text-primary-blue-light">{{ story.result }}</span>
                 </p>
                 <a :href="story.link" class="mt-6 inline-flex items-center justify-center rounded-md bg-btn-yellow px-6 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white self-start">
                   <span>查看詳細案例</span>
@@ -544,15 +544,15 @@ const stats = [
            <!-- Right Column: Title and Navigation -->
            <div class="lg:col-span-1 text-left flex flex-col justify-center order-1 lg:order-2">
             <div>
-              <h2 class="text-major-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">成功案例</h2>
+              <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">成功案例</h2>
               <p class="text-lg sm:text-xl md:text-2xl max-w-3xl">
                 探索我們如何幫助企業實現目標
               </p>
               <div class="mt-8 flex items-center gap-4">
-                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
                 </button>
-                <button class="p-2 rounded-full text-major-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </button>
               </div>
@@ -571,7 +571,7 @@ const stats = [
           </div>
       <!-- Foreground Content -->
       <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 text-center md:px-12">
-        <h2 class="text-major-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+        <h2 class="text-primary-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
           已有萬人在使用TRY β
         </h2>
         <p class="mx-auto max-w-2xl text-lg text-gray-700 sm:text-xl">
