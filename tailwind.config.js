@@ -26,10 +26,10 @@ module.exports = {
       },
       colors: {
         "btn-yellow": "#FFE70C",
-        "btn-black": "#0D2C43",
         "major-blue": "#158AD9",
-        "brand-gray": "#F8F9FB",
         "major-blue-light": "#39B1EE",
+        "primary-blue-dark": "#0D2C43",
+        "brand-gray": "#F8F9FB",
       },
       fontFamily: {
         sans: ["Inter", ...defaultTheme.fontFamily.sans],

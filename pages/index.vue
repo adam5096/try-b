@@ -127,7 +127,7 @@ const stats = [
               開啟職場任意門，體驗你的無限可能。
             </h2>
             <button
-              class="mt-8 rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white">
+              class="mt-8 rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white">
               開始體驗
             </button>
           </div>
@@ -154,17 +154,17 @@ const stats = [
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">學生與新鮮人</h3>
             <p class="text-center text-gray-500 mb-4">先大量體驗，快速累積品</p>
-            <div class="flex justify-center lg:justify-start">
+            <div class="flex justify-center bg-">
               <ul class="space-y-2">
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>實習與專案合作機會</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>職涯探索工作坊</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>業界導師一對一指導，並提供深度對談</span>
                 </li>
@@ -181,17 +181,17 @@ const stats = [
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
             <p class="text-center text-gray-500 mb-4">低成本試錯，高效率轉職</p>
-            <div class="flex justify-center lg:justify-start">
-              <ul class="space-y-2">
-                <li class="flex items-start min-h-[3.5rem]">
+            <div class="flex justify-center">
+              <ul class="outline outline-1 outline-gray-600 space-y-2">
+                <li class="flex items-center min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>彈性時段職業體驗專案</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-center min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>多元職務角色體驗計畫</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-center min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>快速找尋就職方向</span>
                 </li>
@@ -208,17 +208,17 @@ const stats = [
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">創意工作者、中小企業</h3>
             <p class="text-center text-gray-500 mb-4">錯聘成本太高？先 β 再正聘</p>
-            <div class="flex justify-center lg:justify-start">
+            <div class="flex justify-center">
               <ul class="space-y-2">
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>先體驗，後合作</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                  <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>展現企業魅力，不再浪費培訓預算</span>
                 </li>
-                <li class="flex items-start min-h-[3.5rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>零長期成本，高回報人才管道</span>
                 </li>
@@ -265,7 +265,7 @@ const stats = [
                 <span>已申請人數：0 人</span>
                 <span>申請截止還有 40 天</span>
               </div>
-              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-btn-black hover:text-white">
+              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
                 查看詳情
               </button>
             </div>
@@ -297,7 +297,7 @@ const stats = [
                 <span>已申請人數：0 人</span>
                 <span>申請截止還有 10 天</span>
               </div>
-              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-btn-black hover:text-white">
+              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
                 查看詳情
               </button>
             </div>
@@ -329,7 +329,7 @@ const stats = [
                 <span>已申請人數：0 人</span>
                 <span>申請截止還有 10 天</span>
               </div>
-              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-btn-black hover:text-white">
+              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
                 查看詳情
               </button>
             </div>
@@ -531,7 +531,7 @@ const stats = [
                   <span class="font-bold text-major-blue-light">結果：</span>
                   <span class="font-bold text-major-blue-light">{{ story.result }}</span>
                 </p>
-                <a :href="story.link" class="mt-6 inline-flex items-center justify-center rounded-md bg-btn-yellow px-6 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white self-start">
+                <a :href="story.link" class="mt-6 inline-flex items-center justify-center rounded-md bg-btn-yellow px-6 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white self-start">
                   <span>查看詳細案例</span>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -589,7 +589,7 @@ const stats = [
         
         <NuxtLink
           to="/plan"
-          class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-btn-black hover:text-white"
+          class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
         >
           企業開始體驗
         </NuxtLink>
