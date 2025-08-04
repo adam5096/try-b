@@ -1,0 +1,102 @@
+---
+alwaysApply: false
+---
+# 規則主題：Vue.js 風格指南與最佳實踐
+
+> **簡短描述**：此文件定義了專案中撰寫 Vue.js 元件的風格指南與最佳實踐。所有 `.vue`、`.js` 檔案都應遵循此規範，以確保程式碼的一致性、可讀性與可維護性。
+> **最後更新**：2024-05-24
+
+---
+
+## 1. 核心原則
+
+*   **組合式 API 優先 (Composition API First)**：所有新元件都**必須**使用 `<script setup>` 的組合式 API，它提供了更佳的邏輯組織與重用性。
+*   **單向數據流 (One-Way Data Flow)**：嚴格遵守 "Props down, events up" 原則。子元件不應直接修改傳入的 props，而應透過 `emit` 事件通知父元件進行變更。
+*   **DRY (Don't Repeat Yourself)**：避免重複的邏輯。應將共用功能抽象化為可重用的組合式函式 (Composables)。
+*   **可讀性與簡潔性**：優先撰寫清晰易懂的程式碼。適時使用「提早返回 (Early Return)」來簡化函式邏輯，避免過深的巢狀結構。
+
+---
+
+## 2. 規則詳述
+
+### 2.1 命名慣例
+
+*   **元件檔案**：使用大駝峰式 (`PascalCase`)，例如 `UserProfileCard.vue`。
+*   **變數/常數**：使用小駝峰式 (`camelCase`)，例如 `const userName = ref('')`。
+*   **事件處理函式**：**必須**以 `handle` 為前綴，並清楚描述其行為，例如 `const handleProfileUpdate = () => {}`。
+*   **Props & Emits**：在 `defineProps` 和 `defineEmits` 中使用 `camelCase`。
+
+### 2.2 `<script setup>` 內部結構順序
+
+為了保持一致性與可讀性，請遵循以下順序組織您的程式碼：
+1.  `import` 陳述式
+2.  `defineProps` & `defineEmits`
+3.  `ref` / `reactive` 狀態變數
+4.  `computed` 衍生狀態
+5.  `watch` / `watchEffect` 監聽器
+6.  生命週期鉤子 (Lifecycle Hooks)，例如 `onMounted`
+7.  事件處理函式與其他方法
+
+---
+
+## 3. 程式碼範例 (Do's and Don'ts)
+
+**✅ 正確範例：一個結構清晰的元件**
+
+```vue
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import type { User } from '~/types';
+
+// 1. Props & Emits
+const props = defineProps<{
+  userProfile: User;
+}>();
+
+const emit = defineEmits<{
+  (e: 'update', payload: User): void;
+}>();
+
+// 2. 狀態變數
+const isEditing = ref(false);
+
+// 3. 衍生狀態
+const displayName = computed(() => {
+  return props.userProfile.name || 'Guest';
+});
+
+// 4. 事件處理函式
+const handleToggleEdit = (): void => {
+  if (!props.userProfile) {
+    return;
+  }
+  isEditing.value = !isEditing.value;
+  emit('update', props.userProfile);
+};
+</script>
+```
+
+**❌ 錯誤範例：應避免的寫法**
+
+```vue
+<script>
+// 不應使用 Options API
+export default {
+  props: ['userProfile'],
+  data() {
+    return {
+      editing: false, // 變數命名不夠清晰
+    }
+  },
+  methods: {
+    // 命名未使用 handle 前綴
+    toggle() {
+      // 直接修改 prop，違反單向數據流原則
+      this.userProfile.name = 'new name';
+      this.editing = !this.editing;
+    }
+  }
+}
+</script>
+```
+---
