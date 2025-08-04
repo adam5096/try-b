@@ -13,8 +13,12 @@ import {
 import { companyRoutes as r } from '~/utils/companyRoutes';
 
 const router = useRouter();
-const programsPath = router.resolve(r.programs()).path;
-const applicantsPath = router.resolve(r.applicants('1')).path;
+
+const programsPath = router.resolve(r.landing()).path;  // 計畫列表
+const newProgramPath = router.resolve(r.newProgram()).path; // 新增體驗
+const purchasePath = router.resolve(r.purchase()).path; // 方案
+const commentsPath = router.resolve(r.comments()).path; // 評價管理
+const settingsPath = router.resolve(r.settings()).path; // 帳戶設定
 </script>
 
 <template>
@@ -53,28 +57,20 @@ const applicantsPath = router.resolve(r.applicants('1')).path;
             <el-icon><icon-menu /></el-icon>
             <span>計畫列表</span>
           </el-menu-item>
-          <el-menu-item :index="applicantsPath">
-            <el-icon><Document /></el-icon>
-            <span>申請列表</span>
-          </el-menu-item>
-          <el-menu-item index="#">
+          <el-menu-item :index="newProgramPath">
             <el-icon><Plus /></el-icon>
             <span>新增體驗</span>
           </el-menu-item>
-          <el-menu-item index="#">
+          <el-menu-item :index="commentsPath">
             <el-icon><Star /></el-icon>
             <span>評價管理</span>
           </el-menu-item>
-          <el-menu-item index="#">
+          <el-menu-item :index="settingsPath">
             <el-icon><Setting /></el-icon>
             <span>帳戶設定</span>
           </el-menu-item>
           <div class="grow" />
-          <el-menu-item index="/company/test">
-            <el-icon><Setting /></el-icon>
-            <span class="text-red-500">測試頁面</span>
-          </el-menu-item>
-          <el-menu-item index="#">
+          <el-menu-item :index="purchasePath">
             <el-icon><Briefcase /></el-icon>
             <span>方案</span>
           </el-menu-item>
@@ -86,10 +82,8 @@ const applicantsPath = router.resolve(r.applicants('1')).path;
       </el-aside>
 
       <!-- Page Content -->
-      <el-main class="bg-zinc-100 ml-[240px] overflow-y-auto">
-        <div class="mx-auto max-w-7xl">
-          <slot />
-        </div>
+      <el-main class="bg-gray-50 ml-[240px] overflow-y-auto">
+        <slot />
       </el-main>
     </el-container>
   </el-container>

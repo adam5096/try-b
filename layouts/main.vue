@@ -37,8 +37,8 @@ onBeforeUnmount(() => {
 
 // --- Footer State ---
 const quickLinks = ref([
-  { text: '首頁', href: '#' },
-  { text: '企業方案', href: '#' },
+  { text: '首頁', href: '/' },
+  { text: '企業方案', href: '/plan' },
 ]);
 
 const contactInfo = ref({
@@ -61,9 +61,16 @@ const socialLinks = ref([
       <div class="h-main-header w-full max-w-screen-full-hd mx-auto p-12">
         <nav class="flex h-full items-center justify-between gap-8">
           <!-- 商標 Section -->
-          <h1 class="flex flex-none items-center gap-2 text-2xl">
-            <div class="w-site-logo-width h-site-logo-height">
-            </div>
+          <h1 class="flex flex-none items-center text-2xl">
+            <NuxtLink to="/" class="flex items-center gap-2">
+              <div class="w-site-logo-width h-site-logo-height">
+                <img
+                  src="@/assets/img/home/try-beta-logo.webp"
+                  alt="TRY Beta 網站商標"
+                  class="h-full w-full object-contain"
+                />
+              </div>
+            </NuxtLink>
           </h1>
 
           <!-- Desktop Search Bar 搜尋欄 -->
@@ -107,13 +114,9 @@ const socialLinks = ref([
                 </a>
                 <div class="px-4 py-2 flex items-center gap-2">
                   <UserIcon class="w-6 h-6" />
-                  <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                    登入
-                  </a>
-                  <span class="text-gray-400">/</span>
-                  <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                    註冊
-                  </a>
+                  <NuxtLink to="/roles" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                    登入 / 註冊
+                  </NuxtLink>
                 </div>
               </div>
             </div>
@@ -135,7 +138,7 @@ const socialLinks = ref([
       </div>
 
       <!-- Blue Overlay Layer -->
-      <div class="absolute inset-0 z-10 bg-major-blue opacity-90"></div>
+      <div class="absolute inset-0 z-10 bg-primary-blue opacity-90"></div>
       
       <!-- Beta Icon Layer -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none opacity-20">
@@ -163,7 +166,7 @@ const socialLinks = ref([
             <h3 class="font-bold text-lg mb-4">快速連結</h3>
             <ul class="space-y-2">
               <li v-for="link in quickLinks" :key="link.text">
-                <a :href="link.href" class="hover:text-btn-yellow transition-colors">{{ link.text }}</a>
+                <NuxtLink :to="link.href" class="hover:text-btn-yellow transition-colors">{{ link.text }}</NuxtLink>
               </li>
             </ul>
           </div>
