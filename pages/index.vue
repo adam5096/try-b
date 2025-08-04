@@ -143,19 +143,21 @@ const stats = [
       </div>
 
       <!-- Cards Container -->
-      <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 ">
+      <div class="mx-auto mt-12 h-full w-full max-w-container-main px-6 md:px-12">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <!-- Card 1: 學生與新鮮人 -->
-          <div class=" p-6 pt-10 text-left">
+          <div
+            class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
+          >
             <div class="flex justify-center mb-4">
               <div>
-                <img src="~/assets/img/home/who-is-the-user-01.webp" alt="學生與新鮮人">
+                <img src="~/assets/img/home/who-is-the-user-01.webp" alt="學生與新鮮人" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">學生與新鮮人</h3>
-            <p class="text-center text-gray-500 mb-4">先大量體驗，快速累積品</p>
-            <div class="flex justify-center bg-">
-              <ul class="space-y-2">
+            <p class="text-center text-gray-600 mb-4">先大量體驗，快速累積品</p>
+            <div class="flex justify-center mt-auto">
+              <ul class="space-y-2 text-left">
                 <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>實習與專案合作機會</span>
@@ -166,32 +168,34 @@ const stats = [
                 </li>
                 <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>業界導師一對一指導，並提供深度對談</span>
+                  <span>業界導師一對一指導與深度對談</span>
                 </li>
               </ul>
             </div>
           </div>
 
           <!-- Card 2: 兼職與轉職者 -->
-          <div class="p-6 pt-10 text-left">
+          <div
+            class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
+          >
             <div class="flex justify-center mb-4">
               <div>
-                <img src="~/assets/img/home/who-is-the-user-02.webp" alt="兼職與轉職者">
+                <img src="~/assets/img/home/who-is-the-user-02.webp" alt="兼職與轉職者" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
-            <p class="text-center text-gray-500 mb-4">低成本試錯，高效率轉職</p>
-            <div class="flex justify-center">
-              <ul class="space-y-2">
-                <li class="flex items-center min-h-[2rem]">
+            <p class="text-center text-gray-600 mb-4">低成本試錯，高效率轉職</p>
+            <div class="flex justify-center mt-auto">
+              <ul class="space-y-2 text-left">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>彈性時段職業體驗專案</span>
                 </li>
-                <li class="flex items-center min-h-[2rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>多元職務角色體驗計畫</span>
                 </li>
-                <li class="flex items-center min-h-[2rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>快速找尋就職方向</span>
                 </li>
@@ -200,21 +204,25 @@ const stats = [
           </div>
 
           <!-- Card 3: 創意工作者、中小企業 -->
-          <div class="p-6 pt-10 text-left">
+          <div
+            class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
+          >
             <div class="flex justify-center mb-4">
               <div>
-                  <img src="~/assets/img/home/who-is-the-user-03.webp" alt="創意工作者、中小企業">
+                <img src="~/assets/img/home/who-is-the-user-03.webp" alt="創意工作者、中小企業" />
               </div>
             </div>
-            <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">創意工作者、中小企業</h3>
-            <p class="text-center text-gray-500 mb-4">錯聘成本太高？先 β 再正聘</p>
-            <div class="flex justify-center">
-              <ul class="space-y-2">
+            <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">
+              創意工作者、中小企業
+            </h3>
+            <p class="text-center text-gray-600 mb-4">錯聘成本太高？先 β 再正聘</p>
+            <div class="flex justify-center mt-auto">
+              <ul class="space-y-2 text-left">
                 <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>先體驗，後合作</span>
                 </li>
-                  <li class="flex items-start min-h-[2rem]">
+                <li class="flex items-start min-h-[2rem]">
                   <HomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>展現企業魅力，不再浪費培訓預算</span>
                 </li>
@@ -381,7 +389,7 @@ const stats = [
                 <p class="text-sm text-gray-500">上班族 | 35歲</p>
               </div>
             </div>
-            <p class="text-gray-600 flex-grow">「TRY 讓我有夠分享我的消費經驗和見解，同時感覺自己的聲音有被聽見的。每次完成任務後收到的反饋讓我覺得自己的意見被重視。」</p>
+            <p class="text-gray-600 flex-grow">「TRY β 讓我有夠分享我的消費經驗和見解，同時感覺自己的聲音有被聽見的。每次完成任務後收到的反饋讓我覺得自己的意見被重視。」</p>
             <div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
               <div class="flex items-center gap-1 text-yellow-500">
                 <StarIcon class="w-5 h-5" />
@@ -404,7 +412,7 @@ const stats = [
                 <p class="text-sm text-gray-500">退休人士 | 68歲</p>
               </div>
             </div>
-            <p class="text-gray-600 flex-grow">「即使是我這樣的銀髮族，也能在 TRY 找到適合的測試任務。這讓我保持對科技的關連性，也讓我感覺自己的經驗和觀點仍然有價值。」</p>
+            <p class="text-gray-600 flex-grow">「即使是我這樣的銀髮族，也能在 TRY  找到適合的測試任務。這讓我保持對科技的關連性，也讓我感覺自己的經驗和觀點仍然有價值。」</p>
             <div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
               <div class="flex items-center gap-1 text-yellow-500">
                 <StarIcon class="w-5 h-5" />
