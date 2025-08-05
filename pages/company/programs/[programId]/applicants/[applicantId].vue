@@ -98,6 +98,15 @@ const decisionForm = ref({
   feedback: '',
   notifyMethod: 'email',
 });
+
+const submitReview = async () => {
+  await navigateTo({
+    name: 'company-program-applicants-list',
+    params: {
+      programId: route.params.programId
+    }
+  })
+}
 </script>
 
 <template>
@@ -309,7 +318,7 @@ const decisionForm = ref({
           <el-form-item class="mt-6">
             <div class="flex-1 flex justify-end gap-4">
               <el-button>取消</el-button>
-              <el-button type="primary">
+              <el-button type="primary" @click="submitReview">
                 提交審核結果
               </el-button>
             </div>
