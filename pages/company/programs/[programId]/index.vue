@@ -10,6 +10,7 @@ import {
   Delete,
   Plus,
   DataLine,
+  View,
 } from '@element-plus/icons-vue';
 
 const route = useRoute();
@@ -408,7 +409,7 @@ const timeline = [
               瀏覽數據
             </h3>
             <el-icon class="text-zinc-500">
-              <i-ep-view />
+              <View />
             </el-icon>
           </div>
         </template>

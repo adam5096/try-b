@@ -13,15 +13,15 @@ export const companyRoutes = {
     params: { programId },
   }),
   applicants: (programId: string | number) => ({
-    name: 'company-programs-applicants',
+    name: 'company-program-applicants-list',
     params: { programId },
   }),
-  applicantDetail: (applicantId: string | number) => ({
-    name: 'company-programs-applicants-applicantId',
-    params: { applicantId },
+  applicantDetail: (programId: string | number, applicantId: string | number) => ({
+    name: 'company-program-applicant-detail',
+    params: { programId, applicantId },
   }),
   newProgram: () => ({ name: 'company-programs-new' }),
   purchase: () => ({ name: 'company-purchase-index' }),
   comments: () => ({ name: 'company-comments' }),
   settings: () => ({ name: 'company-settings' })
-}; 
+};

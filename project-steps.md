@@ -212,7 +212,7 @@
 ### EP6, 7, 8, 9: 計畫與申請人管理流程
 - **路由架構重構**:
     - 為了釐清 `/applicants` (列表) 與 `/applicants/:id` (詳情) 之間的關係，將原有的檔案結構重構為巢狀路由 `.../programs/[programId]/applicants/index.vue` (EP8) 與 `.../programs/[programId]/applicants/[applicantId].vue` (EP9)。
-    - 全面更新了 `definePageMeta` 中的 `name` 與 `utils/companyRoutes.ts` 中的路由定義，解決了 Nuxt dev server 快取造成的路由衝突問題。
+    - 全面更新了 `definePageMeta` 中的 `name` 與 `utils/companyRoutes.ts` 中的路由定義，並透過刪除舊有的 `applicants.vue` 檔案，徹底解決了因檔案結構造成的路由衝突問題。
 - **端到端路由串接**:
     - **EP6 -> EP7**: 串接了「所有計畫列表」至「單一計畫詳情」的導航。
     - **EP7 -> EP8**: 串接了「單一計畫詳情」至「申請者列表」的導航。
