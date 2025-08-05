@@ -13,11 +13,11 @@ export const companyRoutes = {
     params: { programId },
   }),
   applicants: (programId: string | number) => ({
-    name: 'companyProgramsApplicants',
+    name: 'company-programs-applicants',
     params: { programId },
   }),
   applicantDetail: (applicantId: string | number) => ({
-    name: 'companyProgramsApplicantsDetail',
+    name: 'company-programs-applicants-applicantId',
     params: { applicantId },
   }),
   newProgram: () => ({ name: 'company-programs-new' }),
