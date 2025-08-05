@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
-  name: 'companyProgramsDetail',
+  name: 'company-program-detail',
+  layout: 'company',
 });
 </script>
 
