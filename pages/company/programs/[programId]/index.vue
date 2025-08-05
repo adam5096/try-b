@@ -114,7 +114,7 @@ const timeline = [
             </h3>
             <el-icon><DataLine /></el-icon>
           </div>
-          <div class="space-y-3">
+          <div class="space-y-3 md:max-w-xs">
             <div class="flex items-baseline justify-between">
               <p class="text-base text-zinc-600">
                 總申請人數
