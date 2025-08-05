@@ -157,149 +157,193 @@ const timeline = [
     </el-card>
 
     <!-- Main Content -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Left Column -->
-      <div class="lg:col-span-2 space-y-6">
-        <!-- Program Details -->
-        <el-card>
-          <template #header>
-            <h3 class="font-bold text-zinc-900">
-              計畫詳細資訊
-            </h3>
-          </template>
-          <p class="text-zinc-700 leading-relaxed mb-6">
-            {{ program.description }}
-          </p>
-          <el-descriptions border :column="2">
-            <el-descriptions-item>
-              <template #label>
-                <div class="flex items-center gap-2">
-                  <el-icon><Briefcase /></el-icon>
-                  <span>產業類別</span>
-                </div>
-              </template>
-              {{ program.industry }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <div class="flex items-center gap-2">
-                  <el-icon><User /></el-icon>
-                  <span>成行人數</span>
-                </div>
-              </template>
-              {{ program.headcount }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <div class="flex items-center gap-2">
-                  <el-icon><MapLocation /></el-icon>
-                  <span>體驗地點</span>
-                </div>
-              </template>
-              {{ program.location }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <div class="flex items-center gap-2">
-                  <el-icon><Calendar /></el-icon>
-                  <span>體驗日期</span>
-                </div>
-              </template>
-              {{ program.startDate }} - {{ program.endDate }}
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-card>
+    <div class="mt-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-zinc-800">
+          計畫詳情
+        </h2>
+        <el-button type="primary" plain>
+          編輯計畫
+        </el-button>
+      </div>
 
-        <!-- Applicants -->
-        <el-card>
-          <template #header>
-            <div class="flex items-center justify-between">
-              <h3 class="font-bold text-zinc-900">
-                已申請者 (3)
+      <el-card>
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <!-- Left Column -->
+          <div class="md:col-span-1 space-y-6">
+            <div>
+              <h3 class="font-semibold text-zinc-800 mb-2">
+                基本資訊
               </h3>
-              <NuxtLink
-                :to="{
-                  name: 'company-program-applicants-list',
-                  params: { programId: route.params.programId },
-                }"
-              >
-                <el-button type="primary" plain>
-                  查看所有申請者
-                </el-button>
-              </NuxtLink>
+              <dl class="space-y-4 text-sm">
+                <div>
+                  <dt class="text-zinc-500">
+                    體驗名稱
+                  </dt>
+                  <dd class="text-zinc-800 mt-1">
+                    數位行銷實習體驗計畫
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-zinc-500">
+                    產業類別
+                  </dt>
+                  <dd class="text-zinc-800 mt-1">
+                    數位行銷、廣告媒體
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-zinc-500">
+                    職務類別
+                  </dt>
+                  <dd class="text-zinc-800 mt-1">
+                    行銷企劃、社群媒體經營、內容創作
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-zinc-500">
+                    體驗地點
+                  </dt>
+                  <dd class="text-zinc-800 mt-1">
+                    台北市信義區松仁路100號15樓
+                  </dd>
+                </div>
+              </dl>
             </div>
-          </template>
-          <el-table :data="applicants" style="width: 100%">
-            <el-table-column prop="name" label="姓名" />
-            <el-table-column prop="school" label="學校" />
-            <el-table-column prop="major" label="科系" />
-            <el-table-column prop="applyDate" label="申請日期" />
-            <el-table-column label="狀態">
-              <template #default="{ row }">
-                <el-tag :type="row.statusTag">
-                  {{ row.status }}
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作">
-              <template #default="{ row }">
-                <NuxtLink
-                  :to="{
-                    name: 'company-program-applicant-detail',
-                    params: { programId: route.params.programId, applicantId: row.id },
-                  }"
-                >
-                  <el-button type="primary" size="small">
-                    查看
-                  </el-button>
-                </NuxtLink>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-card>
-      </div>
+            <div>
+              <h3 class="font-semibold text-zinc-800 mb-2">
+                聯絡資訊
+              </h3>
+              <dl class="space-y-4 text-sm">
+                <div>
+                  <dt class="text-zinc-500">
+                    聯絡人
+                  </dt>
+                  <dd class="text-zinc-800 mt-1">
+                    林小姐 (人資部門)
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-zinc-500">
+                    電話
+                  </dt>
+                  <dd class="text-zinc-800 mt-1">
+                    02-2345-6789
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-zinc-500">
+                    Email
+                  </dt>
+                  <dd class="text-zinc-800 mt-1">
+                    hr@digitalmarketing.com.tw
+                  </dd>
+                </div>
+              </dl>
+            </div>
+            <div class="space-y-4 text-sm">
+              <div>
+                <p class="text-zinc-500">
+                  刊登期間
+                </p>
+                <p class="text-zinc-800 mt-1">
+                  2023/07/01 - 2023/08/01 <span class="ml-2 text-zinc-500">30天</span>
+                </p>
+              </div>
+              <div>
+                <p class="text-zinc-500">
+                  體驗日期
+                </p>
+                <p class="text-zinc-800 mt-1">
+                  2023/06/15 - 2023/06/17 <span class="ml-2 text-zinc-500">為期三天</span>
+                </p>
+              </div>
+              <div>
+                <p class="text-zinc-500">
+                  體驗人數
+                </p>
+                <p class="text-zinc-800 mt-1">
+                  6-10人
+                </p>
+              </div>
+            </div>
+          </div>
 
-      <!-- Right Column -->
-      <div class="space-y-6">
-        <!-- Key Dates -->
-        <el-card>
-          <template #header>
-            <h3 class="font-bold text-zinc-900">
-              重要日期
-            </h3>
-          </template>
-          <el-descriptions direction="vertical" :column="1">
-            <el-descriptions-item label="發布日期">
-              {{ program.publishDate }}
-            </el-descriptions-item>
-            <el-descriptions-item label="申請截止日期">
-              {{ program.applicationDeadline }}
-            </el-descriptions-item>
-            <el-descriptions-item label="體驗開始日期">
-              {{ program.startDate }}
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-card>
-
-        <!-- Timeline -->
-        <el-card>
-          <template #header>
-            <h3 class="font-bold text-zinc-900">
-              計畫動態
-            </h3>
-          </template>
-          <el-timeline>
-            <el-timeline-item
-              v-for="(activity, index) in timeline"
-              :key="index"
-              :timestamp="activity.timestamp"
-              :type="activity.type"
-            >
-              {{ activity.content }}
-            </el-timeline-item>
-          </el-timeline>
-        </el-card>
-      </div>
+          <!-- Right Column -->
+          <div class="md:col-span-2 space-y-8">
+            <div>
+              <h3 class="font-semibold text-zinc-800 mb-2">
+                體驗介紹
+              </h3>
+              <p class="text-zinc-700 leading-relaxed text-sm">
+                本計畫提供大學生及研究生一個深入了解數位行銷產業的機會。參與者將有機會參與實際專案，學習SEO、SEM、社群媒體行銷、內容創作等數位行銷技能。我們希望透過這個體驗計畫，讓學生在畢業前就能接觸到業界實務，提升就業競爭力。
+              </p>
+            </div>
+            <div>
+              <h3 class="font-semibold text-zinc-800 mb-2">
+                師資介紹
+              </h3>
+              <div class="space-y-4 text-sm">
+                <div>
+                  <h4 class="font-medium text-zinc-800">
+                    林德榮
+                  </h4>
+                  <p class="text-zinc-700 mt-1 leading-relaxed">
+                    資深研發顧問與雲端架構師 10 多年，擔任過後端開發、系統架構設計、技術顧問與團隊技術主管。深入理解敏捷開發、雲端平台、資料庫設計與 DevOps 實務，並從不同技術角色面向切入系統設計與開發經驗觀點，並結合實務專案經驗，擅長 B2B 系統架構設計與跨平台服務整合，運用不同的技術視角打開你的軟體開發新觀點。
+                  </p>
+                </div>
+                <div>
+                  <h4 class="font-medium text-zinc-800">
+                    經歷
+                  </h4>
+                  <ul class="list-disc list-inside text-zinc-700 mt-1 space-y-1">
+                    <li>國際雲端服務商 系統架構師</li>
+                    <li>主導企業雲端平台架構設計與開發，協助客戶完成數位轉型，實現高可用、高擴展性的微服務系統。</li>
+                    <li>知名新創公司 資深軟體工程師</li>
+                    <li>負責核心產品的後端開發與 API 設計，並導入 CI/CD 流程，縮短交付週期、提升團隊開發效率。</li>
+                    <li>跨境電商平台 技術顧問</li>
+                    <li>協助規劃新資料庫架構與分散式架構，改善高流量環境下的系統穩定性，並培訓內部開發團隊。</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-semibold text-zinc-800 mb-2">
+                參加限制
+              </h3>
+              <ul class="list-decimal list-inside text-zinc-700 text-sm space-y-1">
+                <li>了解 JS 變數、陣列物件、DOM、監聽、AJAX 等知識，尚未熟練也沒關係。</li>
+                <li>在履歷上需附上最近寫過的 JS Code、Codepen、Github Pages 皆可，或是分享目前 freeCodeCamp 的 JS 研究進度。</li>
+                <li>18歲以上</li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="font-semibold text-zinc-800 mb-2">
+                行前須知、注意事項
+              </h3>
+              <ul class="list-decimal list-inside text-zinc-700 text-sm space-y-1">
+                <li>請攜帶個人筆記型電腦，以便參與實作環節</li>
+                <li>建議課前了解基本的數位行銷概念</li>
+                <li>活動當天請提早 15 分鐘到達，以便完成報到手續</li>
+                <li>午餐將由公司提供</li>
+                <li>如有特殊飲食需求，請在申請表中註明</li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="font-semibold text-zinc-800 mb-2">
+                準備清單
+              </h3>
+              <ul class="list-decimal list-inside text-zinc-700 text-sm space-y-1">
+                <li>筆記型電腦</li>
+                <li>水壺</li>
+                <li>證件(身分證、健保卡)</li>
+                <li>手帕</li>
+                <li>長袖外套</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </el-card>
     </div>
   </div>
 </template>
