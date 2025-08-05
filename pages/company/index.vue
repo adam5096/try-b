@@ -9,6 +9,7 @@ import {
 type TagType = 'success' | 'info' | 'warning' | 'danger';
 
 interface Plan {
+  id: number;
   title: string;
   status: string;
   status_tag: TagType;
@@ -35,6 +36,7 @@ const searchForm = {
 
 const plans: Plan[] = [
   {
+    id: 1,
     title: '軟體工程師體驗日',
     status: '審核中',
     status_tag: 'info',
@@ -46,6 +48,7 @@ const plans: Plan[] = [
     applicant_status: '開放',
   },
   {
+    id: 2,
     title: '數位行銷實務工作坊',
     status: '已發佈',
     status_tag: 'success',
@@ -58,6 +61,7 @@ const plans: Plan[] = [
     applicant_status: '額滿',
   },
   {
+    id: 3,
     title: '金融分析師一日體驗',
     status: '待發佈',
     status_tag: 'warning',
@@ -70,6 +74,7 @@ const plans: Plan[] = [
     applicant_status: '開放',
   },
   {
+    id: 4,
     title: '人力資源專員工作體驗',
     status: '待發佈',
     status_tag: 'warning',
@@ -82,6 +87,7 @@ const plans: Plan[] = [
     applicant_status: '開放',
   },
   {
+    id: 5,
     title: '產品設計師工作坊',
     status: '已發佈',
     status_tag: 'success',
@@ -94,6 +100,7 @@ const plans: Plan[] = [
     applicant_status: '開放',
   },
   {
+    id: 6,
     title: '客戶服務體驗日',
     status: '已拒絕',
     status_tag: 'danger',
@@ -106,6 +113,7 @@ const plans: Plan[] = [
     applicant_status: '拒絕',
   },
   {
+    id: 7,
     title: '軟體工程師體驗日',
     status: '審核中',
     status_tag: 'info',
@@ -117,6 +125,7 @@ const plans: Plan[] = [
     applicant_status: '開放',
   },
   {
+    id: 8,
     title: '數位行銷實務工作坊',
     status: '已發佈',
     status_tag: 'success',
@@ -129,6 +138,7 @@ const plans: Plan[] = [
     applicant_status: '額滿',
   },
   {
+    id: 9,
     title: '金融分析師一日體驗',
     status: '待發佈',
     status_tag: 'warning',
@@ -141,6 +151,7 @@ const plans: Plan[] = [
     applicant_status: '開放',
   },
   {
+    id: 10,
     title: '人力資源專員工作體驗',
     status: '待發佈',
     status_tag: 'warning',
@@ -153,6 +164,7 @@ const plans: Plan[] = [
     applicant_status: '開放',
   },
   {
+    id: 11,
     title: '產品設計師工作坊',
     status: '已發佈',
     status_tag: 'success',
@@ -165,6 +177,7 @@ const plans: Plan[] = [
     applicant_status: '開放',
   },
   {
+    id: 12,
     title: '客戶服務體驗日',
     status: '已拒絕',
     status_tag: 'danger',
@@ -266,9 +279,11 @@ const plans: Plan[] = [
                   {{ plan.applicants }}
                 </span>
               </span>
-              <el-button type="primary" plain>
-                查看詳情
-              </el-button>
+              <NuxtLink :to="{ name: 'company-program-detail', params: { programId: plan.id } }">
+                <el-button type="primary" plain>
+                  查看詳情
+                </el-button>
+              </NuxtLink>
             </div>
           </template>
         </el-card>

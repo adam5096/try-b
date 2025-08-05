@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+const route = useRoute()
+
 definePageMeta({
-  name: 'company-programs-applicants',
+  name: 'company-program-applicants-list',
   layout: 'company',
 });
 
@@ -171,9 +173,18 @@ const approvedStatus = ref('all')
           </template>
         </el-table-column>
         <el-table-column label="操作">
-          <el-button type="primary">
-            查看
-          </el-button>
+          <template #default="{ row }">
+            <NuxtLink
+              :to="{
+                name: 'company-program-applicant-detail',
+                params: { programId: route.params.programId, applicantId: row.id },
+              }"
+            >
+              <el-button type="primary">
+                查看
+              </el-button>
+            </NuxtLink>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -234,13 +245,24 @@ const approvedStatus = ref('all')
         <el-table-column prop="approveDate" label="審核日期" />
         <el-table-column label="狀態">
           <template #default="{ row }">
-            <span :class="{ 'tag-green': row.status === '已通過', 'tag-red': row.status === '已拒絕' }">{{ row.status }}</span>
+            <span :class="{ 'tag-green': row.status === '已通過', 'tag-red': row.status === '已拒絕' }">{{
+              row.status
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
-          <el-button type="primary">
-            查看
-          </el-button>
+          <template #default="{ row }">
+            <NuxtLink
+              :to="{
+                name: 'company-program-applicant-detail',
+                params: { programId: route.params.programId, applicantId: row.id },
+              }"
+            >
+              <el-button type="primary">
+                查看
+              </el-button>
+            </NuxtLink>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -253,4 +275,4 @@ const approvedStatus = ref('all')
       <el-pagination background layout="prev, pager, next" :total="9" />
     </div>
   </div>
-</template>
+</template> 
