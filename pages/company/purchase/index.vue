@@ -9,6 +9,8 @@ definePageMeta({
   name: 'company-purchase-index',
 })
 
+const router = useRouter()
+
 interface CurrentPlan {
   orderNumber: string
   paymentDate: string
@@ -50,6 +52,13 @@ const planOptions = ref<PlanOption[]>([
 ])
 
 const activeStep = ref(0)
+
+function selectPlan(planId: number) {
+  router.push({
+    name: 'company-purchase-payment',
+    query: { planId },
+  })
+}
 </script>
 
 <template>
@@ -151,7 +160,7 @@ const activeStep = ref(0)
               <p class="text-lg font-semibold w-32 text-right">
                 {{ plan.price }}
               </p>
-              <el-button type="primary">
+              <el-button type="primary" @click="selectPlan(plan.id)">
                 選擇
               </el-button>
             </div>
