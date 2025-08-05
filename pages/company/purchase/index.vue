@@ -54,7 +54,7 @@ const planOptions = ref<PlanOption[]>([
 const activeStep = ref(0)
 
 function selectPlan(planId: number) {
-  router.push({
+  return navigateTo({
     name: 'company-purchase-payment',
     query: { planId },
   })

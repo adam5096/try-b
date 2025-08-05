@@ -18,6 +18,13 @@ const paymentMethod = ref('creditCard')
 const goBack = () => {
   router.back()
 }
+
+const confirmPayment = () => {
+  // 使用 Nuxt 3 推薦的 navigateTo，並搭配「命名路由」
+  return navigateTo({
+    name: 'company-purchase-success',
+  })
+}
 </script>
 
 <template>
@@ -177,7 +184,7 @@ const goBack = () => {
         <el-button size="large" @click="goBack">
           上一步
         </el-button>
-        <el-button type="primary" size="large">
+        <el-button type="primary" size="large" @click="confirmPayment">
           確認付款
         </el-button>
       </div>
