@@ -158,7 +158,8 @@ const timeline = [
 
     <!-- Main Content -->
     <div class="mt-6">
-      <div class="flex items-center justify-between mb-4">
+      <el-card>
+        <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold text-zinc-800">
           計畫詳情
         </h2>
@@ -166,8 +167,6 @@ const timeline = [
           編輯計畫
         </el-button>
       </div>
-
-      <el-card>
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <!-- Left Column -->
           <div class="md:col-span-1 space-y-6">
