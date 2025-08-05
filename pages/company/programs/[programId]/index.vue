@@ -160,13 +160,13 @@ const timeline = [
     <div class="mt-6">
       <el-card>
         <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold text-zinc-800">
-          計畫詳情
-        </h2>
-        <el-button type="primary" plain>
-          編輯計畫
-        </el-button>
-      </div>
+          <h2 class="text-xl font-bold text-zinc-800">
+            計畫詳情
+          </h2>
+          <el-button type="primary" plain>
+            編輯計畫
+          </el-button>
+        </div>
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <!-- Left Column -->
           <div class="md:col-span-1 space-y-6">
@@ -340,6 +340,102 @@ const timeline = [
                 <li>長袖外套</li>
               </ul>
             </div>
+          </div>
+        </div>
+      </el-card>
+    </div>
+
+
+    <!-- Section 3 -->
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Experience Process -->
+      <el-card class="md:row-span-1">
+        <template #header>
+          <h3 class="font-bold text-zinc-900">
+            體驗流程
+          </h3>
+        </template>
+        <dl class="space-y-4 text-sm">
+          <div>
+            <dt class="font-semibold text-zinc-800">
+              階段一
+            </dt>
+            <dd class="text-zinc-600 mt-1">
+              企業介紹與數位行銷產業概況 (1小時)、數位行銷工具與平台介紹 (2小時)
+            </dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-zinc-800">
+              階段二
+            </dt>
+            <dd class="text-zinc-600 mt-1">
+              實際案例分析與討論 (1小時)、分組實作：社群媒體行銷策劃 (2小時)
+            </dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-zinc-800">
+              階段三
+            </dt>
+            <dd class="text-zinc-600 mt-1">
+              成果發表與專業人員回饋 (3小時)
+            </dd>
+          </div>
+        </dl>
+      </el-card>
+
+      <!-- Location -->
+      <el-card class="md:row-span-2">
+        <template #header>
+          <h3 class="font-bold text-zinc-900">
+            體驗地點
+          </h3>
+        </template>
+        <p class="text-sm text-zinc-700 mb-4">
+          高雄市三民區察哈爾街四段44號
+        </p>
+        <div class="aspect-video bg-zinc-200 rounded-lg flex items-center justify-center">
+          <p class="text-zinc-500">
+            地圖
+          </p>
+        </div>
+      </el-card>
+
+      <!-- Analytics -->
+      <el-card class="md:row-span-1">
+        <template #header>
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-zinc-900">
+              瀏覽數據
+            </h3>
+            <el-icon class="text-zinc-500">
+              <i-ep-view />
+            </el-icon>
+          </div>
+        </template>
+        <div class="space-y-3">
+          <div class="flex items-baseline justify-between">
+            <p class="text-base text-zinc-600">
+              總瀏覽次數
+            </p>
+            <p class="text-2xl font-bold text-blue-500">
+              358
+            </p>
+          </div>
+          <div class="flex items-baseline justify-between">
+            <p class="text-base text-zinc-600">
+              本週瀏覽
+            </p>
+            <p class="text-2xl font-bold text-zinc-800">
+              87
+            </p>
+          </div>
+          <div class="flex items-baseline justify-between">
+            <p class="text-base text-zinc-600">
+              轉換率
+            </p>
+            <p class="text-2xl font-bold text-green-600">
+              11.7%
+            </p>
           </div>
         </div>
       </el-card>
