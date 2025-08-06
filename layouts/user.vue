@@ -128,13 +128,10 @@ const socialLinks = ref([
               首頁
             </a>
             <div class="flex items-center gap-2">
-              <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                登入
-              </a>
-              <span class="text-gray-400">/</span>
-              <a href="#" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                註冊
-              </a>
+              <NuxtLink :to="{ name: 'user-login' }" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                登入/註冊
+              </NuxtLink>
+
             </div>
           </div>
 
