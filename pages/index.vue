@@ -126,10 +126,9 @@ const stats = [
             <h2 class="mt-16 text-xl font-bold sm:text-2xl lg:text-3xl xl:text-4xl">
               開啟職場任意門，體驗你的無限可能。
             </h2>
-            <button
-              class="mt-8 rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white">
+            <NuxtLink to="/roles" class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white">
               開始體驗
-            </button>
+            </NuxtLink>
           </div>
         </div>
       </div>
