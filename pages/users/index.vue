@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 
 definePageMeta({
+  name: 'user-landing',
   layout: 'user',
 });
 
