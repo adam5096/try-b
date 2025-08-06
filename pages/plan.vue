@@ -2,6 +2,7 @@
 import CheckIcon from '@/components/CheckIcon.vue';
 
 definePageMeta({
+  name: 'plan',
   layout: 'main',
 });
 

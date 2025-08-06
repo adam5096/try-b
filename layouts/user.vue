@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NuxtLink } from '#components';
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 
 // --- Header State ---
@@ -82,9 +83,9 @@ const socialLinks = ref([
 
           <!-- Logged In User Section -->
           <div v-if="isLoggedIn" class="hidden lg:flex items-center gap-4">
-            <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
+            <NuxtLink :to="{ name: 'user-landing' }" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
               首頁
-            </a>
+            </NuxtLink>
             <div class="relative">
               <button class="relative text-gray-600 hover:text-blue-600">
                 <font-awesome-icon :icon="['fas', 'bell']" class="h-6 w-6" />
@@ -124,9 +125,9 @@ const socialLinks = ref([
 
           <!-- Guest Section -->
           <div v-else class="hidden lg:flex items-center gap-6">
-            <a href="#" class="px-6 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors font-medium">
+            <NuxtLink :to="{ name: 'user-landing' }" class="px-6 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors font-medium">
               首頁
-            </a>
+            </NuxtLink>
             <div class="flex items-center gap-2">
               <NuxtLink :to="{ name: 'user-login' }" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                 登入/註冊
@@ -222,8 +223,8 @@ const socialLinks = ref([
             <div>
               <h3 class="font-semibold text-lg tracking-wider">快速連結</h3>
               <ul class="mt-4 space-y-4">
-                <li><a href="#" class="hover:text-gray-300">首頁</a></li>
-                <li><a href="#" class="hover:text-gray-300">企業方案</a></li>
+                <li><NuxtLink :to="{ name: 'user-landing' }" class="hover:text-gray-300">首頁</NuxtLink></li>
+                <li><NuxtLink :to="{ name: 'plan' }" class="hover:text-gray-300">企業方案</NuxtLink></li>
               </ul>
             </div>
             <div>
