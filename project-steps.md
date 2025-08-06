@@ -252,3 +252,14 @@
 - **路由實踐釐清**: 針對 `layouts/user.vue` 中的「登入/註冊」連結，深入討論了 `<NuxtLink>` 的兩種 `to` 屬性寫法。
 - **最佳實踐採納**: 確認並建議採用「命名路由物件寫法」 (`:to="{ name: 'routeName' }"`) 取代「硬編碼 URL 字串」 (`to="/path/to/page"`)。
 - **理由與優勢**: 此舉能將連結與實際 URL 路徑解耦，大幅提升程式碼的健壯性與長期可維護性，未來修改路由時僅需調整路由定義檔，無需搜尋並取代所有相關連結。
+
+### UP1: 體驗者登入頁面 (UI 切版)
+- **UI 切版與策略**:
+  - 根據設計稿，在 `pages/users/login.vue` 中使用 Tailwind CSS 完成了「體驗者登入頁」的 UI 切版。
+  - 釐清並確認了在入口頁面（如登入頁）優先使用原生 HTML 元素與 Tailwind CSS 以達成精準樣式控制，而在功能性強的應用核心頁面則使用 Element Plus 的開發策略。
+- **全域樣式與 CSS Reset**:
+  - 深入探討了 Tailwind CSS 的 Preflight (CSS Reset) 機制，確認其已包含對 `<a>` 標籤的預設樣式重設。
+  - 透過移除 `<a>` 標籤上多餘的功能類別 (utility classes) 並刪除元件內的 `<style scoped>`，成功讓全域的 Preflight 樣式生效，達成了全站連結樣式統一的最佳實踐，避免了引入額外的 `reset.css`。
+- **互動樣式微調**:
+  - 解決了表單輸入框 `focus` 狀態下 `outline` 和 `ring` 的樣式問題。
+  - 使用 `padding` 功能類別調整了輸入框的高度，使其符合設計需求。
