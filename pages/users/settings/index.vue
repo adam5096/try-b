@@ -13,8 +13,9 @@ const personalInfo = reactive({
   avatar: [],
   name: '',
   birthDate: '2000-01-01',
-  gender: '男/女',
-  status: 'pending',
+  gender: 'male',
+  customGender: '',
+  status: 'student',
   email: 'linweichen@gmail.com',
   phone: '0912345678',
   address: {
@@ -97,23 +98,15 @@ const districtOptions = reactive({
               </el-form-item>
 
               <el-form-item label="性別" class="mt-2">
-                <el-input v-model="personalInfo.gender" />
+                <el-radio-group v-model="personalInfo.gender">
+                  <el-radio value="male">男</el-radio>
+                  <el-radio value="female">女</el-radio>
+                  <el-radio value="other">其他</el-radio>
+                </el-radio-group>
               </el-form-item>
 
               <el-form-item label="電子郵件" required>
                 <el-input v-model="personalInfo.email" disabled />
-              </el-form-item>
-
-              <el-form-item label="通訊地址" required>
-                <div class="grid w-full grid-cols-2 gap-4">
-                  <el-select v-model="personalInfo.address.city" placeholder="縣市">
-                    <el-option v-for="item in cityOptions" :key="item.value" :label="item.label" :value="item.value" />
-                  </el-select>
-                  <el-select v-model="personalInfo.address.district" placeholder="鄉鎮市區">
-                    <el-option v-for="item in districtOptions[personalInfo.address.city]" :key="item.value" :label="item.label" :value="item.value" />
-                  </el-select>
-                </div>
-                <el-input v-model="personalInfo.address.street" class="mt-4 w-full" />
               </el-form-item>
             </div>
 
@@ -150,6 +143,19 @@ const districtOptions = reactive({
                 <el-input v-model="personalInfo.phone" />
               </el-form-item>
             </div>
+
+            <!-- Address Section -->
+            <el-form-item label="通訊地址" required class="md:col-span-2">
+              <div class="grid w-full grid-cols-1 gap-4 xl:grid-cols-2">
+                <el-select v-model="personalInfo.address.city" placeholder="縣市">
+                  <el-option v-for="item in cityOptions" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+                <el-select v-model="personalInfo.address.district" placeholder="鄉鎮市區">
+                  <el-option v-for="item in districtOptions[personalInfo.address.city]" :key="item.value" :label="item.label" :value="item.value" />
+                </el-select>
+              </div>
+              <el-input v-model="personalInfo.address.street" class="mt-4 w-full" />
+            </el-form-item>
           </div>
 
           <div class="mt-8 flex justify-end">
