@@ -271,6 +271,12 @@
 - **路由串接**: 更新了頁面底部的連結，使其能正確導航至登入頁面，完成了註冊與登入流程的雙向串接。
 
 # 2025-08-07
+### UP2: 體驗者帳戶中心 (UI)
+- **頁面建構與 UI**: 在 `pages/users/settings/index.vue` 中，根據設計稿完成了「帳戶中心設置」頁面的初步 UI 切版。
+- **佈局與樣式**:
+  - 設定頁面使用 `user` 全域佈局，並透過 `max-w-container-users` 確保版心與專案規範一致。
+  - 使用 Tailwind CSS utility classes 實作了包含使用者頭像、姓名與職稱的資訊區塊。
+
 ### MGT: Git 工作流程與 commit 訊息管理
 - **最新 commit 修改**:
   - 學習並實作了 `git commit --amend` 指令，用於修改最新一次的 commit 訊息。
