@@ -8,7 +8,7 @@ definePageMeta({
   layout: 'user',
 });
 
-// Form data model
+// --- Data Models ---
 const personalInfo = reactive({
   avatar: [],
   name: '',
@@ -25,7 +25,14 @@ const personalInfo = reactive({
   },
 });
 
-// Options for select components
+const passwordForm = reactive({
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: '',
+});
+
+
+// --- Form Options ---
 const statusOptions = [
   { label: '待業中', value: 'pending' },
   { label: '在職中', value: 'employed' },
@@ -39,7 +46,7 @@ const cityOptions = [
   { label: '台南市', value: 'tainan' },
   { label: '高雄市', value: 'kaohsiung' },
 ];
-const districtOptions = reactive({
+const districtOptions: { [key: string]: { label: string; value: string }[] } = reactive({
   taipei: [
     { label: '中正區', value: 'zhongzheng' },
     { label: '大同區', value: 'datong' },
@@ -160,6 +167,37 @@ const districtOptions = reactive({
 
           <div class="mt-8 flex justify-end">
             <el-button type="primary" size="large" class="!bg-gray-400 !border-gray-400">儲存變更</el-button>
+          </div>
+        </el-form>
+      </div>
+
+      <!-- Password Settings Form -->
+      <div class="mt-8 rounded-lg bg-white p-8 shadow-sm">
+        <h2 class="mb-6 text-xl font-bold text-primary-blue-dark">密碼設置</h2>
+        <el-form :model="passwordForm" label-position="top">
+          <el-form-item label="目前密碼">
+            <el-input
+              v-model="passwordForm.currentPassword"
+              type="password"
+              show-password
+            />
+          </el-form-item>
+          <el-form-item label="新密碼">
+            <el-input
+              v-model="passwordForm.newPassword"
+              type="password"
+              show-password
+            />
+          </el-form-item>
+          <el-form-item label="確認新密碼">
+            <el-input
+              v-model="passwordForm.confirmPassword"
+              type="password"
+              show-password
+            />
+          </el-form-item>
+          <div class="mt-8 flex justify-end">
+            <el-button type="primary" size="large" class="!bg-gray-400 !border-gray-400">更新密碼</el-button>
           </div>
         </el-form>
       </div>
