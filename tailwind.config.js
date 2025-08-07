@@ -48,6 +48,7 @@ module.exports = {
         "container-main": "1200px",
         "container-company": "1440px",
         "container-users": "1440px",
+        "container-admin": "1440px",
       },
       height: {
         "main-header": "158px",
