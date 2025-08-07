@@ -295,3 +295,12 @@
   - 掌握了將 `pick` 改為 `reword` 來觸發修改流程的技巧。
 - **最佳實踐與安全**:
   - 強調了 `rebase` 與 `amend` 操作應僅限於未推送到遠端的本地 commit，以避免破壞團隊協作歷史。
+
+### UP11: 方案詳情頁收藏功能
+- **UI 與功能實作**: 在方案詳情頁 (`pages/users/programs/[programId].vue`) 中新增了「收藏」功能，允許使用者將感興趣的方案加入收藏。
+- **動態樣式**: 收藏圖示會根據方案的收藏狀態 (`isFavorited`) 動態切換實心 (`fas`) 與空心 (`far`) 樣式，提供明確的視覺回饋。
+
+### MGT: Font Awesome 版本衝突修復
+- **問題診斷**: 針對 `plugins/fontawesome.ts` 中出現的 TypeScript 型別錯誤進行了除錯。
+- **根本原因**: 確認問題源於 `@fortawesome/free-regular-svg-icons` (`v7`) 與其他核心套件 (`v6`) 之間的主版本不匹配。
+- **解決方案**: 透過將 `@fortawesome/free-regular-svg-icons` 的版本統一降至 `^6.7.2`，成功解決了型別衝突，恢復了開發環境的穩定性。
