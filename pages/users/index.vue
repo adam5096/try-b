@@ -50,6 +50,42 @@ const generalPrograms = ref([
     deadline: 10,
     status: ''
   },
+    {
+    id: 8,
+    title: '投資理財顧問體驗',
+    company: '金融公司 D',
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop',
+    description: '跟隨資深理財顧問了解金融市場分析、學習投資組合規劃，體驗為客戶制定理財策略的專業服務流程。',
+    location: '台北市大安區',
+    date: '2025/09/10 - 2025/11/20',
+    applicants: 0,
+    deadline: 40,
+    status: '體驗進行中'
+  },
+  {
+    id: 9,
+    title: 'UI/UX設計師工作坊',
+    company: '設計工作室 E',
+    image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=2070&auto=format&fit=crop',
+    description: '深入設計思維流程，從用戶研究到原型製作，體驗數位產品設計的完整過程，了解設計師的創作思路。',
+    location: '金門縣烈嶼鄉',
+    date: '2025/10/01 - 2025/12/20',
+    applicants: 0,
+    deadline: 10,
+    status: ''
+  },
+  {
+    id: 10,
+    title: '新創企業營運體驗',
+    company: '新創公司 F',
+    image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop',
+    description: '加入新創團隊實際參與產品開發、市場策略制定，體驗創業家的決策焦慮，了解新創生態的運作模式。',
+    location: '屏東縣恆春鎮',
+    date: '2025/07/01 - 2025/10/31',
+    applicants: 0,
+    deadline: 10,
+    status: ''
+  },
 ]);
 
 const searchKeyword = ref('');
@@ -162,7 +198,9 @@ const sortOptions = ref([
                  </div>
               </div>
               <template #footer>
-                <el-button type="primary" class="w-full">查看詳情</el-button>
+                <NuxtLink :to="{ name: 'user-programs-programId', params: { programId: program.id } }">
+                  <el-button type="primary" class="w-full">查看詳情</el-button>
+                </NuxtLink>
               </template>
             </el-card>
           </div>
