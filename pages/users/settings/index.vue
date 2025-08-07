@@ -166,7 +166,7 @@ const districtOptions: { [key: string]: { label: string; value: string }[] } = r
           </div>
 
           <div class="mt-8 flex justify-end">
-            <el-button type="primary" size="large" class="!bg-gray-400 !border-gray-400">儲存變更</el-button>
+            <el-button type="primary" size="large">儲存變更</el-button>
           </div>
         </el-form>
       </div>
@@ -197,7 +197,7 @@ const districtOptions: { [key: string]: { label: string; value: string }[] } = r
             />
           </el-form-item>
           <div class="mt-8 flex justify-end">
-            <el-button type="primary" size="large" class="!bg-gray-400 !border-gray-400">更新密碼</el-button>
+            <el-button type="primary" size="large">更新密碼</el-button>
           </div>
         </el-form>
       </div>
