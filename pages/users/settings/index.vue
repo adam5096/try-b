@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
-import UserIcon from '~/components/UserIcon.vue';
 import { UploadFilled } from '@element-plus/icons-vue';
 
 definePageMeta({
@@ -68,8 +67,8 @@ const districtOptions: { [key: string]: { label: string; value: string }[] } = r
       </h1>
       <!-- User Info Header -->
       <div class="mb-8 flex items-center gap-6">
-        <div class="flex h-20 w-20 items-center justify-center rounded-full bg-gray-200">
-          <UserIcon class="h-12 w-12 text-gray-500" />
+        <div class="flex h-20 w-20 items-center justify-center rounded-full">
+          <font-awesome-icon :icon="['fas', 'user-circle']" class="h-12 w-12" />
         </div>
         <div>
           <p class="text-xl font-bold text-primary-blue-dark">

@@ -113,7 +113,7 @@ const socialLinks = ref([
                   方案
                 </a>
                 <div class="px-4 py-2 flex items-center gap-2">
-                  <UserIcon class="w-6 h-6" />
+                  <font-awesome-icon :icon="['fas', 'user-circle']" class="w-6 h-6" />
                   <NuxtLink to="/roles" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                     登入 / 註冊
                   </NuxtLink>
