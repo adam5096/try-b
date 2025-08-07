@@ -63,6 +63,9 @@ const districtOptions: { [key: string]: { label: string; value: string }[] } = r
 <template>
   <main class="min-h-screen bg-brand-gray">
     <div class="mx-auto max-w-container-users px-6 py-12 md:px-12">
+      <h1 class="mb-8 text-2xl font-bold text-primary-blue-dark">
+        帳戶中心設置
+      </h1>
       <!-- User Info Header -->
       <div class="mb-8 flex items-center gap-6">
         <div class="flex h-20 w-20 items-center justify-center rounded-full bg-gray-200">
