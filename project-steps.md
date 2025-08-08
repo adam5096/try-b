@@ -319,3 +319,17 @@
 - **資料與擴充**：於 `<script setup>` 新增 `flowSteps` 與 `venue` 假資料，可日後以 `useFetch` 串接 API 取代；地圖可替換為 Google Maps/第三方元件。
 - **相依與風格**：沿用 Tailwind 與現有色票，未引入新依賴；使用 `border`、`shadow-sm` 強化卡片感。
 - **影響檔案**：`pages/users/programs/[programId].vue`
+
+### UP11: 體驗申請對話框與表單 component
+- **頁面整合**：於 `pages/users/programs/[programId].vue` 新增 `ElDialog`，並將「我要申請」按鈕綁定開啟對話框（狀態 `showApply`）。
+- **新增元件**：建立 `components/users/ApplyExperience.vue`，包含「可參加時段」與「備註」欄位，提交時透過 `submitted` 事件回傳，由父層關閉對話框。
+- **修復**：移除將 `<el-dialog>` 放在 SFC `<template>` 外造成的解析錯誤（Vite PARSE_ERROR）。
+- **重構**：清除 `ApplyExperience.vue` 中與頁面無關的邏輯（`definePageMeta`、`useRouter`、`isFavorited`、`showApply`），使其維持單一職責。
+- **影響檔案**：`components/users/ApplyExperience.vue`，`pages/users/programs/[programId].vue`
+
+### UP11: 申請表單強化與提交導航責任劃分
+- **表單完整化**：擴充 `components/users/ApplyExperience.vue` 欄位為「姓名、電話、Email、日期區間、履歷、提交訊息、條款勾選」，採用 Element Plus 表單元件。
+- **驗證與狀態**：加入規則驗證（電話格式/Email/日期/履歷/訊息/同意條款）、提交 `loading`、按鈕在未勾選條款時停用。
+- **型別修復**：`<el-input type="textarea">` 使用 `:rows` 傳入數字，修正 `Type 'string' is not assignable to type 'number'`。
+- **提交行為**：子元件僅 `emit('submitted')`；父頁面 `pages/users/programs/[programId].vue` 監聽後關閉 Dialog 並 `navigateTo({ name: 'user-landing' })`，維持單一職責、提高重用性與可測試性。
+- **影響檔案**：`components/users/ApplyExperience.vue`，`pages/users/programs/[programId].vue`

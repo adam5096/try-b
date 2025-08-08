@@ -9,6 +9,7 @@ definePageMeta({
 
 const router = useRouter();
 const isFavorited = ref(false);
+const showApply = ref(false); // 新增
 
 const toggleFavorite = () => {
   isFavorited.value = !isFavorited.value;
@@ -36,6 +37,11 @@ const galleryPhotos = ref([
   { id: 3, src: '', alt: '體驗照片 3' },
   { id: 4, src: '', alt: '體驗照片 4' },
 ]);
+
+const onApplySubmitted = async () => {
+  showApply.value = false;
+  await navigateTo({ name: 'user-landing' }); // 導到 users/index.vue
+};
 </script>
 
 <template>
@@ -45,7 +51,7 @@ const galleryPhotos = ref([
       <div class="mb-8 flex items-center justify-between">
         <h1 class="text-2xl font-bold text-primary-blue-dark">體驗詳情</h1>
         <div class="flex items-center gap-4">
-          <el-button type="primary" size="large">我要申請</el-button>
+          <el-button type="primary" size="large" @click="showApply = true">我要申請</el-button>
           <el-button size="large" @click="goBack">返回列表</el-button>
           <el-button size="large" @click="toggleFavorite">
             <div class="flex items-center gap-2">
@@ -212,4 +218,12 @@ const galleryPhotos = ref([
       </section>
     </div>
   </main>
+  <el-dialog
+    v-model="showApply"
+    width="560px"
+    :close-on-click-modal="false"
+    :destroy-on-close="true"
+  >
+    <UsersApplyExperience @submitted="onApplySubmitted" />
+  </el-dialog>
 </template>
