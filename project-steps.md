@@ -333,3 +333,17 @@
 - **型別修復**：`<el-input type="textarea">` 使用 `:rows` 傳入數字，修正 `Type 'string' is not assignable to type 'number'`。
 - **提交行為**：子元件僅 `emit('submitted')`；父頁面 `pages/users/programs/[programId].vue` 監聽後關閉 Dialog 並 `navigateTo({ name: 'user-landing' })`，維持單一職責、提高重用性與可測試性。
 - **影響檔案**：`components/users/ApplyExperience.vue`，`pages/users/programs/[programId].vue`
+
+### UP6: 申請活動的狀態追蹤頁（路由與檔案結構）
+- **頁面建構與路由**：
+  - 將 `pages/users/applications.vue` 移動為巢狀結構 `pages/users/applications/index.vue`，為後續新增子頁（如 `[applicationId].vue`、`timeline.vue`）預留空間。
+  - 在 `definePageMeta` 統一路由名稱為 `user-applications`（kebab-case），並指定 `layout: 'user'`。
+  - 確認舊名 `userApplications` 無外部引用，改名不會造成壞鏈。
+- **導航策略**：
+  - 建議以命名路由導覽 `:to="{ name: 'user-applications' }"`，替代硬編碼 URL，提升可維護性。
+- **後續建議**：
+  - 規劃將 `users` 區其餘駝峰命名頁面（如 `userComments`、`userCommentDetail`）調整為 kebab-case，以維持一致性。
+
+### MGT: Git 分支命名策略（UP6）
+- **決策**：採用「任務碼置前」命名（`up6-ui` 優於 `ui-up6`），利於遠端分支排序聚合與追蹤。
+- **建議分支**：`feat/up6-ui-users-application-status`（或 `feat/up6-users-application-status-ui` 依團隊慣例）。
