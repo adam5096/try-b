@@ -312,3 +312,10 @@
 - **圖示與依賴**：僅使用已註冊的 `calendar-alt` 圖示，未新增套件以避免版本衝突。
 - **資料與擴充**：目前採用靜態假資料，後續可以 `useFetch` 串接 API 取代；欄位結構已預留替換空間。
 - **影響檔案**：`pages/users/programs/[programId].vue`
+
+### UP11: 單一體驗計畫詳情頁 - 體驗流程區塊
+- **UI 實作**：在企業封面/內容區塊之後新增「體驗流程」白底卡片，包含三個階段說明、體驗地點與「地圖」灰底佔位，版面依設計稿間距與留白呈現。
+- **結構與語意**：在同一頁面下新增 `section[aria-label="體驗流程"]`，流程列表採用語意化的 `dl/dt/dd` 兩欄結構（`md:col-span-2` 與 `md:col-span-10`），提升可讀性與可存取性。
+- **資料與擴充**：於 `<script setup>` 新增 `flowSteps` 與 `venue` 假資料，可日後以 `useFetch` 串接 API 取代；地圖可替換為 Google Maps/第三方元件。
+- **相依與風格**：沿用 Tailwind 與現有色票，未引入新依賴；使用 `border`、`shadow-sm` 強化卡片感。
+- **影響檔案**：`pages/users/programs/[programId].vue`
