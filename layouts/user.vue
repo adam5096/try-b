@@ -3,7 +3,7 @@ import { NuxtLink } from '#components';
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 
 // --- Header State ---
-const isLoggedIn = ref(false); // Simulate user login state
+const isLoggedIn = ref(true); // Simulate user login state
 const isMenuOpen = ref(false);
 const isProfileMenuOpen = ref(false);
 
