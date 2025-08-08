@@ -347,3 +347,10 @@
 ### MGT: Git 分支命名策略（UP6）
 - **決策**：採用「任務碼置前」命名（`up6-ui` 優於 `ui-up6`），利於遠端分支排序聚合與追蹤。
 - **建議分支**：`feat/up6-ui-users-application-status`（或 `feat/up6-users-application-status-ui` 依團隊慣例）。
+
+### UP6: 申請活動的狀態追蹤頁（UI 第一/二部分）
+- **頁面骨架（第一部分）**：建立標題與操作列、篩選對話框（狀態/日期區間）、列表表格（活動/公司/申請日/狀態/操作）。沿用 `layout: 'user'` 與 `max-w-container-users`。
+- **型別與策略**：申請狀態以 union 五值（待審核/已通過/未通過/已取消/已完成）統一；日期區間使用 `ref<[Date, Date] | ''>('')`，符合 Element Plus `daterange` v-model 期望，重置回 `''`；導覽一律命名路由。
+- **卡片清單（第二部分）**：新增卡片樣式清單，呈現申請日/狀態、標題、地點、活動日期、參與人數、描述、主辦單位；操作含「查看詳情」與「取消申請」（事件預留）。
+- **圖示與樣式**：使用已註冊圖示 `map-marker-alt`、`calendar-alt`、`user-circle`；採 Tailwind + Element Plus，未新增依賴，維持現有色票與陰影/邊框樣式。
+- **擴充建議**：後續抽出 `useApplications` composable 承載篩選與資料取得，替換假資料為 `useFetch`。
