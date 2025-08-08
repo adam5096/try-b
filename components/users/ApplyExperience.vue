@@ -39,7 +39,6 @@ const rules: FormRules<ApplyForm> = {
   ],
   dateRange: [{ required: true, message: '請選擇參加日期', trigger: 'change' }],
   resume: [{ required: true, message: '請選擇履歷', trigger: 'change' }],
-  message: [{ required: true, message: '請輸入提交訊息', trigger: 'blur' }],
   agree: [
     {
       validator: (_rule, value: boolean, callback) => {
@@ -106,7 +105,7 @@ const handleSubmit = async () => {
         </el-select>
       </el-form-item>
 
-      <el-form-item label="提交訊息" prop="message">
+      <el-form-item label="提交訊息">
         <el-input v-model="form.message" type="textarea" :rows="5" placeholder="請輸入申請動機或補充說明" />
       </el-form-item>
 
