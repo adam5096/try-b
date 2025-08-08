@@ -37,6 +37,11 @@ const galleryPhotos = ref([
   { id: 3, src: '', alt: '體驗照片 3' },
   { id: 4, src: '', alt: '體驗照片 4' },
 ]);
+
+const onApplySubmitted = async () => {
+  showApply.value = false;
+  await navigateTo({ name: 'user-landing' }); // 導到 users/index.vue
+};
 </script>
 
 <template>
@@ -219,6 +224,6 @@ const galleryPhotos = ref([
     :close-on-click-modal="false"
     :destroy-on-close="true"
   >
-    <UsersApplyExperience @submitted="showApply = false" />
+    <UsersApplyExperience @submitted="onApplySubmitted" />
   </el-dialog>
 </template>
