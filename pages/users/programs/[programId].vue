@@ -63,7 +63,94 @@ const companyName = ref('某某某科技資訊公司');
           </p>
         </div>
 
-        
+        <!-- 軟體工程師一日體驗內容（與企業封面同區塊） -->
+        <div class="mt-6 rounded-lg bg-white p-8 shadow-sm">
+          <!-- 內容卡抬頭：左標題／右關鍵資訊 -->
+          <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div class="md:col-span-2">
+              <h3 class="text-xl font-bold">軟體工程師一日體驗營</h3>
+              <p class="mt-1 text-sm text-gray-500">科技業／軟體工程師</p>
+            </div>
+            <div class="flex flex-col gap-2 text-sm text-gray-600">
+              <div class="flex items-center justify-between">
+                <span>已申請人數：0人</span>
+                <span>申請截止還有10天</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>招募天數：3天</span>
+                <span>招募人數：10-20人</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <font-awesome-icon :icon="['fas','calendar-alt']" />
+                <span>2025年10月15日 - 2025年10月17日</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 內文段落 -->
+          <div class="space-y-8 text-gray-800">
+            <!-- 體驗介紹 -->
+            <section>
+              <h4 class="mb-3 text-lg font-bold">體驗介紹</h4>
+              <p class="leading-7">
+                目具文化探索交流帶您深入了解台灣新世代文化與自然景觀。在活動當中，您將有機會參與實務教學課程、參與團隊站會、系統設計與程式實作，並透過講師經歷穿針引線，掌握基礎的全貌與軟體文化切面，藉此獲得更多的職涯靈感。
+              </p>
+            </section>
+
+            <!-- 師資介紹 -->
+            <section>
+              <h4 class="mb-3 text-lg font-bold">師資介紹</h4>
+              <p class="mb-2 font-semibold">林德榮</p>
+              <p class="leading-7">
+                產業軟體與平台架構經驗逾 10 年，歷任後端開發、系統架構與平台穩定度維運，亦擔任內部講師推動
+                DevOps 與工程文化。擅長 B2B／平台類產品的模組化與可維運性設計。
+              </p>
+            </section>
+
+            <!-- 經歷 -->
+            <section>
+              <h4 class="mb-3 text-lg font-bold">經歷</h4>
+              <ul class="list-disc space-y-2 pl-6">
+                <li>國際級電商系統架構師：協助平台完成數位轉型，實現高可用與高擴展。</li>
+                <li>知名新創公司資深軟體工程師：參與 API 設計、導入 CI/CD 流程、優化交付週期。</li>
+                <li>跨部門平台技術顧問：建立高流量環境下的穩定性與監控機制。</li>
+              </ul>
+            </section>
+
+            <!-- 參加限制 -->
+            <section>
+              <h4 class="mb-3 text-lg font-bold">參加限制</h4>
+              <ol class="list-decimal space-y-1 pl-6">
+                <li>了解 JS 語法、陣列物件、DOM、事件、AJAX 等基礎。</li>
+                <li>建議具備可瀏覽的程式作品（JS Code、Codepen、GitHub Pages）。</li>
+                <li>18 歲以上。</li>
+              </ol>
+            </section>
+
+            <!-- 行前須知、注意事項 -->
+            <section>
+              <h4 class="mb-3 text-lg font-bold">行前須知、注意事項</h4>
+              <ol class="list-decimal space-y-1 pl-6">
+                <li>準時參與並全程配合課程安排，珍惜與講師互動。</li>
+                <li>體驗課為入門性質，不保證完成後即能就業。</li>
+                <li>活動過程可能拍攝紀錄，僅作為教學回放用途。</li>
+                <li>如有不可抗力因素，請提前於平台取消。</li>
+              </ol>
+            </section>
+
+            <!-- 準備清單 -->
+            <section>
+              <h4 class="mb-3 text-lg font-bold">準備清單</h4>
+              <ol class="list-decimal space-y-1 pl-6">
+                <li>筆記型電腦</li>
+                <li>水壺</li>
+                <li>證件（身份證、健保卡）</li>
+                <li>手抄筆記工具</li>
+                <li>長效外接電源</li>
+              </ol>
+            </section>
+          </div>
+        </div>
       </section>
 
       <!-- 其餘內容佔位（後續區塊再實作） -->
