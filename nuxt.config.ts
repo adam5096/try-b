@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/eslint',
     '@nuxtjs/seo',
-    '@element-plus/nuxt',
+    ['@element-plus/nuxt', { idInjection: false }],
     '@nuxt/image',
   ],
   fonts: {

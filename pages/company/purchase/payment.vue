@@ -5,12 +5,26 @@ import {
   Check,
 } from '@element-plus/icons-vue'
 
+
 definePageMeta({
   layout: 'company',
   name: 'company-purchase-payment',
 })
 
+const router = useRouter()
+
 const paymentMethod = ref('creditCard')
+
+const goBack = () => {
+  router.back()
+}
+
+const confirmPayment = () => {
+  // 使用 Nuxt 3 推薦的 navigateTo，並搭配「命名路由」
+  return navigateTo({
+    name: 'company-purchase-success',
+  })
+}
 </script>
 
 <template>
@@ -167,10 +181,10 @@ const paymentMethod = ref('creditCard')
 
       <!-- Actions -->
       <div class="flex justify-between">
-        <el-button size="large">
+        <el-button size="large" @click="goBack">
           上一步
         </el-button>
-        <el-button type="primary" size="large">
+        <el-button type="primary" size="large" @click="confirmPayment">
           確認付款
         </el-button>
       </div>

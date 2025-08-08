@@ -9,16 +9,16 @@
  * 路由名稱 (name) 透過各頁面中的 definePageMeta 設定，與檔案路徑解耦。
  */
 export const userRoutes = {
-  landing: () => ({ name: 'userLanding' }),
-  login: () => ({ name: 'userLogin' }),
-  applications: () => ({ name: 'userApplications' }),
-  comments: () => ({ name: 'userComments' }),
+  landing: () => ({ name: 'user-landing' }),
+  login: () => ({ name: 'user-login' }),
+  applications: () => ({ name: 'user-applications' }),
+  comments: () => ({ name: 'user-comments' }),
   commentsDetail: (commentId: string | number) => ({
-    name: 'userCommentDetail',
+    name: 'user-comment-detail',
     params: { commentId },
   }),
   programDetail: (programId: string | number) => ({
-    name: 'userProgramDetail',
+    name: 'user-program-detail',
     params: { programId },
   }),
 }; 

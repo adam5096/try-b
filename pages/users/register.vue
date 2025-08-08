@@ -1,20 +1,19 @@
 <script setup lang="ts">
 definePageMeta({
-  name: 'user-login',
+  name: 'user-register',
   layout: 'user'
 })
 </script>
 
-<!-- up1 體驗者登入頁 -->
 <template>
   <div class="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="w-full max-w-md space-y-8">
       <div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          歡迎回來
+          建立您的帳戶
         </h2>
         <p class="mt-2 text-center text-sm text-gray-600">
-          請登入您的帳戶以繼續使用平台服務
+          請註冊您的帳戶以繼續使用平台服務
         </p>
       </div>
       <form
@@ -22,8 +21,23 @@ definePageMeta({
         action="#"
         method="POST"
       >
-        <div class="rounded-md  -space-y-px">
-          <div>
+        <div class="rounded-md -space-y-px">
+          <div class="pt-4">
+            <label
+              for="name"
+              class="block text-sm font-medium text-gray-700"
+            >姓名</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"
+              placeholder="請輸入您的姓名"
+            >
+          </div>
+          <div class="pt-4">
             <label
               for="email-address"
               class="block text-sm font-medium text-gray-700"
@@ -39,39 +53,34 @@ definePageMeta({
             >
           </div>
           <div class="pt-4">
-            <div class="flex items-center justify-between">
-              <label
-                for="password"
-                class="block text-sm font-medium text-gray-700"
-              >密碼</label>
-              <div class="text-sm">
-                <a href="#">忘記密碼？</a>
-              </div>
-            </div>
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700"
+            >密碼</label>
             <input
               id="password"
               name="password"
               type="password"
-              autocomplete="current-password"
+              autocomplete="new-password"
               required
               class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"
               placeholder="請輸入您的密碼"
             >
           </div>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-            >
+          <div class="pt-4">
             <label
-              for="remember-me"
-              class="ml-2 block text-sm text-gray-900"
-            >記住我的登入資訊</label>
+              for="confirm-password"
+              class="block text-sm font-medium text-gray-700"
+            >確認密碼</label>
+            <input
+              id="confirm-password"
+              name="confirm-password"
+              type="password"
+              autocomplete="new-password"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"
+              placeholder="請再次輸入您的密碼"
+            >
           </div>
         </div>
 
@@ -80,8 +89,11 @@ definePageMeta({
             type="submit"
             class="group relative flex w-full justify-center rounded-md border border-transparent bg-gray-400 py-2 px-4 text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
-            登入
+            註冊
           </button>
+        </div>
+        <div class="text-center text-xs text-gray-500">
+          註冊即表示您同意我們的<a href="#">服務條款</a>與<a href="#">隱私權政策</a>
         </div>
       </form>
       <div class="relative">
@@ -92,7 +104,7 @@ definePageMeta({
           <div class="w-full border-t border-gray-300" />
         </div>
         <div class="relative flex justify-center text-sm">
-          <span class="bg-gray-50 px-2 text-gray-500">或使用其他方式登入</span>
+          <span class="bg-gray-50 px-2 text-gray-500">或使用其他方式註冊</span>
         </div>
       </div>
       <div>
@@ -100,12 +112,8 @@ definePageMeta({
           type="button"
           class="group relative flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
         >
-          使用 Google 帳戶登入
+          使用 Google 帳戶註冊
         </button>
-      </div>
-      <div class="text-center text-sm">
-        還沒有帳戶？
-        <NuxtLink :to="{ name: 'user-register' }">立即註冊</NuxtLink>
       </div>
     </div>
   </div>

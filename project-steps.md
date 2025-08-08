@@ -201,3 +201,135 @@
 - **卡片佈局重構**: 使用 Flexbox (`flex flex-col`) 重構了「使用者角色」區塊的三張卡片，確保在 `lg` 斷點下它們能維持等高，解決了因內容長度不一造成的視覺不對稱問題。
 - **內容對齊優化**: 透過 `mt-auto` 技巧，將卡片底部的功能列表推至齊平，並將列表文字設定為 `text-left` (靠左對齊)，提升了多行文字的排版整齊度與可讀性。
 - **樣式更新**: 為卡片新增了背景、陰影與 `hover` 互動效果，使其設計更符合整體風格。
+
+# 2025-08-05
+### MGT: AI 輔助開發規格書建立
+- **框架建立**: 在 `.cursor/rules/nuxt3-dev.mdc` 中建立了一套完整的人機協作框架，旨在結合人類的策略性思維與 AI 的高速執行能力。
+- **核心原則與角色定義**: 明確定義了「人類主導，AI 輔助」的核心原則，並將開發者與 AI 分別定義為「領航員/架構師」與「超級駕駛員/執行者」。
+- **協作流程標準化**: 提供了「從概念到程式碼」的互動模型範例，並建立了包含提供完整上下文、下達明確指令與迭代式提問的溝通協定。
+- **最佳實踐規範**: 強調了版本控制、資訊安全、環境分離及保持獨立思考等在 AI 輔助開發中的重要最佳實踐。
+
+### EP6, 7, 8, 9: 計畫與申請人管理流程
+- **路由架構重構**:
+    - 為了釐清 `/applicants` (列表) 與 `/applicants/:id` (詳情) 之間的關係，將原有的檔案結構重構為巢狀路由 `.../programs/[programId]/applicants/index.vue` (EP8) 與 `.../programs/[programId]/applicants/[applicantId].vue` (EP9)。
+    - 全面更新了 `definePageMeta` 中的 `name` 與 `utils/companyRoutes.ts` 中的路由定義，並透過刪除舊有的 `applicants.vue` 檔案，徹底解決了因檔案結構造成的路由衝突問題。
+- **端到端路由串接**:
+    - **EP6 -> EP7**: 串接了「所有計畫列表」至「單一計畫詳情」的導航。
+    - **EP7 -> EP8**: 串接了「單一計畫詳情」至「申請者列表」的導航。
+    - **EP8 -> EP9**: 串接了「申請者列表」至「申請者審核頁」的導航。
+- **EP9 - 申請者審核頁面 UI**:
+    - 根據設計稿，使用 Element Plus 元件完整實作了「申請者審核頁面」的複雜 UI，包含申請人資訊、申請動機、技能、附件與審核表單等區塊。
+- **EP7 - 單一計畫詳情頁 UI 與 RWD**:
+    - **UI 實作**: 根據多份設計稿，迭代完成了頁面三大區塊的 UI 切版，包含申請統計、計畫詳情與體驗流程等。
+    - **佈局修復**: 透過在 `definePageMeta` 中明確指定 `layout: 'company'`，解決了頁面跳轉時因佈局不匹配而引發的 `TypeError`。
+    - **響應式設計**:
+        - 實作了「申請統計」卡片的響應式設計，確保在不同螢幕寬度下皆有良好排版。
+        - 透過多次重構，最終將頁面底部的三張卡片改為 `lg:grid-cols-3` 的網格佈局，解決了因內容長短不一導致的卡片不等高問題，確保了版面的視覺一致性。
+
+### EP9 -> EP8: 申請者審核流程
+- **編程式導航實作**: 在申請者審核頁 (`EP9`) 中，為「提交審核結果」按鈕新增了點擊事件，並使用 `navigateTo` 函式將使用者導航回申請者列表頁 (`EP8`)。
+- **實踐選擇與釐清**: 深入討論並確認了在此場景下使用 `<button>` 搭配 `navigateTo` 的作法是優於 `<NuxtLink>` 的。主要原因是「提交」是一個包含潛在商業邏輯（如 API 請求）的「動作 (Action)」，而非單純的「導航 (Navigation)」。
+
+# 2025-08-06
+### EP10: 企業方案購買流程路由優化
+- **路由串接與實踐**:
+  - 完成了方案選擇頁 (`index.vue`) 至付款頁 (`payment.vue`) 的導航串接，並透過 `planId` 查詢參數傳遞使用者選擇。
+  - 將專案中所有目的地導航 (`router.push`) 全面重構為 Nuxt 3 推薦的 `navigateTo` 函式，並採用命名路由取代硬編碼 URL，提升了程式碼的健壯性與可維護性。
+- **導航邏輯釐清**:
+  - 深入討論並確認了 `navigateTo`（目的地導航）與 `router.back()`（歷史導航）的使用場景與最佳實踐。
+  - 確認 `router.back()` 是處理「返回」或「上一步」功能的正確方法，無需替換。
+
+### EP1: 角色選擇頁路由錯誤修復與重構
+- **問題診斷與修復**:
+  - 針對 `roles.vue` 頁面導航至 `users/login` 時發生的 500 伺服器錯誤進行了深度除錯。
+  - 透過比較分析，確認錯誤根源為 `users/login` 頁面隱性繼承了全域預設佈局 (`layouts/default.vue`)，而該佈局在伺服器端渲染 (SSR) 時因依賴問題而失敗。
+  - 透過在 `users/login` 中明確指定 `layout: 'blank'`，成功繞開了問題佈局，解決了 500 錯誤。
+- **架構清理與依賴分析**:
+  - 根據除錯結果，決定移除已造成問題且不再需要的 `layouts/default.vue` 檔案。
+  - 在刪除前，對整個 `pages/` 目錄進行了全面的依賴性掃描，精準地找出了所有會受此變更影響的頁面，確保了重構的安全性與完整性。
+
+### Layout: 體驗者佈局路由優化
+- **路由實踐釐清**: 針對 `layouts/user.vue` 中的「登入/註冊」連結，深入討論了 `<NuxtLink>` 的兩種 `to` 屬性寫法。
+- **最佳實踐採納**: 確認並建議採用「命名路由物件寫法」 (`:to="{ name: 'routeName' }"`) 取代「硬編碼 URL 字串」 (`to="/path/to/page"`)。
+- **理由與優勢**: 此舉能將連結與實際 URL 路徑解耦，大幅提升程式碼的健壯性與長期可維護性，未來修改路由時僅需調整路由定義檔，無需搜尋並取代所有相關連結。
+
+### UP1: 體驗者登入頁面 (UI 切版)
+- **UI 切版與策略**:
+  - 根據設計稿，在 `pages/users/login.vue` 中使用 Tailwind CSS 完成了「體驗者登入頁」的 UI 切版。
+  - 釐清並確認了在入口頁面（如登入頁）優先使用原生 HTML 元素與 Tailwind CSS 以達成精準樣式控制，而在功能性強的應用核心頁面則使用 Element Plus 的開發策略。
+- **全域樣式與 CSS Reset**:
+  - 深入探討了 Tailwind CSS 的 Preflight (CSS Reset) 機制，確認其已包含對 `<a>` 標籤的預設樣式重設。
+  - 透過移除 `<a>` 標籤上多餘的功能類別 (utility classes) 並刪除元件內的 `<style scoped>`，成功讓全域的 Preflight 樣式生效，達成了全站連結樣式統一的最佳實踐，避免了引入額外的 `reset.css`。
+- **互動樣式微調**:
+  - 解決了表單輸入框 `focus` 狀態下 `outline` 和 `ring` 的樣式問題。
+  - 使用 `padding` 功能類別調整了輸入框的高度，使其符合設計需求。
+
+### UP1-1: 體驗者註冊頁面 (UI 切版)
+- **頁面建構與 UI 切版**: 根據設計稿，在 `pages/users/register.vue` 中完成了「體驗者註冊頁面」的 UI 切版。
+- **結構與樣式重用**: 為了確保視覺一致性並加速開發，重用了 `pages/users/login.vue` 的版面結構與 Tailwind CSS 樣式。
+- **表單內容客製化**: 根據註冊流程的需求，新增了「姓名」與「確認密碼」欄位，並加入了服務條款同意聲明。
+- **路由串接**: 更新了頁面底部的連結，使其能正確導航至登入頁面，完成了註冊與登入流程的雙向串接。
+
+# 2025-08-07
+### UP2: 體驗者帳戶中心 (UI)
+- **頁面建構與 UI**: 在 `pages/users/settings/index.vue` 中，根據設計稿完成了「帳戶中心設置」頁面的初步 UI 切版，並優先採用 Element Plus 元件庫來建構表單。
+- **佈局與樣式**:
+  - 設定頁面使用 `user` 全域佈局，並透過 `max-w-container-users` 確保版心與專案規範一致。
+  - 使用 Tailwind CSS utility classes 實作了包含使用者頭像、姓名與職稱的資訊區塊。
+- **表單優化與討論**:
+  - **元件選用**: 將「性別」欄位從 `<el-input>` 升級為更符合語意與使用者體驗的 `<el-radio-group>`。
+  - **響應式佈局**: 將「通訊地址」區塊重構為獨立的全寬區塊 (`md:col-span-2`)，並使其內部的「縣市/區域」選單在寬螢幕 (`xl`) 上並排顯示，在窄螢幕上自動堆疊，提升了跨裝置的可用性。
+  - **包容性設計**: 深入討論了「性別」欄位的社會意涵，最終採納了包含「男、女、其他」的高度包容性設計，並釐清了其與後端 API 的協作模式。
+- **密碼設置 UI**:
+  - 新增「密碼設置」區塊，使用 Element Plus 的 `<el-input type="password">` 搭配 `show-password` 屬性，提供了安全性與易用性兼備的密碼修改介面。
+- **程式碼品質與協作規範**:
+  - 為 `districtOptions` 物件加上 TypeScript 索引簽章，解決了 Linter 型別錯誤，提升了程式碼的健壯性。
+  - 根據討論建立了新原則：優先使用 Element Plus 元件的預設樣式，避免 Tailwind 樣式覆蓋導致非預期行為，並已將此原則應用於頁面中的所有按鈕。
+
+### MGT: Git 工作流程與 commit 訊息管理
+- **最新 commit 修改**:
+  - 學習並實作了 `git commit --amend` 指令，用於修改最新一次的 commit 訊息。
+  - 深入釐清了在 Vim 編輯器中修改 commit 訊息的完整流程，包括模式切換、正確的編輯位置以及儲存退出的指令 (`:wq`)。
+- **歷史 commit 修改**:
+  - 學習了使用互動式變基 (`git rebase -i HEAD~N`) 來修改歷史中特定 commit 的訊息。
+  - 掌握了將 `pick` 改為 `reword` 來觸發修改流程的技巧。
+- **最佳實踐與安全**:
+  - 強調了 `rebase` 與 `amend` 操作應僅限於未推送到遠端的本地 commit，以避免破壞團隊協作歷史。
+
+### UP11: 方案詳情頁收藏功能
+- **UI 與功能實作**: 在方案詳情頁 (`pages/users/programs/[programId].vue`) 中新增了「收藏」功能，允許使用者將感興趣的方案加入收藏。
+- **動態樣式**: 收藏圖示會根據方案的收藏狀態 (`isFavorited`) 動態切換實心 (`fas`) 與空心 (`far`) 樣式，提供明確的視覺回饋。
+
+### MGT: Font Awesome 版本衝突修復
+- **問題診斷**: 針對 `plugins/fontawesome.ts` 中出現的 TypeScript 型別錯誤進行了除錯。
+- **根本原因**: 確認問題源於 `@fortawesome/free-regular-svg-icons` (`v7`) 與其他核心套件 (`v6`) 之間的主版本不匹配。
+- **解決方案**: 透過將 `@fortawesome/free-regular-svg-icons` 的版本統一降至 `^6.7.2`，成功解決了型別衝突，恢復了開發環境的穩定性。
+
+# 2025-08-08
+### UP11: 單一體驗計畫詳情頁 - 企業封面與體驗內容
+- **企業封面區塊**：在 `pages/users/programs/[programId].vue` 新增灰底橫幅，包含左上圓形 LOGO 佔位、置中標題「企業封面」、左下公司名稱；沿用 `max-w-container-users` 與 Tailwind 版心與配色。
+- **體驗內容卡（同一 section）**：於同一 `section` 內新增白底卡片，上方為左側標題/副標與右側關鍵資訊列（已申請人數、截止天數、招募天數、招募人數、日期），下方依設計稿完成六個段落：體驗介紹、師資介紹、經歷、參加限制、行前須知、準備清單。
+- **圖示與依賴**：僅使用已註冊的 `calendar-alt` 圖示，未新增套件以避免版本衝突。
+- **資料與擴充**：目前採用靜態假資料，後續可以 `useFetch` 串接 API 取代；欄位結構已預留替換空間。
+- **影響檔案**：`pages/users/programs/[programId].vue`
+
+### UP11: 單一體驗計畫詳情頁 - 體驗流程區塊
+- **UI 實作**：在企業封面/內容區塊之後新增「體驗流程」白底卡片，包含三個階段說明、體驗地點與「地圖」灰底佔位，版面依設計稿間距與留白呈現。
+- **結構與語意**：在同一頁面下新增 `section[aria-label="體驗流程"]`，流程列表採用語意化的 `dl/dt/dd` 兩欄結構（`md:col-span-2` 與 `md:col-span-10`），提升可讀性與可存取性。
+- **資料與擴充**：於 `<script setup>` 新增 `flowSteps` 與 `venue` 假資料，可日後以 `useFetch` 串接 API 取代；地圖可替換為 Google Maps/第三方元件。
+- **相依與風格**：沿用 Tailwind 與現有色票，未引入新依賴；使用 `border`、`shadow-sm` 強化卡片感。
+- **影響檔案**：`pages/users/programs/[programId].vue`
+
+### UP11: 體驗申請對話框與表單 component
+- **頁面整合**：於 `pages/users/programs/[programId].vue` 新增 `ElDialog`，並將「我要申請」按鈕綁定開啟對話框（狀態 `showApply`）。
+- **新增元件**：建立 `components/users/ApplyExperience.vue`，包含「可參加時段」與「備註」欄位，提交時透過 `submitted` 事件回傳，由父層關閉對話框。
+- **修復**：移除將 `<el-dialog>` 放在 SFC `<template>` 外造成的解析錯誤（Vite PARSE_ERROR）。
+- **重構**：清除 `ApplyExperience.vue` 中與頁面無關的邏輯（`definePageMeta`、`useRouter`、`isFavorited`、`showApply`），使其維持單一職責。
+- **影響檔案**：`components/users/ApplyExperience.vue`，`pages/users/programs/[programId].vue`
+
+### UP11: 申請表單強化與提交導航責任劃分
+- **表單完整化**：擴充 `components/users/ApplyExperience.vue` 欄位為「姓名、電話、Email、日期區間、履歷、提交訊息、條款勾選」，採用 Element Plus 表單元件。
+- **驗證與狀態**：加入規則驗證（電話格式/Email/日期/履歷/訊息/同意條款）、提交 `loading`、按鈕在未勾選條款時停用。
+- **型別修復**：`<el-input type="textarea">` 使用 `:rows` 傳入數字，修正 `Type 'string' is not assignable to type 'number'`。
+- **提交行為**：子元件僅 `emit('submitted')`；父頁面 `pages/users/programs/[programId].vue` 監聽後關閉 Dialog 並 `navigateTo({ name: 'user-landing' })`，維持單一職責、提高重用性與可測試性。
+- **影響檔案**：`components/users/ApplyExperience.vue`，`pages/users/programs/[programId].vue`
