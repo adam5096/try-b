@@ -18,7 +18,7 @@ interface ApplicationItem {
 
 const isFilterDialogVisible = ref(false);
 const selectedStatus = ref<ApplicationStatus | ''>('');
-const selectedDateRange = ref<[Date, Date] | null>(null);
+const selectedDateRange = ref<[Date, Date] | ''>('');
 
 const statusOptions: ApplicationStatus[] = ['待審核', '已通過', '未通過', '已取消', '已完成'];
 
@@ -34,8 +34,8 @@ const visibleApplications = computed(() => {
   return data.filter((item) => {
     const byStatus = selectedStatus.value ? item.status === selectedStatus.value : true;
     const byDate = (() => {
-      if (!selectedDateRange.value) return true;
-      const [start, end] = selectedDateRange.value;
+      if (!Array.isArray(selectedDateRange.value)) return true;
+      const [start, end] = selectedDateRange.value as [Date, Date];
       const ts = new Date(item.appliedAt).getTime();
       return ts >= start.getTime() && ts <= end.getTime();
     })();
@@ -45,7 +45,7 @@ const visibleApplications = computed(() => {
 
 function resetFilters() {
   selectedStatus.value = '';
-  selectedDateRange.value = null;
+  selectedDateRange.value = '';
 }
 
 function getTagType(status: ApplicationStatus): 'success' | 'warning' | 'danger' | 'info' {
