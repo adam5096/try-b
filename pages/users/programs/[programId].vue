@@ -20,6 +20,14 @@ const goBack = () => {
 
 // 假資料：企業名稱（之後可換 API）
 const companyName = ref('某某某科技資訊公司');
+
+// 體驗流程與地點（假資料）
+const flowSteps = ref([
+  { label: '階段一', text: '企業介紹與數位行銷產業概況 (1小時)、數位行銷工具與平台介紹 (2小時)' },
+  { label: '階段二', text: '實際案例分析與討論 (1小時)、分組實作：社群媒體行銷策劃 (2小時)' },
+  { label: '階段三', text: '成果發表與專業人員回饋 (3小時)' },
+]);
+const venue = ref('高雄市三民區');
 </script>
 
 <template>
@@ -149,6 +157,33 @@ const companyName = ref('某某某科技資訊公司');
                 <li>長效外接電源</li>
               </ol>
             </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- 體驗流程區塊 -->
+      <section aria-label="體驗流程" class="mb-8">
+        <div class="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
+          <!-- 標題 + 流程列表 -->
+          <div class="mb-6">
+            <h3 class="mb-4 text-lg font-bold">體驗流程</h3>
+            <dl class="space-y-4">
+              <div v-for="(s, idx) in flowSteps" :key="idx" class="grid grid-cols-12 gap-4">
+                <dt class="col-span-12 font-semibold text-gray-700 md:col-span-2">{{ s.label }}</dt>
+                <dd class="col-span-12 leading-7 text-gray-700 md:col-span-10">
+                  {{ s.text }}
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <!-- 體驗地點 + 地圖 -->
+          <div>
+            <h3 class="mb-2 text-lg font-bold">體驗地點</h3>
+            <p class="mb-4 text-gray-700">{{ venue }}</p>
+            <div class="flex h-80 w-full items-center justify-center rounded bg-gray-300 text-3xl text-gray-700">
+              地圖
+            </div>
           </div>
         </div>
       </section>
