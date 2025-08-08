@@ -304,3 +304,11 @@
 - **問題診斷**: 針對 `plugins/fontawesome.ts` 中出現的 TypeScript 型別錯誤進行了除錯。
 - **根本原因**: 確認問題源於 `@fortawesome/free-regular-svg-icons` (`v7`) 與其他核心套件 (`v6`) 之間的主版本不匹配。
 - **解決方案**: 透過將 `@fortawesome/free-regular-svg-icons` 的版本統一降至 `^6.7.2`，成功解決了型別衝突，恢復了開發環境的穩定性。
+
+# 2025-08-08
+### UP11: 單一體驗計畫詳情頁 - 企業封面與體驗內容
+- **企業封面區塊**：在 `pages/users/programs/[programId].vue` 新增灰底橫幅，包含左上圓形 LOGO 佔位、置中標題「企業封面」、左下公司名稱；沿用 `max-w-container-users` 與 Tailwind 版心與配色。
+- **體驗內容卡（同一 section）**：於同一 `section` 內新增白底卡片，上方為左側標題/副標與右側關鍵資訊列（已申請人數、截止天數、招募天數、招募人數、日期），下方依設計稿完成六個段落：體驗介紹、師資介紹、經歷、參加限制、行前須知、準備清單。
+- **圖示與依賴**：僅使用已註冊的 `calendar-alt` 圖示，未新增套件以避免版本衝突。
+- **資料與擴充**：目前採用靜態假資料，後續可以 `useFetch` 串接 API 取代；欄位結構已預留替換空間。
+- **影響檔案**：`pages/users/programs/[programId].vue`
