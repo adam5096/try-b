@@ -39,7 +39,7 @@ const onSubmit = () => {
         <el-input v-model="form.availability" placeholder="例如：10/15 全天、10/16 下午" />
       </el-form-item>
       <el-form-item label="備註">
-        <el-input v-model="form.note" type="textarea" rows="3" placeholder="想補充的內容（選填）" />
+        <el-input v-model="form.note" type="textarea" :rows="3" placeholder="想補充的內容（選填）" />
       </el-form-item>
       <div class="flex justify-end">
         <el-button type="primary" @click="onSubmit">送出申請</el-button>
