@@ -28,6 +28,14 @@ const flowSteps = ref([
   { label: '階段三', text: '成果發表與專業人員回饋 (3小時)' },
 ]);
 const venue = ref('高雄市三民區');
+
+// 體驗照片（假資料：之後可換實際圖片 URL）
+const galleryPhotos = ref([
+  { id: 1, src: '', alt: '體驗照片 1' },
+  { id: 2, src: '', alt: '體驗照片 2' },
+  { id: 3, src: '', alt: '體驗照片 3' },
+  { id: 4, src: '', alt: '體驗照片 4' },
+]);
 </script>
 
 <template>
@@ -188,10 +196,20 @@ const venue = ref('高雄市三民區');
         </div>
       </section>
 
-      <!-- 其餘內容佔位（後續區塊再實作） -->
-      <div class="rounded-lg bg-white p-8 shadow-sm">
-        <p>這裡是計畫的詳細內容...</p>
-      </div>
+      <!-- 體驗照片區塊 -->
+      <section aria-label="體驗照片" class="mb-8">
+        <div class="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
+          <h3 class="mb-6 text-lg font-bold">體驗照片</h3>
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div v-for="photo in galleryPhotos" :key="photo.id" class="rounded bg-gray-300">
+              <!-- 若未提供圖片，顯示佔位；未來可改成 <img :src="photo.src" :alt="photo.alt" class="h-48 w-full object-cover rounded" /> -->
+              <div class="flex h-48 w-full items-center justify-center text-3xl text-gray-700">
+                圖片
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 </template>
