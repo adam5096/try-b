@@ -333,3 +333,24 @@
 - **型別修復**：`<el-input type="textarea">` 使用 `:rows` 傳入數字，修正 `Type 'string' is not assignable to type 'number'`。
 - **提交行為**：子元件僅 `emit('submitted')`；父頁面 `pages/users/programs/[programId].vue` 監聽後關閉 Dialog 並 `navigateTo({ name: 'user-landing' })`，維持單一職責、提高重用性與可測試性。
 - **影響檔案**：`components/users/ApplyExperience.vue`，`pages/users/programs/[programId].vue`
+
+### UP6: 申請活動的狀態追蹤頁（路由與檔案結構）
+- **頁面建構與路由**：
+  - 將 `pages/users/applications.vue` 移動為巢狀結構 `pages/users/applications/index.vue`，為後續新增子頁（如 `[applicationId].vue`、`timeline.vue`）預留空間。
+  - 在 `definePageMeta` 統一路由名稱為 `user-applications`（kebab-case），並指定 `layout: 'user'`。
+  - 確認舊名 `userApplications` 無外部引用，改名不會造成壞鏈。
+- **導航策略**：
+  - 建議以命名路由導覽 `:to="{ name: 'user-applications' }"`，替代硬編碼 URL，提升可維護性。
+- **後續建議**：
+  - 規劃將 `users` 區其餘駝峰命名頁面（如 `userComments`、`userCommentDetail`）調整為 kebab-case，以維持一致性。
+
+### MGT: Git 分支命名策略（UP6）
+- **決策**：採用「任務碼置前」命名（`up6-ui` 優於 `ui-up6`），利於遠端分支排序聚合與追蹤。
+- **建議分支**：`feat/up6-ui-users-application-status`（或 `feat/up6-users-application-status-ui` 依團隊慣例）。
+
+### UP6: 申請活動的狀態追蹤頁（UI 第一/二部分）
+- **頁面骨架（第一部分）**：建立標題與操作列、篩選對話框（狀態/日期區間）、列表表格（活動/公司/申請日/狀態/操作）。沿用 `layout: 'user'` 與 `max-w-container-users`。
+- **型別與策略**：申請狀態以 union 五值（待審核/已通過/未通過/已取消/已完成）統一；日期區間使用 `ref<[Date, Date] | ''>('')`，符合 Element Plus `daterange` v-model 期望，重置回 `''`；導覽一律命名路由。
+- **卡片清單（第二部分）**：新增卡片樣式清單，呈現申請日/狀態、標題、地點、活動日期、參與人數、描述、主辦單位；操作含「查看詳情」與「取消申請」（事件預留）。
+- **圖示與樣式**：使用已註冊圖示 `map-marker-alt`、`calendar-alt`、`user-circle`；採 Tailwind + Element Plus，未新增依賴，維持現有色票與陰影/邊框樣式。
+- **擴充建議**：後續抽出 `useApplications` composable 承載篩選與資料取得，替換假資料為 `useFetch`。
