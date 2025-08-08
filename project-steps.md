@@ -319,3 +319,10 @@
 - **資料與擴充**：於 `<script setup>` 新增 `flowSteps` 與 `venue` 假資料，可日後以 `useFetch` 串接 API 取代；地圖可替換為 Google Maps/第三方元件。
 - **相依與風格**：沿用 Tailwind 與現有色票，未引入新依賴；使用 `border`、`shadow-sm` 強化卡片感。
 - **影響檔案**：`pages/users/programs/[programId].vue`
+
+### UP11: 體驗申請對話框與表單 component
+- **頁面整合**：於 `pages/users/programs/[programId].vue` 新增 `ElDialog`，並將「我要申請」按鈕綁定開啟對話框（狀態 `showApply`）。
+- **新增元件**：建立 `components/users/ApplyExperience.vue`，包含「可參加時段」與「備註」欄位，提交時透過 `submitted` 事件回傳，由父層關閉對話框。
+- **修復**：移除將 `<el-dialog>` 放在 SFC `<template>` 外造成的解析錯誤（Vite PARSE_ERROR）。
+- **重構**：清除 `ApplyExperience.vue` 中與頁面無關的邏輯（`definePageMeta`、`useRouter`、`isFavorited`、`showApply`），使其維持單一職責。
+- **影響檔案**：`components/users/ApplyExperience.vue`，`pages/users/programs/[programId].vue`
