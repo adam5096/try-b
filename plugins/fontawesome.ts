@@ -20,6 +20,7 @@ import {
   faQuestionCircle,
   faCalendarAlt
 } from '@fortawesome/free-solid-svg-icons'
+import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons'
 
 // 這很重要，我們會讓 Nuxt 來處理 CSS，而不是 Font Awesome 自己
 config.autoAddCss = false
@@ -41,7 +42,8 @@ library.add(
   faListAlt,
   faHeart,
   faQuestionCircle,
-  faCalendarAlt
+  faCalendarAlt,
+  faHeartRegular
 )
 
 export default defineNuxtPlugin((nuxtApp) => {
