@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
-  name: 'userApplications',
+  name: 'user-applications',
+  layout: 'user',
 });
 </script>
 
