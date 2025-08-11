@@ -125,6 +125,16 @@ const visibleItems = computed(() => {
   return items.value.slice(start, start + pageSize.value);
 });
 
+const pageStartDisplay = computed<number>(() => {
+  if (total.value === 0) return 0;
+  return (currentPage.value - 1) * pageSize.value + 1;
+});
+
+const pageEndDisplay = computed<number>(() => {
+  if (total.value === 0) return 0;
+  return Math.min(currentPage.value * pageSize.value, total.value);
+});
+
 function handleClearAll() {
   items.value = [];
 }
@@ -203,19 +213,19 @@ function handleViewDetail(item: FavoriteItem) {
       </el-card>
     </div>
 
-    <!-- Pagination -->
-    <div v-if="total > pageSize" class="mt-8 flex justify-center">
+    <!-- Pagination (mimic applications page) -->
+    <section class="mt-8 flex items-center justify-between text-gray-500">
+      <div>
+        顯示 {{ pageStartDisplay }}-{{ pageEndDisplay }} 筆，共 {{ total }} 筆結果
+      </div>
       <el-pagination
         v-model:current-page="currentPage"
         :page-size="pageSize"
         :total="total"
         layout="prev, pager, next"
-        background
         :pager-count="7"
-        prev-text="上一頁"
-        next-text="下一頁"
       />
-    </div>
+    </section>
   </section>
 </template>
 
