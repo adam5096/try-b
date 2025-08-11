@@ -394,6 +394,19 @@
 - 行為：套用後重置至第 1 頁；卡片與表格仍共用同一分頁資料源。
 - 影響檔案：`pages/users/applications/index.vue`
 
+### UP12: 單一企業詳情頁（頁面骨架）
+- **頁面與路由**：新增 `pages/users/companies/[companyId].vue`，綁定 `definePageMeta({ name: 'user-company-detail', layout: 'user' })`。
+- **內容結構**：企業封面、公司介紹與生活福利、環境照片（水平滑動佔位）、相關體驗計畫卡片、體驗者評價；右側資訊欄包含企業資訊與聯繫資訊。
+- **實作備註**：沿用 `max-w-container-users` 與 Element Plus 預設樣式、少量 Tailwind 作排版；目前以假資料渲染，後續可用 `useFetch` 串 API；RWD 下限 370px。
+
+### ROUTE: 使用者端命名與 helper 同步（UP12 相關）
+- **集中 helper**：於 `utils/userRoutes.ts` 新增 `companyDetail(companyId)`；`programDetail(programId)` 對應 `user-program-detail`。
+- **命名統一**：將 `pages/users/programs/[programId].vue` 的 `definePageMeta.name` 由 `user-programs-programId` 統一為 `user-program-detail`。
+- **導頁更新**：
+  - `pages/users/index.vue`、`pages/users/applications/index.vue` 的「查看詳情」改為使用 `userRoutes.programDetail(...)`。
+  - 在 `pages/users/programs/[programId].vue` 將公司名稱改為可點擊，點擊導向公司詳情頁（`userRoutes.companyDetail(companyId)`）。
+- **理由**：公司資訊屬穩定資源應與 program 解耦；以集中式路由 helper 管理可避免命名不一致並提升可維護性與型別一致性。
+
 ### UP15: 體驗者評價列表頁（UI 第一/二部分與篩選）
 - 頁面與佈局：建立 `pages/users/comments/index.vue`，`definePageMeta` 綁定 `name: 'user-comments'`、`layout: 'user'`，沿用專案版心寬度。
 - 頂部區塊：左側標題「評價列表」、右側統計「共 24 則評價」（暫以假資料）；控制列提供「篩選」按鈕。

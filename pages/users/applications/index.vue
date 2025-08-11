@@ -5,6 +5,7 @@ definePageMeta({
 });
 
 import { ref, computed, watch } from 'vue';
+import { userRoutes } from '~/utils/userRoutes';
 
 type ApplicationStatus = '待審核' | '已通過' | '未通過' | '已取消' | '已完成';
 
@@ -289,7 +290,7 @@ function onCancel(appId: number): void {
             <div class="flex items-center justify-between pt-2">
               <div class="text-gray-500 text-sm">{{ item.organizer }}</div>
               <div class="flex items-center gap-3">
-                <NuxtLink :to="{ name: 'user-programs-programId', params: { programId: item.id } }">
+                <NuxtLink :to="userRoutes.programDetail(item.id)">
                   <el-button size="large">查看詳情</el-button>
                 </NuxtLink>
                 <el-button class="btn-danger-outline" size="large" @click="onCancel(item.id)">取消申請</el-button>
