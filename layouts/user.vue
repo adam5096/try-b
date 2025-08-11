@@ -98,10 +98,10 @@ const socialLinks = ref([
               </button>
               <!-- Profile Dropdown -->
               <div v-if="isProfileMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <NuxtLink :to="{ name: 'user-applications' }" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   <font-awesome-icon :icon="['fas', 'list-alt']" />
                   <span>申請清單</span>
-                </a>
+                </NuxtLink>
                 <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   <font-awesome-icon :icon="['fas', 'heart']" />
                   <span>收藏清單</span>
@@ -161,10 +161,10 @@ const socialLinks = ref([
 
               <!-- Logged In User Mobile Menu -->
                <div v-if="isLoggedIn" class="flex flex-col gap-8 lg:hidden">
-                  <a href="#" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
+                  <NuxtLink :to="{ name: 'user-applications' }" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
                     <font-awesome-icon :icon="['fas', 'list-alt']" />
                     <span>申請清單</span>
-                  </a>
+                  </NuxtLink>
                   <a href="#" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
                     <font-awesome-icon :icon="['fas', 'heart']" />
                     <span>收藏清單</span>
