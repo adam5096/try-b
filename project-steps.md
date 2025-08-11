@@ -413,3 +413,9 @@
 - 將「評價列表」改為 `<NuxtLink :to="{ name: 'user-comments' }"/>`，桌面與行動選單一致。
 - Guest Mobile Menu 的「登入」「註冊」由 `<a>` 改為 `NuxtLink`，分別導向 `user-login` 與 `user-register`；採命名路由以降低路徑耦合並啟用預取。
 - 影響檔案：`layouts/user.vue`
+
+### UP15: 評價列表至詳情頁導航
+- 導航實作：於 `pages/users/comments/index.vue` 為「撰寫評價」與退回情境的「修改再傳」加入點擊事件。
+- 路由方式：使用 `navigateTo({ name: 'userCommentDetail', params: { commentId } })` 導向 `pages/users/comments/[commentId].vue`。
+- 理由與效果：採命名路由與 SPA 導航，避免整頁刷新並保留列表的篩選/滾動狀態，降低未來路由改動風險。
+- 影響檔案：`pages/users/comments/index.vue`、`pages/users/comments/[commentId].vue`
