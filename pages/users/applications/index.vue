@@ -4,7 +4,7 @@ definePageMeta({
   layout: 'user',
 });
 
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 type ApplicationStatus = '待審核' | '已通過' | '未通過' | '已取消' | '已完成';
 
@@ -22,11 +22,19 @@ interface ApplicationItem {
   organizer: string;
 }
 
-const isFilterDialogVisible = ref(false);
-const selectedStatus = ref<ApplicationStatus | ''>('');
-const selectedDateRange = ref<[Date, Date] | ''>('');
+// Filter state (applied)
+const isFilterOpen = ref(false);
+const selectedStatuses = ref<ApplicationStatus[]>([]); // 空陣列 = 全部狀態
+type SortOrder = 'desc' | 'asc';
+const sortOrder = ref<SortOrder>('desc'); // 日期排序（申請日期）
+const popoverWidthCss = 'clamp(320px, 92vw, 520px)';
 
-const statusOptions: ApplicationStatus[] = ['待審核', '已通過', '未通過', '已取消', '已完成'];
+// Filter state (draft, inside popover)
+const draftSelectedStatuses = ref<ApplicationStatus[]>([]);
+const draftSortOrder = ref<SortOrder>('desc');
+
+// 下拉選單顯示的狀態選項（不包含「已完成」）
+const statusOptions: ApplicationStatus[] = ['待審核', '已通過', '未通過', '已取消'];
 
 const applicationList = ref<ApplicationItem[]>([
   {
@@ -72,22 +80,73 @@ const applicationList = ref<ApplicationItem[]>([
 ]);
 
 const visibleApplications = computed(() => {
-  const data = applicationList.value;
-  return data.filter((item) => {
-    const byStatus = selectedStatus.value ? item.status === selectedStatus.value : true;
-    const byDate = (() => {
-      if (!Array.isArray(selectedDateRange.value)) return true;
-      const [start, end] = selectedDateRange.value as [Date, Date];
-      const ts = new Date(item.appliedAt).getTime();
-      return ts >= start.getTime() && ts <= end.getTime();
-    })();
-    return byStatus && byDate;
+  // 狀態過濾
+  const filtered = applicationList.value.filter((item) => {
+    if (selectedStatuses.value.length === 0) return true;
+    return selectedStatuses.value.includes(item.status);
   });
+  // 日期排序（appliedAt）
+  const sorted = filtered.slice().sort((a, b) => {
+    const ta = new Date(a.appliedAt).getTime();
+    const tb = new Date(b.appliedAt).getTime();
+    return sortOrder.value === 'desc' ? tb - ta : ta - tb;
+  });
+  return sorted;
 });
 
-function resetFilters() {
-  selectedStatus.value = '';
-  selectedDateRange.value = '';
+// Pagination state
+const pageSize = ref<number>(5);
+const currentPage = ref<number>(1);
+
+// Derived pagination info
+const totalItems = computed<number>(() => visibleApplications.value.length);
+const pageStartDisplay = computed<number>(() => {
+  if (totalItems.value === 0) return 0;
+  return (currentPage.value - 1) * pageSize.value + 1;
+});
+const pageEndDisplay = computed<number>(() => {
+  if (totalItems.value === 0) return 0;
+  return Math.min(currentPage.value * pageSize.value, totalItems.value);
+});
+
+const paginatedApplications = computed<ApplicationItem[]>(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return visibleApplications.value.slice(start, end);
+});
+
+// Reset page when filters change
+watch(visibleApplications, () => {
+  currentPage.value = 1;
+});
+
+// Popover open → 複製目前套用的濾鏡到草稿
+watch(isFilterOpen, (open) => {
+  if (open) {
+    draftSelectedStatuses.value = [...selectedStatuses.value];
+    draftSortOrder.value = sortOrder.value;
+  }
+});
+
+function toggleDraftStatus(status: ApplicationStatus): void {
+  const set = new Set(draftSelectedStatuses.value);
+  if (set.has(status)) {
+    set.delete(status);
+  } else {
+    set.add(status);
+  }
+  draftSelectedStatuses.value = Array.from(set);
+}
+
+function resetDraftFilters(): void {
+  draftSelectedStatuses.value = [];
+  draftSortOrder.value = 'desc';
+}
+
+function applyDraftFilters(): void {
+  selectedStatuses.value = [...draftSelectedStatuses.value];
+  sortOrder.value = draftSortOrder.value;
+  isFilterOpen.value = false;
 }
 
 function getTagType(status: ApplicationStatus): 'success' | 'warning' | 'danger' | 'info' {
@@ -127,14 +186,61 @@ function onCancel(appId: number): void {
           <p class="mt-2 text-gray-500">查看並管理您已申請的體驗活動</p>
         </div>
         <div>
-          <el-button round class="min-w-[96px]" @click="isFilterDialogVisible = true">篩選</el-button>
+          <el-popover
+            v-model:visible="isFilterOpen"
+            trigger="click"
+            placement="bottom-end"
+            :show-arrow="false"
+            popper-class="shadow-lg"
+            :popper-style="{ width: popoverWidthCss, maxWidth: '92vw' }"
+          >
+            <template #reference>
+              <el-button round class="min-w-[96px]">篩選</el-button>
+            </template>
+            <div class="space-y-5">
+              <!-- 狀態 -->
+              <div class="space-y-3">
+                <div class="flex items-center gap-3 text-gray-600">
+                  <span class="inline-block px-3 py-1 border rounded-md">全部狀態</span>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                  <el-check-tag
+                    v-for="s in statusOptions"
+                    :key="s"
+                    :checked="draftSelectedStatuses.includes(s)"
+                    @change="() => toggleDraftStatus(s)"
+                  >
+                    {{ getStatusText(s) }}
+                  </el-check-tag>
+                </div>
+              </div>
+
+              <!-- 日期排序 -->
+              <div class="flex flex-wrap items-center gap-3 md:gap-4">
+                <div class="inline-block px-3 py-1 border rounded-md text-gray-600">日期</div>
+                <el-radio-group v-model="draftSortOrder" class="flex flex-wrap">
+                  <el-radio-button :value="'desc'">新到舊</el-radio-button>
+                  <el-radio-button :value="'asc'">舊到新</el-radio-button>
+                </el-radio-group>
+              </div>
+
+              <!-- Footer actions -->
+              <div class="flex w-full justify-between pt-1">
+                <el-button @click="resetDraftFilters">重置</el-button>
+                <div>
+                  <el-button @click="isFilterOpen = false">取消</el-button>
+                  <el-button type="primary" @click="applyDraftFilters">套用</el-button>
+                </div>
+              </div>
+            </div>
+          </el-popover>
         </div>
       </section>
 
       <!-- Cards (UI 第二部分) -->
       <section class="mt-8 grid grid-cols-1 gap-6">
         <el-card
-          v-for="item in visibleApplications"
+          v-for="item in paginatedApplications"
           :key="item.id"
           shadow="hover"
           class="border border-gray-200 !rounded-xl"
@@ -193,60 +299,22 @@ function onCancel(appId: number): void {
         </el-card>
       </section>
 
-      <!-- Table List -->
-      <section class="mt-8">
-        <el-card shadow="never">
-          <el-table :data="visibleApplications" stripe>
-            <el-table-column prop="title" label="申請活動" min-width="220" />
-            <el-table-column prop="company" label="公司" min-width="160" />
-            <el-table-column prop="appliedAt" label="申請日期" width="140" />
-            <el-table-column label="狀態" width="140">
-              <template #default="{ row }">
-                <el-tag :type="getTagType(row.status)">{{ row.status }}</el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="160" fixed="right">
-              <template #default="{ row }">
-                <NuxtLink :to="{ name: 'user-programs-programId', params: { programId: row.id } }">
-                  <el-button size="small" type="primary">查看詳情</el-button>
-                </NuxtLink>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-card>
+
+      <!-- Pagination -->
+      <section class="mt-6 flex items-center justify-between text-gray-500">
+        <div>
+          顯示 {{ pageStartDisplay }}-{{ pageEndDisplay }} 筆，共 {{ totalItems }} 筆結果
+        </div>
+        <el-pagination
+          v-model:current-page="currentPage"
+          :page-size="pageSize"
+          :total="totalItems"
+          layout="prev, pager, next"
+          :pager-count="7"
+        />
       </section>
     </div>
 
-    <!-- Filter Dialog -->
-    <el-dialog v-model="isFilterDialogVisible" title="篩選申請" width="480px">
-      <div class="space-y-6">
-        <div>
-          <label class="mb-2 block text-sm text-gray-600">狀態</label>
-          <el-select v-model="selectedStatus" placeholder="選擇狀態" clearable class="w-full">
-            <el-option v-for="s in statusOptions" :key="s" :label="s" :value="s" />
-          </el-select>
-        </div>
-        <div>
-          <label class="mb-2 block text-sm text-gray-600">申請日期區間</label>
-          <el-date-picker
-            v-model="selectedDateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="開始日期"
-            end-placeholder="結束日期"
-            class="w-full"
-          />
-        </div>
-      </div>
-      <template #footer>
-        <div class="flex w-full justify-between">
-          <el-button @click="resetFilters">重置</el-button>
-          <div>
-            <el-button @click="isFilterDialogVisible = false">取消</el-button>
-            <el-button type="primary" @click="isFilterDialogVisible = false">套用</el-button>
-          </div>
-        </div>
-      </template>
-    </el-dialog>
+    <!-- end popover -->
   </main>
 </template>

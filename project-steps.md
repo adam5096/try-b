@@ -354,3 +354,42 @@
 - **卡片清單（第二部分）**：新增卡片樣式清單，呈現申請日/狀態、標題、地點、活動日期、參與人數、描述、主辦單位；操作含「查看詳情」與「取消申請」（事件預留）。
 - **圖示與樣式**：使用已註冊圖示 `map-marker-alt`、`calendar-alt`、`user-circle`；採 Tailwind + Element Plus，未新增依賴，維持現有色票與陰影/邊框樣式。
 - **擴充建議**：後續抽出 `useApplications` composable 承載篩選與資料取得，替換假資料為 `useFetch`。
+
+# 2025-08-11
+### MGT: 追加需求範圍/階段檢查（MDC「需求複述」）
+- 內容決策：僅保留「需求複述」，明確規範「偵測追加/提問 → 檢查主線/階段 → 回報結果；超出範圍則提醒並解釋，未超出則依建議續進」。
+- 檔名決策：允許中文檔名；推薦 `mdc-需求複述-範圍與階段檢查.md`；規則檔維持於 `.cursor/rules/scope-stage-review.mdc`（內容已更新為最新「需求複述」文案）。
+- 理由：聚焦主線、降低不必要投入，建立輕量且可追溯的回報閉環。
+- 風險與規範：中文檔名於 CI/URL 可能有編碼相容性風險；統一 UTF-8，建議設定 `git config --global core.quotepath false`。
+- 後續：可視需要同步新增中文檔名版本並納入規則索引；與看板/站會流程對齊以落實提醒與回報。
+
+### UP6: 申請活動的狀態追蹤頁（分頁器）
+- 分頁器（標準模式）：採用 Element Plus `prev, pager, next`；每頁 5 筆；`pager-count=7`。
+- 清單資料：卡片清單與表格共用同一分頁資料源（`paginatedApplications`）；當濾鏡變更(註1)時自動回到第 1 頁。
+- 統計文案：新增底部資訊列「顯示 x‑y 筆，共 n 筆結果」。
+- 擴充與風險：目前 `total` 基於前端資料；串 API 時以後端 `total` 為準並處理空清單邊界。
+- 影響檔案：`pages/users/applications/index.vue`
+
+### UP1: 體驗者登入頁（提交導向）
+- 導航實作：為 `pages/users/login.vue` 加上表單 `@submit.prevent`，
+  送出後以 `navigateTo({ name: 'user-landing' })` 導向使用者首頁。
+- 理由：採用 Nuxt 3 推薦的程式化導航，避免整頁重載並保留應用狀態；
+  使用命名路由取代硬編碼 URL，有利於重構與維護。
+- 影響檔案：`pages/users/login.vue`
+
+### Layout: 體驗者佈局 - 申請清單導航
+- 導航更新：於 `layouts/user.vue` 將「申請清單」連結改為命名路由 `user-applications`，
+  並由 `<a>` 改為 `<NuxtLink>`；桌面與行動選單皆生效。
+- 理由：採 SPA 導航避免整頁重載、保留頁面狀態，並透過命名路由降低壞鏈風險、支援 prefetch。
+- 影響檔案：`layouts/user.vue`
+- (註1)濾鏡變更＝任何會改變清單「過濾條件」的動作。
+  - 具體包括：變更或清空 `selectedStatus`、變更或清空 `selectedDateRange`、點擊「重置」按鈕；以及更新清單資料本身導致結果集改變。
+- (註1)行為：只要上述條件造成 `visibleApplications` 改變，就把 `currentPage` 重設為 1（避免在後段頁碼看到空白或錯位的結果）。
+
+### UP6: 申請活動的狀態追蹤頁（篩選下拉與日期排序）
+- 下拉：以 Element Plus `ElPopover` 取代對話框，採「批次套用/重置」；RWD 寬度 `clamp(320px, 92vw, 520px)`，placement=bottom-end。
+- 狀態多選：審核中／已通過／未通過／未成團；排除「已完成」；提供「全部狀態」快速清空。
+- 日期排序：僅提供「新到舊（預設）／舊到新」；按官方建議以 `value` 綁定，去除棄用警告。
+- 視覺/邊界：修正 Popover 子元素溢出、標籤與群組間距、相鄰 radio 邊框裁切；最小裝置寬 370px 表現正常。
+- 行為：套用後重置至第 1 頁；卡片與表格仍共用同一分頁資料源。
+- 影響檔案：`pages/users/applications/index.vue`
