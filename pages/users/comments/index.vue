@@ -137,7 +137,7 @@ const filterVisible = ref(false);
 
 <!-- up15 評價列表 -->
 <template>
-  <section class="mx-auto max-w-container-main px-6 md:px-12 py-8 md:py-10">
+  <section class="mx-auto max-w-container-users px-6 md:px-12 py-8 md:py-10">
     <!-- Header: 標題與總數 -->
     <div class="flex items-end justify-between">
       <h2 class="text-2xl md:text-3xl font-bold text-gray-800">評價列表</h2>
