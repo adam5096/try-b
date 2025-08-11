@@ -91,6 +91,30 @@ const items = ref<FavoriteItem[]>([
     status: '體驗進行中',
     isFavorited: true,
   },
+  {
+    id: 7,
+    title: '資料分析入門實作',
+    description:
+      '透過實際案例學習資料清理、可視化與基礎模型建立，了解分析在商業決策的應用。',
+    city: '新竹市東區',
+    start: '2025/09/10',
+    end: '2025/12/10',
+    applicants: 0,
+    status: '體驗進行中',
+    isFavorited: true,
+  },
+  {
+    id: 8,
+    title: '產品經理實戰工作坊',
+    description:
+      '體驗需求訪談、需求拆解與 PRD 撰寫流程，學習跨部門協作與產品排程管理。',
+    city: '台北市中正區',
+    start: '2025/08/20',
+    end: '2025/11/20',
+    applicants: 0,
+    status: '體驗進行中',
+    isFavorited: true,
+  },
 ]);
 
 const currentPage = ref(1);
@@ -187,6 +211,9 @@ function handleViewDetail(item: FavoriteItem) {
         :total="total"
         layout="prev, pager, next"
         background
+        :pager-count="7"
+        prev-text="上一頁"
+        next-text="下一頁"
       />
     </div>
   </section>
