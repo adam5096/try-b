@@ -362,3 +362,13 @@
 - 理由：聚焦主線、降低不必要投入，建立輕量且可追溯的回報閉環。
 - 風險與規範：中文檔名於 CI/URL 可能有編碼相容性風險；統一 UTF-8，建議設定 `git config --global core.quotepath false`。
 - 後續：可視需要同步新增中文檔名版本並納入規則索引；與看板/站會流程對齊以落實提醒與回報。
+
+### UP6: 申請活動的狀態追蹤頁（分頁器）
+- 分頁器（標準模式）：採用 Element Plus `prev, pager, next`；每頁 5 筆；`pager-count=7`。
+- 清單資料：卡片清單與表格共用同一分頁資料源（`paginatedApplications`）；當濾鏡變更(註1)時自動回到第 1 頁。
+- 統計文案：新增底部資訊列「顯示 x‑y 筆，共 n 筆結果」。
+- 擴充與風險：目前 `total` 基於前端資料；串 API 時以後端 `total` 為準並處理空清單邊界。
+- 影響檔案：`pages/users/applications/index.vue`
+- (註1)濾鏡變更＝任何會改變清單「過濾條件」的動作。
+  - 具體包括：變更或清空 `selectedStatus`、變更或清空 `selectedDateRange`、點擊「重置」按鈕；以及更新清單資料本身導致結果集改變。
+- (註1)行為：只要上述條件造成 `visibleApplications` 改變，就把 `currentPage` 重設為 1（避免在後段頁碼看到空白或錯位的結果）。
