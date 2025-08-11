@@ -109,7 +109,7 @@ const reviews = ref<ReviewItem[]>([
 ]);
 
 function onWriteReview(commentId: number) {
-  navigateTo({ name: 'userCommentDetail', params: { commentId: String(commentId) } });
+  navigateTo({ name: 'user-comments-detail', params: { commentId: String(commentId) } });
 }
 
 // --- Pagination 狀態 ---
