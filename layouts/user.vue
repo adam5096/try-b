@@ -110,10 +110,10 @@ const socialLinks = ref([
                   <font-awesome-icon :icon="['fas', 'user-circle']" />
                   <span>帳戶中心</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <NuxtLink :to="{ name: 'user-comments' }" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   <font-awesome-icon :icon="['fas', 'question-circle']" />
                   <span>評價列表</span>
-                </a>
+                </NuxtLink>
                  <div class="border-t my-1"></div>
                 <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
@@ -173,10 +173,10 @@ const socialLinks = ref([
                     <font-awesome-icon :icon="['fas', 'user-circle']" />
                     <span>帳戶中心</span>
                   </a>
-                  <a href="#" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
+                  <NuxtLink :to="{ name: 'user-comments' }" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
                     <font-awesome-icon :icon="['fas', 'question-circle']" />
                     <span>評價列表</span>
-                  </a>
+                  </NuxtLink>
                    <div class="border-t my-1"></div>
                   <a href="#" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
                     <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
@@ -186,12 +186,12 @@ const socialLinks = ref([
 
               <!-- Guest Mobile Menu -->
               <div v-else class="flex flex-col gap-8 lg:hidden">
-                <a href="#" class="px-4 py-2 text-lg text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                <NuxtLink :to="{ name: 'user-login' }" class="px-4 py-2 text-lg text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   登入
-                </a>
-                <a href="#" class="px-4 py-2 text-lg text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                </NuxtLink>
+                <NuxtLink :to="{ name: 'user-register' }" class="px-4 py-2 text-lg text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   註冊
-                </a>
+                </NuxtLink>
               </div>
             </div>
           </div>

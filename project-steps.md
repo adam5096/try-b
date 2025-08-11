@@ -393,3 +393,36 @@
 - 視覺/邊界：修正 Popover 子元素溢出、標籤與群組間距、相鄰 radio 邊框裁切；最小裝置寬 370px 表現正常。
 - 行為：套用後重置至第 1 頁；卡片與表格仍共用同一分頁資料源。
 - 影響檔案：`pages/users/applications/index.vue`
+
+### UP15: 體驗者評價列表頁（UI 第一/二部分與篩選）
+- 頁面與佈局：建立 `pages/users/comments/index.vue`，`definePageMeta` 綁定 `name: 'user-comments'`、`layout: 'user'`，沿用專案版心寬度。
+- 頂部區塊：左側標題「評價列表」、右側統計「共 24 則評價」（暫以假資料）；控制列提供「篩選」按鈕。
+- 篩選 Popover：使用 Element Plus（預設樣式）實作
+  - 狀態多選：已通過／已拒絕／未評價（`el-checkbox-button`）
+  - 日期排序：新到舊／舊到新（`el-radio-button`）
+  - 動作：清除／套用；預留 `onApplyFilters/onClearFilters` 供後續串 API。
+- 列表卡片（第二部分）：
+  - 左：`Avatar` + 公司名 + 體驗標籤 + 狀態標籤（`tagTypeForStatus` 對應 success/warning/danger/info）
+  - 右（僅未評價）：「撰寫評價」按鈕
+  - 已送出：顯示星等（`el-rate` disabled）、分數、日期、狀態標籤；支援內文與退回/拒絕理由（含「修改再傳」按鈕）
+- 型別與資料：定義 `ReviewStatus`、`ReviewItem`，以假資料渲染多種情境；保留最小 Tailwind 作間距排版。
+- 其他：釐清 `!` 前綴僅為覆蓋間距用途；本頁改回使用 `el-divider` 預設間距；Lint 通過。
+- 影響檔案：`pages/users/comments/index.vue`
+
+### Layout: 體驗者佈局 - 評價列表與訪客導航
+- 將「評價列表」改為 `<NuxtLink :to="{ name: 'user-comments' }"/>`，桌面與行動選單一致。
+- Guest Mobile Menu 的「登入」「註冊」由 `<a>` 改為 `NuxtLink`，分別導向 `user-login` 與 `user-register`；採命名路由以降低路徑耦合並啟用預取。
+- 影響檔案：`layouts/user.vue`
+
+### UP15: 評價列表至詳情頁導航
+- 導航實作：於 `pages/users/comments/index.vue` 為「撰寫評價」與退回情境的「修改再傳」加入點擊事件。
+- 路由方式：使用 `navigateTo({ name: 'userCommentDetail', params: { commentId } })` 導向 `pages/users/comments/[commentId].vue`。
+- 理由與效果：採命名路由與 SPA 導航，避免整頁刷新並保留列表的篩選/滾動狀態，降低未來路由改動風險。
+- 影響檔案：`pages/users/comments/index.vue`、`pages/users/comments/[commentId].vue`
+
+### UP15: 體驗者評價列表頁（UI 第三部分：分頁器）
+- 分頁器：採用 Element Plus `el-pagination`，版型 `prev, pager, next`，`pager-count=7`，啟用 `background`。
+- 每頁筆數：增加「每頁顯示」下拉 (`el-select`) 提供 10/20/30/50；與列表雙向綁定。
+- 資料分頁：新增 `currentPage`、`pageSize` 狀態與 `visibleReviews` 計算屬性；以 `allReviews` 依 `totalReviews` 擴展假資料以展示效果。
+- 互動行為：在篩選「清除/套用」時自動重置至第 1 頁，避免出現空頁。
+- 影響檔案：`pages/users/comments/index.vue`
