@@ -27,6 +27,7 @@ function onClearFilters() {
 function onApplyFilters() {
   // 預留：之後串接 API 查詢或觸發列表刷新
   currentPage.value = 1;
+  filterVisible.value = false; // 套用後關閉篩選面板
 }
 
 // 第二部分：列表假資料
@@ -129,6 +130,9 @@ const visibleReviews = computed<ReviewItem[]>(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   return allReviews.value.slice(start, start + pageSize.value);
 });
+
+// 篩選面板可見性（受控）
+const filterVisible = ref(false);
 </script>
 
 <!-- up15 評價列表 -->
@@ -143,7 +147,7 @@ const visibleReviews = computed<ReviewItem[]>(() => {
     <!-- Controls: 三顆按鈕（Element Plus 預設樣式） -->
     <div class="mt-6 flex flex-wrap items-center gap-4 md:gap-6">
       <!-- 篩選 Popover -->
-      <el-popover placement="bottom-start" trigger="click" :width="440">
+      <el-popover v-model:visible="filterVisible" placement="bottom-start" trigger="click" :width="440">
         <template #reference>
           <el-button>篩選</el-button>
         </template>
