@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 definePageMeta({
   name: 'user-comments',
@@ -21,10 +21,12 @@ const selectedDateSort = ref<'newest' | 'oldest'>('newest');
 function onClearFilters() {
   selectedStatuses.value = [];
   selectedDateSort.value = 'newest';
+  currentPage.value = 1;
 }
 
 function onApplyFilters() {
   // 預留：之後串接 API 查詢或觸發列表刷新
+  currentPage.value = 1;
 }
 
 // 第二部分：列表假資料
@@ -106,8 +108,27 @@ const reviews = ref<ReviewItem[]>([
 ]);
 
 function onWriteReview(commentId: number) {
-  navigateTo({ name: 'user-comments-detail', params: { commentId: String(commentId) } });
+  navigateTo({ name: 'userCommentDetail', params: { commentId: String(commentId) } });
 }
+
+// --- Pagination 狀態 ---
+const currentPage = ref(1);
+const pageSize = ref(10);
+const pageSizeOptions = [10, 20, 30, 50];
+
+// 產生 totalReviews 長度的資料以展示分頁（後續串接 API 時可移除）
+const allReviews = computed<ReviewItem[]>(() => {
+  const base = reviews.value;
+  return Array.from({ length: totalReviews.value }, (_, i) => ({
+    ...base[i % base.length],
+    id: i + 1,
+  }));
+});
+
+const visibleReviews = computed<ReviewItem[]>(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  return allReviews.value.slice(start, start + pageSize.value);
+});
 </script>
 
 <!-- up15 評價列表 -->
@@ -163,7 +184,7 @@ function onWriteReview(commentId: number) {
 
     <!-- List: 公司評價卡片 -->
     <div>
-      <div v-for="item in reviews" :key="item.id" class="py-4">
+      <div v-for="item in visibleReviews" :key="item.id" class="py-4">
         <div class="flex items-center justify-between">
           <!-- Left: Logo + 公司名稱 + 體驗標籤 + 狀態 -->
           <div class="flex items-center gap-4">
@@ -205,6 +226,27 @@ function onWriteReview(commentId: number) {
         <!-- item divider -->
         <el-divider />
       </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <!-- 每頁顯示 -->
+      <div class="flex items-center gap-3">
+        <span class="text-gray-600">每頁顯示：</span>
+        <el-select v-model="pageSize" style="width: 120px">
+          <el-option v-for="size in pageSizeOptions" :key="size" :label="`${size} 筆`" :value="size" />
+        </el-select>
+      </div>
+
+      <!-- 分頁器 -->
+      <el-pagination
+        v-model:current-page="currentPage"
+        :page-size="pageSize"
+        :total="totalReviews"
+        :pager-count="7"
+        layout="prev, pager, next"
+        background
+      />
     </div>
   </section>
 </template>
