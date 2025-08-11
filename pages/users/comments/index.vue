@@ -104,6 +104,10 @@ const reviews = ref<ReviewItem[]>([
       '財務分析的實作案例很紮實，了解了從資料分析到實際工作流程的連結，幫助很大。',
   },
 ]);
+
+function onWriteReview(commentId: number) {
+  navigateTo({ name: 'user-comments-detail', params: { commentId: String(commentId) } });
+}
 </script>
 
 <!-- up15 評價列表 -->
@@ -174,7 +178,7 @@ const reviews = ref<ReviewItem[]>([
 
           <!-- Right: 撰寫評價（僅未評價） -->
           <div v-if="item.status === '未評價'">
-            <el-button size="small" round>撰寫評價</el-button>
+            <el-button size="small" round @click="onWriteReview(item.id)">撰寫評價</el-button>
           </div>
         </div>
 
@@ -190,11 +194,11 @@ const reviews = ref<ReviewItem[]>([
         <p v-if="item.reviewText" class="mt-2 text-gray-700 leading-relaxed">{{ item.reviewText }}</p>
 
         <!-- 退回/拒絕理由 -->
-        <div v-if="item.rejectionReason" class="mt-3 text-gray-600">
+          <div v-if="item.rejectionReason" class="mt-3 text-gray-600">
           <span class="text-gray-500">拒絕理由：</span>
           <span>{{ item.rejectionReason }}</span>
           <div class="mt-2 text-right">
-            <el-button size="small" round plain type="info">修改再傳</el-button>
+            <el-button size="small" round plain type="info" @click="onWriteReview(item.id)">修改再傳</el-button>
           </div>
         </div>
 
