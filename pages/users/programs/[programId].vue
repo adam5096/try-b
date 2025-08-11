@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { userRoutes } from '~/utils/userRoutes';
 
 definePageMeta({
-  name: 'user-programs-programId',
+  name: 'user-program-detail',
   layout: 'user',
 });
 
@@ -19,7 +20,8 @@ const goBack = () => {
   router.push({ name: 'user-landing' });
 };
 
-// 假資料：企業名稱（之後可換 API）
+// 假資料：企業資訊（之後可換 API）
+const companyId = ref<number | string>(1);
 const companyName = ref('某某某科技資訊公司');
 
 // 體驗流程與地點（假資料）
@@ -79,10 +81,14 @@ const onApplySubmitted = async () => {
             企業封面
           </h2>
 
-          <!-- 公司名稱 -->
-          <p class="absolute bottom-6 left-6 text-base font-medium text-gray-800">
+          <!-- 公司名稱：可點擊前往公司詳情頁 -->
+          <button
+            type="button"
+            class="absolute bottom-6 left-6 text-base font-medium text-primary-blue-dark hover:underline"
+            @click="navigateTo(userRoutes.companyDetail(companyId))"
+          >
             {{ companyName }}
-          </p>
+          </button>
         </div>
 
         <!-- 軟體工程師一日體驗內容（與企業封面同區塊） -->

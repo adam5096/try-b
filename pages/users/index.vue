@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { userRoutes } from '~/utils/userRoutes';
 
 definePageMeta({
   name: 'user-landing',
@@ -198,7 +199,7 @@ const sortOptions = ref([
                  </div>
               </div>
               <template #footer>
-                <NuxtLink :to="{ name: 'user-programs-programId', params: { programId: program.id } }">
+                <NuxtLink :to="userRoutes.programDetail(program.id)">
                   <el-button type="primary" class="w-full">查看詳情</el-button>
                 </NuxtLink>
               </template>

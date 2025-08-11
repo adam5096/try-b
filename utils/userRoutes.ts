@@ -21,4 +21,8 @@ export const userRoutes = {
     name: 'user-program-detail',
     params: { programId },
   }),
+  companyDetail: (companyId: string | number) => ({
+    name: 'user-company-detail',
+    params: { companyId },
+  }),
 }; 
