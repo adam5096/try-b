@@ -299,28 +299,6 @@ function onCancel(appId: number): void {
         </el-card>
       </section>
 
-      <!-- Table List -->
-      <section class="mt-8">
-        <el-card shadow="never">
-          <el-table :data="paginatedApplications" stripe>
-            <el-table-column prop="title" label="申請活動" min-width="220" />
-            <el-table-column prop="company" label="公司" min-width="160" />
-            <el-table-column prop="appliedAt" label="申請日期" width="140" />
-            <el-table-column label="狀態" width="140">
-              <template #default="{ row }">
-                <el-tag :type="getTagType(row.status)">{{ row.status }}</el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="160" fixed="right">
-              <template #default="{ row }">
-                <NuxtLink :to="{ name: 'user-programs-programId', params: { programId: row.id } }">
-                  <el-button size="small" type="primary">查看詳情</el-button>
-                </NuxtLink>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-card>
-      </section>
 
       <!-- Pagination -->
       <section class="mt-6 flex items-center justify-between text-gray-500">
