@@ -369,6 +369,12 @@
 - 統計文案：新增底部資訊列「顯示 x‑y 筆，共 n 筆結果」。
 - 擴充與風險：目前 `total` 基於前端資料；串 API 時以後端 `total` 為準並處理空清單邊界。
 - 影響檔案：`pages/users/applications/index.vue`
+
+### Layout: 體驗者佈局 - 申請清單導航
+- 導航更新：於 `layouts/user.vue` 將「申請清單」連結改為命名路由 `user-applications`，
+  並由 `<a>` 改為 `<NuxtLink>`；桌面與行動選單皆生效。
+- 理由：採 SPA 導航避免整頁重載、保留頁面狀態，並透過命名路由降低壞鏈風險、支援 prefetch。
+- 影響檔案：`layouts/user.vue`
 - (註1)濾鏡變更＝任何會改變清單「過濾條件」的動作。
   - 具體包括：變更或清空 `selectedStatus`、變更或清空 `selectedDateRange`、點擊「重置」按鈕；以及更新清單資料本身導致結果集改變。
 - (註1)行為：只要上述條件造成 `visibleApplications` 改變，就把 `currentPage` 重設為 1（避免在後段頁碼看到空白或錯位的結果）。
