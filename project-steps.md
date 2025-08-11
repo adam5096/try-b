@@ -426,3 +426,20 @@
 - 資料分頁：新增 `currentPage`、`pageSize` 狀態與 `visibleReviews` 計算屬性；以 `allReviews` 依 `totalReviews` 擴展假資料以展示效果。
 - 互動行為：在篩選「清除/套用」時自動重置至第 1 頁，避免出現空頁。
 - 影響檔案：`pages/users/comments/index.vue`
+
+### UP7: 體驗者評價填寫頁（UI + 基本驗證）
+- 頁面與路由：建立 `pages/users/comments/[commentId].vue`，綁定 `definePageMeta({ name: 'user-comments-detail', layout: 'user' })`。
+- 表單與互動：以 Element Plus 實作整體評分、評論內容（上限 1000 字 + 計數）、同意勾選、取消與送出；加入規則驗證與可送出條件；送出成功以訊息提示並導回 `user-comments`。
+- 體驗資訊卡：顯示公司名稱、計畫標題、體驗期間（暫以假資料，預留 `useFetch` 串接）。
+- 視覺：暫採容器滿寬（移除 `max-w-4xl`），後續視需求再調整。
+- 影響檔案：`pages/users/comments/[commentId].vue`
+
+### ROUTE: 評價詳情命名路由修正
+- 決策：統一使用 kebab-case `user-comments-detail`；同步更新列表頁導向，消除命名不一致風險。
+- 理由：符合專案命名策略並避免導頁失敗。
+- 影響檔案：`pages/users/comments/index.vue`、`pages/users/comments/[commentId].vue`
+
+### TECH: Element Plus 棄用 API 警告排除（label act as value）
+- 調整：將 `el-checkbox-button`、`el-radio-button`、`el-radio` 的 `label` 充當值寫法改為 `value` 綁定，並以插槽呈現文字，移除控制台警告。
+- 影響檔案：`pages/users/comments/index.vue`、`pages/company/programs/[programId]/applicants/[applicantId].vue`
+- 參考文件：Element Plus Checkbox（`https://element-plus.org/en-US/component/checkbox.html`）

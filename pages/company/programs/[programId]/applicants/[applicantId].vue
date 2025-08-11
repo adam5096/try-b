@@ -294,10 +294,10 @@ const submitReview = async () => {
         <el-form :model="decisionForm" label-position="top">
           <el-form-item label="審核結果">
             <el-radio-group v-model="decisionForm.status">
-              <el-radio label="pending">
+              <el-radio :value="'pending'">
                 核准申請
               </el-radio>
-              <el-radio label="rejected">
+              <el-radio :value="'rejected'">
                 婉拒申請
               </el-radio>
             </el-radio-group>
