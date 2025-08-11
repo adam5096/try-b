@@ -159,7 +159,7 @@ const filterVisible = ref(false);
               <el-tag effect="plain" type="info">審核狀態</el-tag>
               <div class="mt-3">
                 <el-checkbox-group v-model="selectedStatuses">
-                  <el-checkbox-button v-for="opt in statusOptions" :key="opt" :label="opt" />
+                  <el-checkbox-button v-for="opt in statusOptions" :key="opt" :value="opt">{{ opt }}</el-checkbox-button>
                 </el-checkbox-group>
               </div>
             </div>
@@ -169,7 +169,7 @@ const filterVisible = ref(false);
               <el-tag effect="plain" type="info">日期</el-tag>
               <div class="mt-3">
                 <el-radio-group v-model="selectedDateSort">
-                  <el-radio-button v-for="opt in dateSortOptions" :key="opt.value" :label="opt.value">{{ opt.label }}</el-radio-button>
+                  <el-radio-button v-for="opt in dateSortOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</el-radio-button>
                 </el-radio-group>
               </div>
             </div>
