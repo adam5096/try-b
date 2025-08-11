@@ -419,3 +419,10 @@
 - 路由方式：使用 `navigateTo({ name: 'userCommentDetail', params: { commentId } })` 導向 `pages/users/comments/[commentId].vue`。
 - 理由與效果：採命名路由與 SPA 導航，避免整頁刷新並保留列表的篩選/滾動狀態，降低未來路由改動風險。
 - 影響檔案：`pages/users/comments/index.vue`、`pages/users/comments/[commentId].vue`
+
+### UP15: 體驗者評價列表頁（UI 第三部分：分頁器）
+- 分頁器：採用 Element Plus `el-pagination`，版型 `prev, pager, next`，`pager-count=7`，啟用 `background`。
+- 每頁筆數：增加「每頁顯示」下拉 (`el-select`) 提供 10/20/30/50；與列表雙向綁定。
+- 資料分頁：新增 `currentPage`、`pageSize` 狀態與 `visibleReviews` 計算屬性；以 `allReviews` 依 `totalReviews` 擴展假資料以展示效果。
+- 互動行為：在篩選「清除/套用」時自動重置至第 1 頁，避免出現空頁。
+- 影響檔案：`pages/users/comments/index.vue`
