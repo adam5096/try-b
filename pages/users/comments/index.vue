@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  name: 'userComments',
+  name: 'user-comments',
 });
 </script>
 
