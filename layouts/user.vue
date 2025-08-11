@@ -186,12 +186,12 @@ const socialLinks = ref([
 
               <!-- Guest Mobile Menu -->
               <div v-else class="flex flex-col gap-8 lg:hidden">
-                <a href="#" class="px-4 py-2 text-lg text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                <NuxtLink :to="{ name: 'user-login' }" class="px-4 py-2 text-lg text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   登入
-                </a>
-                <a href="#" class="px-4 py-2 text-lg text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                </NuxtLink>
+                <NuxtLink :to="{ name: 'user-register' }" class="px-4 py-2 text-lg text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   註冊
-                </a>
+                </NuxtLink>
               </div>
             </div>
           </div>
