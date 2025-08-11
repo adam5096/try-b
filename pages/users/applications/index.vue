@@ -4,7 +4,7 @@ definePageMeta({
   layout: 'user',
 });
 
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 type ApplicationStatus = '待審核' | '已通過' | '未通過' | '已取消' | '已完成';
 
@@ -85,6 +85,32 @@ const visibleApplications = computed(() => {
   });
 });
 
+// Pagination state
+const pageSize = ref<number>(5);
+const currentPage = ref<number>(1);
+
+// Derived pagination info
+const totalItems = computed<number>(() => visibleApplications.value.length);
+const pageStartDisplay = computed<number>(() => {
+  if (totalItems.value === 0) return 0;
+  return (currentPage.value - 1) * pageSize.value + 1;
+});
+const pageEndDisplay = computed<number>(() => {
+  if (totalItems.value === 0) return 0;
+  return Math.min(currentPage.value * pageSize.value, totalItems.value);
+});
+
+const paginatedApplications = computed<ApplicationItem[]>(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return visibleApplications.value.slice(start, end);
+});
+
+// Reset page when filters change
+watch(visibleApplications, () => {
+  currentPage.value = 1;
+});
+
 function resetFilters() {
   selectedStatus.value = '';
   selectedDateRange.value = '';
@@ -134,7 +160,7 @@ function onCancel(appId: number): void {
       <!-- Cards (UI 第二部分) -->
       <section class="mt-8 grid grid-cols-1 gap-6">
         <el-card
-          v-for="item in visibleApplications"
+          v-for="item in paginatedApplications"
           :key="item.id"
           shadow="hover"
           class="border border-gray-200 !rounded-xl"
@@ -196,7 +222,7 @@ function onCancel(appId: number): void {
       <!-- Table List -->
       <section class="mt-8">
         <el-card shadow="never">
-          <el-table :data="visibleApplications" stripe>
+          <el-table :data="paginatedApplications" stripe>
             <el-table-column prop="title" label="申請活動" min-width="220" />
             <el-table-column prop="company" label="公司" min-width="160" />
             <el-table-column prop="appliedAt" label="申請日期" width="140" />
@@ -214,6 +240,20 @@ function onCancel(appId: number): void {
             </el-table-column>
           </el-table>
         </el-card>
+      </section>
+
+      <!-- Pagination -->
+      <section class="mt-6 flex items-center justify-between text-gray-500">
+        <div>
+          顯示 {{ pageStartDisplay }}-{{ pageEndDisplay }} 筆，共 {{ totalItems }} 筆結果
+        </div>
+        <el-pagination
+          v-model:current-page="currentPage"
+          :page-size="pageSize"
+          :total="totalItems"
+          layout="prev, pager, next"
+          :pager-count="7"
+        />
       </section>
     </div>
 
