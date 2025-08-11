@@ -102,10 +102,10 @@ const socialLinks = ref([
                   <font-awesome-icon :icon="['fas', 'list-alt']" />
                   <span>申請清單</span>
                 </NuxtLink>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <NuxtLink :to="{ name: 'user-favorites' }" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   <font-awesome-icon :icon="['fas', 'heart']" />
                   <span>收藏清單</span>
-                </a>
+                </NuxtLink>
                 <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   <font-awesome-icon :icon="['fas', 'user-circle']" />
                   <span>帳戶中心</span>
@@ -165,10 +165,10 @@ const socialLinks = ref([
                     <font-awesome-icon :icon="['fas', 'list-alt']" />
                     <span>申請清單</span>
                   </NuxtLink>
-                  <a href="#" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
+                  <NuxtLink :to="{ name: 'user-favorites' }" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
                     <font-awesome-icon :icon="['fas', 'heart']" />
                     <span>收藏清單</span>
-                  </a>
+                  </NuxtLink>
                   <a href="#" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
                     <font-awesome-icon :icon="['fas', 'user-circle']" />
                     <span>帳戶中心</span>
