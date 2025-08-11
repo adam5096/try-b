@@ -370,6 +370,13 @@
 - 擴充與風險：目前 `total` 基於前端資料；串 API 時以後端 `total` 為準並處理空清單邊界。
 - 影響檔案：`pages/users/applications/index.vue`
 
+### UP1: 體驗者登入頁（提交導向）
+- 導航實作：為 `pages/users/login.vue` 加上表單 `@submit.prevent`，
+  送出後以 `navigateTo({ name: 'user-landing' })` 導向使用者首頁。
+- 理由：採用 Nuxt 3 推薦的程式化導航，避免整頁重載並保留應用狀態；
+  使用命名路由取代硬編碼 URL，有利於重構與維護。
+- 影響檔案：`pages/users/login.vue`
+
 ### Layout: 體驗者佈局 - 申請清單導航
 - 導航更新：於 `layouts/user.vue` 將「申請清單」連結改為命名路由 `user-applications`，
   並由 `<a>` 改為 `<NuxtLink>`；桌面與行動選單皆生效。
