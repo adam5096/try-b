@@ -443,3 +443,21 @@
 - 調整：將 `el-checkbox-button`、`el-radio-button`、`el-radio` 的 `label` 充當值寫法改為 `value` 綁定，並以插槽呈現文字，移除控制台警告。
 - 影響檔案：`pages/users/comments/index.vue`、`pages/company/programs/[programId]/applicants/[applicantId].vue`
 - 參考文件：Element Plus Checkbox（`https://element-plus.org/en-US/component/checkbox.html`）
+
+### UP9: 收藏清單頁（UI 第一版）
+- 路由與頁面：建立 `pages/users/favorites/index.vue`，`definePageMeta({ name: 'user-favorites', layout: 'user' })`。
+- 內容結構：頁面標題與副標、右上「清空收藏」按鈕（`ElPopconfirm` 確認）；卡片網格含圖片佔位、收藏切換、標題/簡述、地點/日期、申請人數、狀態標籤與「查看詳情」。
+- 資料狀態：以假資料渲染；封裝 `handleToggleFavorite/handleClearAll/handleViewDetail` 互動，預留以命名路由導向單一計畫頁。
+- 版心與樣式：沿用 `max-w-container-users`，以 Element Plus 預設樣式為主、少量 Tailwind 做間距與排版。
+- 影響檔案：`pages/users/favorites/index.vue`
+
+### Layout: 體驗者佈局—收藏清單導航
+- 導航更新：將 `layouts/user.vue` 內桌面與行動版「收藏清單」連結改為命名路由 `<NuxtLink :to="{ name: 'user-favorites' }"/>`，與「申請清單」「評價列表」一致。
+- 理由：以命名路由降低壞鏈風險並支援 prefetch，維持桌/行動一致的 UX。
+- 影響檔案：`layouts/user.vue`
+
+### UP9: 收藏清單—分頁器與假資料擴充
+- 分頁器：加入 `ElPagination`，設定 `prev-text="上一頁"`、`next-text="下一頁"`、`pager-count=7`、`background`，置中顯示；顯示條件為 `total > pageSize`。
+- 狀態管理：`currentPage/pageSize/visibleItems/total`，以計算屬性切片顯示當前頁資料。
+- 假資料：擴充為 8 筆以驗證分頁行為；清空收藏時改為空陣列以呈現 `ElEmpty`。
+- 影響檔案：`pages/users/favorites/index.vue`
