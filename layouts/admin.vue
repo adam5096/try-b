@@ -60,7 +60,7 @@ const navItems = [
       </aside>
 
       <!-- Content -->
-      <main class="ml-0 flex min-h-[calc(100vh-4rem)] w-full flex-col p-4 md:ml-64 md:p-8">
+      <main class="ml-0 flex min-h-[calc(100vh-4rem)] w-full flex-col p-4 md:p-8">
         <slot />
       </main>
     </div>
