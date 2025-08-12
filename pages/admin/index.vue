@@ -2,11 +2,18 @@
 definePageMeta({ layout: 'blank' as any })
 
 import { ref } from 'vue'
+import { navigateTo } from '#app'
+import { adminRoutes } from '~/utils/adminRoutes'
 
 const username = ref('')
 const password = ref('')
 const rememberMe = ref(false)
 const showPassword = ref(false)
+
+const onSubmitLogin = () => {
+  // 後續可在此加入實際驗證流程；目前先直接導向管理列表頁
+  navigateTo(adminRoutes.programs())
+}
 </script>
 
 
@@ -30,7 +37,7 @@ const showPassword = ref(false)
           <h2 class="mb-6 text-lg font-semibold text-gray-900 md:mb-8 md:text-xl">管理員登入</h2>
 
           <!-- Login form -->
-          <form class="w-full max-w-md" @submit.prevent>
+          <form class="w-full max-w-md" @submit.prevent="onSubmitLogin">
             <div class="mb-4">
               <label for="admin-username" class="mb-2 block text-sm text-gray-700">帳號</label>
               <input
@@ -64,12 +71,7 @@ const showPassword = ref(false)
               <a href="#" class="text-gray-500 hover:text-gray-700">忘記密碼?</a>
             </div>
 
-            <button
-              type="submit"
-              class="w-full rounded bg-gray-700 px-4 py-3 text-white transition-colors hover:bg-gray-800"
-            >
-              登入系統
-            </button>
+            <button type="submit" class="w-full rounded bg-gray-700 px-4 py-3 text-white transition-colors hover:bg-gray-800">登入系統</button>
           </form>
 
           <!-- Help link -->

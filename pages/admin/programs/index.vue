@@ -2,6 +2,8 @@
 definePageMeta({ name: 'admin-programs', layout: 'admin' as any });
 
 import { computed, ref } from 'vue';
+import { navigateTo } from '#app'
+import { adminRoutes } from '~/utils/adminRoutes'
 
 type ProgramStatus = 'draft' | 'recruiting' | 'ongoing' | 'finished' | 'canceled';
 type ProgramPhaseFilter = 'all' | 'upcoming' | 'ongoing' | 'finished';
@@ -159,6 +161,10 @@ const visiblePrograms = computed(() => {
 });
 
 const total = computed(() => visiblePrograms.value.length);
+
+const goToDetail = (programId: number) => {
+  navigateTo(adminRoutes.programDetail(programId))
+}
 </script>
 
 <template>
@@ -279,7 +285,7 @@ const total = computed(() => visiblePrograms.value.length);
                 <span class="inline-block rounded px-2 py-1 text-xs" :class="statusClassMap[p.status]">{{ statusLabelMap[p.status] }}</span>
               </td>
               <td class="px-6 py-4 text-left">
-                <button class="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-brand-gray">查看</button>
+                <button class="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-brand-gray" @click="goToDetail(p.id)">查看</button>
               </td>
             </tr>
           </tbody>
@@ -306,9 +312,9 @@ const total = computed(() => visiblePrograms.value.length);
             </div>
             <div><span class="text-gray-500">申請/名額：</span>{{ p.applicants }} / {{ p.slots }}</div>
           </div>
-          <div class="mt-3 flex justify-end">
-            <button class="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-brand-gray">查看</button>
-          </div>
+            <div class="mt-3 flex justify-end">
+              <button class="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-brand-gray" @click="goToDetail(p.id)">查看</button>
+            </div>
         </div>
       </div>
     </section>

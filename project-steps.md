@@ -516,3 +516,34 @@
   - 分頁需要顯示總筆數、頁碼群、每頁筆數選擇、跳頁與 i18n 時，改用 `ElPagination`（建議 `layout: "total, prev, pager, next"`、`background`）。
 - **主題策略**：若導入 Element，採 `ElConfigProvider` 與 SCSS 變數客製主題/命名空間（參考 [Theming](https://element-plus.org/en-US/guide/theming) / [Namespace](https://element-plus.org/en-US/guide/namespace.html)）。
 - **實作路線**：抽出 `ProgramsTable`、`ProgramsPagination` 元件包裝，未來可在不改動頁面介面合約下，將內部實作由原生替換為 Element。
+
+### PP4: 單一計畫詳情頁（UI 第一版 + 區塊完整化）
+- **頁面與路由**：新增 `pages/admin/programs/[programId].vue`，綁定 `definePageMeta({ name: 'admin-single-program-info', layout: 'admin' })`。
+- **內容區塊**：
+  - 標題與中繼資訊（計畫 ID、提交日期、審核狀態）。
+  - 基本資訊（雙欄 `dl`）：體驗名稱、企業、地點、電話、刊登/進行時間、產業、職務、聯絡人、Email、參與人數。
+  - 體驗介紹、師資介紹、經歷、參加限制。
+  - 行前須知、準備清單、體驗流程、體驗地點（`LocationPinIcon`）。
+  - 體驗照片：上方「地圖」灰底佔位，下方 2×2 照片網格（含說明）。
+  - 審核歷史表格與審核意見表單（結果下拉、意見輸入、提交示意）。
+- **資料與型別**：以靜態假資料呈現並定義介面：`photos`、`reviewHistory`、`itinerary`、`preNotes`、`checklist` 等，預留日後 `useFetch` 串接。
+- **地圖策略**：暫以靜態容器佔位；後續可替換 Leaflet，UI 不需變更。
+- **RWD 與樣式**：沿用 `max-w-container-admin` 與色票，`md` 斷點雙欄，lint 綠燈。
+
+### ROUTE: 管理端導覽集中化與列表→詳情串接
+- **集中 helper**：新增 `utils/adminRoutes.ts`，提供 `programs()`、`programDetail(programId)`；與頁面 `definePageMeta.name` 對齊。
+- **列表→詳情**：將 `pages/admin/programs/index.vue` 的「查看」按鈕改為 `navigateTo(adminRoutes.programDetail(p.id))`，行動卡片與桌面表格一致。
+- **理由**：以命名路由移除硬編碼字串，降低壞鏈風險；集中維護、易於重構。
+
+### PP1: 管理員登入頁（提交導向）
+- **行為**：於 `pages/admin/index.vue` 新增 `onSubmitLogin`，表單 `@submit.prevent` 送出後 `navigateTo(adminRoutes.programs())`。
+- **理由**：先完成流程走通，後續再接驗證/錯誤提示/權限保護與回跳。
+
+### UX 決策：詳情頁返回列表
+- **結論**：在詳情頁提供顯式「返回列表」較依賴瀏覽器上一頁更可靠。
+- **理由**：支援深連結與新分頁情境、可控還原列表搜尋/篩選/頁碼/捲動狀態，並可攔截未存變更；未立即實作，後續以 `adminRoutes.programs()` 搭配 query 還原。
+
+### ADMIN: 側邊選單導航（體驗計畫）
+- **導覽實作**：在 `layouts/admin.vue` 新增 `handleNav(item, idx)`，點擊側邊選單更新 `activeIndex`，當項目為「體驗計畫」時導向 `adminRoutes.programs()`（命名路由）。
+- **決策**：統一用集中路由 helper，避免硬編碼，與列表/詳情頁導覽策略一致。
+- **理由**：提升維護性與一致性；確保行動/桌面側欄行為相同；保留未來擴充其他選單項目的彈性。
