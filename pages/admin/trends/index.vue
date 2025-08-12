@@ -111,6 +111,28 @@ const trendItems = ref<TrendItem[]>([
   },
 ]);
 
+// 可添加的體驗（下方表格區）
+type CandidateItem = {
+  id: number;
+  title: string;
+  company: string;
+  category: string;
+  views: number;
+  favorites: number;
+  applicants: number;
+  aiScore: number;
+};
+
+const candidateItems = ref<CandidateItem[]>([
+  { id: 101, title: 'UI/UX 設計師工作坊', company: '企業名稱', category: '科技業', views: 3842, favorites: 3842, applicants: 3842, aiScore: 88.4 },
+  { id: 102, title: '新創企業營運體驗', company: '企業名稱', category: '科技業', views: 2756, favorites: 2756, applicants: 2756, aiScore: 83.0 },
+  { id: 103, title: '從 0 開始的視覺設計', company: '企業名稱', category: '設計業', views: 2103, favorites: 2103, applicants: 2103, aiScore: 82.4 },
+  { id: 104, title: '資料分析入門體驗日', company: '企業名稱', category: '科技業', views: 5678, favorites: 5678, applicants: 5678, aiScore: 80.1 },
+  { id: 105, title: '都市農業微型經營體驗', company: '企業名稱', category: '永續環境業', views: 4321, favorites: 4321, applicants: 4321, aiScore: 78.5 },
+]);
+
+const pageSize = ref<number>(10);
+
 </script>
 
 
@@ -226,6 +248,74 @@ const trendItems = ref<TrendItem[]>([
             <el-button size="small">詳情</el-button>
             <el-button size="small" type="danger">刪除</el-button>
           </div>
+        </div>
+      </div>
+
+      <!-- 可添加的體驗 -->
+        <div class="mt-10">
+        <div class="mb-4 flex flex-wrap justify-between items-center gap-2">
+          <h2 class="text-base font-semibold text-gray-900 md:text-lg">可添加的體驗</h2>
+          <div class="mr-0 flex items-center gap-1 text-sm text-gray-600">
+            <span class="whitespace-nowrap shrink-0">顯示：</span>
+            <el-select v-model="pageSize" class="w-[90px] shrink-0">
+              <el-option :value="10" label="10" />
+              <el-option :value="20" label="20" />
+              <el-option :value="30" label="30" />
+            </el-select>
+          </div>
+        </div>
+        <el-divider />
+
+        <div class="overflow-x-auto">
+          <table class="w-full table-fixed border-separate border-spacing-0 text-left">
+            <colgroup>
+              <col class="w-[28%]" />
+              <col class="w-[12%]" />
+              <col class="w-[12%]" />
+              <col class="w-[12%]" />
+              <col class="w-[12%]" />
+              <col class="w-[8%]" />
+              <col class="w-[8%]" />
+              <col class="w-[8%]" />
+            </colgroup>
+            <thead>
+              <tr class="text-sm text-gray-500">
+                <th class="sticky top-0 bg-white py-3 pr-4 font-medium">體驗名稱</th>
+                <th class="sticky top-0 bg-white py-3 px-4 font-medium">產業類別</th>
+                <th class="sticky top-0 bg-white py-3 px-4 font-medium">瀏覽次數</th>
+                <th class="sticky top-0 bg-white py-3 px-4 font-medium">收藏數</th>
+                <th class="sticky top-0 bg-white py-3 px-4 font-medium">申請人數</th>
+                <th class="sticky top-0 bg-white py-3 px-4 font-medium">AI 評分</th>
+                <th class="sticky top-0 bg-white py-3 px-4 font-medium">詳情</th>
+                <th class="sticky top-0 bg-white py-3 pl-4 font-medium">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="row in candidateItems"
+                :key="row.id"
+                class="border-b border-gray-200 text-sm text-gray-800"
+              >
+                <td class="py-4">
+                  <div class="flex flex-col">
+                    <span class="truncate font-medium">{{ row.title }}</span>
+                    <span class="mt-1 text-xs text-gray-500">{{ row.company }}</span>
+                  </div>
+                </td>
+                <td class="px-4">{{ row.category }}</td>
+                <td class="px-4">{{ row.views.toLocaleString() }}</td>
+                <td class="px-4">{{ row.favorites.toLocaleString() }}</td>
+                <td class="px-4">{{ row.applicants.toLocaleString() }}</td>
+                <td class="px-4">{{ row.aiScore }}</td>
+                <td class="px-4">
+                  <el-button size="small">查看更多</el-button>
+                </td>
+                <td class="pl-4 text-left">
+                  <el-button size="small" type="primary" plain>添加到熱門</el-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
