@@ -547,3 +547,18 @@
 - **導覽實作**：在 `layouts/admin.vue` 新增 `handleNav(item, idx)`，點擊側邊選單更新 `activeIndex`，當項目為「體驗計畫」時導向 `adminRoutes.programs()`（命名路由）。
 - **決策**：統一用集中路由 helper，避免硬編碼，與列表/詳情頁導覽策略一致。
 - **理由**：提升維護性與一致性；確保行動/桌面側欄行為相同；保留未來擴充其他選單項目的彈性。
+
+# 2025-08-13
+### PP5: 熱門體驗管理頁（UI 第一版 + 工具列/清單）
+- **建立頁面骨架**：在 `pages/admin/trends/index.vue` 以 `definePageMeta({ name: 'pp5-admin-trends', layout: 'admin' })` 建立頁面並對齊 `utils/adminRoutes.trends()`。
+- **標題與說明**：新增頁頭標題與描述，採 `max-w-container-admin` 版心，沿用專案色票與間距。
+- **工具列（Filter Toolbar）**：
+  - 新增搜尋 (`ElInput :suffix-icon="Search"`) 與四個下拉（產業/職類/地區/排序，`ElSelect/ElOption`）。
+  - 修正圖示用法，避免 `Invalid vnode type`；調整 `v-model` 型別為 `string`（預設空字串）消除 TS 不相容；Lint 綠燈。
+  - 依設計稿調整排列：標題置左，控制群組置右；`md:flex-nowrap` 確保中大螢幕單行由左至右；370px 下限支援換行。
+- **清單區塊（UI-only）**：
+  - 加入「拖曳項目可調整排序順序」提示，建立卡片式列表（暫以假資料）。
+  - 卡片結構含拖曳把手、縮圖佔位、主內容（標題/企業/日期/描述）、右側產業與操作按鈕。
+  - 指標列顯示瀏覽/收藏/申請（`View/Star/User` 圖示）；採三欄佈局，整列 `items-center` 使「產業」「詳情」「刪除」與主內容垂直置中，符合設計。
+  - 圖示使用 `Rank/View/Star/User`，維持 Element Plus 預設樣式＋少量 Tailwind 排版。
+- **其他**：保留未來拖曳排序與 API 串接的掛鉤；不新增依賴；Lint 通過。
