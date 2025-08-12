@@ -253,7 +253,7 @@ const pageSize = ref<number>(10);
 
       <!-- 可添加的體驗 -->
         <div class="mt-10">
-        <div class="mb-4 flex flex-wrap justify-between items-center gap-2">
+        <div class="mb-4 flex flex-wrap justify-start items-center gap-10">
           <h2 class="text-base font-semibold text-gray-900 md:text-lg">可添加的體驗</h2>
           <div class="mr-0 flex items-center gap-1 text-sm text-gray-600">
             <span class="whitespace-nowrap shrink-0">顯示：</span>
