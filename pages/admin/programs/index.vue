@@ -205,7 +205,7 @@ const total = computed(() => visiblePrograms.value.length);
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">日期</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">申請/名額</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">狀態</th>
-              <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-600">操作</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">操作</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 bg-white">
@@ -220,7 +220,7 @@ const total = computed(() => visiblePrograms.value.length);
               <td class="px-6 py-4">
                 <span class="inline-block rounded px-2 py-1 text-xs" :class="statusClassMap[p.status]">{{ statusLabelMap[p.status] }}</span>
               </td>
-              <td class="px-6 py-4 text-right">
+              <td class="px-6 py-4 text-left">
                 <button class="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-brand-gray">查看</button>
               </td>
             </tr>
