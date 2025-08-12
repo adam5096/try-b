@@ -1,6 +1,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { navigateTo } from '#app'
+import { adminRoutes } from '~/utils/adminRoutes'
 
 const isSidebarOpen = ref(false)
 const activeIndex = ref(0)
@@ -11,6 +13,13 @@ const navItems = [
   { key: 'reviews', label: '評價管理' },
   { key: 'logout', label: '登出' },
 ]
+
+const handleNav = (item: { key: string; label: string }, idx: number) => {
+  activeIndex.value = idx
+  if (item.key === 'programs') {
+    navigateTo(adminRoutes.programs())
+  }
+}
 </script>
 
 
@@ -50,6 +59,7 @@ const navItems = [
             v-for="(item, idx) in navItems"
             :key="item.key"
             class="flex w-full items-center justify-between rounded px-2 py-2 text-left text-gray-800 hover:bg-brand-gray"
+            @click="handleNav(item, idx)"
           >
             <span class="flex items-center gap-3">
               <span class="block h-5 w-1 rounded bg-gray-400" v-if="idx === activeIndex"></span>
