@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 import { Search } from '@element-plus/icons-vue';
 
@@ -10,9 +10,9 @@ definePageMeta({
 
 // UI-only demo state for cutting layout
 const keyword = ref('');
-const selectedIndustry = ref<string | null>(null);
-const selectedJob = ref<string | null>(null);
-const selectedRegion = ref<string | null>(null);
+const selectedIndustry = ref<string>('');
+const selectedJob = ref<string>('');
+const selectedRegion = ref<string>('');
 const selectedSort = ref('recent');
 
 const industryOptions = [
@@ -56,7 +56,7 @@ const sortOptions = [
       </header>
 
       <!-- Filter toolbar -->
-      <div class="mb-6 flex flex-wrap items-center gap-3 md:mb-8 md:gap-4">
+      <div class="mb-6 flex flex-wrap items-center gap-3 md:mb-8 md:gap-4 md:flex-nowrap">
         <h2 class="mr-2 whitespace-nowrap text-base font-semibold text-gray-900 md:text-lg">
           當前熱門體驗 (8)
         </h2>
@@ -65,12 +65,9 @@ const sortOptions = [
           v-model="keyword"
           placeholder="搜尋體驗..."
           clearable
+          :suffix-icon="Search"
           class="w-[260px] md:w-[300px]"
-        >
-          <template #suffix>
-            <el-icon><Search /></el-icon>
-          </template>
-        </el-input>
+        />
 
         <el-select v-model="selectedIndustry" placeholder="產業類別" clearable class="w-[150px]">
           <el-option
