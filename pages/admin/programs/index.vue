@@ -4,6 +4,8 @@ definePageMeta({ name: 'admin-programs', layout: 'admin' as any });
 import { computed, ref } from 'vue';
 
 type ProgramStatus = 'draft' | 'recruiting' | 'ongoing' | 'finished' | 'canceled';
+type ProgramPhaseFilter = 'all' | 'upcoming' | 'ongoing' | 'finished';
+type ReviewStatus = 'systemApproved' | 'systemRejected' | 'manualConfirmed' | 'manualRejected';
 
 interface ProgramItem {
   id: number;
@@ -15,11 +17,22 @@ interface ProgramItem {
   applicants: number;
   slots: number;
   status: ProgramStatus;
+  reviewStatus: ReviewStatus;
 }
 
 const query = ref('');
-const selectedStatuses = ref<ProgramStatus[]>([]);
-const sortBy = ref<'newest' | 'oldest'>('newest');
+
+// UI 暫存篩選（點擊「確認篩選」後才套用）
+const uiReviewStatus = ref<'all' | ReviewStatus>('all');
+const uiProgramStatus = ref<ProgramPhaseFilter>('all');
+const uiDateFrom = ref(''); // YYYY-MM-DD | ''
+const uiDateTo = ref('');   // YYYY-MM-DD | ''
+
+// 已套用的篩選條件
+const appliedReviewStatus = ref<'all' | ReviewStatus>('all');
+const appliedProgramStatus = ref<ProgramPhaseFilter>('all');
+const appliedDateFrom = ref('');
+const appliedDateTo = ref('');
 
 const allPrograms = ref<ProgramItem[]>([
   {
@@ -32,6 +45,7 @@ const allPrograms = ref<ProgramItem[]>([
     applicants: 42,
     slots: 50,
     status: 'recruiting',
+    reviewStatus: 'systemApproved',
   },
   {
     id: 102,
@@ -43,6 +57,7 @@ const allPrograms = ref<ProgramItem[]>([
     applicants: 30,
     slots: 30,
     status: 'ongoing',
+    reviewStatus: 'systemApproved',
   },
   {
     id: 103,
@@ -54,6 +69,7 @@ const allPrograms = ref<ProgramItem[]>([
     applicants: 120,
     slots: 100,
     status: 'finished',
+    reviewStatus: 'systemApproved',
   },
   {
     id: 104,
@@ -65,6 +81,7 @@ const allPrograms = ref<ProgramItem[]>([
     applicants: 5,
     slots: 20,
     status: 'draft',
+    reviewStatus: 'manualConfirmed',
   },
   {
     id: 105,
@@ -76,6 +93,7 @@ const allPrograms = ref<ProgramItem[]>([
     applicants: 18,
     slots: 25,
     status: 'canceled',
+    reviewStatus: 'manualRejected',
   },
 ]);
 
@@ -95,10 +113,19 @@ const statusClassMap: Record<ProgramStatus, string> = {
   canceled: 'bg-red-50 text-red-700 border border-red-200',
 };
 
-const toggleStatus = (s: ProgramStatus) => {
-  const idx = selectedStatuses.value.indexOf(s);
-  if (idx >= 0) selectedStatuses.value.splice(idx, 1);
-  else selectedStatuses.value.push(s);
+const applyFilters = () => {
+  appliedReviewStatus.value = uiReviewStatus.value;
+  appliedProgramStatus.value = uiProgramStatus.value;
+  appliedDateFrom.value = uiDateFrom.value;
+  appliedDateTo.value = uiDateTo.value;
+};
+
+const clearFilters = () => {
+  uiReviewStatus.value = 'all';
+  uiProgramStatus.value = 'all';
+  uiDateFrom.value = '';
+  uiDateTo.value = '';
+  applyFilters();
 };
 
 const visiblePrograms = computed(() => {
@@ -107,17 +134,27 @@ const visiblePrograms = computed(() => {
     const matchQuery = q
       ? p.title.toLowerCase().includes(q) || p.company.toLowerCase().includes(q)
       : true;
-    const matchStatus = selectedStatuses.value.length
-      ? selectedStatuses.value.includes(p.status)
+    const matchProgramStatus = (() => {
+      const f = appliedProgramStatus.value;
+      if (f === 'all') return true;
+      if (f === 'upcoming') return p.status === 'draft' || p.status === 'recruiting';
+      if (f === 'ongoing') return p.status === 'ongoing';
+      // 將取消視為已完成的一種結束狀態，與設計的「已完成」同一分組
+      if (f === 'finished') return p.status === 'finished' || p.status === 'canceled';
+      return true;
+    })();
+    const matchReviewStatus = appliedReviewStatus.value === 'all'
+      ? true
+      : p.reviewStatus === appliedReviewStatus.value;
+    const matchDateFrom = appliedDateFrom.value
+      ? p.startDate >= appliedDateFrom.value
       : true;
-    return matchQuery && matchStatus;
+    const matchDateTo = appliedDateTo.value
+      ? (p.endDate || p.startDate) <= appliedDateTo.value
+      : true;
+    return matchQuery && matchProgramStatus && matchReviewStatus && matchDateFrom && matchDateTo;
   });
-  const sorted = filtered.sort((a, b) => {
-    const aDate = a.startDate;
-    const bDate = b.startDate;
-    if (sortBy.value === 'newest') return aDate < bDate ? 1 : aDate > bDate ? -1 : 0;
-    return aDate > bDate ? 1 : aDate < bDate ? -1 : 0;
-  });
+  const sorted = filtered.sort((a, b) => (a.startDate < b.startDate ? 1 : a.startDate > b.startDate ? -1 : 0));
   return sorted;
 });
 
@@ -139,15 +176,15 @@ const total = computed(() => visiblePrograms.value.length);
 
     <!-- Filters -->
     <section class="rounded border border-gray-200 bg-white p-4 shadow-sm">
-      <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+      <div class="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         <!-- Search -->
-        <div class="flex w-full items-center gap-2 xl:max-w-md">
+        <div class="flex w-full items-center gap-2 xl:max-w-[360px]">
           <div class="relative w-full">
             <input
               v-model="query"
               type="search"
               inputmode="search"
-              placeholder="搜尋活動標題 / 公司名稱"
+              placeholder="搜尋計畫名稱或關鍵字"
               class="w-full rounded border border-gray-300 px-4 py-2 pr-9 text-gray-900 placeholder-gray-400 outline-none focus:border-primary-blue focus:ring-1 focus:ring-primary-blue"
             />
             <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-400">
@@ -158,36 +195,57 @@ const total = computed(() => visiblePrograms.value.length);
           </div>
         </div>
 
-        <!-- Status filter -->
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="mr-1 text-sm text-gray-600">狀態：</span>
-          <button
-            v-for="s in (['draft','recruiting','ongoing','finished','canceled'] as ProgramStatus[])"
-            :key="s"
-            type="button"
-            class="rounded border px-3 py-1 text-sm transition-colors"
-            :class="selectedStatuses.includes(s) ? 'bg-primary-blue text-white border-primary-blue' : 'bg-white text-gray-700 border-gray-300 hover:bg-brand-gray'"
-            @click="toggleStatus(s)"
+        <!-- Review status -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          <span class="text-sm text-gray-600 shrink-0">審核狀態</span>
+          <select
+            v-model="uiReviewStatus"
+            class="w-[160px] rounded border border-gray-300 px-2.5 py-2 text-sm text-gray-900 outline-none focus:border-primary-blue focus:ring-1 focus:ring-primary-blue"
           >
-            {{ statusLabelMap[s] }}
-          </button>
-          <button
-            type="button"
-            class="ml-1 rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-brand-gray"
-            @click="selectedStatuses = []"
-          >全部</button>
+            <option value="all">全部狀態</option>
+            <option value="systemApproved">已通過(系統)</option>
+            <option value="systemRejected">已拒絕(系統)</option>
+            <option value="manualConfirmed">已確認(人工)</option>
+            <option value="manualRejected">已拒絕(人工)</option>
+          </select>
         </div>
 
-        <!-- Sort -->
-        <div class="flex items-center gap-2">
-          <span class="text-sm text-gray-600">排序：</span>
+        <!-- Program status -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          <span class="text-sm text-gray-600 shrink-0">體驗狀態</span>
           <select
-            v-model="sortBy"
-            class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none focus:border-primary-blue focus:ring-1 focus:ring-primary-blue"
+            v-model="uiProgramStatus"
+            class="w-[140px] rounded border border-gray-300 px-2.5 py-2 text-sm text-gray-900 outline-none focus:border-primary-blue focus:ring-1 focus:ring-primary-blue"
           >
-            <option value="newest">新到舊</option>
-            <option value="oldest">舊到新</option>
+            <option value="all">全部狀態</option>
+            <option value="finished">已完成</option>
+            <option value="upcoming">待舉辦</option>
+            <option value="ongoing">進行中</option>
           </select>
+        </div>
+
+        <!-- Date range -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          <span class="text-sm text-gray-600 shrink-0">日期範圍：</span>
+          <input
+            v-model="uiDateFrom"
+            type="date"
+            placeholder="開始日期"
+            class="w-[160px] rounded border border-gray-300 px-2.5 py-2 text-sm text-gray-900 outline-none focus:border-primary-blue focus:ring-1 focus:ring-primary-blue"
+          />
+          <span class="text-gray-500">至</span>
+          <input
+            v-model="uiDateTo"
+            type="date"
+            placeholder="結束日期"
+            class="w-[160px] rounded border border-gray-300 px-2.5 py-2 text-sm text-gray-900 outline-none focus:border-primary-blue focus:ring-1 focus:ring-primary-blue"
+          />
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-brand-gray" @click="applyFilters">確認篩選</button>
+          <button type="button" class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-brand-gray" @click="clearFilters">清除所有篩選</button>
         </div>
       </div>
     </section>
