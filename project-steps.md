@@ -487,3 +487,32 @@
 - 佈局策略：明確設定 `definePageMeta({ layout: 'blank' })`，使登入頁不載入後台導覽，保持獨立與專注。
 - 設計原則：Admin 僅供內部使用，不放置「首頁／方案／聯絡我們」等行銷導覽；保留必要支援與法務文案。
 - RWD 與樣式：裝置寬度下限 370px；採用 `md` 斷點；沿用 Tailwind 既有色票與表單 focus 樣式；Lint 通過。
+
+### PP3: 管理端所有活動總覽頁（UI 與路由）
+- **頁面與路由**：新增 `pages/admin/programs/index.vue`，`definePageMeta({ name: 'admin-programs', layout: 'admin' })`，作為 pp3「所有活動總覽」頁。
+- **內容結構**：
+  - 標題與操作列（右上「新增活動」）。
+  - 控制列：搜尋（標題/公司）、狀態多選（草稿/招募中/進行中/已結束/已取消）、排序（新到舊/舊到新）。
+  - 清單：桌面為表格、行動為卡片；欄位含活動名稱、公司、地點、日期、申請/名額、狀態、操作。
+  - 底部資訊：總筆數與簡易上一頁/下一頁按鈕（預留串接正式分頁）。
+- **樣式與 RWD**：沿用 `max-w-container-admin` 置中；`md` 斷點切換表格/卡片；色票與陰影依專案規範（`brand-gray` 等）。
+- **技術**：以假資料完成切版與互動（搜尋/篩選/排序）之計算屬性；未新增依賴；Lint 通過。
+- **影響檔案**：`pages/admin/programs/index.vue`
+
+### ADMIN: 內容置中偏移修復（佈局）
+- **問題**：內容區在桌面寬度右偏移，原因為 `layouts/admin.vue` 的 `main` 同時套用 `md:ml-64`，與固定寬度側欄 `w-64` 疊加造成雙重位移。
+- **修正**：移除 `md:ml-64`，保留 `p-4 md:p-8`；使頁面內 `mx-auto max-w-container-admin` 真正生效並左右置中。
+- **影響範圍**：所有使用 `admin` 佈局頁面（含 `/admin/programs`）；側欄收合/固定行為不受影響；Lint 通過。
+- **影響檔案**：`layouts/admin.vue`
+
+### PP3: 元件選用策略（Table / Pagination）
+- **決定**：以原生 `table` + Tailwind 切版此頁清單；於 footer 以「上一頁／下一頁」兩顆按鈕示意分頁，暫不導入 `ElTable`、`ElPagination`。
+- **說明**：
+  - 符合設計：列高、內距、徽章色票/邊框高度客製；使用 Element 需大量覆蓋，維護成本高且易與 Tailwind 衝突。
+  - 保留語意：原生 `table/thead/tbody/th/td` 具可存取語意；行動端改為卡片版型更直覺。
+  - 降低負擔：現階段為假資料與基本互動（搜尋/狀態/排序），無需進階行為。
+- **切換條件**：
+  - 表格需要排序（多欄）、固定欄/表頭、列選取、展開列、虛擬清單、大量資料、內建 loading/空狀態時，改用 `ElTable`。
+  - 分頁需要顯示總筆數、頁碼群、每頁筆數選擇、跳頁與 i18n 時，改用 `ElPagination`（建議 `layout: "total, prev, pager, next"`、`background`）。
+- **主題策略**：若導入 Element，採 `ElConfigProvider` 與 SCSS 變數客製主題/命名空間（參考 [Theming](https://element-plus.org/en-US/guide/theming) / [Namespace](https://element-plus.org/en-US/guide/namespace.html)）。
+- **實作路線**：抽出 `ProgramsTable`、`ProgramsPagination` 元件包裝，未來可在不改動頁面介面合約下，將內部實作由原生替換為 Element。
