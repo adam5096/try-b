@@ -504,3 +504,15 @@
 - **修正**：移除 `md:ml-64`，保留 `p-4 md:p-8`；使頁面內 `mx-auto max-w-container-admin` 真正生效並左右置中。
 - **影響範圍**：所有使用 `admin` 佈局頁面（含 `/admin/programs`）；側欄收合/固定行為不受影響；Lint 通過。
 - **影響檔案**：`layouts/admin.vue`
+
+### PP3: 元件選用策略（Table / Pagination）
+- **決定**：以原生 `table` + Tailwind 切版此頁清單；於 footer 以「上一頁／下一頁」兩顆按鈕示意分頁，暫不導入 `ElTable`、`ElPagination`。
+- **說明**：
+  - 符合設計：列高、內距、徽章色票/邊框高度客製；使用 Element 需大量覆蓋，維護成本高且易與 Tailwind 衝突。
+  - 保留語意：原生 `table/thead/tbody/th/td` 具可存取語意；行動端改為卡片版型更直覺。
+  - 降低負擔：現階段為假資料與基本互動（搜尋/狀態/排序），無需進階行為。
+- **切換條件**：
+  - 表格需要排序（多欄）、固定欄/表頭、列選取、展開列、虛擬清單、大量資料、內建 loading/空狀態時，改用 `ElTable`。
+  - 分頁需要顯示總筆數、頁碼群、每頁筆數選擇、跳頁與 i18n 時，改用 `ElPagination`（建議 `layout: "total, prev, pager, next"`、`background`）。
+- **主題策略**：若導入 Element，採 `ElConfigProvider` 與 SCSS 變數客製主題/命名空間（參考 [Theming](https://element-plus.org/en-US/guide/theming) / [Namespace](https://element-plus.org/en-US/guide/namespace.html)）。
+- **實作路線**：抽出 `ProgramsTable`、`ProgramsPagination` 元件包裝，未來可在不改動頁面介面合約下，將內部實作由原生替換為 Element。
