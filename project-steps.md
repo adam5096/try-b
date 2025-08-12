@@ -464,6 +464,7 @@
 - 版心與樣式：沿用 `max-w-container-users`，以 Element Plus 預設樣式為主、少量 Tailwind 做間距與排版。
 - 影響檔案：`pages/users/favorites/index.vue`
 
+
 ### Layout: 體驗者佈局—收藏清單導航
 - 導航更新：將 `layouts/user.vue` 內桌面與行動版「收藏清單」連結改為命名路由 `<NuxtLink :to="{ name: 'user-favorites' }"/>`，與「申請清單」「評價列表」一致。
 - 理由：以命名路由降低壞鏈風險並支援 prefetch，維持桌/行動一致的 UX。
@@ -474,3 +475,15 @@
 - 狀態管理：`currentPage/pageSize/visibleItems/total`，以計算屬性切片顯示當前頁資料。
 - 假資料：擴充為 8 筆以驗證分頁行為；清空收藏時改為空陣列以呈現 `ElEmpty`。
 - 影響檔案：`pages/users/favorites/index.vue`
+
+# 2025-08-12
+### ADMIN: 後台佈局（基礎框架）
+- 建立 `layouts/admin.vue` 依設計稿完成：深色頂欄（LOGO＋系統名稱＋使用者區塊、行動裝置含側欄切換）與左側側欄選單（儀表板／體驗計畫／熱門體驗／評價管理／登出）。
+- 內容區以 `<slot>` 注入，確保後台頁面可重用同一框架；RWD：手機側欄可收合，桌面固定側欄；對齊專案版心與色票（`max-w-container-admin`、`brand-gray`）。
+- 技術細節：純 Tailwind 實作，未新增依賴；狀態以 `ref` 管理（`isSidebarOpen`、`activeIndex`）；Lint 通過。
+
+### PP1: 管理員登入頁（UI 切版與佈局分離）
+- `pages/admin/index.vue` 定義為「pp1 管理員登入頁」，內容含 LOGO 與標題、帳號/密碼欄位、記住我、忘記密碼、登入按鈕；下方提供「聯絡系統管理員」與版權資訊的極簡頁尾。
+- 佈局策略：明確設定 `definePageMeta({ layout: 'blank' })`，使登入頁不載入後台導覽，保持獨立與專注。
+- 設計原則：Admin 僅供內部使用，不放置「首頁／方案／聯絡我們」等行銷導覽；保留必要支援與法務文案。
+- RWD 與樣式：裝置寬度下限 370px；採用 `md` 斷點；沿用 Tailwind 既有色票與表單 focus 樣式；Lint 通過。
