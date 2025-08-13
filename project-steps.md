@@ -571,3 +571,9 @@
   - 與表格容器同樣採用水平內距（標題列與表格皆以 `px-3 md:px-4`），確保上下區塊左右對齊且不溢出版心。
   - 調整 `colgroup` 寬度與儲存格 padding，使表格欄位比例更貼近設計，並新增分隔線以增強層次。
 - **結果**：在桌機寬度完全包覆控制項，最小裝置寬 370px 下可優雅換行；Lint 綠燈。
+
+### PP5: 可添加的體驗－分頁器與統計文案（UI）
+- **新增分頁區塊**：右側導入 `ElPagination`，版型為 `prev, pager, next`，啟用 `background`；左側顯示統計文案「顯示 x 至 y 項，共 n 項」。
+- **狀態與計算**：新增 `currentPage`、`pageSize`（預設 5）與 `totalCandidates`（24），以 `displayedFrom/To` 計算呈現範圍，避免硬編碼。
+- **RWD 與對齊**：分頁容器使用 `flex flex-wrap`，與表格同級採一致水平內距，保證 1920px 不溢出版心、370px 下可換行。
+- **後續擴充**：可再加入 `sizes/jumper/total` 版型或串接後端總筆數；目前僅 UI 切版，Lint 綠燈。
