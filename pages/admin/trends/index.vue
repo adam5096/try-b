@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Search, Rank, View, Star, User } from '@element-plus/icons-vue';
 
 
@@ -131,7 +131,19 @@ const candidateItems = ref<CandidateItem[]>([
   { id: 105, title: '都市農業微型經營體驗', company: '企業名稱', category: '永續環境業', views: 4321, favorites: 4321, applicants: 4321, aiScore: 78.5 },
 ]);
 
-const pageSize = ref<number>(10);
+const pageSize = ref<number>(5);
+const currentPage = ref<number>(1);
+const totalCandidates = ref<number>(24);
+
+const displayedFrom = computed(() => {
+  if (totalCandidates.value === 0) return 0;
+  return (currentPage.value - 1) * pageSize.value + 1;
+});
+
+const displayedTo = computed(() => {
+  const end = currentPage.value * pageSize.value;
+  return end > totalCandidates.value ? totalCandidates.value : end;
+});
 
 </script>
 
@@ -316,6 +328,18 @@ const pageSize = ref<number>(10);
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Pagination footer -->
+        <div class="mt-6 flex flex-wrap items-center justify-between gap-3  text-sm text-gray-600">
+          <div>顯示 {{ displayedFrom }} 至 {{ displayedTo }} 項，共 {{ totalCandidates }} 項</div>
+          <el-pagination
+            v-model:current-page="currentPage"
+            v-model:page-size="pageSize"
+            :total="totalCandidates"
+            background
+            layout="prev, pager, next"
+          />
         </div>
       </div>
     </div>
