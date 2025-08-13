@@ -299,7 +299,7 @@ const displayedTo = computed(() => {
                 <th class="sticky top-0 bg-white py-3 px-4 font-medium">申請人數</th>
                 <th class="sticky top-0 bg-white py-3 px-4 font-medium">AI 評分</th>
                 <th class="sticky top-0 bg-white py-3 px-4 font-medium">詳情</th>
-                <th class="sticky top-0 bg-white py-3 pl-4 font-medium">操作</th>
+                <th class="sticky top-0 bg-white py-3 pl-7 font-medium">操作</th>
               </tr>
             </thead>
             <tbody>
@@ -322,7 +322,7 @@ const displayedTo = computed(() => {
                 <td class="px-4">
                   <el-button size="small">查看更多</el-button>
                 </td>
-                <td class="pl-4 text-left">
+                <td class="pl-4 text-right">
                   <el-button size="small" type="primary" plain>添加到熱門</el-button>
                 </td>
               </tr>
