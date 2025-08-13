@@ -4,7 +4,7 @@ import { Search, Rank, View, Star, User } from '@element-plus/icons-vue';
 
 
 definePageMeta({
-  name: 'pp5-admin-trends',
+  name: 'admin-trends',
   layout: 'admin',
 });
 

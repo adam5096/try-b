@@ -14,7 +14,7 @@ export const adminRoutes = {
     name: 'admin-single-program-info',
     params: { programId },
   }),
-  trends: () => ({ name: 'pp5-admin-trends' }),
+  trends: () => ({ name: 'admin-trends' }),
 };
 
 
