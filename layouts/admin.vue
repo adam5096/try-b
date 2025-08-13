@@ -19,6 +19,9 @@ const handleNav = (item: { key: string; label: string }, idx: number) => {
   if (item.key === 'programs') {
     navigateTo(adminRoutes.programs())
   }
+  if (item.key === 'popular') {
+    navigateTo(adminRoutes.trends())
+  }
 }
 </script>
 
