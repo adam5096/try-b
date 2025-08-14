@@ -588,3 +588,11 @@
 - **構建資料來源**：以假資料 `allComments` 驅動（`reviewer/programTitle/programId/rating/status/date`），以 `computed` 完成搜尋、評分篩選與日期排序。
 - **完成統計與分頁提示**：底部顯示「共 n 筆結果」與「上一頁/下一頁」占位按鈕，預留串接後端分頁掛鉤。
 - **RWD 與可及性**：最小寬 370px；在 `md` 斷點切換表格/卡片；保留語意化 `table/th/td` 與可鍵盤操作的 `button`；Lint 綠燈。
+
+### PP6: 體驗者留言評價列表頁（迭代：篩選/分頁/表格強化/RWD/導覽）
+- **新增篩選**：加入「審核狀態」下拉 `filterStatus`（全部／已通過(系統)／已拒絕(系統)／已確認(人工)／已拒絕(人工)），與既有評分/排序共同過濾。
+- **導入分頁**：以 `ElPagination` 取代占位按鈕；新增 `currentPage/pageSize` 與切片 `paginatedComments`；統計文案「顯示 x 至 y 筆，共 n 筆」。
+- **表格體驗**：加上 sticky 表頭、斑馬紋、空清單 `ElEmpty`；行動卡片同樣支援空清單顯示。
+- **RWD 調整**：搜尋輸入在 md 以下全寬、md 以上限制 `md:max-w-[180px]`；左側兩個下拉（全部評價／最新評價）於 md 以上改為同列左右排列。
+- **路由導覽**：點擊「詳情」以命名路由導向 `admin-comment-review`（pp7 預留）；集中路由 helper 新增 `comments()`、`commentDetail(commentId)`。
+- **影響檔案**：`pages/admin/comments/index.vue`，`utils/adminRoutes.ts`
