@@ -16,8 +16,8 @@ export const adminRoutes = {
   }),
   trends: () => ({ name: 'admin-trends' }),
   comments: () => ({ name: 'admin-comments' }),
-  // pp7: 單一留言評價詳情審核頁（待建立）
-  commentDetail: (commentId: string | number) => ({
+  // pp7: 單一留言評價詳情審核頁
+  commentReview: (commentId: string | number) => ({
     name: 'admin-comment-review',
     params: { commentId },
   }),

@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  name: 'admin-comment-detail',
+  name: 'admin-comment-review',
   layout: 'admin',
 });
 </script>
