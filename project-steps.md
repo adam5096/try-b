@@ -601,3 +601,22 @@
 - **決策與命名**：採用方案 A；在 `tailwind.config.js` 新增通用最小寬 `minWidth.form-control=120px`，與元件化最大寬 `maxWidth.form-select=150px`、`maxWidth.form-search=280px`。
 - **導入頁面**：將 `pages/admin/comments/index.vue` 內 `el-select`、`el-input(:suffix-icon=Search)` 改為 `min-w-form-control`、`md:max-w-form-select`、`md:max-w-form-search`，統一 RWD 行為。
 - **效益**：移除魔術數字、提升跨頁一致性與維護性；調整寬度僅需變更 `tailwind.config.js`。
+
+### MGT: 共用表單寬度 token 導入（Users 範圍）
+- **範圍與原則**：僅調整「工具列/篩選用途」之 `el-select` 與搜尋 `el-input`；排除表單欄位（維持全寬），避免壓縮與版面破壞。
+- **使用 token**：`min-w-form-control=120`、`md:max-w-form-select=150`、`md:max-w-form-search=280`。
+- **影響檔案**：
+  - `pages/users/index.vue`：搜尋與四個篩選下拉統一 token。
+  - `pages/users/comments/index.vue`：分頁「每頁顯示」下拉統一 token。
+  - `pages/users/applications/index.vue`、`pages/users/favorites/index.vue`：僅驗證，無篩選下拉/搜尋需改動。
+- **結果**：370px 下全寬、md+ 套上限；Lint 綠燈、無版面破壞。
+
+### MGT: 共用表單寬度 token 導入（Company 範圍）
+- **範圍與原則**：同 users；只調整工具列/篩選用途，表單欄位保持全寬。
+- **影響檔案**：
+  - `pages/company/index.vue`：搜尋與四個篩選下拉改用 token。
+  - `pages/company/comments/index.vue`：評分/日期排序/每頁顯示下拉改用 token。
+  - `pages/company/programs/[programId]/applicants/index.vue`：待審核/已審核區的排序/狀態下拉改用 token。
+  - `pages/company/programs/new.vue`：產業/職類/體驗人數/刊登期間下拉改用 token（其餘表單欄位維持全寬）。
+  - `pages/company/settings/index.vue`：產業/規模下拉改用 token（地址縣市/區域暫留全寬）。
+- **結果**：RWD 驗證通過、Lint 綠燈；移除魔術數字，提升一致性與維護性。
