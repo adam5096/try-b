@@ -656,4 +656,11 @@
 - **企業端數據區塊**：依設計稿完成 2×2 卡片（註冊帳號統計、活動發布統計趨勢、活動成團統計趨勢、當月發布體驗的職業種類），以 `ElCard` 搭配圖表占位容器、座標標示與圖例占位，先行完成切版。
 - **體驗者端數據區塊**：新增 2×2 卡片（申請活動、評價總數、被收藏最愛職業數量（每月）、當月被收藏最愛的職業種類），結構與企業端一致，預留後續導入圖表庫。
 - **RWD 與規範**：手機 1 欄、`md` 2 欄；裝置寬度下限 370px；沿用專案色票 `brand-gray` 等；不覆蓋 Element Plus 預設樣式，避免衝突。
-- **品質與風險**：未新增依賴、Lint 綠燈；以占位容器隔離圖表實作，後續可最小改動導入 ECharts／Chart.js／ApexCharts；預留 Loading/Empty/Error 三態掛點。gi
+- **品質與風險**：未新增依賴、Lint 綠燈；以占位容器隔離圖表實作，後續可最小改動導入 ECharts／Chart.js／ApexCharts；預留 Loading/Empty/Error 三態掛點。
+
+### PP2: 儀表板 — 熱門體驗計畫區塊與導覽
+- **新增區塊**：在 `pages/admin/dashboard/index.vue` 建立「熱門體驗計畫」清單卡，三欄資訊（標題＋瀏覽數、收藏數、申請人數），行動版單欄、`md` 三欄。
+- **導覽行為**：為「查看全部」按鈕綁定 `navigateTo(adminRoutes.trends())`，對應 `pages/admin/trends/index.vue`（`definePageMeta.name = 'admin-trends'`）。
+- **資料來源**：以 `popularPrograms` 假資料陣列驅動，欄位含 `id/title/views/favorites/applicants`，後續可以 `useFetch` 替換。
+- **圖示與樣式**：使用 EP 圖示 `ArrowRight`，容器採 `rounded border bg-white` 與分隔線；保持 `max-w-container-admin` 版心與既有色票。
+- **品質**：無新增依賴、Lint 綠燈；路由集中於 `utils/adminRoutes.ts`，避免硬編碼字串。
