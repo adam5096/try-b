@@ -103,6 +103,73 @@
         </el-card>
       </div>
     </section>
+
+    <!-- 下個任務：體驗者端數據 -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-semibold text-gray-900 md:text-2xl">體驗者端數據</h2>
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <!-- 申請活動 -->
+        <el-card shadow="never" body-class="p-4">
+          <template #header>
+            <div class="text-base font-semibold text-gray-900">申請活動</div>
+          </template>
+          <div class="relative h-56 w-full overflow-hidden rounded bg-white">
+            <span class="absolute left-0 top-0 translate-y-1.5 text-xs text-gray-500">數量</span>
+            <div class="absolute inset-0 translate-y-2 p-4">
+              <div class="h-full w-full rounded bg-brand-gray"></div>
+            </div>
+            <span class="absolute bottom-1 right-2 text-xs text-gray-500">月份</span>
+          </div>
+        </el-card>
+
+        <!-- 評價總數 -->
+        <el-card shadow="never" body-class="p-4">
+          <template #header>
+            <div class="text-base font-semibold text-gray-900">評價總數</div>
+          </template>
+          <div class="relative h-56 w-full overflow-hidden rounded bg-white">
+            <span class="absolute left-0 top-0 translate-y-1.5 text-xs text-gray-500">數量</span>
+            <div class="absolute inset-0 translate-y-2 p-4">
+              <div class="h-full w-full rounded bg-brand-gray"></div>
+            </div>
+            <span class="absolute bottom-1 right-2 text-xs text-gray-500">月份</span>
+          </div>
+        </el-card>
+
+        <!-- 被收藏最愛職業數量（每月） -->
+        <el-card shadow="never" body-class="p-4">
+          <template #header>
+            <div class="text-base font-semibold text-gray-900">被收藏最愛職業數量（每月）</div>
+          </template>
+          <div class="relative h-56 w-full overflow-hidden rounded bg-white">
+            <span class="absolute left-0 top-0 translate-y-1.5 text-xs text-gray-500">數量</span>
+            <div class="absolute inset-0 translate-y-2 p-4">
+              <div class="h-full w-full rounded bg-brand-gray"></div>
+            </div>
+            <span class="absolute bottom-1 right-2 text-xs text-gray-500">月份</span>
+          </div>
+        </el-card>
+
+        <!-- 當月被收藏最愛的職業種類 -->
+        <el-card shadow="never" body-class="p-4">
+          <template #header>
+            <div class="text-base font-semibold text-gray-900">當月被收藏最愛的職業種類</div>
+          </template>
+          <div class="flex h-56 w-full flex-col justify-between">
+            <div class="flex flex-1 items-center justify-center">
+              <div class="h-40 w-40 rounded-full bg-brand-gray"></div>
+            </div>
+            <div class="mt-3 flex items-center gap-6 text-sm">
+              <span class="inline-flex items-center gap-2 text-gray-700"><span class="inline-block h-3 w-3 rounded-sm bg-green-400"></span>綠色產業類</span>
+              <span class="inline-flex items-center gap-2 text-gray-700"><span class="inline-block h-3 w-3 rounded-sm bg-blue-400"></span>資訊類</span>
+              <span class="inline-flex items-center gap-2 text-gray-700"><span class="inline-block h-3 w-3 rounded-sm bg-gray-500"></span>行銷與設計類</span>
+            </div>
+          </div>
+        </el-card>
+      </div>
+    </section>
+
   </div>
 </template>
 
