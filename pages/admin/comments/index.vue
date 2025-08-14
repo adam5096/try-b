@@ -47,12 +47,39 @@ const allComments = ref<CommentItem[]>([
   },
   {
     id: 12343,
-    programTitle: '資料分析一日體驗',
-    programId: 'TW-TPE-2025-0108',
-    reviewer: '陳小安',
-    rating: 3,
+    programTitle: '數位行銷實戰體驗',
+    programId: 'TW-TPE-2025-0142',
+    reviewer: '陳雅婷',
+    rating: 5,
+    status: 'manualConfirmed',
+    date: '2025/11/25',
+  },
+  {
+    id: 12342,
+    programTitle: '環境永續實戰體驗',
+    programId: 'TW-TPE-2025-0142',
+    reviewer: '張志豪',
+    rating: 4,
     status: 'systemRejected',
-    date: '2025/11/21',
+    date: '2025/11/24',
+  },
+  {
+    id: 12341,
+    programTitle: 'UI/UX設計師工作坊',
+    programId: 'TW-TPE-2025-0142',
+    reviewer: '李佳芳',
+    rating: 5,
+    status: 'manualConfirmed',
+    date: '2025/11/22',
+  },
+  {
+    id: 12340,
+    programTitle: '新創企業營運體驗',
+    programId: 'TW-TPE-2025-0142',
+    reviewer: '周雨彤',
+    rating: 4,
+    status: 'systemApproved',
+    date: '2025/11/20',
   },
 ])
 
@@ -130,29 +157,30 @@ const goToDetail = (commentId: number) => {
     <section class="rounded border border-gray-200 bg-white p-4 shadow-sm">
       <div class="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         <!-- Left: filters -->
-        <div class="flex flex-col gap-2 md:w-[320px] md:flex-row md:justify-between">
-          <el-select v-model="filterRating" class="w-full md:w-[150px]" placeholder="全部評價">
+        <div class="flex flex-col gap-2 w-full md:flex-row md:justify-start">
+          <el-select v-model="filterRating" class="w-full min-w-[120px] md:max-w-[160px]" placeholder="全部評價">
             <el-option label="全部評價" value="all" />
             <el-option label="僅五星" value="5" />
             <el-option label="4 星以上" value="4plus" />
             <el-option label="3 星以上" value="3plus" />
           </el-select>
 
-          <el-select v-model="sortBy" class="w-full md:w-[150px]" placeholder="最新評價">
+          <el-select v-model="sortBy" class="w-full min-w-[120px] md:max-w-[160px]" placeholder="最新評價">
             <el-option label="最新評價" value="recent" />
             <el-option label="最舊優先" value="oldest" />
           </el-select>
+
+          <!-- Review status -->
+          <el-select v-model="filterStatus" class="w-full min-w-[120px] md:max-w-[160px]" placeholder="審核狀態">
+            <el-option label="全部狀態" value="all" />
+            <el-option label="已通過(系統)" value="systemApproved" />
+            <el-option label="已拒絕(系統)" value="systemRejected" />
+            <el-option label="已確認(人工)" value="manualConfirmed" />
+            <el-option label="已拒絕(人工)" value="manualRejected" />
+          </el-select>
         </div>
 
-        <!-- Review status -->
-        <el-select v-model="filterStatus" class="w-full md:w-[170px]" placeholder="審核狀態">
-          <el-option label="全部狀態" value="all" />
-          <el-option label="已通過(系統)" value="systemApproved" />
-          <el-option label="已拒絕(系統)" value="systemRejected" />
-          <el-option label="已確認(人工)" value="manualConfirmed" />
-          <el-option label="已拒絕(人工)" value="manualRejected" />
-        </el-select>
-
+        
         <!-- Right: search -->
         <el-input
           v-model="query"
