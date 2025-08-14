@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { navigateTo, useRoute } from '#app'
+import { ArrowRight } from '@element-plus/icons-vue'
 import { adminRoutes } from '~/utils/adminRoutes'
 
 definePageMeta({
@@ -14,6 +15,11 @@ interface CommentDetail {
   id: string
   programTitle: string
   programId: string
+  industryType: string
+  jobType: string
+  location: string
+  dateRange: string
+  durationText: string
   reviewer: string
   reviewerRole: string
   reviewerAge: number
@@ -39,6 +45,11 @@ const detail = ref<CommentDetail>({
   id: 'REV-20230915-0023',
   programTitle: '軟體工程師體驗營',
   programId: 'TW-TPE-2023-0142',
+  industryType: '科技業',
+  jobType: '工程師',
+  location: '台南市',
+  dateRange: '2025/9/10 - 2025/9/12',
+  durationText: '為期 3 天',
   reviewer: '王小明',
   reviewerRole: '大學生',
   reviewerAge: 23,
@@ -71,6 +82,10 @@ const reviewResult = ref<'approved' | 'rejected'>('approved')
 
 const submitReview = () => {
   detail.value.status = reviewResult.value === 'approved' ? 'manualConfirmed' : 'manualRejected'
+}
+
+const goToProgram = () => {
+  navigateTo(adminRoutes.programDetail(detail.value.programId))
 }
 
 // 審核歷史（示意資料，用於 UI 切版）
@@ -192,7 +207,7 @@ const reject = () => {
       </div>
     </el-card>
 
-    <!-- 下個任務 -->
+    
     <!-- 審核歷史 -->
     <el-card shadow="never" class="border border-gray-200">
       <template #header>
@@ -231,5 +246,27 @@ const reject = () => {
       </div>
     </el-card>
     
+    <!-- 下個任務：體驗資訊摘要 -->
+    <el-card shadow="never" class="border border-gray-200">
+      <template #header>
+        <span class="font-medium">體驗資訊</span>
+      </template>
+
+      <div class="space-y-3">
+        <div class="text-xl font-semibold text-gray-900">{{ detail.programTitle }}</div>
+
+        <el-descriptions :column="1" border class="w-full md:!grid md:!grid-cols-2 md:!gap-0">
+          <el-descriptions-item label="體驗計畫 ID">{{ detail.programId }}</el-descriptions-item>
+          <el-descriptions-item label="產業類型">{{ detail.industryType }}</el-descriptions-item>
+          <el-descriptions-item label="職務類型">{{ detail.jobType }}</el-descriptions-item>
+          <el-descriptions-item label="體驗地點">{{ detail.location }}</el-descriptions-item>
+          <el-descriptions-item label="體驗日期">{{ detail.dateRange }} {{ detail.durationText }}</el-descriptions-item>
+        </el-descriptions>
+
+        <div class="pt-2">
+          <el-button link type="primary" :icon="ArrowRight" @click="goToProgram">查看體驗詳情</el-button>
+        </div>
+      </div>
+    </el-card>
   </div>
 </template>
