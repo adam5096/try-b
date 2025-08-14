@@ -104,7 +104,7 @@
       </div>
     </section>
 
-    <!-- 下個任務：體驗者端數據 -->
+    <!-- 體驗者端數據 -->
     <section class="space-y-4">
       <h2 class="text-xl font-semibold text-gray-900 md:text-2xl">體驗者端數據</h2>
 
@@ -170,11 +170,38 @@
       </div>
     </section>
 
+    <!-- 下個任務：熱門體驗計畫 -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-gray-900 md:text-2xl">熱門體驗計畫</h2>
+        <button type="button" class="inline-flex items-center gap-1 text-gray-700 hover:text-gray-900" @click="goToAllPopular">
+          查看全部
+          <ArrowRight class="h-4 w-4" />
+        </button>
+      </div>
+
+      <div class="overflow-hidden rounded border border-gray-200 bg-white">
+        <div
+          v-for="p in popularPrograms"
+          :key="p.id"
+          class="grid grid-cols-1 gap-2 border-b border-gray-100 px-4 py-3 last:border-b-0 md:grid-cols-3 md:items-center md:py-4"
+        >
+          <div class="min-w-0">
+            <div class="truncate font-semibold text-gray-900">{{ p.title }}</div>
+            <div class="mt-1 text-sm text-gray-600">瀏覽次數：{{ p.views }} 次</div>
+          </div>
+          <div class="text-sm text-gray-800 md:text-center">收藏次數：{{ p.favorites }} 次</div>
+          <div class="text-sm text-gray-800 md:text-right">已申請人數：{{ p.applicants }} 人</div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Calendar, User, StarFilled, TrendCharts } from '@element-plus/icons-vue'
+import { Calendar, User, StarFilled, TrendCharts, ArrowRight } from '@element-plus/icons-vue'
+import { navigateTo } from '#app'
+import { adminRoutes } from '~/utils/adminRoutes'
 
 definePageMeta({
   name: 'admin-dashboard',
@@ -187,4 +214,17 @@ const metrics = [
   { key: 'newReviews', label: '新增評價', value: '356', icon: 'star', delta: '15% 增長', note: '相比上個月' },
   { key: 'avgRating', label: '平均評分', value: '4.7', icon: 'chart', delta: '0.2 增長', note: '相比上個月' },
 ]
+
+const popularPrograms = [
+  { id: 1, title: '企業參訪體驗計畫', views: 42, favorites: 42, applicants: 42 },
+  { id: 2, title: '職場導師計畫', views: 42, favorites: 42, applicants: 42 },
+  { id: 3, title: '創業工作坊', views: 42, favorites: 42, applicants: 42 },
+  { id: 4, title: '數位行銷實戰', views: 42, favorites: 42, applicants: 42 },
+  { id: 5, title: '創業工作坊', views: 42, favorites: 42, applicants: 42 },
+  { id: 6, title: '數位行銷實戰', views: 42, favorites: 42, applicants: 42 },
+]
+
+const goToAllPopular = () => {
+  navigateTo(adminRoutes.trends())
+}
 </script>
