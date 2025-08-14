@@ -132,10 +132,10 @@ const approvedStatus = ref('all')
         <h2 class="card-title">
           待審核申請 (5)
         </h2>
-        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2">
           <span class="text-sm text-zinc-500 whitespace-nowrap">排序方式：</span>
           <ClientOnly>
-            <el-select v-model="pendingSort" size="small" class="w-36">
+              <el-select v-model="pendingSort" size="small" class="w-full min-w-form-control md:max-w-form-select">
               <el-option label="日期 - 新到舊" value="date-desc" />
               <el-option label="日期 - 舊到新" value="date-asc" />
             </el-select>
@@ -199,7 +199,7 @@ const approvedStatus = ref('all')
           <div class="flex items-center gap-2">
             <span class="text-sm text-zinc-500 whitespace-nowrap">排序方式：</span>
             <ClientOnly>
-              <el-select placeholder="排序方式" v-model="approvedSort" size="small" class="w-36">
+              <el-select placeholder="排序方式" v-model="approvedSort" size="small" class="w-full min-w-form-control md:max-w-form-select">
                 <el-option label="日期 - 新到舊" value="date-desc" />
                 <el-option label="日期 - 舊到新" value="date-asc" />
               </el-select>
@@ -208,7 +208,7 @@ const approvedStatus = ref('all')
           <div class="flex items-center gap-2">
             <span class="text-sm text-zinc-500 whitespace-nowrap">狀態：</span>
             <ClientOnly>
-              <el-select v-model="approvedStatus" size="small" class="w-28">
+              <el-select v-model="approvedStatus" size="small" class="w-full min-w-form-control md:max-w-form-select">
                 <el-option label="全部" value="all" />
                 <el-option label="已通過" value="approved" />
                 <el-option label="已拒絕" value="rejected" />

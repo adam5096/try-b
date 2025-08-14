@@ -217,16 +217,16 @@ const plans: Plan[] = [
       <!-- Filters -->
       <el-card class="mt-4">
         <div class="flex items-center gap-4">
-          <el-input v-model="searchForm.name" placeholder="搜尋計畫名稱..." :prefix-icon="Search" />
-          <el-select v-model="searchForm.industry" placeholder="產業類別">
+          <el-input v-model="searchForm.name" placeholder="搜尋計畫名稱..." :prefix-icon="Search" class="w-full md:max-w-form-search" />
+          <el-select v-model="searchForm.industry" placeholder="產業類別" class="w-full min-w-form-control md:max-w-form-select">
             <el-option label="資訊科技" value="tech" />
             <el-option label="行銷廣告" value="marketing" />
           </el-select>
-          <el-select v-model="searchForm.job_type" placeholder="職務類別">
+          <el-select v-model="searchForm.job_type" placeholder="職務類別" class="w-full min-w-form-control md:max-w-form-select">
             <el-option label="軟體工程師" value="swe" />
             <el-option label="產品設計師" value="pd" />
           </el-select>
-          <el-select v-model="searchForm.sort" placeholder="排序方式">
+          <el-select v-model="searchForm.sort" placeholder="排序方式" class="w-full min-w-form-control md:max-w-form-select">
             <el-option label="日期：由新到舊" value="date_desc" />
             <el-option label="日期：由舊到新" value="date_asc" />
           </el-select>

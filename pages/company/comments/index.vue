@@ -18,7 +18,7 @@
         </div>
         <div>
           <label for="rating" class="block text-sm font-medium text-gray-700 mb-1">評價分數</label>
-          <el-select id="rating" v-model="filters.rating" placeholder="全部分數">
+          <el-select id="rating" v-model="filters.rating" placeholder="全部分數" class="w-full min-w-form-control md:max-w-form-select">
             <el-option label="全部分數" value="all" />
             <el-option label="5 星" value="5" />
             <el-option label="4 星" value="4" />
@@ -30,7 +30,7 @@
         <div>
           <label for="dateSort" class="block text-sm font-medium text-gray-700 mb-1">日期範圍</label>
           <div class="flex items-center gap-2">
-            <el-select id="dateSort" v-model="filters.dateSort">
+            <el-select id="dateSort" v-model="filters.dateSort" class="w-full min-w-form-control md:max-w-form-select">
               <el-option label="日期:新到舊" value="desc" />
               <el-option label="日期:舊到新" value="asc" />
             </el-select>
@@ -84,7 +84,7 @@
       <div class="mt-6 flex justify-between items-center">
         <div>
           <span class="text-sm text-gray-600 mr-2">每頁顯示:</span>
-          <el-select v-model="pagination.pageSize" placeholder="Select" style="width: 100px;">
+          <el-select v-model="pagination.pageSize" placeholder="Select" class="w-full min-w-form-control md:max-w-form-select">
             <el-option label="10 筆" :value="10" />
             <el-option label="20 筆" :value="20" />
             <el-option label="50 筆" :value="50" />
