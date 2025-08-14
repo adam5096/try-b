@@ -21,6 +21,10 @@ module.exports = {
       spacing: {
         // "content-offset": "360px", // No longer needed, replaced by container
       },
+      minWidth: {
+        // 共用表單控制元件的最小寬度（避免小尺寸裝置擠壓）
+        'form-control': '120px',
+      },
       padding: {
         "section-padding": "80px",
       },
@@ -49,6 +53,9 @@ module.exports = {
         "container-company": "1440px",
         "container-users": "1440px",
         "container-admin": "1440px",
+        // 表單控制元件在中大螢幕的最大寬度
+        'form-select': '150px',
+        'form-search': '280px',
       },
       height: {
         "main-header": "158px",

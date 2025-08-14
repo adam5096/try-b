@@ -577,3 +577,27 @@
 - **狀態與計算**：新增 `currentPage`、`pageSize`（預設 5）與 `totalCandidates`（24），以 `displayedFrom/To` 計算呈現範圍，避免硬編碼。
 - **RWD 與對齊**：分頁容器使用 `flex flex-wrap`，與表格同級採一致水平內距，保證 1920px 不溢出版心、370px 下可換行。
 - **後續擴充**：可再加入 `sizes/jumper/total` 版型或串接後端總筆數；目前僅 UI 切版，Lint 綠燈。
+
+# 2025-08-14
+### PP6: 體驗者留言評價列表頁（UI 第一版）
+- **建立頁面與路由**：新增 `pages/admin/comments/index.vue`，綁定 `definePageMeta({ name: 'admin-comments', layout: 'admin' })`；沿用 `layouts/admin.vue` 與 `max-w-container-admin` 版心。
+- **建構工具列**：加入 `ElSelect` 兩個下拉（評價：全部/僅五星/4 星以上/3 星以上；排序：最新/最舊）與可清空的 `ElInput` 搜尋（`Search` 圖示）。
+- **實作清單**：在 `md` 以上以原生 `table` 呈現（欄位：ID、體驗計畫名稱、體驗計畫 ID、體驗者、評分、狀態、日期、操作）；在行動裝置改為卡片版（頭像佔位、姓名、計畫與 ID、星等、狀態、日期、詳情）。
+- **定義狀態標籤**：對應 `systemApproved/systemRejected/manualConfirmed/manualRejected` 至中文標籤，套用淡底＋邊框色票，風格與 `pp3/pp5` 一致。
+- **呈現評分**：使用 `el-rate` 並設為 `disabled`，空星色改為灰色 `#d1d5db`，避免互動誤解。
+- **構建資料來源**：以假資料 `allComments` 驅動（`reviewer/programTitle/programId/rating/status/date`），以 `computed` 完成搜尋、評分篩選與日期排序。
+- **完成統計與分頁提示**：底部顯示「共 n 筆結果」與「上一頁/下一頁」占位按鈕，預留串接後端分頁掛鉤。
+- **RWD 與可及性**：最小寬 370px；在 `md` 斷點切換表格/卡片；保留語意化 `table/th/td` 與可鍵盤操作的 `button`；Lint 綠燈。
+
+### PP6: 體驗者留言評價列表頁（迭代：篩選/分頁/表格強化/RWD/導覽）
+- **新增篩選**：加入「審核狀態」下拉 `filterStatus`（全部／已通過(系統)／已拒絕(系統)／已確認(人工)／已拒絕(人工)），與既有評分/排序共同過濾。
+- **導入分頁**：以 `ElPagination` 取代占位按鈕；新增 `currentPage/pageSize` 與切片 `paginatedComments`；統計文案「顯示 x 至 y 筆，共 n 筆」。
+- **表格體驗**：加上 sticky 表頭、斑馬紋、空清單 `ElEmpty`；行動卡片同樣支援空清單顯示。
+- **RWD 調整**：搜尋輸入在 md 以下全寬、md 以上限制 `md:max-w-[180px]`；左側兩個下拉（全部評價／最新評價）於 md 以上改為同列左右排列。
+- **路由導覽**：點擊「詳情」以命名路由導向 `admin-comment-review`（pp7 預留）；集中路由 helper 新增 `comments()`、`commentDetail(commentId)`。
+- **影響檔案**：`pages/admin/comments/index.vue`，`utils/adminRoutes.ts`
+
+### MGT: 共用表單控制寬度 token 建立與導入（PP6）
+- **決策與命名**：採用方案 A；在 `tailwind.config.js` 新增通用最小寬 `minWidth.form-control=120px`，與元件化最大寬 `maxWidth.form-select=150px`、`maxWidth.form-search=280px`。
+- **導入頁面**：將 `pages/admin/comments/index.vue` 內 `el-select`、`el-input(:suffix-icon=Search)` 改為 `min-w-form-control`、`md:max-w-form-select`、`md:max-w-form-search`，統一 RWD 行為。
+- **效益**：移除魔術數字、提升跨頁一致性與維護性；調整寬度僅需變更 `tailwind.config.js`。

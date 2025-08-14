@@ -15,6 +15,12 @@ export const adminRoutes = {
     params: { programId },
   }),
   trends: () => ({ name: 'admin-trends' }),
+  comments: () => ({ name: 'admin-comments' }),
+  // pp7: 單一留言評價詳情審核頁（待建立）
+  commentDetail: (commentId: string | number) => ({
+    name: 'admin-comment-review',
+    params: { commentId },
+  }),
 };
 
 
