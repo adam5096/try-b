@@ -15,6 +15,8 @@ interface CommentDetail {
   programTitle: string
   programId: string
   reviewer: string
+  reviewerRole: string
+  reviewerAge: number
   rating: number
   status: ReviewStatus
   submittedAt: string
@@ -31,6 +33,8 @@ const detail = ref<CommentDetail>({
   programTitle: '軟體工程師體驗營',
   programId: 'TW-TPE-2023-0142',
   reviewer: '王小明',
+  reviewerRole: '大學生',
+  reviewerAge: 23,
   rating: 5,
   status: 'systemApproved',
   submittedAt: '2025-09-15 14:32:45',
@@ -54,6 +58,13 @@ const statusTagTypeMap: Record<ReviewStatus, 'success' | 'danger' | 'info' | 'wa
 }
 
 const reviewNote = ref('')
+const ratingScore = computed(() => `${detail.value.rating.toFixed(1)} / 5.0`)
+
+const reviewResult = ref<'approved' | 'rejected'>('approved')
+
+const submitReview = () => {
+  detail.value.status = reviewResult.value === 'approved' ? 'manualConfirmed' : 'manualRejected'
+}
 
 const goBackToList = () => {
   navigateTo(adminRoutes.comments())
@@ -106,36 +117,54 @@ const reject = () => {
 
       <el-divider />
 
-      <!-- 評價內容 -->
-      <div class="space-y-2">
-        <div class="flex items-center gap-3">
-          <span class="text-gray-700">評分</span>
-          <el-rate :model-value="detail.rating" disabled disabled-void-color="#d1d5db" />
-        </div>
-        <div class="text-gray-700">留言</div>
-        <div class="rounded border border-gray-100 bg-gray-50 p-3 text-gray-700">
-          {{ detail.commentText }}
-        </div>
-      </div>
+     <!-- 評價內容區（頭像/姓名/身分年齡、星等、分數與長文） -->
+     <div class="flex items-start gap-3">
+       <div class="mt-1 h-10 w-10 shrink-0 rounded-full bg-gray-200" />
+       <div class="min-w-0 flex-1">
+         <div class="flex flex-wrap items-center gap-2 text-gray-800">
+           <span class="font-medium">{{ detail.reviewer }}</span>
+           <span class="text-gray-500">{{ detail.reviewerRole }} | {{ detail.reviewerAge }}歲</span>
+           <span class="text-gray-500">評分：</span>
+           <el-rate :model-value="detail.rating" disabled disabled-void-color="#d1d5db" />
+           <span class="text-gray-700">{{ ratingScore }}</span>
+         </div>
+         <p class="mt-3 leading-7 text-gray-800">
+           {{ detail.commentText }}
+         </p>
+       </div>
+     </div>
     </el-card>
 
     <!-- 審核操作 -->
     <el-card shadow="never" class="border border-gray-200">
       <template #header>
-        <span class="font-medium">審核操作</span>
+        <span class="font-medium">審核意見</span>
       </template>
 
-      <div class="space-y-4">
-        <el-input
-          v-model="reviewNote"
-          type="textarea"
-          :rows="4"
-          placeholder="輸入審核備註（選填）"
-          class="w-full"
-        />
-        <div class="flex flex-wrap items-center gap-3">
-          <el-button type="success" @click="approve">通過</el-button>
-          <el-button type="danger" @click="reject">拒絕</el-button>
+      <div class="space-y-5">
+        <!-- 審核結果 -->
+        <div>
+          <div class="mb-2 text-gray-700">審核結果</div>
+          <el-select v-model="reviewResult" class="w-full">
+            <el-option label="通過" value="approved" />
+            <el-option label="拒絕" value="rejected" />
+          </el-select>
+        </div>
+
+        <!-- 審核意見 -->
+        <div>
+          <div class="mb-2 text-gray-700">審核意見</div>
+          <el-input
+            v-model="reviewNote"
+            type="textarea"
+            :rows="6"
+            placeholder="請輸入審核意見..."
+            class="w-full"
+          />
+        </div>
+
+        <div class="flex justify-end">
+          <el-button type="primary" class="!bg-gray-700 !border-gray-700" @click="submitReview">提交審核</el-button>
         </div>
       </div>
     </el-card>
