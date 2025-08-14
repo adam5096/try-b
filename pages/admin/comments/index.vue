@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { Search } from '@element-plus/icons-vue'
+import { navigateTo } from '#app'
+import { adminRoutes } from '~/utils/adminRoutes'
 
 definePageMeta({
   name: 'admin-comments',
@@ -21,6 +23,7 @@ interface CommentItem {
 
 const query = ref('')
 const filterRating = ref<'all' | '5' | '4plus' | '3plus'>('all')
+const filterStatus = ref<'all' | ReviewStatus>('all')
 const sortBy = ref<'recent' | 'oldest'>('recent')
 
 const allComments = ref<CommentItem[]>([
@@ -80,7 +83,8 @@ const visibleComments = computed(() => {
       if (filterRating.value === '3plus') return c.rating >= 3
       return true
     })()
-    return matchQuery && matchRating
+    const matchStatus = filterStatus.value === 'all' ? true : c.status === filterStatus.value
+    return matchQuery && matchRating && matchStatus
   })
 
   const sorted = filtered.sort((a, b) => {
@@ -91,6 +95,24 @@ const visibleComments = computed(() => {
 })
 
 const total = computed(() => visibleComments.value.length)
+
+// pagination
+const currentPage = ref(1)
+const pageSize = ref(10)
+const paginatedComments = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return visibleComments.value.slice(start, end)
+})
+const displayedFrom = computed(() => (total.value === 0 ? 0 : (currentPage.value - 1) * pageSize.value + 1))
+const displayedTo = computed(() => {
+  const end = currentPage.value * pageSize.value
+  return end > total.value ? total.value : end
+})
+
+const goToDetail = (commentId: number) => {
+  navigateTo(adminRoutes.commentDetail(commentId))
+}
 </script>
 
 
@@ -108,19 +130,28 @@ const total = computed(() => visibleComments.value.length)
     <section class="rounded border border-gray-200 bg-white p-4 shadow-sm">
       <div class="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         <!-- Left: filters -->
-        <div class="flex flex-wrap items-center gap-2 md:gap-3">
-          <el-select v-model="filterRating" class="w-[150px]" placeholder="全部評價">
+        <div class="flex flex-col gap-2 md:w-[320px] md:flex-row md:justify-between">
+          <el-select v-model="filterRating" class="w-full md:w-[150px]" placeholder="全部評價">
             <el-option label="全部評價" value="all" />
             <el-option label="僅五星" value="5" />
             <el-option label="4 星以上" value="4plus" />
             <el-option label="3 星以上" value="3plus" />
           </el-select>
 
-          <el-select v-model="sortBy" class="w-[150px]" placeholder="最新評價">
+          <el-select v-model="sortBy" class="w-full md:w-[150px]" placeholder="最新評價">
             <el-option label="最新評價" value="recent" />
             <el-option label="最舊優先" value="oldest" />
           </el-select>
         </div>
+
+        <!-- Review status -->
+        <el-select v-model="filterStatus" class="w-full md:w-[170px]" placeholder="審核狀態">
+          <el-option label="全部狀態" value="all" />
+          <el-option label="已通過(系統)" value="systemApproved" />
+          <el-option label="已拒絕(系統)" value="systemRejected" />
+          <el-option label="已確認(人工)" value="manualConfirmed" />
+          <el-option label="已拒絕(人工)" value="manualRejected" />
+        </el-select>
 
         <!-- Right: search -->
         <el-input
@@ -128,7 +159,7 @@ const total = computed(() => visibleComments.value.length)
           placeholder="搜尋評價..."
           clearable
           :suffix-icon="Search"
-          class="w-full xl:w-[360px]"
+          class="w-full md:max-w-[180px]"
         />
       </div>
     </section>
@@ -136,9 +167,9 @@ const total = computed(() => visibleComments.value.length)
     <!-- List (Table on md+/Cards on < md) -->
     <section class="space-y-4">
       <!-- Table -->
-      <div class="hidden overflow-hidden rounded border border-gray-200 bg-white shadow-sm md:block">
+      <div class="hidden overflow-auto rounded border border-gray-200 bg-white shadow-sm md:block">
         <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-brand-gray">
+          <thead class="bg-brand-gray sticky top-0 z-10">
             <tr>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">ID</th>
               <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">體驗計畫名稱</th>
@@ -151,7 +182,12 @@ const total = computed(() => visibleComments.value.length)
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100 bg-white">
-            <tr v-for="c in visibleComments" :key="c.id" class="hover:bg-brand-gray/50">
+            <tr v-if="paginatedComments.length === 0">
+              <td colspan="8" class="p-10">
+                <el-empty description="查無資料" />
+              </td>
+            </tr>
+            <tr v-for="c in paginatedComments" :key="c.id" class="hover:bg-brand-gray/50 odd:bg-white even:bg-gray-50">
               <td class="px-6 py-4 text-gray-900">{{ c.id }}</td>
               <td class="px-6 py-4 text-gray-900">
                 <div class="font-medium">{{ c.programTitle }}</div>
@@ -171,7 +207,7 @@ const total = computed(() => visibleComments.value.length)
               </td>
               <td class="px-6 py-4 text-gray-700">{{ c.date }}</td>
               <td class="px-6 py-4 text-left">
-                <button class="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-brand-gray">詳情</button>
+                <button class="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-brand-gray" @click="goToDetail(c.id)">詳情</button>
               </td>
             </tr>
           </tbody>
@@ -180,7 +216,10 @@ const total = computed(() => visibleComments.value.length)
 
       <!-- Cards -->
       <div class="space-y-3 md:hidden">
-        <div v-for="c in visibleComments" :key="c.id" class="rounded border border-gray-200 bg-white p-4 shadow-sm">
+        <div v-if="paginatedComments.length === 0" class="rounded border border-gray-200 bg-white p-6 shadow-sm">
+          <el-empty description="查無資料" />
+        </div>
+        <div v-for="c in paginatedComments" :key="c.id" class="rounded border border-gray-200 bg-white p-4 shadow-sm">
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
               <div class="flex items-center gap-2">
@@ -197,19 +236,22 @@ const total = computed(() => visibleComments.value.length)
             <div class="text-sm text-gray-700">{{ c.date }}</div>
           </div>
           <div class="mt-3 flex justify-end">
-            <button class="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-brand-gray">詳情</button>
+            <button class="rounded border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-brand-gray" @click="goToDetail(c.id)">詳情</button>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Footer / Pagination info -->
-    <section class="flex items-center justify-between text-sm text-gray-600">
-      <div>共 {{ total }} 筆結果</div>
-      <div class="flex items-center gap-2">
-        <button class="rounded border border-gray-300 px-3 py-1 text-gray-700 hover:bg-brand-gray">上一頁</button>
-        <button class="rounded border border-gray-300 px-3 py-1 text-gray-700 hover:bg-brand-gray">下一頁</button>
-      </div>
+    <section class="flex flex-wrap items-center justify-between gap-3 text-sm text-gray-600">
+      <div>顯示 {{ displayedFrom }} 至 {{ displayedTo }} 筆，共 {{ total }} 筆</div>
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :total="total"
+        background
+        layout="prev, pager, next"
+      />
     </section>
   </div>
 </template>
