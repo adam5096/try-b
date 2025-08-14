@@ -81,7 +81,8 @@ const ratingScore = computed(() => `${detail.value.rating.toFixed(1)} / 5.0`)
 const reviewResult = ref<'approved' | 'rejected'>('approved')
 
 const submitReview = () => {
-  detail.value.status = reviewResult.value === 'approved' ? 'manualConfirmed' : 'manualRejected'
+  // 先預設成功：直接導回列表，待串接真實 API 後再補齊流程
+  navigateTo(adminRoutes.comments())
 }
 
 const goToProgram = () => {
@@ -202,7 +203,7 @@ const reject = () => {
         </div>
 
         <div class="flex justify-end">
-          <el-button type="primary" class="!bg-gray-700 !border-gray-700" @click="submitReview">提交審核</el-button>
+          <el-button type="primary" class="!bg-gray-700 !border-gray-700"  @click="submitReview">提交審核</el-button>
         </div>
       </div>
     </el-card>
