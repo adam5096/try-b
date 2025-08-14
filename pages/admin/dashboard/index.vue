@@ -16,14 +16,10 @@
         >
           <div class="flex items-center gap-3 text-gray-700">
             <div class="flex h-10 w-10 items-center justify-center rounded bg-brand-gray text-gray-600">
-              <CalendarIcon v-if="m.icon === 'calendar'" class="h-6 w-6" />
-              <svg v-else-if="m.icon === 'users'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
-                <path d="M7.5 6a3.5 3.5 0 117 0 3.5 3.5 0 01-7 0zM3 18.25a6.5 6.5 0 0113 0c0 .414-.336.75-.75.75h-11.5a.75.75 0 01-.75-.75zM17.25 7.5a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zM15.75 12.75c1.933 0 3.75.78 5.06 2.04.188.177.29.424.29.682v2.778a.75.75 0 01-.75.75h-3.594" />
-              </svg>
-              <StarIcon v-else-if="m.icon === 'star'" class="h-6 w-6" />
-              <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
-                <path d="M3 3.75A.75.75 0 013.75 3h.5a.75.75 0 01.75.75v15.5a.75.75 0 01-.75.75h-.5A.75.75 0 013 19.25V3.75zM8.5 9.75A.75.75 0 019.25 9h.5a.75.75 0 01.75.75v9.5a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75v-9.5zM14 6.75a.75.75 0 01.75-.75h.5a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-.5A.75.75 0 0114 19.25V6.75zM19.5 12.75a.75.75 0 01.75-.75h.5a.75.75 0 01.75.75v6.5a.75.75 0 01-.75.75h-.5a.75.75 0 01-.75-.75v-6.5z" />
-              </svg>
+              <Calendar v-if="m.icon === 'calendar'" class="h-6 w-6" />
+              <User v-else-if="m.icon === 'users'" class="h-6 w-6" />
+              <StarFilled v-else-if="m.icon === 'star'" class="h-6 w-6" />
+              <TrendCharts v-else class="h-6 w-6" />
             </div>
             <div class="text-sm text-gray-600">{{ m.label }}</div>
           </div>
@@ -42,8 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import CalendarIcon from '~/components/CalendarIcon.vue'
-import StarIcon from '~/components/StarIcon.vue'
+import { Calendar, User, StarFilled, TrendCharts } from '@element-plus/icons-vue'
 
 definePageMeta({
   name: 'admin-dashboard',
