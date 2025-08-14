@@ -649,3 +649,11 @@
 ### PP7: 提交審核後導回列表
 - **導航行為**：按下「提交審核」後，先預設非同步成功，直接 `navigateTo(adminRoutes.comments())` 導回列表頁。
 - **理由**：先走通 UX 流程；待串接真實 API 後再補請求與錯誤處理。
+
+### PP2: 管理儀表板（Dashboard）UI - 指標與統計卡片
+- **建立頁面與路由**：在 `pages/admin/dashboard/index.vue` 設定 `definePageMeta({ name: 'admin-dashboard', layout: 'admin' })`，以 `layouts/admin.vue` 為共同佈局、版心 `max-w-container-admin`。
+- **頂部指標卡**：實作四張統計卡（總體驗計畫／活躍用戶／新增評價／平均評分），使用 Element Plus Icons（Calendar、User、StarFilled、TrendCharts）取代內嵌 SVG，採 Tailwind 控制尺寸與色彩（`currentColor`）。
+- **企業端數據區塊**：依設計稿完成 2×2 卡片（註冊帳號統計、活動發布統計趨勢、活動成團統計趨勢、當月發布體驗的職業種類），以 `ElCard` 搭配圖表占位容器、座標標示與圖例占位，先行完成切版。
+- **體驗者端數據區塊**：新增 2×2 卡片（申請活動、評價總數、被收藏最愛職業數量（每月）、當月被收藏最愛的職業種類），結構與企業端一致，預留後續導入圖表庫。
+- **RWD 與規範**：手機 1 欄、`md` 2 欄；裝置寬度下限 370px；沿用專案色票 `brand-gray` 等；不覆蓋 Element Plus 預設樣式，避免衝突。
+- **品質與風險**：未新增依賴、Lint 綠燈；以占位容器隔離圖表實作，後續可最小改動導入 ECharts／Chart.js／ApexCharts；預留 Loading/Empty/Error 三態掛點。gi
