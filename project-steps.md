@@ -577,3 +577,14 @@
 - **狀態與計算**：新增 `currentPage`、`pageSize`（預設 5）與 `totalCandidates`（24），以 `displayedFrom/To` 計算呈現範圍，避免硬編碼。
 - **RWD 與對齊**：分頁容器使用 `flex flex-wrap`，與表格同級採一致水平內距，保證 1920px 不溢出版心、370px 下可換行。
 - **後續擴充**：可再加入 `sizes/jumper/total` 版型或串接後端總筆數；目前僅 UI 切版，Lint 綠燈。
+
+# 2025-08-14
+### PP6: 體驗者留言評價列表頁（UI 第一版）
+- **建立頁面與路由**：新增 `pages/admin/comments/index.vue`，綁定 `definePageMeta({ name: 'admin-comments', layout: 'admin' })`；沿用 `layouts/admin.vue` 與 `max-w-container-admin` 版心。
+- **建構工具列**：加入 `ElSelect` 兩個下拉（評價：全部/僅五星/4 星以上/3 星以上；排序：最新/最舊）與可清空的 `ElInput` 搜尋（`Search` 圖示）。
+- **實作清單**：在 `md` 以上以原生 `table` 呈現（欄位：ID、體驗計畫名稱、體驗計畫 ID、體驗者、評分、狀態、日期、操作）；在行動裝置改為卡片版（頭像佔位、姓名、計畫與 ID、星等、狀態、日期、詳情）。
+- **定義狀態標籤**：對應 `systemApproved/systemRejected/manualConfirmed/manualRejected` 至中文標籤，套用淡底＋邊框色票，風格與 `pp3/pp5` 一致。
+- **呈現評分**：使用 `el-rate` 並設為 `disabled`，空星色改為灰色 `#d1d5db`，避免互動誤解。
+- **構建資料來源**：以假資料 `allComments` 驅動（`reviewer/programTitle/programId/rating/status/date`），以 `computed` 完成搜尋、評分篩選與日期排序。
+- **完成統計與分頁提示**：底部顯示「共 n 筆結果」與「上一頁/下一頁」占位按鈕，預留串接後端分頁掛鉤。
+- **RWD 與可及性**：最小寬 370px；在 `md` 斷點切換表格/卡片；保留語意化 `table/th/td` 與可鍵盤操作的 `button`；Lint 綠燈。
