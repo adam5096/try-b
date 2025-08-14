@@ -25,6 +25,9 @@ const handleNav = (item: { key: string; label: string }, idx: number) => {
   if (item.key === 'comments') {
     navigateTo(adminRoutes.comments())
   }
+  if (item.key === 'dashboard') {
+    navigateTo(adminRoutes.dashboard())
+  }
 }
 </script>
 

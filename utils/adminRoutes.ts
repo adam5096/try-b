@@ -21,6 +21,7 @@ export const adminRoutes = {
     name: 'admin-comment-review',
     params: { commentId },
   }),
+  dashboard: () => ({ name: 'admin-dashboard' }),
 };
 
 
