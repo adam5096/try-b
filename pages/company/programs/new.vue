@@ -66,14 +66,14 @@ function addDescriptionField() {
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="產業類別">
-            <el-select v-model="form.industry" placeholder="搜尋計劃名稱" class="w-full">
+            <el-select v-model="form.industry" placeholder="搜尋計劃名稱" class="w-full min-w-form-control md:max-w-form-select">
               <!-- options here -->
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="職務類別">
-            <el-select v-model="form.jobCategory" placeholder="請選擇職務類別" class="w-full">
+            <el-select v-model="form.jobCategory" placeholder="請選擇職務類別" class="w-full min-w-form-control md:max-w-form-select">
               <!-- options here -->
             </el-select>
           </el-form-item>
@@ -124,7 +124,7 @@ function addDescriptionField() {
         <el-row :gutter="20" class="w-full">
           <el-col :span="12">
             <el-form-item label="體驗人數">
-              <el-select v-model="form.attendees" class="w-full">
+               <el-select v-model="form.attendees" class="w-full min-w-form-control md:max-w-form-select">
                 <el-option label="1-5 人" value="1-5人" />
               </el-select>
             </el-form-item>
@@ -132,7 +132,7 @@ function addDescriptionField() {
               <el-date-picker v-model="form.startDate" type="date" placeholder="請選擇開始日期" class="w-full" />
             </el-form-item>
             <el-form-item label="刊登期間">
-              <el-select v-model="form.duration" placeholder="請選擇刊登期間" class="w-full">
+              <el-select v-model="form.duration" placeholder="請選擇刊登期間" class="w-full min-w-form-control md:max-w-form-select">
                 <!-- options here -->
               </el-select>
               <p class="text-sm text-gray-500">
