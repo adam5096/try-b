@@ -24,6 +24,13 @@ interface CommentDetail {
   commentText: string
 }
 
+interface ReviewHistoryItem {
+  time: string
+  operator: string
+  type: string
+  note: string
+}
+
 const route = useRoute()
 const commentIdFromRoute = computed(() => String(route.params.commentId ?? ''))
 
@@ -65,6 +72,22 @@ const reviewResult = ref<'approved' | 'rejected'>('approved')
 const submitReview = () => {
   detail.value.status = reviewResult.value === 'approved' ? 'manualConfirmed' : 'manualRejected'
 }
+
+// 審核歷史（示意資料，用於 UI 切版）
+const reviewHistory = ref<ReviewHistoryItem[]>([
+  {
+    time: '2025-09-15 15:10:23',
+    operator: '王小明（平台）',
+    type: '自動審核',
+    note: '系統審核狀態為「已拒絕」，等待人工確認。',
+  },
+  {
+    time: '2025-09-16 09:15:22',
+    operator: '李主管',
+    type: '人工審核',
+    note: '確認內容為系統誤判，無不雅、謾罵、攻擊、猥褻等字眼，標記為已通過。',
+  },
+])
 
 const goBackToList = () => {
   navigateTo(adminRoutes.comments())
@@ -168,5 +191,45 @@ const reject = () => {
         </div>
       </div>
     </el-card>
+
+    <!-- 下個任務 -->
+    <!-- 審核歷史 -->
+    <el-card shadow="never" class="border border-gray-200">
+      <template #header>
+        <span class="font-medium">審核歷史</span>
+      </template>
+
+      <!-- 桌面：表格；行動：卡片 -->
+      <div class="hidden md:block">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-brand-gray">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">操作時間</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">操作人員</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">操作類型</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-600">備註</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 bg-white">
+            <tr v-for="(h, idx) in reviewHistory" :key="idx" class="odd:bg-white even:bg-gray-50">
+              <td class="px-6 py-4 text-gray-900">{{ h.time }}</td>
+              <td class="px-6 py-4 text-gray-900">{{ h.operator }}</td>
+              <td class="px-6 py-4 text-gray-900">{{ h.type }}</td>
+              <td class="px-6 py-4 text-gray-900">{{ h.note }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="space-y-3 md:hidden">
+        <div v-for="(h, idx) in reviewHistory" :key="idx" class="rounded border border-gray-200 bg-white p-4">
+          <div class="text-sm text-gray-500">{{ h.time }}</div>
+          <div class="mt-1 font-medium text-gray-900">{{ h.operator }}</div>
+          <div class="mt-1 text-gray-800">{{ h.type }}</div>
+          <div class="mt-2 text-gray-800">{{ h.note }}</div>
+        </div>
+      </div>
+    </el-card>
+    
   </div>
 </template>
