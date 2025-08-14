@@ -138,7 +138,7 @@ const displayedTo = computed(() => {
 })
 
 const goToDetail = (commentId: number) => {
-  navigateTo(adminRoutes.commentDetail(commentId))
+  navigateTo(adminRoutes.commentReview(commentId))
 }
 </script>
 

@@ -620,3 +620,32 @@
   - `pages/company/programs/new.vue`：產業/職類/體驗人數/刊登期間下拉改用 token（其餘表單欄位維持全寬）。
   - `pages/company/settings/index.vue`：產業/規模下拉改用 token（地址縣市/區域暫留全寬）。
 - **結果**：RWD 驗證通過、Lint 綠燈；移除魔術數字，提升一致性與維護性。
+
+### PP7: 單一留言評價詳情審核頁（UI 第一版）
+- **建立頁面與路由**：在 `pages/admin/comments/[commentId].vue` 實作 pp7，綁定 `definePageMeta({ name: 'admin-comment-review', layout: 'admin' })`。
+- **內容區塊**：標題與狀態標籤、返回列表；「評價資訊」描述清單（評價 ID、提交/最後更新、體驗計畫名稱與 ID、體驗者）；評分與留言內容；「審核操作」區（備註、通過/拒絕）。
+- **互動行為**：新增 `approve/reject/goBackToList`；以本地狀態更新標籤，返回以 `navigateTo(adminRoutes.comments())`。
+- **樣式與 RWD**：沿用 `max-w-container-admin`、Element Plus 預設樣式＋少量 Tailwind；最小裝置寬 370px；Lint 綠燈。
+
+### ROUTE: 評價詳情命名統一與 helper 更名（PP7）
+- **命名統一**：統一路由名稱為 `admin-comment-review`（單數 `comment`＋語意 `review`）。
+- **helper 更名**：將 `adminRoutes.commentDetail(commentId)` 更名為 `adminRoutes.commentReview(commentId)`，與頁面職責一致且降低語意歧義。
+- **引用更新**：更新 `pages/admin/comments/index.vue` 之導覽至 `adminRoutes.commentReview(id)`；驗證列表→詳情導覽正常。
+- **理由**：以命名路由解耦 URL，集中於 helper 管理；避免 `detail/review` 語意混淆導致的壞鏈風險。
+
+### FIX: Admin 側欄未定義變數導航錯誤
+- **問題**：`layouts/admin.vue` 多餘分支使用未定義 `commentId` 造成 TS 錯誤。
+- **修正**：移除該分支，僅保留「評價管理」導向列表頁；單筆導覽維持由列表頁觸發。
+- **結果**：消除 `Cannot find name 'commentId'`，Lint 綠燈。
+
+### STYLE: 暫移除本頁麵包屑（PP7）
+- **調整**：移除 `[commentId].vue` 標題區的小麵包屑佔位，保留主標題與右側操作。
+- **理由**：日後以 `definePageMeta` 或全域麵包屑元件統一處理，避免重複來源。
+
+### PP7: 審核歷史與體驗資訊區塊
+- **新增審核歷史**：依設計稿建立桌面表格/行動卡片雙版型；欄位含操作時間/操作人員/操作類型/備註；以假資料渲染，未引入新依賴。
+- **新增體驗資訊摘要**：以 `ElDescriptions` 顯示計畫 ID、產業、職務、地點、體驗日期＋天數；提供「查看體驗詳情」連結按鈕（命名路由）。
+
+### PP7: 提交審核後導回列表
+- **導航行為**：按下「提交審核」後，先預設非同步成功，直接 `navigateTo(adminRoutes.comments())` 導回列表頁。
+- **理由**：先走通 UX 流程；待串接真實 API 後再補請求與錯誤處理。
