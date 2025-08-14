@@ -237,7 +237,7 @@ const filterVisible = ref(false);
       <!-- 每頁顯示 -->
       <div class="flex items-center gap-3">
         <span class="text-gray-600">每頁顯示：</span>
-        <el-select v-model="pageSize" style="width: 120px">
+        <el-select v-model="pageSize" class="w-full min-w-form-control md:max-w-form-select">
           <el-option v-for="size in pageSizeOptions" :key="size" :label="`${size} 筆`" :value="size" />
         </el-select>
       </div>

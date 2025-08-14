@@ -152,17 +152,17 @@ const sortOptions = ref([
 
           <!-- Filters -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 p-4 bg-white rounded-lg shadow">
-            <el-input v-model="searchKeyword" placeholder="關鍵字搜尋" clearable />
-            <el-select v-model="industry" placeholder="產業類別" clearable>
+            <el-input v-model="searchKeyword" placeholder="關鍵字搜尋" clearable class="w-full md:max-w-form-search" />
+            <el-select v-model="industry" placeholder="產業類別" clearable class="w-full min-w-form-control md:max-w-form-select">
               <el-option v-for="item in industries" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <el-select v-model="jobType" placeholder="職業類別" clearable>
+            <el-select v-model="jobType" placeholder="職業類別" clearable class="w-full min-w-form-control md:max-w-form-select">
               <el-option v-for="item in jobTypes" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <el-select v-model="location" placeholder="地區" clearable>
+            <el-select v-model="location" placeholder="地區" clearable class="w-full min-w-form-control md:max-w-form-select">
               <el-option v-for="item in locations" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <el-select v-model="sort" placeholder="排序" clearable>
+            <el-select v-model="sort" placeholder="排序" clearable class="w-full min-w-form-control md:max-w-form-select">
               <el-option v-for="item in sortOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </div>
