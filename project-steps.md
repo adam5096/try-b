@@ -596,3 +596,8 @@
 - **RWD 調整**：搜尋輸入在 md 以下全寬、md 以上限制 `md:max-w-[180px]`；左側兩個下拉（全部評價／最新評價）於 md 以上改為同列左右排列。
 - **路由導覽**：點擊「詳情」以命名路由導向 `admin-comment-review`（pp7 預留）；集中路由 helper 新增 `comments()`、`commentDetail(commentId)`。
 - **影響檔案**：`pages/admin/comments/index.vue`，`utils/adminRoutes.ts`
+
+### MGT: 共用表單控制寬度 token 建立與導入（PP6）
+- **決策與命名**：採用方案 A；在 `tailwind.config.js` 新增通用最小寬 `minWidth.form-control=120px`，與元件化最大寬 `maxWidth.form-select=150px`、`maxWidth.form-search=280px`。
+- **導入頁面**：將 `pages/admin/comments/index.vue` 內 `el-select`、`el-input(:suffix-icon=Search)` 改為 `min-w-form-control`、`md:max-w-form-select`、`md:max-w-form-search`，統一 RWD 行為。
+- **效益**：移除魔術數字、提升跨頁一致性與維護性；調整寬度僅需變更 `tailwind.config.js`。

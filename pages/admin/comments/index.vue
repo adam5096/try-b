@@ -158,20 +158,20 @@ const goToDetail = (commentId: number) => {
       <div class="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         <!-- Left: filters -->
         <div class="flex flex-col gap-2 w-full md:flex-row md:justify-start">
-          <el-select v-model="filterRating" class="w-full min-w-[120px] md:max-w-[160px]" placeholder="全部評價">
+          <el-select v-model="filterRating" class="w-full min-w-form-control md:max-w-form-select" placeholder="全部評價">
             <el-option label="全部評價" value="all" />
             <el-option label="僅五星" value="5" />
             <el-option label="4 星以上" value="4plus" />
             <el-option label="3 星以上" value="3plus" />
           </el-select>
 
-          <el-select v-model="sortBy" class="w-full min-w-[120px] md:max-w-[160px]" placeholder="最新評價">
+          <el-select v-model="sortBy" class="w-full min-w-form-control md:max-w-form-select" placeholder="最新評價">
             <el-option label="最新評價" value="recent" />
             <el-option label="最舊優先" value="oldest" />
           </el-select>
 
           <!-- Review status -->
-          <el-select v-model="filterStatus" class="w-full min-w-[120px] md:max-w-[160px]" placeholder="審核狀態">
+          <el-select v-model="filterStatus" class="w-full min-w-form-control md:max-w-form-select" placeholder="審核狀態">
             <el-option label="全部狀態" value="all" />
             <el-option label="已通過(系統)" value="systemApproved" />
             <el-option label="已拒絕(系統)" value="systemRejected" />
@@ -187,7 +187,7 @@ const goToDetail = (commentId: number) => {
           placeholder="搜尋評價..."
           clearable
           :suffix-icon="Search"
-          class="w-full md:max-w-[180px]"
+          class="w-full md:max-w-form-search"
         />
       </div>
     </section>
