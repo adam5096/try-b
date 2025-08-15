@@ -684,3 +684,10 @@
   - **漢堡選單**: 將 `<el-button>` 改為原生 `<button>`，解決 `md:hidden` 失效問題。
   - **側邊欄寬度**: 透過 `width="auto"` prop 搭配 `md:!w-[200px]` `!important` 修飾符，成功覆蓋 `<el-aside>` 的內聯樣式，使其在手機版為全寬，桌面版為固定寬度。
   - **側邊欄捲動軸**: 經過多次排查（移除 `h-full`、隱藏 `grow` 元素），最終透過 `overflow-y-hidden` 覆蓋 `<el-aside>` 預設的 `overflow: auto`，徹底解決了手機版側邊欄不應出現的捲動軸問題。
+
+### LAYOUT: 主佈局 Header 固定定位與導覽更新
+- **Header 固定定位**: 將 `layouts/main.vue` 的 `<header>` 從 `sticky` 改為 `fixed` 定位，並將 `<slot />` 包裹於 `<main class="pt-[158px]">` 中，以補償 header 高度，避免內容被遮擋。
+- **頁腳連結新增與重構**:
+  - 在頁腳的「快速連結」中新增了前往後台 (`admin-login`) 的連結。
+  - 將頁腳所有連結的 `href` 值從字串路徑重構為物件形式的命名路由，以提升可維護性。
+- **Header 導覽連結**: 將頂部導覽列中的「方案」連結從 `<a>` 標籤改為 `<NuxtLink>`，並指向 `plan` 命名路由，完成了核心導覽功能的串接。
