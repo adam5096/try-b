@@ -1,5 +1,7 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'blank' as any })
+definePageMeta({ 
+  name: 'admin-login',
+  layout: 'blank' as any })
 
 import { ref } from 'vue'
 import { navigateTo } from '#app'

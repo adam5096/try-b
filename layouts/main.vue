@@ -37,8 +37,9 @@ onBeforeUnmount(() => {
 
 // --- Footer State ---
 const quickLinks = ref([
-  { text: '首頁', href: '/' },
-  { text: '企業方案', href: '/plan' },
+  { text: '首頁', href: { name: 'index' } },
+  { text: '企業方案', href: { name: 'plan' } },
+  { text: '後台登入', href: { name: 'admin-login' } },
 ]);
 
 const contactInfo = ref({
