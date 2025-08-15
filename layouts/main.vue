@@ -110,9 +110,9 @@ const socialLinks = ref([
                 <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   探索我們
                 </a>
-                <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                <NuxtLink :to="{ name: 'plan' }" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   方案
-                </a>
+                </NuxtLink>
                 <div class="px-4 py-2 flex items-center gap-2">
                   <font-awesome-icon :icon="['fas', 'user-circle']" class="w-6 h-6" />
                   <NuxtLink to="/roles" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
