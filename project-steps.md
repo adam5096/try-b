@@ -664,3 +664,16 @@
 - **資料來源**：以 `popularPrograms` 假資料陣列驅動，欄位含 `id/title/views/favorites/applicants`，後續可以 `useFetch` 替換。
 - **圖示與樣式**：使用 EP 圖示 `ArrowRight`，容器採 `rounded border bg-white` 與分隔線；保持 `max-w-container-admin` 版心與既有色票。
 - **品質**：無新增依賴、Lint 綠燈；路由集中於 `utils/adminRoutes.ts`，避免硬編碼字串。
+
+### 2025-08-15
+### LAYOUT: 管理後台 RWD 與 UX 優化
+- **基礎 RWD 適配**：為 `layouts/admin.vue` 的 Header、Sidebar 及 Main Content 區域新增 `md` 與 `xl` 斷點，調整各區塊在不同螢幕尺寸下的 `padding` 與 `width`，建立初步的響應式佈局。
+- **行動裝置側邊欄迭代 (側向滑動)**：
+  - 實作漢堡選單 (`isSidebarOpen` 狀態) 控制側邊欄的顯示與隱藏。
+  - 採用 `position: fixed` 搭配 `transform: translateX` 製作側邊欄滑入/滑出動畫。
+  - 新增半透明遮罩 (`Overlay`)，提供點擊關閉的便利性，並透過 Vue `<transition>` 優化淡入淡出效果。
+- **行動裝置側邊欄重構 (垂直展開)**：
+  - 為滿足「內容下推」及「垂直動畫」的 UX 需求，將外層容器在 `md` 以下改為 `flex-col`。
+  - 捨棄 `transform`，改用 `transition-[max-height]` 搭配 `max-h-0` 和 `max-h-screen`，實現流暢的垂直展開/收合動畫，並自然地將主內容區塊向下推移。
+  - 在此新架構下，移除了不再需要的遮罩層，簡化了 DOM 結構與程式碼。
+  - 最終將側邊欄在行動裝置上的寬度設為 `w-full`，以符合最終設計要求。
