@@ -71,14 +71,14 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="產業類別*">
-              <el-select v-model="companyInfo.industry" class="w-full">
+              <el-select v-model="companyInfo.industry" class="w-full min-w-form-control md:max-w-form-select">
                 <el-option v-for="item in industryOptions" :key="item" :label="item" :value="item" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="企業規模*">
-              <el-select v-model="companyInfo.scale" class="w-full">
+              <el-select v-model="companyInfo.scale" class="w-full min-w-form-control md:max-w-form-select">
                 <el-option v-for="item in scaleOptions" :key="item" :label="item" :value="item" />
               </el-select>
             </el-form-item>

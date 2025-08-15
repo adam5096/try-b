@@ -1,110 +1,3 @@
-<template>
-  <div class="space-y-6">
-    <div class="p-4 bg-white rounded-lg shadow-sm">
-      <p class="text-sm text-gray-700">
-        目前的方案 日期: 2025/7/1 - 2025/8/1 10:10AM 體驗人數上限 10 人 剩餘體驗人數 5 人
-      </p>
-    </div>
-
-    <h1 class="text-2xl font-bold">
-      體驗者評價管理
-    </h1>
-
-    <el-card>
-      <div class="flex flex-wrap items-end gap-x-6 gap-y-4">
-        <div class="flex-grow">
-          <label for="programName" class="block text-sm font-medium text-gray-700 mb-1">計畫名稱</label>
-          <el-input id="programName" v-model="filters.programName" placeholder="搜尋計畫名稱..." />
-        </div>
-        <div>
-          <label for="rating" class="block text-sm font-medium text-gray-700 mb-1">評價分數</label>
-          <el-select id="rating" v-model="filters.rating" placeholder="全部分數">
-            <el-option label="全部分數" value="all" />
-            <el-option label="5 星" value="5" />
-            <el-option label="4 星" value="4" />
-            <el-option label="3 星" value="3" />
-            <el-option label="2 星" value="2" />
-            <el-option label="1 星" value="1" />
-          </el-select>
-        </div>
-        <div>
-          <label for="dateSort" class="block text-sm font-medium text-gray-700 mb-1">日期範圍</label>
-          <div class="flex items-center gap-2">
-            <el-select id="dateSort" v-model="filters.dateSort">
-              <el-option label="日期:新到舊" value="desc" />
-              <el-option label="日期:舊到新" value="asc" />
-            </el-select>
-            <el-date-picker
-              v-model="filters.dateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="開始日期"
-              end-placeholder="結束日期"
-            />
-          </div>
-        </div>
-        <div>
-          <el-button type="primary">
-            篩選
-          </el-button>
-        </div>
-      </div>
-    </el-card>
-
-    <el-card>
-      <template #header>
-        <div class="flex justify-between items-center">
-          <span>評價列表</span>
-          <span class="text-sm text-gray-500">共 {{ pagination.total }} 則評價</span>
-        </div>
-      </template>
-
-      <div class="divide-y divide-gray-200">
-        <div v-for="comment in comments" :key="comment.id" class="py-6 flex gap-4">
-          <el-avatar :size="40" :src="comment.author.avatar" />
-          <div class="flex-1">
-            <div class="flex flex-wrap justify-between items-center gap-2">
-              <div class="flex items-center gap-2 text-sm">
-                <span class="font-bold">{{ comment.author.name }}</span>
-                <span>{{ comment.author.role }} | {{ comment.author.age }}歲</span>
-                <span class="text-gray-500">{{ comment.program }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <el-rate :model-value="comment.rating" disabled show-score text-color="#ff9900" :score-template="`${comment.rating.toFixed(1)}`" />
-                <span class="text-sm text-gray-500">{{ comment.date }}</span>
-              </div>
-            </div>
-            <p class="mt-2 text-gray-700">
-              {{ comment.text }}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-6 flex justify-between items-center">
-        <div>
-          <span class="text-sm text-gray-600 mr-2">每頁顯示:</span>
-          <el-select v-model="pagination.pageSize" placeholder="Select" style="width: 100px;">
-            <el-option label="10 筆" :value="10" />
-            <el-option label="20 筆" :value="20" />
-            <el-option label="50 筆" :value="50" />
-          </el-select>
-        </div>
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :total="pagination.total"
-          :current-page="pagination.currentPage"
-          :page-size="pagination.pageSize"
-          prev-text="上一頁"
-          next-text="下一頁"
-          @current-change="handlePageChange"
-        />
-      </div>
-    </el-card>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 
@@ -198,3 +91,112 @@ function handlePageChange (page: number) {
   pagination.currentPage = page
 }
 </script>
+
+
+<template>
+  <div class="space-y-6">
+    <div class="p-4 bg-white rounded-lg shadow-sm">
+      <p class="text-sm text-gray-700">
+        目前的方案 日期: 2025/7/1 - 2025/8/1 10:10AM 體驗人數上限 10 人 剩餘體驗人數 5 人
+      </p>
+    </div>
+
+    <h1 class="text-2xl font-bold">
+      體驗者評價管理
+    </h1>
+
+    <el-card>
+      <div class="flex flex-wrap items-end gap-x-6 gap-y-4">
+        <div class="flex-grow">
+          <label for="programName" class="block text-sm font-medium text-gray-700 mb-1">計畫名稱</label>
+          <el-input id="programName" v-model="filters.programName" placeholder="搜尋計畫名稱..." />
+        </div>
+        <div>
+          <label for="rating" class="block text-sm font-medium text-gray-700 mb-1">評價分數</label>
+          <el-select id="rating" v-model="filters.rating" placeholder="全部分數" class="w-full min-w-form-control md:max-w-form-select">
+            <el-option label="全部分數" value="all" />
+            <el-option label="5 星" value="5" />
+            <el-option label="4 星" value="4" />
+            <el-option label="3 星" value="3" />
+            <el-option label="2 星" value="2" />
+            <el-option label="1 星" value="1" />
+          </el-select>
+        </div>
+        <div>
+          <label for="dateSort" class="block text-sm font-medium text-gray-700 mb-1">日期範圍</label>
+          <div class="flex items-center gap-2">
+            <el-select id="dateSort" v-model="filters.dateSort" class="w-full min-w-form-control md:max-w-form-select">
+              <el-option label="日期:新到舊" value="desc" />
+              <el-option label="日期:舊到新" value="asc" />
+            </el-select>
+            <el-date-picker
+              v-model="filters.dateRange"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="開始日期"
+              end-placeholder="結束日期"
+            />
+          </div>
+        </div>
+        <div>
+          <el-button type="primary">
+            篩選
+          </el-button>
+        </div>
+      </div>
+    </el-card>
+
+    <el-card>
+      <template #header>
+        <div class="flex justify-between items-center">
+          <span>評價列表</span>
+          <span class="text-sm text-gray-500">共 {{ pagination.total }} 則評價</span>
+        </div>
+      </template>
+
+      <div class="divide-y divide-gray-200">
+        <div v-for="comment in comments" :key="comment.id" class="py-6 flex gap-4">
+          <el-avatar :size="40" :src="comment.author.avatar" />
+          <div class="flex-1">
+            <div class="flex flex-wrap justify-between items-center gap-2">
+              <div class="flex items-center gap-2 text-sm">
+                <span class="font-bold">{{ comment.author.name }}</span>
+                <span>{{ comment.author.role }} | {{ comment.author.age }}歲</span>
+                <span class="text-gray-500">{{ comment.program }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <el-rate :model-value="comment.rating" disabled show-score text-color="#ff9900" :score-template="`${comment.rating.toFixed(1)}`" />
+                <span class="text-sm text-gray-500">{{ comment.date }}</span>
+              </div>
+            </div>
+            <p class="mt-2 text-gray-700">
+              {{ comment.text }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-between items-center">
+        <div>
+          <span class="text-sm text-gray-600 mr-2">每頁顯示:</span>
+          <el-select v-model="pagination.pageSize" placeholder="Select" class="w-full min-w-form-control md:max-w-form-select">
+            <el-option label="10 筆" :value="10" />
+            <el-option label="20 筆" :value="20" />
+            <el-option label="50 筆" :value="50" />
+          </el-select>
+        </div>
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="pagination.total"
+          :current-page="pagination.currentPage"
+          :page-size="pagination.pageSize"
+          prev-text="上一頁"
+          next-text="下一頁"
+          @current-change="handlePageChange"
+        />
+      </div>
+    </el-card>
+  </div>
+</template>
+

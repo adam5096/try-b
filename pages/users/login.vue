@@ -3,6 +3,11 @@ definePageMeta({
   name: 'user-login',
   layout: 'user'
 })
+
+function onSubmit() {
+  // 模擬登入流程後導向使用者首頁
+  navigateTo({ name: 'user-landing' });
+}
 </script>
 
 <!-- up1 體驗者登入頁 -->
@@ -21,6 +26,7 @@ definePageMeta({
         class="mt-8 space-y-6"
         action="#"
         method="POST"
+        @submit.prevent="onSubmit"
       >
         <div class="rounded-md  -space-y-px">
           <div>

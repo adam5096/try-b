@@ -333,3 +333,361 @@
 - **型別修復**：`<el-input type="textarea">` 使用 `:rows` 傳入數字，修正 `Type 'string' is not assignable to type 'number'`。
 - **提交行為**：子元件僅 `emit('submitted')`；父頁面 `pages/users/programs/[programId].vue` 監聽後關閉 Dialog 並 `navigateTo({ name: 'user-landing' })`，維持單一職責、提高重用性與可測試性。
 - **影響檔案**：`components/users/ApplyExperience.vue`，`pages/users/programs/[programId].vue`
+
+### UP6: 申請活動的狀態追蹤頁（路由與檔案結構）
+- **頁面建構與路由**：
+  - 將 `pages/users/applications.vue` 移動為巢狀結構 `pages/users/applications/index.vue`，為後續新增子頁（如 `[applicationId].vue`、`timeline.vue`）預留空間。
+  - 在 `definePageMeta` 統一路由名稱為 `user-applications`（kebab-case），並指定 `layout: 'user'`。
+  - 確認舊名 `userApplications` 無外部引用，改名不會造成壞鏈。
+- **導航策略**：
+  - 建議以命名路由導覽 `:to="{ name: 'user-applications' }"`，替代硬編碼 URL，提升可維護性。
+- **後續建議**：
+  - 規劃將 `users` 區其餘駝峰命名頁面（如 `userComments`、`userCommentDetail`）調整為 kebab-case，以維持一致性。
+
+### MGT: Git 分支命名策略（UP6）
+- **決策**：採用「任務碼置前」命名（`up6-ui` 優於 `ui-up6`），利於遠端分支排序聚合與追蹤。
+- **建議分支**：`feat/up6-ui-users-application-status`（或 `feat/up6-users-application-status-ui` 依團隊慣例）。
+
+### UP6: 申請活動的狀態追蹤頁（UI 第一/二部分）
+- **頁面骨架（第一部分）**：建立標題與操作列、篩選對話框（狀態/日期區間）、列表表格（活動/公司/申請日/狀態/操作）。沿用 `layout: 'user'` 與 `max-w-container-users`。
+- **型別與策略**：申請狀態以 union 五值（待審核/已通過/未通過/已取消/已完成）統一；日期區間使用 `ref<[Date, Date] | ''>('')`，符合 Element Plus `daterange` v-model 期望，重置回 `''`；導覽一律命名路由。
+- **卡片清單（第二部分）**：新增卡片樣式清單，呈現申請日/狀態、標題、地點、活動日期、參與人數、描述、主辦單位；操作含「查看詳情」與「取消申請」（事件預留）。
+- **圖示與樣式**：使用已註冊圖示 `map-marker-alt`、`calendar-alt`、`user-circle`；採 Tailwind + Element Plus，未新增依賴，維持現有色票與陰影/邊框樣式。
+- **擴充建議**：後續抽出 `useApplications` composable 承載篩選與資料取得，替換假資料為 `useFetch`。
+
+# 2025-08-11
+### MGT: 追加需求範圍/階段檢查（MDC「需求複述」）
+- 內容決策：僅保留「需求複述」，明確規範「偵測追加/提問 → 檢查主線/階段 → 回報結果；超出範圍則提醒並解釋，未超出則依建議續進」。
+- 檔名決策：允許中文檔名；推薦 `mdc-需求複述-範圍與階段檢查.md`；規則檔維持於 `.cursor/rules/scope-stage-review.mdc`（內容已更新為最新「需求複述」文案）。
+- 理由：聚焦主線、降低不必要投入，建立輕量且可追溯的回報閉環。
+- 風險與規範：中文檔名於 CI/URL 可能有編碼相容性風險；統一 UTF-8，建議設定 `git config --global core.quotepath false`。
+- 後續：可視需要同步新增中文檔名版本並納入規則索引；與看板/站會流程對齊以落實提醒與回報。
+
+### UP6: 申請活動的狀態追蹤頁（分頁器）
+- 分頁器（標準模式）：採用 Element Plus `prev, pager, next`；每頁 5 筆；`pager-count=7`。
+- 清單資料：卡片清單與表格共用同一分頁資料源（`paginatedApplications`）；當濾鏡變更(註1)時自動回到第 1 頁。
+- 統計文案：新增底部資訊列「顯示 x‑y 筆，共 n 筆結果」。
+- 擴充與風險：目前 `total` 基於前端資料；串 API 時以後端 `total` 為準並處理空清單邊界。
+- 影響檔案：`pages/users/applications/index.vue`
+
+### UP1: 體驗者登入頁（提交導向）
+- 導航實作：為 `pages/users/login.vue` 加上表單 `@submit.prevent`，
+  送出後以 `navigateTo({ name: 'user-landing' })` 導向使用者首頁。
+- 理由：採用 Nuxt 3 推薦的程式化導航，避免整頁重載並保留應用狀態；
+  使用命名路由取代硬編碼 URL，有利於重構與維護。
+- 影響檔案：`pages/users/login.vue`
+
+### Layout: 體驗者佈局 - 申請清單導航
+- 導航更新：於 `layouts/user.vue` 將「申請清單」連結改為命名路由 `user-applications`，
+  並由 `<a>` 改為 `<NuxtLink>`；桌面與行動選單皆生效。
+- 理由：採 SPA 導航避免整頁重載、保留頁面狀態，並透過命名路由降低壞鏈風險、支援 prefetch。
+- 影響檔案：`layouts/user.vue`
+- (註1)濾鏡變更＝任何會改變清單「過濾條件」的動作。
+  - 具體包括：變更或清空 `selectedStatus`、變更或清空 `selectedDateRange`、點擊「重置」按鈕；以及更新清單資料本身導致結果集改變。
+- (註1)行為：只要上述條件造成 `visibleApplications` 改變，就把 `currentPage` 重設為 1（避免在後段頁碼看到空白或錯位的結果）。
+
+### UP6: 申請活動的狀態追蹤頁（篩選下拉與日期排序）
+- 下拉：以 Element Plus `ElPopover` 取代對話框，採「批次套用/重置」；RWD 寬度 `clamp(320px, 92vw, 520px)`，placement=bottom-end。
+- 狀態多選：審核中／已通過／未通過／未成團；排除「已完成」；提供「全部狀態」快速清空。
+- 日期排序：僅提供「新到舊（預設）／舊到新」；按官方建議以 `value` 綁定，去除棄用警告。
+- 視覺/邊界：修正 Popover 子元素溢出、標籤與群組間距、相鄰 radio 邊框裁切；最小裝置寬 370px 表現正常。
+- 行為：套用後重置至第 1 頁；卡片與表格仍共用同一分頁資料源。
+- 影響檔案：`pages/users/applications/index.vue`
+
+### UP12: 單一企業詳情頁（頁面骨架）
+- **頁面與路由**：新增 `pages/users/companies/[companyId].vue`，綁定 `definePageMeta({ name: 'user-company-detail', layout: 'user' })`。
+- **內容結構**：企業封面、公司介紹與生活福利、環境照片（水平滑動佔位）、相關體驗計畫卡片、體驗者評價；右側資訊欄包含企業資訊與聯繫資訊。
+- **實作備註**：沿用 `max-w-container-users` 與 Element Plus 預設樣式、少量 Tailwind 作排版；目前以假資料渲染，後續可用 `useFetch` 串 API；RWD 下限 370px。
+
+### ROUTE: 使用者端命名與 helper 同步（UP12 相關）
+- **集中 helper**：於 `utils/userRoutes.ts` 新增 `companyDetail(companyId)`；`programDetail(programId)` 對應 `user-program-detail`。
+- **命名統一**：將 `pages/users/programs/[programId].vue` 的 `definePageMeta.name` 由 `user-programs-programId` 統一為 `user-program-detail`。
+- **導頁更新**：
+  - `pages/users/index.vue`、`pages/users/applications/index.vue` 的「查看詳情」改為使用 `userRoutes.programDetail(...)`。
+  - 在 `pages/users/programs/[programId].vue` 將公司名稱改為可點擊，點擊導向公司詳情頁（`userRoutes.companyDetail(companyId)`）。
+- **理由**：公司資訊屬穩定資源應與 program 解耦；以集中式路由 helper 管理可避免命名不一致並提升可維護性與型別一致性。
+
+### UP15: 體驗者評價列表頁（UI 第一/二部分與篩選）
+- 頁面與佈局：建立 `pages/users/comments/index.vue`，`definePageMeta` 綁定 `name: 'user-comments'`、`layout: 'user'`，沿用專案版心寬度。
+- 頂部區塊：左側標題「評價列表」、右側統計「共 24 則評價」（暫以假資料）；控制列提供「篩選」按鈕。
+- 篩選 Popover：使用 Element Plus（預設樣式）實作
+  - 狀態多選：已通過／已拒絕／未評價（`el-checkbox-button`）
+  - 日期排序：新到舊／舊到新（`el-radio-button`）
+  - 動作：清除／套用；預留 `onApplyFilters/onClearFilters` 供後續串 API。
+- 列表卡片（第二部分）：
+  - 左：`Avatar` + 公司名 + 體驗標籤 + 狀態標籤（`tagTypeForStatus` 對應 success/warning/danger/info）
+  - 右（僅未評價）：「撰寫評價」按鈕
+  - 已送出：顯示星等（`el-rate` disabled）、分數、日期、狀態標籤；支援內文與退回/拒絕理由（含「修改再傳」按鈕）
+- 型別與資料：定義 `ReviewStatus`、`ReviewItem`，以假資料渲染多種情境；保留最小 Tailwind 作間距排版。
+- 其他：釐清 `!` 前綴僅為覆蓋間距用途；本頁改回使用 `el-divider` 預設間距；Lint 通過。
+- 影響檔案：`pages/users/comments/index.vue`
+
+### Layout: 體驗者佈局 - 評價列表與訪客導航
+- 將「評價列表」改為 `<NuxtLink :to="{ name: 'user-comments' }"/>`，桌面與行動選單一致。
+- Guest Mobile Menu 的「登入」「註冊」由 `<a>` 改為 `NuxtLink`，分別導向 `user-login` 與 `user-register`；採命名路由以降低路徑耦合並啟用預取。
+- 影響檔案：`layouts/user.vue`
+
+### UP15: 評價列表至詳情頁導航
+- 導航實作：於 `pages/users/comments/index.vue` 為「撰寫評價」與退回情境的「修改再傳」加入點擊事件。
+- 路由方式：使用 `navigateTo({ name: 'userCommentDetail', params: { commentId } })` 導向 `pages/users/comments/[commentId].vue`。
+- 理由與效果：採命名路由與 SPA 導航，避免整頁刷新並保留列表的篩選/滾動狀態，降低未來路由改動風險。
+- 影響檔案：`pages/users/comments/index.vue`、`pages/users/comments/[commentId].vue`
+
+### UP15: 體驗者評價列表頁（UI 第三部分：分頁器）
+- 分頁器：採用 Element Plus `el-pagination`，版型 `prev, pager, next`，`pager-count=7`，啟用 `background`。
+- 每頁筆數：增加「每頁顯示」下拉 (`el-select`) 提供 10/20/30/50；與列表雙向綁定。
+- 資料分頁：新增 `currentPage`、`pageSize` 狀態與 `visibleReviews` 計算屬性；以 `allReviews` 依 `totalReviews` 擴展假資料以展示效果。
+- 互動行為：在篩選「清除/套用」時自動重置至第 1 頁，避免出現空頁。
+- 影響檔案：`pages/users/comments/index.vue`
+
+### UP7: 體驗者評價填寫頁（UI + 基本驗證）
+- 頁面與路由：建立 `pages/users/comments/[commentId].vue`，綁定 `definePageMeta({ name: 'user-comments-detail', layout: 'user' })`。
+- 表單與互動：以 Element Plus 實作整體評分、評論內容（上限 1000 字 + 計數）、同意勾選、取消與送出；加入規則驗證與可送出條件；送出成功以訊息提示並導回 `user-comments`。
+- 體驗資訊卡：顯示公司名稱、計畫標題、體驗期間（暫以假資料，預留 `useFetch` 串接）。
+- 視覺：暫採容器滿寬（移除 `max-w-4xl`），後續視需求再調整。
+- 影響檔案：`pages/users/comments/[commentId].vue`
+
+### ROUTE: 評價詳情命名路由修正
+- 決策：統一使用 kebab-case `user-comments-detail`；同步更新列表頁導向，消除命名不一致風險。
+- 理由：符合專案命名策略並避免導頁失敗。
+- 影響檔案：`pages/users/comments/index.vue`、`pages/users/comments/[commentId].vue`
+
+### TECH: Element Plus 棄用 API 警告排除（label act as value）
+- 調整：將 `el-checkbox-button`、`el-radio-button`、`el-radio` 的 `label` 充當值寫法改為 `value` 綁定，並以插槽呈現文字，移除控制台警告。
+- 影響檔案：`pages/users/comments/index.vue`、`pages/company/programs/[programId]/applicants/[applicantId].vue`
+- 參考文件：Element Plus Checkbox（`https://element-plus.org/en-US/component/checkbox.html`）
+
+### UP9: 收藏清單頁（UI 第一版）
+- 路由與頁面：建立 `pages/users/favorites/index.vue`，`definePageMeta({ name: 'user-favorites', layout: 'user' })`。
+- 內容結構：頁面標題與副標、右上「清空收藏」按鈕（`ElPopconfirm` 確認）；卡片網格含圖片佔位、收藏切換、標題/簡述、地點/日期、申請人數、狀態標籤與「查看詳情」。
+- 資料狀態：以假資料渲染；封裝 `handleToggleFavorite/handleClearAll/handleViewDetail` 互動，預留以命名路由導向單一計畫頁。
+- 版心與樣式：沿用 `max-w-container-users`，以 Element Plus 預設樣式為主、少量 Tailwind 做間距與排版。
+- 影響檔案：`pages/users/favorites/index.vue`
+
+
+### Layout: 體驗者佈局—收藏清單導航
+- 導航更新：將 `layouts/user.vue` 內桌面與行動版「收藏清單」連結改為命名路由 `<NuxtLink :to="{ name: 'user-favorites' }"/>`，與「申請清單」「評價列表」一致。
+- 理由：以命名路由降低壞鏈風險並支援 prefetch，維持桌/行動一致的 UX。
+- 影響檔案：`layouts/user.vue`
+
+### UP9: 收藏清單—分頁器與假資料擴充
+- 分頁器：加入 `ElPagination`，設定 `prev-text="上一頁"`、`next-text="下一頁"`、`pager-count=7`、`background`，置中顯示；顯示條件為 `total > pageSize`。
+- 狀態管理：`currentPage/pageSize/visibleItems/total`，以計算屬性切片顯示當前頁資料。
+- 假資料：擴充為 8 筆以驗證分頁行為；清空收藏時改為空陣列以呈現 `ElEmpty`。
+- 影響檔案：`pages/users/favorites/index.vue`
+
+# 2025-08-12
+### ADMIN: 後台佈局（基礎框架）
+- 建立 `layouts/admin.vue` 依設計稿完成：深色頂欄（LOGO＋系統名稱＋使用者區塊、行動裝置含側欄切換）與左側側欄選單（儀表板／體驗計畫／熱門體驗／評價管理／登出）。
+- 內容區以 `<slot>` 注入，確保後台頁面可重用同一框架；RWD：手機側欄可收合，桌面固定側欄；對齊專案版心與色票（`max-w-container-admin`、`brand-gray`）。
+- 技術細節：純 Tailwind 實作，未新增依賴；狀態以 `ref` 管理（`isSidebarOpen`、`activeIndex`）；Lint 通過。
+
+### PP1: 管理員登入頁（UI 切版與佈局分離）
+- `pages/admin/index.vue` 定義為「pp1 管理員登入頁」，內容含 LOGO 與標題、帳號/密碼欄位、記住我、忘記密碼、登入按鈕；下方提供「聯絡系統管理員」與版權資訊的極簡頁尾。
+- 佈局策略：明確設定 `definePageMeta({ layout: 'blank' })`，使登入頁不載入後台導覽，保持獨立與專注。
+- 設計原則：Admin 僅供內部使用，不放置「首頁／方案／聯絡我們」等行銷導覽；保留必要支援與法務文案。
+- RWD 與樣式：裝置寬度下限 370px；採用 `md` 斷點；沿用 Tailwind 既有色票與表單 focus 樣式；Lint 通過。
+
+### PP3: 管理端所有活動總覽頁（UI 與路由）
+- **頁面與路由**：新增 `pages/admin/programs/index.vue`，`definePageMeta({ name: 'admin-programs', layout: 'admin' })`，作為 pp3「所有活動總覽」頁。
+- **內容結構**：
+  - 標題與操作列（右上「新增活動」）。
+  - 控制列：搜尋（標題/公司）、狀態多選（草稿/招募中/進行中/已結束/已取消）、排序（新到舊/舊到新）。
+  - 清單：桌面為表格、行動為卡片；欄位含活動名稱、公司、地點、日期、申請/名額、狀態、操作。
+  - 底部資訊：總筆數與簡易上一頁/下一頁按鈕（預留串接正式分頁）。
+- **樣式與 RWD**：沿用 `max-w-container-admin` 置中；`md` 斷點切換表格/卡片；色票與陰影依專案規範（`brand-gray` 等）。
+- **技術**：以假資料完成切版與互動（搜尋/篩選/排序）之計算屬性；未新增依賴；Lint 通過。
+- **影響檔案**：`pages/admin/programs/index.vue`
+
+### ADMIN: 內容置中偏移修復（佈局）
+- **問題**：內容區在桌面寬度右偏移，原因為 `layouts/admin.vue` 的 `main` 同時套用 `md:ml-64`，與固定寬度側欄 `w-64` 疊加造成雙重位移。
+- **修正**：移除 `md:ml-64`，保留 `p-4 md:p-8`；使頁面內 `mx-auto max-w-container-admin` 真正生效並左右置中。
+- **影響範圍**：所有使用 `admin` 佈局頁面（含 `/admin/programs`）；側欄收合/固定行為不受影響；Lint 通過。
+- **影響檔案**：`layouts/admin.vue`
+
+### PP3: 元件選用策略（Table / Pagination）
+- **決定**：以原生 `table` + Tailwind 切版此頁清單；於 footer 以「上一頁／下一頁」兩顆按鈕示意分頁，暫不導入 `ElTable`、`ElPagination`。
+- **說明**：
+  - 符合設計：列高、內距、徽章色票/邊框高度客製；使用 Element 需大量覆蓋，維護成本高且易與 Tailwind 衝突。
+  - 保留語意：原生 `table/thead/tbody/th/td` 具可存取語意；行動端改為卡片版型更直覺。
+  - 降低負擔：現階段為假資料與基本互動（搜尋/狀態/排序），無需進階行為。
+- **切換條件**：
+  - 表格需要排序（多欄）、固定欄/表頭、列選取、展開列、虛擬清單、大量資料、內建 loading/空狀態時，改用 `ElTable`。
+  - 分頁需要顯示總筆數、頁碼群、每頁筆數選擇、跳頁與 i18n 時，改用 `ElPagination`（建議 `layout: "total, prev, pager, next"`、`background`）。
+- **主題策略**：若導入 Element，採 `ElConfigProvider` 與 SCSS 變數客製主題/命名空間（參考 [Theming](https://element-plus.org/en-US/guide/theming) / [Namespace](https://element-plus.org/en-US/guide/namespace.html)）。
+- **實作路線**：抽出 `ProgramsTable`、`ProgramsPagination` 元件包裝，未來可在不改動頁面介面合約下，將內部實作由原生替換為 Element。
+
+### PP4: 單一計畫詳情頁（UI 第一版 + 區塊完整化）
+- **頁面與路由**：新增 `pages/admin/programs/[programId].vue`，綁定 `definePageMeta({ name: 'admin-single-program-info', layout: 'admin' })`。
+- **內容區塊**：
+  - 標題與中繼資訊（計畫 ID、提交日期、審核狀態）。
+  - 基本資訊（雙欄 `dl`）：體驗名稱、企業、地點、電話、刊登/進行時間、產業、職務、聯絡人、Email、參與人數。
+  - 體驗介紹、師資介紹、經歷、參加限制。
+  - 行前須知、準備清單、體驗流程、體驗地點（`LocationPinIcon`）。
+  - 體驗照片：上方「地圖」灰底佔位，下方 2×2 照片網格（含說明）。
+  - 審核歷史表格與審核意見表單（結果下拉、意見輸入、提交示意）。
+- **資料與型別**：以靜態假資料呈現並定義介面：`photos`、`reviewHistory`、`itinerary`、`preNotes`、`checklist` 等，預留日後 `useFetch` 串接。
+- **地圖策略**：暫以靜態容器佔位；後續可替換 Leaflet，UI 不需變更。
+- **RWD 與樣式**：沿用 `max-w-container-admin` 與色票，`md` 斷點雙欄，lint 綠燈。
+
+### ROUTE: 管理端導覽集中化與列表→詳情串接
+- **集中 helper**：新增 `utils/adminRoutes.ts`，提供 `programs()`、`programDetail(programId)`；與頁面 `definePageMeta.name` 對齊。
+- **列表→詳情**：將 `pages/admin/programs/index.vue` 的「查看」按鈕改為 `navigateTo(adminRoutes.programDetail(p.id))`，行動卡片與桌面表格一致。
+- **理由**：以命名路由移除硬編碼字串，降低壞鏈風險；集中維護、易於重構。
+
+### PP1: 管理員登入頁（提交導向）
+- **行為**：於 `pages/admin/index.vue` 新增 `onSubmitLogin`，表單 `@submit.prevent` 送出後 `navigateTo(adminRoutes.programs())`。
+- **理由**：先完成流程走通，後續再接驗證/錯誤提示/權限保護與回跳。
+
+### UX 決策：詳情頁返回列表
+- **結論**：在詳情頁提供顯式「返回列表」較依賴瀏覽器上一頁更可靠。
+- **理由**：支援深連結與新分頁情境、可控還原列表搜尋/篩選/頁碼/捲動狀態，並可攔截未存變更；未立即實作，後續以 `adminRoutes.programs()` 搭配 query 還原。
+
+### ADMIN: 側邊選單導航（體驗計畫）
+- **導覽實作**：在 `layouts/admin.vue` 新增 `handleNav(item, idx)`，點擊側邊選單更新 `activeIndex`，當項目為「體驗計畫」時導向 `adminRoutes.programs()`（命名路由）。
+- **決策**：統一用集中路由 helper，避免硬編碼，與列表/詳情頁導覽策略一致。
+- **理由**：提升維護性與一致性；確保行動/桌面側欄行為相同；保留未來擴充其他選單項目的彈性。
+
+# 2025-08-13
+### PP5: 熱門體驗管理頁（UI 第一版 + 工具列/清單）
+- **建立頁面骨架**：在 `pages/admin/trends/index.vue` 以 `definePageMeta({ name: 'pp5-admin-trends', layout: 'admin' })` 建立頁面並對齊 `utils/adminRoutes.trends()`。
+- **標題與說明**：新增頁頭標題與描述，採 `max-w-container-admin` 版心，沿用專案色票與間距。
+- **工具列（Filter Toolbar）**：
+  - 新增搜尋 (`ElInput :suffix-icon="Search"`) 與四個下拉（產業/職類/地區/排序，`ElSelect/ElOption`）。
+  - 修正圖示用法，避免 `Invalid vnode type`；調整 `v-model` 型別為 `string`（預設空字串）消除 TS 不相容；Lint 綠燈。
+  - 依設計稿調整排列：標題置左，控制群組置右；`md:flex-nowrap` 確保中大螢幕單行由左至右；370px 下限支援換行。
+- **清單區塊（UI-only）**：
+  - 加入「拖曳項目可調整排序順序」提示，建立卡片式列表（暫以假資料）。
+  - 卡片結構含拖曳把手、縮圖佔位、主內容（標題/企業/日期/描述）、右側產業與操作按鈕。
+  - 指標列顯示瀏覽/收藏/申請（`View/Star/User` 圖示）；採三欄佈局，整列 `items-center` 使「產業」「詳情」「刪除」與主內容垂直置中，符合設計。
+  - 圖示使用 `Rank/View/Star/User`，維持 Element Plus 預設樣式＋少量 Tailwind 排版。
+- **其他**：保留未來拖曳排序與 API 串接的掛鉤；不新增依賴；Lint 通過。
+
+### PP5: 工具列與表格版心對齊修正（避免溢出）
+- **問題**：右上 `ElSelect` 於 1920px 下視覺上超出版心；窄寬時易被 `flex` 擠壓或產生錯位。
+- **修正**：
+  - 將標題列改為 `flex flex-wrap items-center gap-2`，右側控制組以 `ml-auto` 推齊右緣，移除魔術數字 `mr-[27px]` 與 `justify-between` 依賴。
+  - 為下拉設定 `w-[90px] shrink-0`，避免被壓縮導致選單內容不可見。
+  - 與表格容器同樣採用水平內距（標題列與表格皆以 `px-3 md:px-4`），確保上下區塊左右對齊且不溢出版心。
+  - 調整 `colgroup` 寬度與儲存格 padding，使表格欄位比例更貼近設計，並新增分隔線以增強層次。
+- **結果**：在桌機寬度完全包覆控制項，最小裝置寬 370px 下可優雅換行；Lint 綠燈。
+
+### PP5: 可添加的體驗－分頁器與統計文案（UI）
+- **新增分頁區塊**：右側導入 `ElPagination`，版型為 `prev, pager, next`，啟用 `background`；左側顯示統計文案「顯示 x 至 y 項，共 n 項」。
+- **狀態與計算**：新增 `currentPage`、`pageSize`（預設 5）與 `totalCandidates`（24），以 `displayedFrom/To` 計算呈現範圍，避免硬編碼。
+- **RWD 與對齊**：分頁容器使用 `flex flex-wrap`，與表格同級採一致水平內距，保證 1920px 不溢出版心、370px 下可換行。
+- **後續擴充**：可再加入 `sizes/jumper/total` 版型或串接後端總筆數；目前僅 UI 切版，Lint 綠燈。
+
+# 2025-08-14
+### PP6: 體驗者留言評價列表頁（UI 第一版）
+- **建立頁面與路由**：新增 `pages/admin/comments/index.vue`，綁定 `definePageMeta({ name: 'admin-comments', layout: 'admin' })`；沿用 `layouts/admin.vue` 與 `max-w-container-admin` 版心。
+- **建構工具列**：加入 `ElSelect` 兩個下拉（評價：全部/僅五星/4 星以上/3 星以上；排序：最新/最舊）與可清空的 `ElInput` 搜尋（`Search` 圖示）。
+- **實作清單**：在 `md` 以上以原生 `table` 呈現（欄位：ID、體驗計畫名稱、體驗計畫 ID、體驗者、評分、狀態、日期、操作）；在行動裝置改為卡片版（頭像佔位、姓名、計畫與 ID、星等、狀態、日期、詳情）。
+- **定義狀態標籤**：對應 `systemApproved/systemRejected/manualConfirmed/manualRejected` 至中文標籤，套用淡底＋邊框色票，風格與 `pp3/pp5` 一致。
+- **呈現評分**：使用 `el-rate` 並設為 `disabled`，空星色改為灰色 `#d1d5db`，避免互動誤解。
+- **構建資料來源**：以假資料 `allComments` 驅動（`reviewer/programTitle/programId/rating/status/date`），以 `computed` 完成搜尋、評分篩選與日期排序。
+- **完成統計與分頁提示**：底部顯示「共 n 筆結果」與「上一頁/下一頁」占位按鈕，預留串接後端分頁掛鉤。
+- **RWD 與可及性**：最小寬 370px；在 `md` 斷點切換表格/卡片；保留語意化 `table/th/td` 與可鍵盤操作的 `button`；Lint 綠燈。
+
+### PP6: 體驗者留言評價列表頁（迭代：篩選/分頁/表格強化/RWD/導覽）
+- **新增篩選**：加入「審核狀態」下拉 `filterStatus`（全部／已通過(系統)／已拒絕(系統)／已確認(人工)／已拒絕(人工)），與既有評分/排序共同過濾。
+- **導入分頁**：以 `ElPagination` 取代占位按鈕；新增 `currentPage/pageSize` 與切片 `paginatedComments`；統計文案「顯示 x 至 y 筆，共 n 筆」。
+- **表格體驗**：加上 sticky 表頭、斑馬紋、空清單 `ElEmpty`；行動卡片同樣支援空清單顯示。
+- **RWD 調整**：搜尋輸入在 md 以下全寬、md 以上限制 `md:max-w-[180px]`；左側兩個下拉（全部評價／最新評價）於 md 以上改為同列左右排列。
+- **路由導覽**：點擊「詳情」以命名路由導向 `admin-comment-review`（pp7 預留）；集中路由 helper 新增 `comments()`、`commentDetail(commentId)`。
+- **影響檔案**：`pages/admin/comments/index.vue`，`utils/adminRoutes.ts`
+
+### MGT: 共用表單控制寬度 token 建立與導入（PP6）
+- **決策與命名**：採用方案 A；在 `tailwind.config.js` 新增通用最小寬 `minWidth.form-control=120px`，與元件化最大寬 `maxWidth.form-select=150px`、`maxWidth.form-search=280px`。
+- **導入頁面**：將 `pages/admin/comments/index.vue` 內 `el-select`、`el-input(:suffix-icon=Search)` 改為 `min-w-form-control`、`md:max-w-form-select`、`md:max-w-form-search`，統一 RWD 行為。
+- **效益**：移除魔術數字、提升跨頁一致性與維護性；調整寬度僅需變更 `tailwind.config.js`。
+
+### MGT: 共用表單寬度 token 導入（Users 範圍）
+- **範圍與原則**：僅調整「工具列/篩選用途」之 `el-select` 與搜尋 `el-input`；排除表單欄位（維持全寬），避免壓縮與版面破壞。
+- **使用 token**：`min-w-form-control=120`、`md:max-w-form-select=150`、`md:max-w-form-search=280`。
+- **影響檔案**：
+  - `pages/users/index.vue`：搜尋與四個篩選下拉統一 token。
+  - `pages/users/comments/index.vue`：分頁「每頁顯示」下拉統一 token。
+  - `pages/users/applications/index.vue`、`pages/users/favorites/index.vue`：僅驗證，無篩選下拉/搜尋需改動。
+- **結果**：370px 下全寬、md+ 套上限；Lint 綠燈、無版面破壞。
+
+### MGT: 共用表單寬度 token 導入（Company 範圍）
+- **範圍與原則**：同 users；只調整工具列/篩選用途，表單欄位保持全寬。
+- **影響檔案**：
+  - `pages/company/index.vue`：搜尋與四個篩選下拉改用 token。
+  - `pages/company/comments/index.vue`：評分/日期排序/每頁顯示下拉改用 token。
+  - `pages/company/programs/[programId]/applicants/index.vue`：待審核/已審核區的排序/狀態下拉改用 token。
+  - `pages/company/programs/new.vue`：產業/職類/體驗人數/刊登期間下拉改用 token（其餘表單欄位維持全寬）。
+  - `pages/company/settings/index.vue`：產業/規模下拉改用 token（地址縣市/區域暫留全寬）。
+- **結果**：RWD 驗證通過、Lint 綠燈；移除魔術數字，提升一致性與維護性。
+
+### PP7: 單一留言評價詳情審核頁（UI 第一版）
+- **建立頁面與路由**：在 `pages/admin/comments/[commentId].vue` 實作 pp7，綁定 `definePageMeta({ name: 'admin-comment-review', layout: 'admin' })`。
+- **內容區塊**：標題與狀態標籤、返回列表；「評價資訊」描述清單（評價 ID、提交/最後更新、體驗計畫名稱與 ID、體驗者）；評分與留言內容；「審核操作」區（備註、通過/拒絕）。
+- **互動行為**：新增 `approve/reject/goBackToList`；以本地狀態更新標籤，返回以 `navigateTo(adminRoutes.comments())`。
+- **樣式與 RWD**：沿用 `max-w-container-admin`、Element Plus 預設樣式＋少量 Tailwind；最小裝置寬 370px；Lint 綠燈。
+
+### ROUTE: 評價詳情命名統一與 helper 更名（PP7）
+- **命名統一**：統一路由名稱為 `admin-comment-review`（單數 `comment`＋語意 `review`）。
+- **helper 更名**：將 `adminRoutes.commentDetail(commentId)` 更名為 `adminRoutes.commentReview(commentId)`，與頁面職責一致且降低語意歧義。
+- **引用更新**：更新 `pages/admin/comments/index.vue` 之導覽至 `adminRoutes.commentReview(id)`；驗證列表→詳情導覽正常。
+- **理由**：以命名路由解耦 URL，集中於 helper 管理；避免 `detail/review` 語意混淆導致的壞鏈風險。
+
+### FIX: Admin 側欄未定義變數導航錯誤
+- **問題**：`layouts/admin.vue` 多餘分支使用未定義 `commentId` 造成 TS 錯誤。
+- **修正**：移除該分支，僅保留「評價管理」導向列表頁；單筆導覽維持由列表頁觸發。
+- **結果**：消除 `Cannot find name 'commentId'`，Lint 綠燈。
+
+### STYLE: 暫移除本頁麵包屑（PP7）
+- **調整**：移除 `[commentId].vue` 標題區的小麵包屑佔位，保留主標題與右側操作。
+- **理由**：日後以 `definePageMeta` 或全域麵包屑元件統一處理，避免重複來源。
+
+### PP7: 審核歷史與體驗資訊區塊
+- **新增審核歷史**：依設計稿建立桌面表格/行動卡片雙版型；欄位含操作時間/操作人員/操作類型/備註；以假資料渲染，未引入新依賴。
+- **新增體驗資訊摘要**：以 `ElDescriptions` 顯示計畫 ID、產業、職務、地點、體驗日期＋天數；提供「查看體驗詳情」連結按鈕（命名路由）。
+
+### PP7: 提交審核後導回列表
+- **導航行為**：按下「提交審核」後，先預設非同步成功，直接 `navigateTo(adminRoutes.comments())` 導回列表頁。
+- **理由**：先走通 UX 流程；待串接真實 API 後再補請求與錯誤處理。
+
+### PP2: 管理儀表板（Dashboard）UI - 指標與統計卡片
+- **建立頁面與路由**：在 `pages/admin/dashboard/index.vue` 設定 `definePageMeta({ name: 'admin-dashboard', layout: 'admin' })`，以 `layouts/admin.vue` 為共同佈局、版心 `max-w-container-admin`。
+- **頂部指標卡**：實作四張統計卡（總體驗計畫／活躍用戶／新增評價／平均評分），使用 Element Plus Icons（Calendar、User、StarFilled、TrendCharts）取代內嵌 SVG，採 Tailwind 控制尺寸與色彩（`currentColor`）。
+- **企業端數據區塊**：依設計稿完成 2×2 卡片（註冊帳號統計、活動發布統計趨勢、活動成團統計趨勢、當月發布體驗的職業種類），以 `ElCard` 搭配圖表占位容器、座標標示與圖例占位，先行完成切版。
+- **體驗者端數據區塊**：新增 2×2 卡片（申請活動、評價總數、被收藏最愛職業數量（每月）、當月被收藏最愛的職業種類），結構與企業端一致，預留後續導入圖表庫。
+- **RWD 與規範**：手機 1 欄、`md` 2 欄；裝置寬度下限 370px；沿用專案色票 `brand-gray` 等；不覆蓋 Element Plus 預設樣式，避免衝突。
+- **品質與風險**：未新增依賴、Lint 綠燈；以占位容器隔離圖表實作，後續可最小改動導入 ECharts／Chart.js／ApexCharts；預留 Loading/Empty/Error 三態掛點。
+
+### PP2: 儀表板 — 熱門體驗計畫區塊與導覽
+- **新增區塊**：在 `pages/admin/dashboard/index.vue` 建立「熱門體驗計畫」清單卡，三欄資訊（標題＋瀏覽數、收藏數、申請人數），行動版單欄、`md` 三欄。
+- **導覽行為**：為「查看全部」按鈕綁定 `navigateTo(adminRoutes.trends())`，對應 `pages/admin/trends/index.vue`（`definePageMeta.name = 'admin-trends'`）。
+- **資料來源**：以 `popularPrograms` 假資料陣列驅動，欄位含 `id/title/views/favorites/applicants`，後續可以 `useFetch` 替換。
+- **圖示與樣式**：使用 EP 圖示 `ArrowRight`，容器採 `rounded border bg-white` 與分隔線；保持 `max-w-container-admin` 版心與既有色票。
+- **品質**：無新增依賴、Lint 綠燈；路由集中於 `utils/adminRoutes.ts`，避免硬編碼字串。
+
+### 2025-08-15
+### LAYOUT: 管理後台 RWD 與 UX 優化
+- **基礎 RWD 適配**：為 `layouts/admin.vue` 的 Header、Sidebar 及 Main Content 區域新增 `md` 與 `xl` 斷點，調整各區塊在不同螢幕尺寸下的 `padding` 與 `width`，建立初步的響應式佈局。
+- **行動裝置側邊欄迭代 (側向滑動)**：
+  - 實作漢堡選單 (`isSidebarOpen` 狀態) 控制側邊欄的顯示與隱藏。
+  - 採用 `position: fixed` 搭配 `transform: translateX` 製作側邊欄滑入/滑出動畫。
+  - 新增半透明遮罩 (`Overlay`)，提供點擊關閉的便利性，並透過 Vue `<transition>` 優化淡入淡出效果。
+- **行動裝置側邊欄重構 (垂直展開)**：
+  - 為滿足「內容下推」及「垂直動畫」的 UX 需求，將外層容器在 `md` 以下改為 `flex-col`。
+  - 捨棄 `transform`，改用 `transition-[max-height]` 搭配 `max-h-0` 和 `max-h-screen`，實現流暢的垂直展開/收合動畫，並自然地將主內容區塊向下推移。
+  - 在此新架構下，移除了不再需要的遮罩層，簡化了 DOM 結構與程式碼。
+  - 最終將側邊欄在行動裝置上的寬度設為 `w-full`，以符合最終設計要求。
+
+### LAYOUT: 企業端佈局 RWD 與樣式衝突修復
+- **RWD 行為對齊**: 為 `layouts/company.vue` 引入與 `admin.vue` 一致的 RWD 行為，包含新增漢堡選單，並將手機版側邊欄重構為「垂直展開」模式。
+- **樣式衝突解決 (迭代)**:
+  - **漢堡選單**: 將 `<el-button>` 改為原生 `<button>`，解決 `md:hidden` 失效問題。
+  - **側邊欄寬度**: 透過 `width="auto"` prop 搭配 `md:!w-[200px]` `!important` 修飾符，成功覆蓋 `<el-aside>` 的內聯樣式，使其在手機版為全寬，桌面版為固定寬度。
+  - **側邊欄捲動軸**: 經過多次排查（移除 `h-full`、隱藏 `grow` 元素），最終透過 `overflow-y-hidden` 覆蓋 `<el-aside>` 預設的 `overflow: auto`，徹底解決了手機版側邊欄不應出現的捲動軸問題。
+
+### LAYOUT: 主佈局 Header 固定定位與導覽更新
+- **Header 固定定位**: 將 `layouts/main.vue` 的 `<header>` 從 `sticky` 改為 `fixed` 定位，並將 `<slot />` 包裹於 `<main class="pt-[158px]">` 中，以補償 header 高度，避免內容被遮擋。
+- **頁腳連結新增與重構**:
+  - 在頁腳的「快速連結」中新增了前往後台 (`admin-login`) 的連結。
+  - 將頁腳所有連結的 `href` 值從字串路徑重構為物件形式的命名路由，以提升可維護性。
+- **Header 導覽連結**: 將頂部導覽列中的「方案」連結從 `<a>` 標籤改為 `<NuxtLink>`，並指向 `plan` 命名路由，完成了核心導覽功能的串接。
