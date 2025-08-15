@@ -58,7 +58,7 @@ const socialLinks = ref([
 <template>
   <div>
     <!-- Header (Moved from pages/index.vue) -->
-    <header class="nav-shadow sticky bg-white z-40">
+    <header class="nav-shadow fixed top-0 left-0 w-full bg-white z-40">
       <div class="h-main-header w-full max-w-screen-full-hd mx-auto p-12">
         <nav class="flex h-full items-center justify-between gap-8">
           <!-- 商標 Section -->
@@ -129,7 +129,9 @@ const socialLinks = ref([
     </header>
 
     <!-- Page content will be injected here -->
-    <slot />
+    <main class="pt-[158px]">
+      <slot />
+    </main>
 
     <!-- Footer -->
     <footer class="relative text-white bg-cover bg-center overflow-hidden">
