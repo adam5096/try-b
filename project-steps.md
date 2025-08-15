@@ -677,3 +677,10 @@
   - 捨棄 `transform`，改用 `transition-[max-height]` 搭配 `max-h-0` 和 `max-h-screen`，實現流暢的垂直展開/收合動畫，並自然地將主內容區塊向下推移。
   - 在此新架構下，移除了不再需要的遮罩層，簡化了 DOM 結構與程式碼。
   - 最終將側邊欄在行動裝置上的寬度設為 `w-full`，以符合最終設計要求。
+
+### LAYOUT: 企業端佈局 RWD 與樣式衝突修復
+- **RWD 行為對齊**: 為 `layouts/company.vue` 引入與 `admin.vue` 一致的 RWD 行為，包含新增漢堡選單，並將手機版側邊欄重構為「垂直展開」模式。
+- **樣式衝突解決 (迭代)**:
+  - **漢堡選單**: 將 `<el-button>` 改為原生 `<button>`，解決 `md:hidden` 失效問題。
+  - **側邊欄寬度**: 透過 `width="auto"` prop 搭配 `md:!w-[200px]` `!important` 修飾符，成功覆蓋 `<el-aside>` 的內聯樣式，使其在手機版為全寬，桌面版為固定寬度。
+  - **側邊欄捲動軸**: 經過多次排查（移除 `h-full`、隱藏 `grow` 元素），最終透過 `overflow-y-hidden` 覆蓋 `<el-aside>` 預設的 `overflow: auto`，徹底解決了手機版側邊欄不應出現的捲動軸問題。
