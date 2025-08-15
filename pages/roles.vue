@@ -6,13 +6,13 @@ definePageMeta({
 
 const roles = ref([
   {
-    title: '我是體驗者',
+    title: '體驗者',
     description: '開啟職場任意門，體驗你的無限可能。',
     features: ['實習與專案合作機會', '多元職涯探索', '實際職務體驗計畫'],
     loginUrl: '/users/login'
   },
   {
-    title: '我是企業',
+    title: '企業',
     description: '每一場體驗，都是品牌加分的機會',
     features: [
       '輕鬆創建和管理您的體驗活動',

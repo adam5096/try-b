@@ -40,19 +40,19 @@ module.exports = {
       },
       // 在這裡定義全域的斷點，這些斷點會被 container 和 sm:, lg: 等工具類共用
       screens: {
-        sm: "640px",
-        md: "768px",
-        lg: "1024px",
-        xl: "1280px",
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px",
         "2xl": "1400px", // 在此設定全域 container 的最大寬度
       },
       // 專為頁首設計的版心寬度
       maxWidth: {
         "screen-full-hd": "1920px",
         "container-main": "1200px",
-        "container-company": "1440px",
-        "container-users": "1440px",
-        "container-admin": "1440px",
+        "container-company": "1200px",
+        "container-users": "1200px",
+        "container-admin": "1200px",
         // 表單控制元件在中大螢幕的最大寬度
         'form-select': '150px',
         'form-search': '280px',

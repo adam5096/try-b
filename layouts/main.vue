@@ -37,8 +37,9 @@ onBeforeUnmount(() => {
 
 // --- Footer State ---
 const quickLinks = ref([
-  { text: '首頁', href: '/' },
-  { text: '企業方案', href: '/plan' },
+  { text: '首頁', href: { name: 'index' } },
+  { text: '企業方案', href: { name: 'plan' } },
+  { text: '後台登入', href: { name: 'admin-login' } },
 ]);
 
 const contactInfo = ref({
@@ -57,7 +58,7 @@ const socialLinks = ref([
 <template>
   <div>
     <!-- Header (Moved from pages/index.vue) -->
-    <header class="nav-shadow sticky bg-white z-40">
+    <header class="nav-shadow fixed top-0 left-0 w-full bg-white z-40">
       <div class="h-main-header w-full max-w-screen-full-hd mx-auto p-12">
         <nav class="flex h-full items-center justify-between gap-8">
           <!-- 商標 Section -->
@@ -109,9 +110,9 @@ const socialLinks = ref([
                 <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   探索我們
                 </a>
-                <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                <NuxtLink :to="{ name: 'plan' }" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   方案
-                </a>
+                </NuxtLink>
                 <div class="px-4 py-2 flex items-center gap-2">
                   <font-awesome-icon :icon="['fas', 'user-circle']" class="w-6 h-6" />
                   <NuxtLink to="/roles" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
@@ -128,7 +129,9 @@ const socialLinks = ref([
     </header>
 
     <!-- Page content will be injected here -->
-    <slot />
+    <main class="pt-[158px]">
+      <slot />
+    </main>
 
     <!-- Footer -->
     <footer class="relative text-white bg-cover bg-center overflow-hidden">
