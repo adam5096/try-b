@@ -35,7 +35,7 @@ const handleNav = (item: { key: string; label: string }, idx: number) => {
 <template>
   <div class="min-h-screen w-full bg-white text-gray-900">
     <!-- Top bar -->
-    <header class="flex h-16 w-full items-center justify-between bg-gray-700 px-4 text-white md:px-8">
+    <header class="flex h-16 w-full items-center justify-between bg-gray-700 px-4 text-white md:px-6 xl:px-8">
       <div class="flex items-center gap-3">
         <div class="flex h-8 w-12 items-center justify-center rounded bg-gray-600 text-[10px]">LOGO</div>
         <span class="text-lg font-semibold md:text-xl">TRYβ管理後台系統</span>
@@ -57,13 +57,14 @@ const handleNav = (item: { key: string; label: string }, idx: number) => {
       </div>
     </header>
 
-    <div class="flex">
+    <div class="flex flex-col md:flex-row">
+      <!-- Overlay for mobile sidebar -->
       <!-- Sidebar -->
       <aside
-        class="fixed inset-y-16 left-0 z-30 w-64 translate-x-0 border-r border-gray-200 bg-white pt-6 transition-transform md:static md:inset-auto md:translate-x-0"
-        :class="{ '-translate-x-full': !isSidebarOpen, 'md:translate-x-0': true }"
+        class="w-full overflow-hidden bg-white transition-[max-height] duration-500 ease-in-out md:static md:h-auto md:max-h-full md:w-60 md:border-r md:transition-none xl:w-64"
+        :class="isSidebarOpen ? 'max-h-screen' : 'max-h-0 md:max-h-full'"
       >
-        <nav class="space-y-6 px-6">
+        <nav class="space-y-6 px-6 py-6">
           <button
             v-for="(item, idx) in navItems"
             :key="item.key"
@@ -79,7 +80,7 @@ const handleNav = (item: { key: string; label: string }, idx: number) => {
       </aside>
 
       <!-- Content -->
-      <main class="ml-0 flex min-h-[calc(100vh-4rem)] w-full flex-col p-4 md:p-8">
+      <main class="ml-0 flex min-h-[calc(100vh-4rem)] w-full flex-col p-4 md:p-6 xl:p-8">
         <slot />
       </main>
     </div>
