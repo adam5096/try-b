@@ -182,11 +182,7 @@ onBeforeUnmount(() => {
     <!-- Page content will be injected here -->
     <main class="pt-[90px] bg-brand-gray transition-all duration-300 ease-in-out" :style="{ paddingTop: `${90 + menuHeight}px` }">
       <div class="mx-auto max-w-container-users px-6 md:px-12 py-10">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div class="col-span-12 lg:col-span-9">
             <slot />
-          </div>
-        </div>
       </div>
     </main>
   </div>
