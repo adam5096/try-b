@@ -691,3 +691,25 @@
   - 在頁腳的「快速連結」中新增了前往後台 (`admin-login`) 的連結。
   - 將頁腳所有連結的 `href` 值從字串路徑重構為物件形式的命名路由，以提升可維護性。
 - **Header 導覽連結**: 將頂部導覽列中的「方案」連結從 `<a>` 標籤改為 `<NuxtLink>`，並指向 `plan` 命名路由，完成了核心導覽功能的串接。
+
+# 2025-08-17
+### LAYOUT: 體驗者佈局重構與 RWD
+- **結構對齊**: 重構 `layouts/user.vue`，使其版面結構、Header 與 `main` 元素與 `layouts/main.vue` 對齊，並移除 Footer，確保全站訪客與登入後的核心體驗一致性。
+- **Header 導覽實作**:
+  - **桌面版**: 導入使用者登入後的導覽列，包含「首頁」連結、通知鈴鐺 (`el-badge`) 與帶有個人頭像的下拉式選單 (`el-dropdown`)。
+  - **導航連結**: 將下拉選單中的「申請清單」、「收藏清單」、「帳戶中心」與「評價列表」等項目，全面改為使用 `<NuxtLink>` 搭配命名路由，並實作了 `logout` 登出功能。
+- **行動版選單 UX 迭代**:
+  - **設計迭代**: 根據使用者回饋，行動版選單的互動模式歷經了「側向滑動」、「內容下推」至最終定案的「全螢幕覆蓋」三種模式。
+  - **動畫與佈局**:
+    - **內容下推模式**: 透過 Vue `nextTick` 精準計算選單內容的動態高度，並將其反應至 `<main>` 的 `paddingTop`，實現流暢的推移效果，並修復了因 `transform` 位移值與 Header 高度不匹配造成的視覺空隙。
+    - **全螢幕覆蓋模式**: 將選單 `z-index` 設為 `z-50`，使其高於 Header (`z-40`)，並搭配 `h-screen` 與 `translate-y-0` 動畫，實現從頂部滑入並完整覆蓋畫面的效果。
+
+### MGT: Font Awesome 圖示依賴衝突修復
+- **問題診斷與迭代**:
+  - **初期診斷**: 初步判斷為圖示名稱在 Font Awesome v6 中已變更，嘗試將 `file-alt`, `comment-dots` 等舊名稱更新為新版名稱。
+  - **根本原因**: 經過反覆測試後，確認問題根源為專案中不同的 `@fortawesome` 套件，解析到了多個不同版本的 `@fortawesome/fontawesome-common-types` 子依賴，導致 TypeScript 編譯時出現類型定義衝突。
+- **解決方案**:
+  - **依賴鎖定**: 在 `package.json` 中使用 `pnpm.overrides` 欄位，強制所有相關套件使用單一、固定的 `fontawesome-common-types@6.5.2` 版本。
+  - **版本統一**: 將所有 `@fortawesome` 相關套件（`core`, `brands`, `regular`, `solid`, `vue`）的版本統一，並重新執行 `pnpm install`。
+  - **圖示註冊**: 在 `plugins/fontawesome.ts` 中明確匯入並註冊所有在 `user.vue` 中使用到的圖示 (`faClipboardList`, `faStar`, `faCircleUser`, `faArrowRightFromBracket`)。
+- **成效**: 徹底解決了因依賴版本不匹配造成的 TypeScript `Argument of type 'IconDefinition' is not assignable` 錯誤，並確保所有圖示皆能正常渲染。
