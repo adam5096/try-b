@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
 
 // --- Header State (Moved from pages/index.vue) ---
 const isMenuOpen = ref(false);
+const mobileMenuRef = ref<HTMLElement | null>(null);
+const menuHeight = ref(0);
 
 watch(isMenuOpen, (isOpen) => {
   if (process.client) {
@@ -10,9 +12,16 @@ watch(isMenuOpen, (isOpen) => {
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.paddingRight = `${scrollbarWidth}px`;
       document.body.style.overflow = 'hidden';
+
+      nextTick(() => {
+        if (mobileMenuRef.value) {
+          menuHeight.value = mobileMenuRef.value.offsetHeight;
+        }
+      });
     } else {
       document.body.style.paddingRight = '';
       document.body.style.overflow = '';
+      menuHeight.value = 0;
     }
   }
 });
@@ -66,9 +75,8 @@ onBeforeUnmount(() => {
 <template>
   <div>
     <!-- Header (Moved from pages/index.vue) -->
-    <header class="nav-shadow fixed top-0 left-0 w-full bg-white z-40">
-      <div class="h-main-header max-w-screen-full-hd mx-auto px-6 lg:px-8">
-        <nav class="flex h-full items-center justify-between gap-8">
+    <header class="nav-shadow fixed top-0 left-0 w-full bg-white z-40 h-[90px] flex items-center">
+      <nav class="w-full max-w-screen-full-hd mx-auto px-6 lg:px-8 flex h-full items-center justify-between gap-8">
           <!-- 商標 Section -->
           <h1 class="flex flex-none items-center text-2xl">
             <NuxtLink to="/" class="flex items-center gap-2">
@@ -134,9 +142,11 @@ onBeforeUnmount(() => {
           </div>
           
           <!-- Mobile Menu -->
-          <div :class="[
-              'fixed top-0 left-0 z-50 h-full w-3/4 transform overflow-y-auto bg-white p-6 transition-transform duration-300 ease-in-out lg:hidden',
-              isMenuOpen ? 'translate-x-0' : '-translate-x-full',
+          <div
+            ref="mobileMenuRef"
+            :class="[
+              'fixed -top-[90px] left-0 z-30 w-full transform overflow-y-auto bg-white p-6 shadow-lg transition-transform duration-300 ease-in-out lg:hidden',
+              isMenuOpen ? 'translate-y-[90px]' : '-translate-y-full',
             ]">
             <!-- Close button for mobile -->
             <button class="absolute top-6 right-6" @click="toggleMenu">
@@ -166,32 +176,13 @@ onBeforeUnmount(() => {
 
           <!-- 遮罩 -->
           <div v-if="isMenuOpen" class="fixed inset-0 z-45 bg-black/30 lg:hidden" @click="toggleMenu"></div>
-        </nav>
-      </div>
+      </nav>
     </header>
 
     <!-- Page content will be injected here -->
-    <main class="pt-[90px] bg-brand-gray">
+    <main class="pt-[90px] bg-brand-gray transition-all duration-300 ease-in-out" :style="{ paddingTop: `${90 + menuHeight}px` }">
       <div class="mx-auto max-w-container-users px-6 md:px-12 py-10">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <!-- <aside class="hidden lg:block lg:col-span-3">
-            <nav class="bg-white rounded-lg shadow-sm p-4 sticky top-28">
-              <ul>
-                <li v-for="link in userLinks" :key="link.name" class="mb-2">
-                  <NuxtLink :to="link.route" class="flex items-center gap-3 px-4 py-2 rounded-md text-gray-700 hover:bg-gray-100 transition-colors" active-class="bg-blue-100 text-blue-600 font-semibold">
-                    <font-awesome-icon :icon="link.icon" class="w-5 h-5" />
-                    <span>{{ link.name }}</span>
-                  </NuxtLink>
-                </li>
-                <li>
-                  <button @click="logout" class="w-full flex items-center gap-3 px-4 py-2 rounded-md text-gray-700 hover:bg-gray-100 transition-colors">
-                    <font-awesome-icon :icon="['fas', 'arrow-right-from-bracket']" class="w-5 h-5" />
-                    <span>登出</span>
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          </aside> -->
           <div class="col-span-12 lg:col-span-9">
             <slot />
           </div>
