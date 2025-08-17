@@ -713,3 +713,9 @@
   - **版本統一**: 將所有 `@fortawesome` 相關套件（`core`, `brands`, `regular`, `solid`, `vue`）的版本統一，並重新執行 `pnpm install`。
   - **圖示註冊**: 在 `plugins/fontawesome.ts` 中明確匯入並註冊所有在 `user.vue` 中使用到的圖示 (`faClipboardList`, `faStar`, `faCircleUser`, `faArrowRightFromBracket`)。
 - **成效**: 徹底解決了因依賴版本不匹配造成的 TypeScript `Argument of type 'IconDefinition' is not assignable` 錯誤，並確保所有圖示皆能正常渲染。
++ 
++ ### LAYOUT: 體驗者佈局內容置中修復
++ - **問題診斷**: 發現在 `layouts/user.vue` 佈局下，部分頁面 (如登入頁) 的主內容 (`<main>`) 未能正確置中，而是向左偏移。
++ - **根本原因**: 確認問題源於佈局中使用了一個 `lg:grid-cols-12` 的網格系統，並將內容 `<slot />` 放置於一個 `lg:col-span-9` 的容器中。此設計原是為「內容+側邊欄」的頁面準備，但在不需要側邊欄的頁面上，導致右側出現了多餘的 3 欄空白。
++ - **解決方案**: 移除 `layouts/user.vue` 中 `<main>` 元素內部的網格系統 (`grid`, `col-span-*`)，讓 `<slot />` 直接繼承父層 `max-w-container-users` 的置中效果。
++ - **成效**: 確保了所有使用 `user` 佈局的頁面，無論是否需要側邊欄，其主內容都能在各種螢幕尺寸下維持正確的左右置中對齊。
