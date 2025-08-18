@@ -8,6 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "test:bdd": "cucumber-js",
     "lint": "eslint . --ext .js,.vue --ignore-path .gitignore",
     "lint:fix": "eslint . --fix"
   },
@@ -42,7 +43,8 @@
     "@nuxt/fonts": "^0.11.4",
     "@playwright/test": "^1.54.2",
     "playwright": "^1.54.2",
-    "sass": "^1.89.2"
+    "sass": "^1.89.2",
+    "ts-node": "^10.9.2"
   },
   "pnpm": {
     "overrides": {

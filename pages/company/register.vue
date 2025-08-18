@@ -12,6 +12,10 @@ const currentStep = ref(1);
 
 const formData = reactive({
   // Step 1 data
+  account: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
   name: '',
   taxId: '',
   industry: '',

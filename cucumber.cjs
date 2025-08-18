@@ -1,9 +1,9 @@
 const common = `
-  --require features/step_definitions/**/*.ts
-  --require features/support/**/*.ts
+  --import features/step_definitions/**/*.ts
+  --import features/support/**/*.ts
   --format summary
   --format progress-bar
-  --publish-quiet
+  --loader ts-node/esm
 `;
 
 module.exports = {

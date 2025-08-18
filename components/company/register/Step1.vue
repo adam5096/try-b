@@ -18,6 +18,27 @@ const emit = defineEmits(['next'])
       class="grid grid-cols-2 gap-x-6"
       size="large"
     >
+      <el-form-item label="帳號 *" prop="account" class="col-span-2 md:col-span-1">
+        <el-input v-model="formData.account" placeholder="請輸入帳號" />
+      </el-form-item>
+
+      <el-form-item label="Email *" prop="email" class="col-span-2 md:col-span-1">
+        <el-input v-model="formData.email" placeholder="請輸入Email" />
+      </el-form-item>
+
+      <el-form-item label="密碼 *" prop="password" class="col-span-2 md:col-span-1">
+        <el-input v-model="formData.password" type="password" placeholder="請輸入密碼" show-password />
+      </el-form-item>
+
+      <el-form-item label="確認密碼 *" prop="confirmPassword" class="col-span-2 md:col-span-1">
+        <el-input
+          v-model="formData.confirmPassword"
+          type="password"
+          placeholder="再次輸入密碼"
+          show-password
+        />
+      </el-form-item>
+
       <el-form-item label="企業名稱 *" prop="name" class="col-span-2 md:col-span-1">
         <el-input v-model="formData.name" placeholder="請輸入企業的名稱" />
       </el-form-item>
