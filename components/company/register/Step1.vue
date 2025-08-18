@@ -4,8 +4,8 @@ import type { FormInstance, FormRules } from 'element-plus'
 
 const props = defineProps<{
   formData: any
-  industryOptions: { value: string; label: string }[]
-  scaleOptions: { value: string; label: string }[]
+  industryOptions: { value: number; label: string }[]
+  scaleOptions: { value: number; label: string }[]
 }>()
 
 const emit = defineEmits(['next'])
@@ -60,14 +60,11 @@ const handleNextClick = async () => {
   const formEl = formRef.value
   if (!formEl) return
 
-  const isValid = await formEl.validate().catch((fields) => {
-    console.log('Validation failed on fields:', fields)
-    return false
-  })
-
-  if (isValid) {
+  try {
+    await formEl.validate()
     emit('next')
-  } else {
+  } catch (fields) {
+    console.log('Validation failed on fields:', fields)
     // 驗證失敗後，Element Plus 會更新其內部狀態以顯示錯誤。
     // 這個更新不是同步的。我們必須使用 nextTick 等待下一個 DOM 更新週期，
     // 以確保當 Playwright 進行下一步斷言時，錯誤訊息的 DOM 元素已經被渲染出來。

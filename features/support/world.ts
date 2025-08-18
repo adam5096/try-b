@@ -24,6 +24,18 @@ setWorldConstructor(CustomWorld);
 Before(async function (this: ICustomWorld) {
   this.browser = await chromium.launch({ headless: false });
   this.page = await this.browser.newPage();
+
+  // Inject CSS to disable animations and transitions
+  const disableAnimationsStyle = `
+    *,
+    *::before,
+    *::after {
+      transition-property: none !important;
+      transform: none !important;
+      animation: none !important;
+    }
+  `;
+  await this.page.addStyleTag({ content: disableAnimationsStyle });
 });
 
 After(async function (this: ICustomWorld) {
