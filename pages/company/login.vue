@@ -94,9 +94,9 @@ definePageMeta({
           <div class="mt-6 text-center">
             <p class="text-sm text-gray-600">
               還沒有帳戶？
-              <a href="#" class="font-medium text-primary-blue hover:underline">
+              <NuxtLink to="/company/register" class="font-medium text-primary-blue hover:underline">
                 立即註冊
-              </a>
+              </NuxtLink>
             </p>
           </div>
         </form>
