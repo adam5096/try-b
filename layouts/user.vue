@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { NuxtLink } from '#components';
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
 
-// --- Header State ---
-const isLoggedIn = ref(true); // Simulate user login state
+// --- Header State (Moved from pages/index.vue) ---
 const isMenuOpen = ref(false);
-const isProfileMenuOpen = ref(false);
+const mobileMenuRef = ref<HTMLElement | null>(null);
+const menuHeight = ref(0);
 
 watch(isMenuOpen, (isOpen) => {
   if (process.client) {
@@ -13,9 +12,16 @@ watch(isMenuOpen, (isOpen) => {
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.paddingRight = `${scrollbarWidth}px`;
       document.body.style.overflow = 'hidden';
+
+      nextTick(() => {
+        if (mobileMenuRef.value) {
+          menuHeight.value = mobileMenuRef.value.offsetHeight;
+        }
+      });
     } else {
       document.body.style.paddingRight = '';
       document.body.style.overflow = '';
+      menuHeight.value = 0;
     }
   }
 });
@@ -24,9 +30,32 @@ function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value;
 }
 
-const toggleProfileMenu = () => {
-  isProfileMenuOpen.value = !isProfileMenuOpen.value;
-};
+const userLinks = ref([
+  {
+    name: '申請清單',
+    route: { name: 'user-applications' },
+    icon: ['fas', 'clipboard-list']
+  },
+  {
+    name: '收藏清單',
+    route: { name: 'user-favorites' },
+    icon: ['fas', 'heart']
+  },
+  {
+    name: '帳戶中心',
+    route: { name: 'user-settings' },
+    icon: ['fas', 'circle-user']
+  },
+  {
+    name: '評價列表',
+    route: { name: 'user-comments' },
+    icon: ['fas', 'star']
+  }
+]);
+
+function logout() {
+  navigateTo({ name: 'user-login' });
+}
 
 const handleResize = () => {
   if (window.innerWidth >= 1024) {
@@ -41,219 +70,129 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize);
 });
-
-// --- Footer State ---
-const quickLinks = ref([
-  { text: '首頁', href: '#' },
-  { text: '企業方案', href: '#' },
-]);
-
-const contactInfo = ref({
-  address: '地址：台北市大安區創意街123號',
-  phone: '電話：(+886)2-9999-8888',
-  email: 'EMail：hello@explorelab.com',
-});
-
-const socialLinks = ref([
-  { icon: ['fab', 'facebook'], href: '#', name: 'Facebook' },
-  { icon: ['fab', 'instagram'], href: '#', name: 'Instagram' },
-  { icon: ['fab', 'line'], href: '#', name: 'Line' },
-]);
 </script>
 
 <template>
   <div>
-    <!-- Header -->
-    <header class="nav-shadow sticky bg-white z-40">
-      <div class="h-main-header w-full max-w-screen-full-hd mx-auto p-12">
-        <nav class="flex h-full items-center justify-between gap-8">
+    <!-- Header (Moved from pages/index.vue) -->
+    <header class="nav-shadow fixed top-0 left-0 w-full bg-white z-40 h-[90px] flex items-center">
+      <nav class="w-full max-w-screen-full-hd mx-auto px-6 lg:px-8 flex h-full items-center justify-between gap-8">
           <!-- 商標 Section -->
-          <h1 class="flex flex-none items-center gap-2 text-2xl">
-            <div class="w-site-logo-width h-site-logo-height">
-            </div>
+          <h1 class="flex flex-none items-center text-2xl">
+            <NuxtLink to="/" class="flex items-center gap-2">
+              <div class="w-site-logo-width h-site-logo-height">
+                <img
+                  src="@/assets/img/home/try-beta-logo.webp"
+                  alt="TRY Beta 網站商標"
+                  class="h-full w-full object-contain"
+                />
+              </div>
+            </NuxtLink>
           </h1>
 
           <!-- Desktop Search Bar 搜尋欄 -->
           <div class="hidden lg:flex flex-1 justify-center px-4">
             <div
-              class="w-full min-w-[150px] max-w-[400px] flex items-center justify-center mx-auto border border-gray-300 rounded-full px-4 py-2 transition-colors focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
-              <input type="text" placeholder="搜尋體驗計畫..." class="w-full bg-transparent focus:outline-none">
-            </div>
-          </div>
-
-          <!-- Logged In User Section -->
-          <div v-if="isLoggedIn" class="hidden lg:flex items-center gap-4">
-            <NuxtLink :to="{ name: 'user-landing' }" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
-              首頁
-            </NuxtLink>
-            <div class="relative">
-              <button class="relative text-gray-600 hover:text-blue-600">
-                <font-awesome-icon :icon="['fas', 'bell']" class="h-6 w-6" />
-                <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">3</span>
-              </button>
-            </div>
-            <div class="relative">
-              <button @click="toggleProfileMenu" class="flex items-center gap-2">
-                <img class="h-10 w-10 rounded-full object-cover" src="https://i.imgur.com/JS4g6z4.png" alt="User avatar">
-              </button>
-              <!-- Profile Dropdown -->
-              <div v-if="isProfileMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                <NuxtLink :to="{ name: 'user-applications' }" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                  <font-awesome-icon :icon="['fas', 'list-alt']" />
-                  <span>申請清單</span>
-                </NuxtLink>
-                <NuxtLink :to="{ name: 'user-favorites' }" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                  <font-awesome-icon :icon="['fas', 'heart']" />
-                  <span>收藏清單</span>
-                </NuxtLink>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                  <font-awesome-icon :icon="['fas', 'user-circle']" />
-                  <span>帳戶中心</span>
-                </a>
-                <NuxtLink :to="{ name: 'user-comments' }" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                  <font-awesome-icon :icon="['fas', 'question-circle']" />
-                  <span>評價列表</span>
-                </NuxtLink>
-                 <div class="border-t my-1"></div>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                  <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
-                  <span>登出</span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Guest Section -->
-          <div v-else class="hidden lg:flex items-center gap-6">
-            <NuxtLink :to="{ name: 'user-landing' }" class="px-6 py-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 transition-colors font-medium">
-              首頁
-            </NuxtLink>
-            <div class="flex items-center gap-2">
-              <NuxtLink :to="{ name: 'user-login' }" class="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                登入/註冊
-              </NuxtLink>
-
+              class="w-full min-w-[150px] max-w-[1000px] flex items-center justify-center mx-auto border border-gray-200 rounded-lg p-2 transition-colors focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+              <input type="text" placeholder="搜尋職業體驗機會..." class="w-full bg-transparent focus:outline-none">
             </div>
           </div>
 
           <!-- 右側導覽 -->
-          <div class="flex items-center">
-            <!-- Mobile Menu Button -->
-            <button class="lg:hidden" @click="toggleMenu">
+          <div class="hidden lg:flex items-center gap-6">
+            <NuxtLink :to="{ name: 'index' }" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
+              首頁
+            </NuxtLink>
+
+            <el-badge :value="3" :max="9" class="item">
+              <font-awesome-icon :icon="['fas', 'bell']" class="w-6 h-6 text-gray-600 cursor-pointer" />
+            </el-badge>
+            
+            <el-dropdown>
+              <span class="flex items-center gap-2 cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                  <font-awesome-icon :icon="['fas', 'circle-user']" class="w-6 h-6 text-gray-600" />
+                </div>
+                <span>林威辰</span>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item v-for="link in userLinks" :key="link.name">
+                    <NuxtLink :to="link.route" class="flex items-center gap-3">
+                      <font-awesome-icon :icon="link.icon" class="w-4 h-4" />
+                      <span>{{ link.name }}</span>
+                    </NuxtLink>
+                  </el-dropdown-item>
+                  <el-dropdown-item divided @click="logout">
+                    <div class="flex items-center gap-3">
+                      <font-awesome-icon :icon="['fas', 'arrow-right-from-bracket']" class="w-4 h-4" />
+                      <span>登出</span>
+                    </div>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <div class="lg:hidden">
+            <button @click="toggleMenu">
               <HamburgerIcon class="h-8 w-8 text-gray-700" />
             </button>
+          </div>
+          
+          <!-- Mobile Menu -->
+          <div
+            ref="mobileMenuRef"
+            :class="[
+              'fixed -top-[90px] left-0 z-30 w-full transform overflow-y-auto bg-white p-6 shadow-lg transition-transform duration-300 ease-in-out lg:hidden',
+              isMenuOpen ? 'translate-y-[90px]' : '-translate-y-full',
+            ]">
+            <!-- Close button for mobile -->
+            <button class="absolute top-6 right-6" @click="toggleMenu">
+              <CloseIcon class="h-8 w-8 text-gray-700" />
+            </button>
 
-            <!-- Mobile Menu Panel -->
-            <div :class="[
-                'fixed top-0 left-0 z-50 h-1/2 w-full transform overflow-y-auto bg-white p-8 transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:flex lg:h-auto lg:w-auto lg:transform-none lg:overflow-y-visible lg:p-0 lg:bg-transparent',
-                isMenuOpen ? 'translate-y-0' : '-translate-y-full',
-              ]" class="flex flex-col gap-8 lg:flex-row lg:items-center">
-              <!-- Close button for mobile -->
-              <button class="absolute top-8 right-8 lg:hidden" @click="toggleMenu">
-                <CloseIcon class="h-8 w-8 text-gray-700" />
-              </button>
-
-              <!-- 搜尋欄 (Mobile Only) -->
-              <div
-                class="mt-16 flex w-full justify-center border border-gray-200 rounded-lg p-2 transition-colors focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 lg:hidden">
-                <input type="text" placeholder="搜尋職業體驗機會..." class="w-full bg-transparent focus:outline-none">
-              </div>
-
-              <!-- Logged In User Mobile Menu -->
-               <div v-if="isLoggedIn" class="flex flex-col gap-8 lg:hidden">
-                  <NuxtLink :to="{ name: 'user-applications' }" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
-                    <font-awesome-icon :icon="['fas', 'list-alt']" />
-                    <span>申請清單</span>
-                  </NuxtLink>
-                  <NuxtLink :to="{ name: 'user-favorites' }" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
-                    <font-awesome-icon :icon="['fas', 'heart']" />
-                    <span>收藏清單</span>
-                  </NuxtLink>
-                  <a href="#" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
-                    <font-awesome-icon :icon="['fas', 'user-circle']" />
-                    <span>帳戶中心</span>
-                  </a>
-                  <NuxtLink :to="{ name: 'user-comments' }" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
-                    <font-awesome-icon :icon="['fas', 'question-circle']" />
-                    <span>評價列表</span>
-                  </NuxtLink>
-                   <div class="border-t my-1"></div>
-                  <a href="#" class="flex items-center gap-3 px-4 py-2 text-lg text-gray-700 hover:bg-gray-100">
-                    <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
-                    <span>登出</span>
-                  </a>
-              </div>
-
-              <!-- Guest Mobile Menu -->
-              <div v-else class="flex flex-col gap-8 lg:hidden">
-                <NuxtLink :to="{ name: 'user-login' }" class="px-4 py-2 text-lg text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                  登入
-                </NuxtLink>
-                <NuxtLink :to="{ name: 'user-register' }" class="px-4 py-2 text-lg text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                  註冊
-                </NuxtLink>
-              </div>
+            <!-- Navigation Links -->
+            <div class="mt-16">
+              <nav>
+                <ul>
+                  <li v-for="link in userLinks" :key="link.name" class="mb-2">
+                    <NuxtLink :to="link.route" @click="toggleMenu" class="flex items-center gap-3 px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 transition-colors text-lg" active-class="bg-blue-100 text-blue-600 font-semibold">
+                      <font-awesome-icon :icon="link.icon" class="w-5 h-5" />
+                      <span>{{ link.name }}</span>
+                    </NuxtLink>
+                  </li>
+                  <li>
+                    <button @click="logout" class="w-full flex items-center gap-3 px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 transition-colors text-lg">
+                      <font-awesome-icon :icon="['fas', 'arrow-right-from-bracket']" class="w-5 h-5" />
+                      <span>登出</span>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </div>
+
           <!-- 遮罩 -->
           <div v-if="isMenuOpen" class="fixed inset-0 z-45 bg-black/30 lg:hidden" @click="toggleMenu"></div>
-        </nav>
-      </div>
+      </nav>
     </header>
 
     <!-- Page content will be injected here -->
-    <slot />
-
-    <!-- Footer -->
-    <footer class="bg-[#4B4B4B] text-white">
-      <div class="mx-auto max-w-container-main px-6 md:px-12 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Logo and Social Media -->
-          <div class="flex flex-col items-center md:items-start">
-            <h2 class="text-3xl font-bold">TRYβ</h2>
-            <div class="flex space-x-4 mt-6">
-              <a href="#" class="text-gray-400 hover:text-white"><span class="sr-only">Facebook</span><font-awesome-icon :icon="['fab', 'facebook']" class="h-8 w-8" /></a>
-              <a href="#" class="text-gray-400 hover:text-white"><span class="sr-only">Instagram</span><font-awesome-icon :icon="['fab', 'instagram']" class="h-8 w-8" /></a>
-              <a href="#" class="text-gray-400 hover:text-white"><span class="sr-only">LINE</span><font-awesome-icon :icon="['fab', 'line']" class="h-8 w-8" /></a>
-            </div>
-          </div>
-
-          <!-- Quick Links & Contact Info -->
-          <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div>
-              <h3 class="font-semibold text-lg tracking-wider">快速連結</h3>
-              <ul class="mt-4 space-y-4">
-                <li><NuxtLink :to="{ name: 'user-landing' }" class="hover:text-gray-300">首頁</NuxtLink></li>
-                <li><NuxtLink :to="{ name: 'plan' }" class="hover:text-gray-300">企業方案</NuxtLink></li>
-              </ul>
-            </div>
-            <div>
-              <h3 class="font-semibold text-lg tracking-wider">聯絡資訊</h3>
-              <ul class="mt-4 space-y-4">
-                <li class="flex items-center">
-                  <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="w-5 mr-3" />
-                  <span>台北市大安區創意街123號</span>
-                </li>
-                <li class="flex items-center">
-                  <font-awesome-icon :icon="['fas', 'phone-alt']" class="w-5 mr-3" />
-                  <span>+886-2-9999-8888</span>
-                </li>
-                <li class="flex items-center">
-                  <font-awesome-icon :icon="['fas', 'envelope']" class="w-5 mr-3" />
-                  <span>hello@explorelab.com</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="mt-12 border-t border-gray-600 pt-8 text-center text-gray-400">
-          <p>&copy; 2025 TRYβ 版權所有.</p>
-        </div>
+    <main class="pt-[90px] bg-brand-gray transition-all duration-300 ease-in-out" :style="{ paddingTop: `${90 + menuHeight}px` }">
+      <div class="mx-auto max-w-container-users px-6 md:px-12 py-10">
+            <slot />
       </div>
-    </footer>
+    </main>
   </div>
 </template>
 
 <style scoped>
-/* You can add scoped styles here if needed */
+.filter-to-white {
+  filter: brightness(0) invert(1);
+}
+.pt-\[90px\] {
+  padding-top: 90px;
+}
 </style> 

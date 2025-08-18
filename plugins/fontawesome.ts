@@ -13,12 +13,14 @@ import {
   faPhoneAlt,
   faEnvelope,
   faBell,
-  faUserCircle,
-  faSignOutAlt,
   faListAlt,
   faHeart,
   faQuestionCircle,
-  faCalendarAlt
+  faCalendarAlt,
+  faClipboardList,
+  faStar,
+  faCircleUser,
+  faArrowRightFromBracket
 } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons'
 
@@ -37,13 +39,16 @@ library.add(
   faPhoneAlt,
   faEnvelope,
   faBell,
-  faUserCircle,
-  faSignOutAlt,
   faListAlt,
   faHeart,
   faQuestionCircle,
   faCalendarAlt,
-  faHeartRegular
+  // @ts-ignore
+  faHeartRegular,
+  faClipboardList,
+  faStar,
+  faCircleUser,
+  faArrowRightFromBracket
 )
 
 export default defineNuxtPlugin((nuxtApp) => {
