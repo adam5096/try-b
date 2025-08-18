@@ -4,6 +4,8 @@ import Step1 from '~/components/company/register/Step1.vue';
 import Step2 from '~/components/company/register/Step2.vue';
 import Step3 from '~/components/company/register/Step3.vue';
 
+const steps = [Step1, Step2, Step3];
+
 definePageMeta({
   layout: 'main',
 });
@@ -116,20 +118,18 @@ function previousStep() {
       </div>
 
       <!-- Step Components -->
-      <Step1
-        v-if="currentStep === 1"
-        :form-data="formData"
-        :industry-options="industryOptions"
-        :scale-options="scaleOptions"
-        @next="nextStep"
-      />
-      <Step2
-        v-if="currentStep === 2"
-        :form-data="formData"
-        @previous="previousStep"
-        @next="nextStep"
-      />
-      <Step3 v-if="currentStep === 3" />
+      <KeepAlive>
+        <Transition name="fade" mode="out-in">
+          <component
+            :is="steps[currentStep - 1]"
+            :form-data="formData"
+            :industry-options="industryOptions"
+            :scale-options="scaleOptions"
+            @next="currentStep++"
+            @prev="currentStep--"
+          />
+        </Transition>
+      </KeepAlive>
     </div>
   </div>
 </template>

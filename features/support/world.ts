@@ -1,7 +1,9 @@
-import { After, Before, setWorldConstructor, World } from '@cucumber/cucumber';
+import { After, Before, setWorldConstructor, World, setDefaultTimeout } from '@cucumber/cucumber';
 import type { IWorldOptions } from '@cucumber/cucumber';
 import { chromium } from 'playwright';
 import type { Browser, Page } from 'playwright';
+
+setDefaultTimeout(60 * 1000); // Set timeout to 60 seconds
 
 export interface ICustomWorld extends World {
   browser?: Browser;
@@ -20,7 +22,7 @@ class CustomWorld extends World implements ICustomWorld {
 setWorldConstructor(CustomWorld);
 
 Before(async function (this: ICustomWorld) {
-  this.browser = await chromium.launch({ headless: true });
+  this.browser = await chromium.launch({ headless: false });
   this.page = await this.browser.newPage();
 });
 

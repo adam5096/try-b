@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 禁用 Element Plus 表單驗證的錯誤訊息動畫 */
+.el-form-item__error {
+  transition: none !important;
+  animation: none !important;
+}
+
 @layer components {
   /* For Layer 2: Blue shape, fades from left to right (sharper fade) */
   .mask-gradient-to-right {

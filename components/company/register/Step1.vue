@@ -1,11 +1,79 @@
 <script setup lang="ts">
-defineProps<{
+import { reactive, ref, nextTick } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+
+const props = defineProps<{
   formData: any
   industryOptions: { value: string; label: string }[]
   scaleOptions: { value: string; label: string }[]
 }>()
 
 const emit = defineEmits(['next'])
+
+const formRef = ref<FormInstance>()
+
+const createRequiredValidator = (message: string) => {
+  return (rule: any, value: any, callback: (error?: Error) => void) => {
+    if (!value && value !== 0) {
+      callback(new Error(message))
+    } else {
+      callback()
+    }
+  }
+}
+
+const validateEmail = (rule: any, value: any, callback: (error?: Error) => void) => {
+  if (!value) {
+    callback(new Error('Email為必填'))
+    return
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(value)) {
+    callback(new Error('請輸入有效的 Email 格式'))
+  } else {
+    callback()
+  }
+}
+
+const validateConfirmPassword = (rule: any, value: any, callback: (error?: Error) => void) => {
+  if (value === '') {
+    callback(new Error('確認密碼為必填'))
+  } else if (value !== props.formData.password) {
+    callback(new Error('兩次輸入的密碼不一致'))
+  } else {
+    callback()
+  }
+}
+
+const rules = reactive<FormRules>({
+  name: [{ validator: createRequiredValidator('企業名稱為必填'), trigger: 'blur' }],
+  account: [{ validator: createRequiredValidator('帳號為必填'), trigger: 'blur' }],
+  email: [{ validator: validateEmail, trigger: ['blur', 'change'] }],
+  password: [{ validator: createRequiredValidator('密碼為必填'), trigger: 'blur' }],
+  confirmPassword: [{ validator: validateConfirmPassword, trigger: 'blur' }],
+  industry_id: [{ validator: createRequiredValidator('產業類別為必填'), trigger: 'change' }],
+  scale_id: [{ validator: createRequiredValidator('企業規模為必填'), trigger: 'change' }],
+  address: [{ validator: createRequiredValidator('企業地址為必填'), trigger: 'blur' }]
+})
+
+const handleNextClick = async () => {
+  const formEl = formRef.value
+  if (!formEl) return
+
+  const isValid = await formEl.validate().catch((fields) => {
+    console.log('Validation failed on fields:', fields)
+    return false
+  })
+
+  if (isValid) {
+    emit('next')
+  } else {
+    // 驗證失敗後，Element Plus 會更新其內部狀態以顯示錯誤。
+    // 這個更新不是同步的。我們必須使用 nextTick 等待下一個 DOM 更新週期，
+    // 以確保當 Playwright 進行下一步斷言時，錯誤訊息的 DOM 元素已經被渲染出來。
+    await nextTick()
+  }
+}
 </script>
 
 <template>
@@ -13,7 +81,9 @@ const emit = defineEmits(['next'])
     <h1 class="mb-6 text-2xl font-bold text-gray-800">企業資料</h1>
 
     <el-form
+      ref="formRef"
       :model="formData"
+      :rules="rules"
       label-position="top"
       class="grid grid-cols-2 gap-x-6"
       size="large"
@@ -118,11 +188,11 @@ const emit = defineEmits(['next'])
           type="primary"
           size="large"
           class="bg-gray-800 px-8 py-6 text-base font-bold text-white hover:bg-gray-700"
-          @click="emit('next')"
+          @click="handleNextClick"
         >
           下一步
         </el-button>
       </div>
     </el-form>
   </div>
-</template> 
+</template>
