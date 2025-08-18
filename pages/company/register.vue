@@ -15,39 +15,40 @@ const formData = reactive({
   account: '',
   email: '',
   password: '',
-  confirmPassword: '',
+  confirmPassword: '', // Frontend only, won't be sent to API
   name: '',
-  taxId: '',
-  industry: '',
-  scale: '',
+  tax_id_num: '',
+  industry_id: null as number | null,
+  scale_id: null as number | null,
   address: '',
   website: '',
-  description: '',
-  logo: null,
-  cover: null,
+  intro: '',
+  CompanyImg: [] as { type: string; img_path: string }[],
 
   // Step 2 data
-  contactName: '',
-  contactTitle: '',
-  contactEmail: '',
-  contactPhone: '',
+  CompanyContact: {
+    name: '',
+    job_title: '',
+    email: '',
+    phone: ''
+  }
 });
 
 const industryOptions = [
-  { value: 'information_technology', label: '資訊科技' },
-  { value: 'finance_insurance', label: '金融保險' },
-  { value: 'education', label: '教育' },
-  { value: 'healthcare', label: '醫療保健' },
-  { value: 'retail', label: '零售' },
-  { value: 'manufacturing', label: '製造' },
+  { value: 1, label: '資訊科技' },
+  { value: 2, label: '金融保險' },
+  { value: 3, label: '教育' },
+  { value: 4, label: '醫療保健' },
+  { value: 5, label: '零售' },
+  { value: 6, label: '製造' }
 ];
 
 const scaleOptions = [
-  { value: '1-10', label: '1-10人' },
-  { value: '11-50', label: '11-50人' },
-  { value: '51-200', label: '51-200人' },
-  { value: '201-500', label: '201-500人' },
-  { value: '501+', label: '501人以上' },
+  { value: 1, label: '1-10人' },
+  { value: 2, label: '11-50人' },
+  { value: 3, label: '51-200人' },
+  { value: 4, label: '201-500人' },
+  { value: 5, label: '501人以上' }
 ];
 
 function nextStep() {

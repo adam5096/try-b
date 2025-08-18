@@ -43,12 +43,12 @@ const emit = defineEmits(['next'])
         <el-input v-model="formData.name" placeholder="請輸入企業的名稱" />
       </el-form-item>
 
-      <el-form-item label="統一編號" prop="taxId" class="col-span-2 md:col-span-1">
-        <el-input v-model="formData.taxId" placeholder="請輸入有效的統一編號（個人工作室可不填）" />
+      <el-form-item label="統一編號" prop="tax_id_num" class="col-span-2 md:col-span-1">
+        <el-input v-model="formData.tax_id_num" placeholder="請輸入有效的統一編號（個人工作室可不填）" />
       </el-form-item>
 
-      <el-form-item label="產業類別 *" prop="industry" class="col-span-2 md:col-span-1">
-        <el-select v-model="formData.industry" placeholder="請選擇企業的產業類別" class="w-full">
+      <el-form-item label="產業類別 *" prop="industry_id" class="col-span-2 md:col-span-1">
+        <el-select v-model="formData.industry_id" placeholder="請選擇企業的產業類別" class="w-full">
           <el-option
             v-for="item in industryOptions"
             :key="item.value"
@@ -58,8 +58,8 @@ const emit = defineEmits(['next'])
         </el-select>
       </el-form-item>
 
-      <el-form-item label="企業規模 *" prop="scale" class="col-span-2 md:col-span-1">
-        <el-select v-model="formData.scale" placeholder="請選擇企業的規模" class="w-full">
+      <el-form-item label="企業規模 *" prop="scale_id" class="col-span-2 md:col-span-1">
+        <el-select v-model="formData.scale_id" placeholder="請選擇企業的規模" class="w-full">
           <el-option
             v-for="item in scaleOptions"
             :key="item.value"
@@ -77,9 +77,9 @@ const emit = defineEmits(['next'])
         <el-input v-model="formData.website" placeholder="請輸入有效的網址" />
       </el-form-item>
 
-      <el-form-item label="企業簡介" prop="description" class="col-span-2">
+      <el-form-item label="企業簡介" prop="intro" class="col-span-2">
         <el-input
-          v-model="formData.description"
+          v-model="formData.intro"
           type="textarea"
           :rows="4"
           placeholder="請輸入企業完整的介紹與描述"
