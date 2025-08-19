@@ -793,3 +793,30 @@
 - **UX 問題修復 (UX Bug Fix)**:
   - 修復了在 `Step2.vue` 中，點擊「上一步」按鈕會意外觸發表單驗證的 bug。
   - 透過為 `<el-button>` 新增 `native-type="button"` 屬性，明確阻止了其觸發表單的預設提交行為，確保了使用者體驗的流暢性。
+
+### MGT: 狀態管理與 API 架構基礎
+- **導入 Pinia 狀態管理**:
+  - 選用 `@pinia/nuxt` 作為全域狀態管理工具，並整合 `pinia-plugin-persistedstate` 套件以實現數據持久化。
+  - 解決了因套件版本迭代造成的型別衝突與 API 不相容問題，確保狀態能被正確保存。
+  - 建立 `stores/companyRegister.ts` 作為 Pinia store 範例，並依循專案風格將其重構為 Composition API 寫法。
+- **建立集中化 API 管理機制**:
+  - 新增 `composables/useApiFetch.ts`，封裝原生 `useFetch` 並統一管理 API baseURL，簡化請求寫法並提升可維護性。
+  - 於 `nuxt.config.ts` 中設定 `runtimeConfig`，提供 API 路徑的環境變數。
+- **規劃共用型別存放區**:
+  - 建立 `types` 資料夾，用於集中管理 TypeScript 型別定義 (如：`CompanyRegisterForm`)，確保資料結構的一致性並提升型別安全。
+
+  ### FEAT: 企業端安全驗證與登出流程
+- **採用 HttpOnly Cookie 儲存 JWT**: 為配合後端 ASP.NET + JWT 的架構，決定將 JWT 儲存於 `HttpOnly` Cookie 中，以有效防禦 XSS 攻擊。
+- **整合 Pinia 與原生 `useCookie`**:
+  - 移除先前造成多重 SSR 與型別問題的 `pinia-plugin-persistedstate` 套件。
+  - 改用 Nuxt 3 內建的 `useCookie` composable 直接在 `useAuthStore` 中實現狀態持久化，徹底解決 SSR (`window is not defined`) 與型別推斷的錯誤。
+- **建立二次確認登出流程**: 在側邊欄登出功能中，導入 `ElMessageBox` 來實現確認對話框，有效防止使用者誤觸。
+- **採用 `navigateTo` 進行程式化導航**: 將登入成功後的頁面跳轉，從 `router.push` 重構為 Nuxt 3 推薦的 `navigateTo` 函式，確保導航的可靠性。
+- **後端 API 模擬**: 建立了 `/api/company/login`、`/api/company/user`、`/api/company/logout` 三個 Nuxt Server API 端點來模擬完整的後端驗證流程。
+
+### FEAT: 全域路由守衛與安全強化
+- **建立全域路由中介軟體**: 實作 `middleware/company-auth.global.ts`，在每次路由變更時自動攔截並驗證使用者狀態，確保任何未授權的存取都會被即時導向至登入頁面。
+- **強化重導向安全性**: 為了解決「開放重導向 (Open Redirect)」資安疑慮，在登入頁面新增白名單驗證，確保系統只會重導向至以 `/company/` 開頭的內部安全路徑。
+- **優化使用者體驗**:
+  - 在中介軟體中附加 `?redirect=` 參數，讓使用者登入後能返回原先想訪問的頁面。
+  - 修正了已登入使用者訪問公開頁面（如註冊頁）時造成的延遲問題，現在會直接將其導向公司儀表板。
