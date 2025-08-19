@@ -51,8 +51,8 @@ const rules = reactive<FormRules>({
   email: [{ validator: validateEmail, trigger: ['blur', 'change'] }],
   password: [{ validator: createRequiredValidator('密碼為必填'), trigger: 'blur' }],
   confirmPassword: [{ validator: validateConfirmPassword, trigger: 'blur' }],
-  // industry_id: [{ validator: createRequiredValidator('產業類別為必填'), trigger: 'change' }],
-  // scale_id: [{ validator: createRequiredValidator('企業規模為必填'), trigger: 'change' }],
+  industry_id: [{ validator: createRequiredValidator('產業類別為必填'), trigger: 'change' }],
+  scale_id: [{ validator: createRequiredValidator('企業規模為必填'), trigger: 'change' }],
   address: [{ validator: createRequiredValidator('企業地址為必填'), trigger: 'blur' }]
 })
 
