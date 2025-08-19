@@ -1,9 +1,42 @@
 <script setup lang="ts">
+import { reactive, ref } from 'vue'
+import type { FormInstance, FormRules } from 'element-plus'
+
 defineProps<{
   formData: any
 }>()
 
 const emit = defineEmits(['next', 'previous'])
+
+const formRef = ref<FormInstance>()
+
+const createRequiredValidator = (message: string) => {
+  return (rule: any, value: any, callback: (error?: Error) => void) => {
+    if (!value) {
+      callback(new Error(message))
+    } else {
+      callback()
+    }
+  }
+}
+
+const rules = reactive<FormRules>({
+  'CompanyContact.name': [{ validator: createRequiredValidator('聯絡人姓名為必填'), trigger: 'blur' }],
+  'CompanyContact.job_title': [{ validator: createRequiredValidator('職稱為必填'), trigger: 'blur' }],
+  'CompanyContact.email': [{ validator: createRequiredValidator('電子郵件為必填'), trigger: 'blur' }],
+  'CompanyContact.phone': [{ validator: createRequiredValidator('聯絡電話為必填'), trigger: 'blur' }]
+})
+
+const handleNextClick = async () => {
+  const formEl = formRef.value
+  if (!formEl) return
+  try {
+    await formEl.validate()
+    emit('next')
+  } catch (fields) {
+    console.log('Validation failed on fields:', fields)
+  }
+}
 </script>
 
 <template>
@@ -11,7 +44,9 @@ const emit = defineEmits(['next', 'previous'])
     <h1 class="mb-6 text-2xl font-bold text-gray-800">聯絡人資料</h1>
 
     <el-form
+      ref="formRef"
       :model="formData"
+      :rules="rules"
       label-position="top"
       class="grid grid-cols-2 gap-x-6"
       size="large"
@@ -40,7 +75,7 @@ const emit = defineEmits(['next', 'previous'])
           type="primary"
           size="large"
           class="bg-gray-800 px-8 py-6 text-base font-bold text-white hover:bg-gray-700"
-          @click="emit('next')"
+          @click="handleNextClick"
         >
           註冊
         </el-button>

@@ -125,8 +125,8 @@ function previousStep() {
             :form-data="formData"
             :industry-options="industryOptions"
             :scale-options="scaleOptions"
-            @next="currentStep++"
-            @prev="currentStep--"
+            @next="nextStep"
+            @prev="previousStep"
           />
         </Transition>
       </KeepAlive>
