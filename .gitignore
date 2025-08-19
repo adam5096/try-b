@@ -25,3 +25,7 @@ logs
 
 # VS Code specific
 .vscode/
+
+# Test outputs
+/test-results/
+/playwright-report/

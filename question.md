@@ -584,3 +584,61 @@ Vite 和 Vue 之間是**上下游的接力關係**，而非共同開會。
 ### 3. 解決方案：消除衝突來源
 - **移除衝突檔案**：最直接的解決方案是刪除那個造成衝突的、多餘的舊檔案 `pages/company/programs/[programId]/applicants.vue`。
 - **強制重置路由表**：刪除檔案後，**必須完全重啟 Nuxt 開發伺服器** (`Ctrl+C` 後再 `pnpm run dev`)。這個步驟至關重要，它會強制 Nuxt 重新掃描 `pages` 資料夾，並在一個乾淨的狀態下建立一張全新的、無衝突的路由地圖，從而徹底解決問題。
+
+# BDD 測試頑固失敗偵錯：從時序到 DOM 結構的完整覆盤 (2025-08-06)
+
+### 1. 問題現象
+- 在為「企業註冊」功能的第一步撰寫 BDD 測試時，其中一個核心場景「未填寫所有必填欄位無法進入下一步」持續失敗。
+- Playwright 測試框架始終無法找到 Element Plus 表單驗證失敗後，應該要出現的錯誤訊息文字（如「帳號為必填」）。
+- 終端機反覆報錯 `Error: Timed out 5000ms waiting for expect(locator).toBeVisible()` 或 `Received: <element(s) not found>`。
+- 另一個關鍵現象是：在偵錯過程中，Playwright Inspector 偵錯視窗會頻繁地「一閃即逝」或在操作過程中自動關閉，使得互動式偵錯極為困難。
+
+### 2. 偵錯歷程：一場曲折的探索
+
+#### 第一階段：懷疑時序問題 (Race Condition)
+- **初步假設**: Playwright 執行速度太快，在 Vue/Element Plus 非同步更新 DOM、渲染出錯誤訊息之前，斷言就已經執行了。
+- **無效的嘗試**:
+  1.  **增加 `waitForTimeout`**: 在點擊按鈕後加入固定的 `page.waitForTimeout(500)`。**結果**：失敗。證明問題比單純的延遲更複雜。
+  2.  **使用 `waitFor` API**: 改用 `errorLocator.waitFor({ state: 'visible' })`。**結果**：失敗。Playwright 在等待時間內依然找不到元素。
+  3.  **放寬斷言標準**: 將 `toBeVisible()` 改為 `toHaveCount(1)`，只檢查元素是否存在於 DOM 中，不關心其可見性。**結果**：失敗。
+  4.  **在 Vue 元件中加入 `nextTick`**: 在 `Step1.vue` 的驗證失敗邏輯中，加入 `await nextTick()`，這是 Vue 處理非同步更新的標準方法。**結果**：當時因其他問題干擾，此方法未能立即見效，但事後證明這是**正確方向**的一部分。
+
+#### 第二階段：懷疑定位器 (Locator) 策略錯誤
+- **假設**: 用來選取錯誤訊息的 CSS 選擇器 (`.el-form-item.is-error .el-form-item__error`) 寫錯了。
+- **無效的嘗試**:
+  1.  **簡化選擇器**: 在 Inspector 中嘗試 `page.locator('.el-form-item__error')` 和 `page.locator('.el-form-item.is-error')`。**結果**：Inspector 中無法穩定驗證，因為視窗總是自動關閉。
+  2.  **複雜化選擇器**: 嘗試先用 Label 文字找到 `el-form-item` 容器，再從內部尋找錯誤訊息。**結果**：失敗，且讓程式碼更複雜。
+  3.  **使用 `:has-text()`**: 嘗試使用 `page.locator('.el-form-item__error:has-text("帳號為必填")')`。**結果**：依然失敗。
+
+#### 第三階段：釜底抽薪，懷疑動畫問題
+- **假設**: Element Plus 的錯誤訊息帶有 CSS 過渡動畫，在動畫期間，元素的尺寸或透明度為 0，導致 `toBeVisible()` 判斷失敗。
+- **有效的嘗試**:
+  1.  **透過 CSS 全域覆蓋禁用動畫**: 在 `assets/css/main.css` 中加入以下規則，強制禁用動畫：
+      ```css
+      .el-form-item__error {
+        transition: none !important;
+        animation: none !important;
+      }
+      ```
+  2.  **結果**：雖然這是個好主意，但在當時，因為**更根本的問題**尚未解決，所以此方法也未能成功。
+
+### 3. 撥雲見日：發現真正的根本原因
+
+在所有嘗試都失敗後，一次偶然的終端機輸出暴露了真正的元兇：
+```
+? And 我應該仍然停留在"企業資料"的步驟
+    Undefined. Implement with the following snippet:
+```
+- **根本原因**: 在反覆修改 `features/step_definitions/company_register_steps.ts` 檔案的過程中，`Then('我應該仍然停留在"企業資料"的步驟', ...)` 這個步驟的**實作程式碼被意外地刪除或破壞了**。
+- **連鎖反應**:
+  1.  Cucumber 在執行到這個「未定義」的步驟時，測試流程被中斷。
+  2.  測試流程的異常中斷，可能導致 Nuxt 開發伺服器 (`pnpm dev`) 處於不穩定狀態，甚至崩潰 (`ECONNRESET` 錯誤)。
+  3.  當伺服器崩潰時，Playwright 的連線中斷，導致 Inspector 視窗被強制關閉。
+  4.  這就完美解釋了為什麼 Inspector 總是「一閃即逝」，以及為什麼所有針對「時序」和「定位器」的修正都徒勞無功——因為測試流程本身就是殘缺的。
+
+### 4. 最終停留位置與解決方案 (截至 2025-08-06)
+- **狀態**: 我們已經識別出所有問題，並準備進行最後的、全面的修正。
+- **最終解決方案**:
+  1.  **手動覆蓋 `features/step_definitions/company_register_steps.ts`**: 由於工具自動修改不可靠，我們將手動將完整的、正確的程式碼（包含被遺漏的步驟）覆蓋到此檔案中。
+  2.  **手動覆蓋 `components/company/register/Step1.vue`**: 同樣手動確保 `handleNextClick` 函式中的 `await nextTick()` 存在，以從根本上保證 Vue 的 DOM 更新時序。
+- **後續步驟**: 在手動完成檔案覆蓋後，再次執行 `pnpm test:bdd`，預期所有測試都將通過。
