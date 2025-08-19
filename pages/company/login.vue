@@ -17,11 +17,21 @@ async function handleLogin() {
   errorMessage.value = '';
   try {
     await authStore.login(loginData.value);
-    // router.push('/company');
-    await navigateTo('/company');
+    
+    const route = useRoute();
+    const redirectPath = route.query.redirect as string;
+
+    // Security enhancement: Only redirect to internal company pages.
+    // Otherwise, default to the company index page.
+    if (redirectPath && redirectPath.startsWith('/company/')) {
+      await navigateTo(redirectPath);
+    } else {
+      await navigateTo('/company');
+    }
+
   } catch (error: any) {
-    errorMessage.value = error.data?.message || '登入失敗，請稍後再試。';
-    console.error(error);
+    errorMessage.value = '登入失敗，請檢查您的帳號和密碼。';
+    console.error('Login failed:', error);
   } finally {
     isLoading.value = false;
   }
