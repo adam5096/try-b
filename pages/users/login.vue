@@ -1,12 +1,43 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import { useUserAuthStore } from '~/stores/user/useAuthStore';
+import type { UserLoginData } from '~/types/user';
+
 definePageMeta({
   name: 'user-login',
   layout: 'user'
 })
 
-function onSubmit() {
-  // 模擬登入流程後導向使用者首頁
-  navigateTo({ name: 'user-landing' });
+const authStore = useUserAuthStore();
+const route = useRoute();
+const router = useRouter();
+
+const loginData = ref<Omit<UserLoginData, 'password'>>({
+  account: '',
+});
+const password = ref('');
+const isLoading = ref(false);
+const errorMessage = ref('');
+
+async function handleLogin() {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    const loginPayload: UserLoginData = {
+      ...loginData.value,
+      password: password.value,
+    };
+    await authStore.login(loginPayload);
+
+    // Always redirect to the user landing page after successful login.
+    await navigateTo({ name: 'user-landing' });
+    
+  } catch (error: any) {
+    errorMessage.value = '登入失敗，請檢查您的帳號和密碼。';
+    console.error('Login failed:', error);
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 
@@ -24,24 +55,23 @@ function onSubmit() {
       </div>
       <form
         class="mt-8 space-y-6"
-        action="#"
-        method="POST"
-        @submit.prevent="onSubmit"
+        @submit.prevent="handleLogin"
       >
         <div class="rounded-md  -space-y-px">
           <div>
             <label
-              for="email-address"
+              for="account"
               class="block text-sm font-medium text-gray-700"
-            >電子郵件</label>
+            >帳號</label>
             <input
-              id="email-address"
-              name="email"
-              type="email"
-              autocomplete="email"
+              id="account"
+              v-model="loginData.account"
+              name="account"
+              type="text"
+              autocomplete="username"
               required
               class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"
-              placeholder="請輸入您的電子郵件"
+              placeholder="請輸入您的帳號"
             >
           </div>
           <div class="pt-4">
@@ -56,6 +86,7 @@ function onSubmit() {
             </div>
             <input
               id="password"
+              v-model="password"
               name="password"
               type="password"
               autocomplete="current-password"
@@ -64,6 +95,10 @@ function onSubmit() {
               placeholder="請輸入您的密碼"
             >
           </div>
+        </div>
+
+        <div v-if="errorMessage" class="rounded-md bg-red-50 p-4">
+          <p class="text-sm text-red-700">{{ errorMessage }}</p>
         </div>
 
         <div class="flex items-center justify-between">
@@ -84,9 +119,11 @@ function onSubmit() {
         <div>
           <button
             type="submit"
-            class="group relative flex w-full justify-center rounded-md border border-transparent bg-gray-400 py-2 px-4 text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            :disabled="isLoading"
+            class="group relative flex w-full justify-center rounded-md border border-transparent bg-gray-400 py-2 px-4 text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-300"
           >
-            登入
+            <span v-if="isLoading">登入中...</span>
+            <span v-else>登入</span>
           </button>
         </div>
       </form>

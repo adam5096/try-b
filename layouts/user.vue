@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ElMessageBox } from 'element-plus';
+import { useUserAuthStore } from '~/stores/user/useAuthStore';
 
 // --- Header State (Moved from pages/index.vue) ---
 const isMenuOpen = ref(false);
@@ -53,8 +55,28 @@ const userLinks = ref([
   }
 ]);
 
-function logout() {
-  navigateTo({ name: 'user-login' });
+const authStore = useUserAuthStore();
+const router = useRouter();
+
+async function handleLogout() {
+  try {
+    await ElMessageBox.confirm(
+      '您確定要登出嗎？',
+      '確認登出',
+      {
+        confirmButtonText: '確定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    );
+    await authStore.logout();
+    await router.push({ name: 'user-login' });
+  } catch (error) {
+    // Suppress error when user clicks "cancel"
+    if (error !== 'cancel') {
+      console.error('Logout failed:', error);
+    }
+  }
 }
 
 const handleResize = () => {
@@ -104,34 +126,44 @@ onBeforeUnmount(() => {
               首頁
             </NuxtLink>
 
-            <el-badge :value="3" :max="9" class="item">
-              <font-awesome-icon :icon="['fas', 'bell']" class="w-6 h-6 text-gray-600 cursor-pointer" />
-            </el-badge>
-            
-            <el-dropdown>
-              <span class="flex items-center gap-2 cursor-pointer">
-                <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-                  <font-awesome-icon :icon="['fas', 'circle-user']" class="w-6 h-6 text-gray-600" />
-                </div>
-                <span>林威辰</span>
-              </span>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item v-for="link in userLinks" :key="link.name">
-                    <NuxtLink :to="link.route" class="flex items-center gap-3">
-                      <font-awesome-icon :icon="link.icon" class="w-4 h-4" />
-                      <span>{{ link.name }}</span>
-                    </NuxtLink>
-                  </el-dropdown-item>
-                  <el-dropdown-item divided @click="logout">
-                    <div class="flex items-center gap-3">
-                      <font-awesome-icon :icon="['fas', 'arrow-right-from-bracket']" class="w-4 h-4" />
-                      <span>登出</span>
-                    </div>
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
+            <!-- Logged in state -->
+            <template v-if="authStore.isLoggedIn">
+              <el-badge :value="3" :max="9" class="item">
+                <font-awesome-icon :icon="['fas', 'bell']" class="w-6 h-6 text-gray-600 cursor-pointer" />
+              </el-badge>
+              
+              <el-dropdown>
+                <span class="flex items-center gap-2 cursor-pointer">
+                  <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                    <font-awesome-icon :icon="['fas', 'circle-user']" class="w-6 h-6 text-gray-600" />
+                  </div>
+                  <span>{{ authStore.user?.name }}</span>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item v-for="link in userLinks" :key="link.name">
+                      <NuxtLink :to="link.route" class="flex items-center gap-3">
+                        <font-awesome-icon :icon="link.icon" class="w-4 h-4" />
+                        <span>{{ link.name }}</span>
+                      </NuxtLink>
+                    </el-dropdown-item>
+                    <el-dropdown-item divided @click="handleLogout">
+                      <div class="flex items-center gap-3">
+                        <font-awesome-icon :icon="['fas', 'arrow-right-from-bracket']" class="w-4 h-4" />
+                        <span>登出</span>
+                      </div>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+
+            <!-- Guest state -->
+            <template v-else>
+               <NuxtLink :to="{ name: 'user-login' }">
+                <el-button >登入 / 註冊</el-button>
+              </NuxtLink>
+            </template>
           </div>
 
           <!-- Mobile Menu Button -->
@@ -156,7 +188,7 @@ onBeforeUnmount(() => {
             <!-- Navigation Links -->
             <div class="mt-16">
               <nav>
-                <ul>
+                <ul v-if="authStore.isLoggedIn">
                   <li v-for="link in userLinks" :key="link.name" class="mb-2">
                     <NuxtLink :to="link.route" @click="toggleMenu" class="flex items-center gap-3 px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 transition-colors text-lg" active-class="bg-blue-100 text-blue-600 font-semibold">
                       <font-awesome-icon :icon="link.icon" class="w-5 h-5" />
@@ -164,10 +196,18 @@ onBeforeUnmount(() => {
                     </NuxtLink>
                   </li>
                   <li>
-                    <button @click="logout" class="w-full flex items-center gap-3 px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 transition-colors text-lg">
+                    <button @click="handleLogout" class="w-full flex items-center gap-3 px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 transition-colors text-lg">
                       <font-awesome-icon :icon="['fas', 'arrow-right-from-bracket']" class="w-5 h-5" />
                       <span>登出</span>
                     </button>
+                  </li>
+                </ul>
+                 <ul v-else>
+                  <li>
+                    <NuxtLink :to="{ name: 'user-login' }" @click="toggleMenu" class="flex items-center gap-3 px-4 py-3 rounded-md text-gray-700 hover:bg-gray-100 transition-colors text-lg">
+                      <font-awesome-icon :icon="['fas', 'arrow-right-to-bracket']" class="w-5 h-5" />
+                      <span>登入 / 註冊</span>
+                    </NuxtLink>
                   </li>
                 </ul>
               </nav>
