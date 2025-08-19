@@ -793,3 +793,14 @@
 - **UX 問題修復 (UX Bug Fix)**:
   - 修復了在 `Step2.vue` 中，點擊「上一步」按鈕會意外觸發表單驗證的 bug。
   - 透過為 `<el-button>` 新增 `native-type="button"` 屬性，明確阻止了其觸發表單的預設提交行為，確保了使用者體驗的流暢性。
+
+### MGT: 狀態管理與 API 架構基礎
+- **導入 Pinia 狀態管理**:
+  - 選用 `@pinia/nuxt` 作為全域狀態管理工具，並整合 `pinia-plugin-persistedstate` 套件以實現數據持久化。
+  - 解決了因套件版本迭代造成的型別衝突與 API 不相容問題，確保狀態能被正確保存。
+  - 建立 `stores/companyRegister.ts` 作為 Pinia store 範例，並依循專案風格將其重構為 Composition API 寫法。
+- **建立集中化 API 管理機制**:
+  - 新增 `composables/useApiFetch.ts`，封裝原生 `useFetch` 並統一管理 API baseURL，簡化請求寫法並提升可維護性。
+  - 於 `nuxt.config.ts` 中設定 `runtimeConfig`，提供 API 路徑的環境變數。
+- **規劃共用型別存放區**:
+  - 建立 `types` 資料夾，用於集中管理 TypeScript 型別定義 (如：`CompanyRegisterForm`)，確保資料結構的一致性並提升型別安全。
