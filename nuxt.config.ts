@@ -40,5 +40,10 @@ export default defineNuxtConfig({
   // build: {
   //   transpile: ['dayjs', 'dayjs-nuxt'],
   // },
-  
+
+  routeRules: {
+    '/api/**': {
+      proxy: 'https://trybeta.rocket-coding.com/api/**'
+    }
+  },
 })

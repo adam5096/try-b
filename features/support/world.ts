@@ -1,5 +1,5 @@
-import { After, Before, setWorldConstructor, World, setDefaultTimeout } from '@cucumber/cucumber';
-import type { IWorldOptions } from '@cucumber/cucumber';
+import { After, Before, setWorldConstructor, World, setDefaultTimeout, AfterStep } from '@cucumber/cucumber';
+import type { IWorldOptions, ITestCaseHookParameter } from '@cucumber/cucumber';
 import { chromium } from 'playwright';
 import type { Browser, Page } from 'playwright';
 
@@ -40,4 +40,19 @@ Before(async function (this: ICustomWorld) {
 
 After(async function (this: ICustomWorld) {
   await this.browser?.close();
+});
+
+// 新增：在每個步驟執行後運行的鉤子
+AfterStep(async function (this: ICustomWorld, { result }: ITestCaseHookParameter) {
+  // 只有在步驟失敗時才執行
+  if (result?.status === 'FAILED') {
+    const page = this.page;
+    if (page) {
+      // 根據時間戳建立一個獨一無二的檔案名稱
+      const screenshotName = `screenshot-${Date.now()}.png`;
+      // 儲存截圖到專案根目錄
+      await page.screenshot({ path: screenshotName, fullPage: true });
+      this.attach(`Screenshot taken on failure: ${screenshotName}`);
+    }
+  }
 });
