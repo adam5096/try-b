@@ -10,7 +10,13 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     ['@element-plus/nuxt', { idInjection: false }],
     '@nuxt/image',
+    '@pinia/nuxt',
   ],
+  runtimeConfig: {
+    public: {
+      apiBase: '/api',
+    },
+  },
   fonts: {
     families: [
       { name: 'Inter', provider: 'google', weights: ['400', '700'] },
@@ -45,5 +51,9 @@ export default defineNuxtConfig({
     '/api/**': {
       proxy: 'https://trybeta.rocket-coding.com/api/**'
     }
+  },
+
+  imports: {
+    dirs: ['stores/**'],
   },
 })
