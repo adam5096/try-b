@@ -9,6 +9,7 @@ defineProps<{
 const emit = defineEmits(['next', 'previous'])
 
 const formRef = ref<FormInstance>()
+const isLoading = ref(false)
 
 const createRequiredValidator = (message: string) => {
   return (rule: any, value: any, callback: (error?: Error) => void) => {
@@ -30,11 +31,16 @@ const rules = reactive<FormRules>({
 const handleNextClick = async () => {
   const formEl = formRef.value
   if (!formEl) return
+  isLoading.value = true
   try {
     await formEl.validate()
+    // 模擬 API 請求延遲
+    await new Promise(resolve => setTimeout(resolve, 1000))
     emit('next')
   } catch (fields) {
     console.log('Validation failed on fields:', fields)
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
@@ -75,6 +81,7 @@ const handleNextClick = async () => {
           type="primary"
           size="large"
           class="bg-gray-800 px-8 py-6 text-base font-bold text-white hover:bg-gray-700"
+          :loading="isLoading"
           @click="handleNextClick"
         >
           註冊
