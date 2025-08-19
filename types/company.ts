@@ -10,3 +10,15 @@ export interface CompanyRegisterForm {
   companyCat: string;
   companyIntro: string;
 }
+
+export interface CompanyUser {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+}
+
+export interface LoginData {
+  account: string;
+  psd: string;
+}

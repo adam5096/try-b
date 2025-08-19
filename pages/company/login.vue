@@ -1,8 +1,30 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import type { LoginData } from '~/types/company';
+
+const authStore = useCompanyAuthStore();
 const router = useRouter();
 
-function handleLogin() {
-  router.push('/company');
+const loginData = ref<LoginData>({
+  account: '',
+  psd: '',
+});
+const isLoading = ref(false);
+const errorMessage = ref('');
+
+async function handleLogin() {
+  isLoading.value = true;
+  errorMessage.value = '';
+  try {
+    await authStore.login(loginData.value);
+    // router.push('/company');
+    await navigateTo('/company');
+  } catch (error: any) {
+    errorMessage.value = error.data?.message || '登入失敗，請稍後再試。';
+    console.error(error);
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 definePageMeta({
@@ -45,14 +67,16 @@ definePageMeta({
 
         <form @submit.prevent="handleLogin">
           <div class="mb-4">
-            <label for="email" class="mb-1 block text-sm font-medium text-gray-700">
+            <label for="account" class="mb-1 block text-sm font-medium text-gray-700">
               帳號 / 電子郵件
             </label>
             <input
-              id="email"
-              type="email"
+              id="account"
+              v-model="loginData.account"
+              type="text"
               placeholder="請輸入您的帳號或電子郵件"
               class="w-full rounded-md border border-gray-300 p-3 focus:border-primary-blue focus:outline-none focus:ring-1 focus:ring-primary-blue"
+              required
             />
           </div>
 
@@ -67,10 +91,16 @@ definePageMeta({
             </div>
             <input
               id="password"
+              v-model="loginData.psd"
               type="password"
               placeholder="請輸入您的密碼"
               class="w-full rounded-md border border-gray-300 p-3 focus:border-primary-blue focus:outline-none focus:ring-1 focus:ring-primary-blue"
+              required
             />
+          </div>
+
+          <div v-if="errorMessage" class="mb-4 rounded-md bg-red-50 p-4 text-sm text-red-700">
+            {{ errorMessage }}
           </div>
 
           <div class="mb-6 flex items-center">
@@ -86,9 +116,10 @@ definePageMeta({
 
           <button
             type="submit"
-            class="w-full rounded-md bg-gray-800 py-3 font-bold text-white transition hover:bg-gray-700"
+            class="w-full rounded-md bg-gray-800 py-3 font-bold text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+            :disabled="isLoading"
           >
-            登入
+            {{ isLoading ? '登入中...' : '登入' }}
           </button>
 
           <div class="mt-6 text-center">
