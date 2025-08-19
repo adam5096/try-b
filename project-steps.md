@@ -804,3 +804,12 @@
   - 於 `nuxt.config.ts` 中設定 `runtimeConfig`，提供 API 路徑的環境變數。
 - **規劃共用型別存放區**:
   - 建立 `types` 資料夾，用於集中管理 TypeScript 型別定義 (如：`CompanyRegisterForm`)，確保資料結構的一致性並提升型別安全。
+
+  ### FEAT: 企業端安全驗證與登出流程
+- **採用 HttpOnly Cookie 儲存 JWT**: 為配合後端 ASP.NET + JWT 的架構，決定將 JWT 儲存於 `HttpOnly` Cookie 中，以有效防禦 XSS 攻擊。
+- **整合 Pinia 與原生 `useCookie`**:
+  - 移除先前造成多重 SSR 與型別問題的 `pinia-plugin-persistedstate` 套件。
+  - 改用 Nuxt 3 內建的 `useCookie` composable 直接在 `useAuthStore` 中實現狀態持久化，徹底解決 SSR (`window is not defined`) 與型別推斷的錯誤。
+- **建立二次確認登出流程**: 在側邊欄登出功能中，導入 `ElMessageBox` 來實現確認對話框，有效防止使用者誤觸。
+- **採用 `navigateTo` 進行程式化導航**: 將登入成功後的頁面跳轉，從 `router.push` 重構為 Nuxt 3 推薦的 `navigateTo` 函式，確保導航的可靠性。
+- **後端 API 模擬**: 建立了 `/api/company/login`、`/api/company/user`、`/api/company/logout` 三個 Nuxt Server API 端點來模擬完整的後端驗證流程。
