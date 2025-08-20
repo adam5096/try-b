@@ -4,12 +4,14 @@ import type { CompanyUser, LoginData } from '~/types/company';
 
 export const useCompanyAuthStore = defineStore('companyAuth', () => {
   const user = useCookie<CompanyUser | null>('companyAuthUser', { default: () => null });
+  const { $api } = useNuxtApp();
+  const api = $api as typeof $fetch;
 
   const isLoggedIn = computed(() => !!user.value);
 
   async function fetchUser() {
     try {
-      const data = await $fetch<CompanyUser>('/api/company/user');
+      const data = await api<CompanyUser>('/company/user');
       user.value = data;
     } catch (error) {
       user.value = null;
@@ -17,7 +19,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
   }
 
   async function login(loginData: LoginData) {
-    await $fetch('/api/company/login', {
+    await api('/company/login', {
       method: 'POST',
       body: loginData,
     });
@@ -25,7 +27,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
   }
 
   async function logout() {
-    await $fetch('/api/company/logout', {
+    await api('/company/logout', {
       method: 'POST',
     });
     user.value = null;

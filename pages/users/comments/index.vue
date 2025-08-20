@@ -4,6 +4,7 @@ import { ref, computed } from 'vue';
 definePageMeta({
   name: 'user-comments',
   layout: 'user',
+  middleware: 'user-auth',
 });
 
 // 暫時硬編寫，後續由 API 帶入

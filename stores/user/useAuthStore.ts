@@ -4,12 +4,14 @@ import type { User, UserLoginData, UserRegisterData } from '~/types/user';
 
 export const useUserAuthStore = defineStore('userAuth', () => {
   const user = useCookie<User | null>('userAuthUser', { default: () => null });
+  const { $api } = useNuxtApp();
+  const api = $api as typeof $fetch;
 
   const isLoggedIn = computed(() => !!user.value);
 
   async function fetchUser() {
     try {
-      const data = await $fetch<User>('/api/user/user');
+      const data = await api<User>('/user/user');
       user.value = data;
     } catch (error) {
       user.value = null;
@@ -17,7 +19,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
   }
 
   async function login(loginData: UserLoginData) {
-    await $fetch('/api/user/login', {
+    await api('/user/login', {
       method: 'POST',
       body: loginData,
     });
@@ -25,7 +27,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
   }
 
   async function register(registerData: UserRegisterData) {
-    await $fetch('/api/user/register', {
+    await api('/user/register', {
       method: 'POST',
       body: registerData,
     });
@@ -34,7 +36,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
   }
 
   async function logout() {
-    await $fetch('/api/user/logout', {
+    await api('/user/logout', {
       method: 'POST',
     });
     user.value = null;

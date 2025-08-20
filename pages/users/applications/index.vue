@@ -2,6 +2,7 @@
 definePageMeta({
   name: 'user-applications',
   layout: 'user',
+  middleware: 'user-auth',
 });
 
 import { ref, computed, watch } from 'vue';
