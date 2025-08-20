@@ -1,19 +1,13 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import type { User, UserLoginData, UserRegisterData } from '~/types/user';
 
 export const useUserAuthStore = defineStore('userAuth', () => {
-  // Use the cookie ref directly for robust reactivity
   const user = useCookie<User | null>('userAuthUser', { default: () => null });
 
   const isLoggedIn = computed(() => !!user.value);
 
   async function fetchUser() {
-    if (!process.server && !useCookie('user-auth-token').value) {
-      user.value = null;
-      return;
-    }
-
     try {
       const data = await $fetch<User>('/api/user/user');
       user.value = data;

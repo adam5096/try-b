@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import type { CompanyUser, LoginData } from '~/types/company';
 
 export const useCompanyAuthStore = defineStore('companyAuth', () => {
-  const userState = useCookie<CompanyUser | null>('companyAuthUser', { default: () => null });
-  const user = ref(userState);
+  const user = useCookie<CompanyUser | null>('companyAuthUser', { default: () => null });
 
   const isLoggedIn = computed(() => !!user.value);
 
