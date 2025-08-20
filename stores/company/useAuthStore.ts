@@ -1,28 +1,34 @@
 import { defineStore } from 'pinia';
-import { computed } from 'vue';
-import type { CompanyUser, LoginData, CompanyLoginResponse } from '~/types/company';
+import { computed, ref } from 'vue';
+import type {
+  CompanyUser,
+  LoginData,
+  CompanyLoginResponse,
+  CompanyProfile,
+} from '~/types/company';
 
 export const useCompanyAuthStore = defineStore('companyAuth', () => {
-  const user = useCookie<CompanyUser | null>('companyAuthUser', { default: () => null });
+  const userCookie = useCookie<CompanyProfile | null>('companyAuthUser');
+  const user = ref<CompanyProfile | null>(userCookie.value ?? null);
+
   const { $api } = useNuxtApp();
   const api = $api as typeof $fetch;
 
   const isLoggedIn = computed(() => !!user.value);
 
   async function fetchUser() {
-    if (!user.value) return; // Optimization: don't fetch if user is already null
-
     try {
-      // Assuming the new endpoint for fetching user data is '/api/v1/company/user'
-      const data = await api<CompanyUser>('/api/v1/company/user');
-      user.value = data;
+      const data = await api<CompanyProfile>('/api/v1/company');
+      return data;
     } catch (error) {
       user.value = null;
+      console.error('Failed to fetch user profile:', error);
+      return null;
     }
   }
 
   async function login(loginData: LoginData) {
-    const response = await api<CompanyLoginResponse>('/api/v1/company/login', {
+    await api<CompanyLoginResponse>('/api/v1/company/login', {
       method: 'POST',
       body: {
         identifier: loginData.account,
@@ -30,11 +36,14 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
       },
     });
 
-    if (response.user) {
-      user.value = response.user;
-    } else {
-      // Fallback to fetchUser if user data is not in the login response
-      await fetchUser();
+    // Add a slight delay to allow the browser to process the HttpOnly cookie from the login response
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // After successful login, fetch the detailed company profile
+    const detailedProfile = await fetchUser();
+    if (detailedProfile) {
+      user.value = detailedProfile;
+      userCookie.value = detailedProfile; // Explicitly set the cookie
     }
   }
 
@@ -47,6 +56,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
       console.error('Logout failed:', error);
     } finally {
       user.value = null;
+      userCookie.value = null; // Explicitly clear the cookie
     }
   }
 

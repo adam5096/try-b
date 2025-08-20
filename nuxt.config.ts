@@ -40,8 +40,15 @@ export default defineNuxtConfig({
     viewer: false,
   },
   vite: {
-    plugins: [
-    ],
+    server: {
+      proxy: {
+        '/api-proxy': {
+          target: 'https://trybeta.rocket-coding.com',
+          changeOrigin: true,
+          rewrite: path => path.replace(/^\/api-proxy/, ''),
+        },
+      },
+    },
   },
   // build: {
   //   transpile: ['dayjs', 'dayjs-nuxt'],

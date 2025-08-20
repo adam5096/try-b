@@ -30,3 +30,29 @@ export interface CompanyLoginResponse {
   token: string;
   user: CompanyUser;
 }
+
+export interface CompanyImg {
+  type: 'logo' | 'cover' | 'environment';
+  img_path: string;
+}
+
+export interface CompanyContact {
+  name: string;
+  job_title: string;
+  email: string;
+  phone: string;
+}
+
+export interface CompanyProfile {
+  name: string;
+  industry_id: number;
+  tax_id_num: string;
+  address: string;
+  website: string;
+  intro: string;
+  scale_id: number;
+  account: string;
+  email: string;
+  CompanyContact: CompanyContact;
+  CompanyImg: CompanyImg[];
+}

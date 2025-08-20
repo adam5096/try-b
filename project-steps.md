@@ -864,3 +864,16 @@
   - 實作請求資料轉換，將前端表單欄位對應至後端 `identifier` 與 `password` 欄位。
   - 優化登入流程，直接利用登入 API 回應中的使用者資料更新狀態，並移除後續多餘的 `fetchUser` API 請求，提升執行效率。
   - 更新 `logout` 與 `fetchUser` 函式以對應新的 API 路徑，並加入基礎錯誤處理。
+
+### FEAT: 企業端 API 整合除錯與策略調整
+- **解決 CORS 跨域問題**: 於 `nuxt.config.ts` 中設定 Vite 開發伺服器代理，成功解決本地端 `localhost` 對真實 API (`https://trybeta.rocket-coding.com`) 的跨域請求限制。
+- **擴充 API 型別定義**: 根據後端 `/api/v1/company` 端點的回應，於 `types/company.ts` 中新增了完整的 `CompanyProfile` 型別定義，以強化型別安全。
+- **重構 Pinia 狀態與 Cookie 持久化**:
+  - 迭代 `stores/company/useAuthStore.ts`，將 Pinia 內部狀態 (`ref`) 與 `useCookie` 分離，以解決 `HttpOnly` Cookie 更新後狀態未同步的問題。
+  - 將 `user` 狀態的型別從 `CompanyUser` 更新為 `CompanyProfile`，以儲存更完整的企業資料。
+- **診斷 `HttpOnly` Cookie 時序競賽問題**:
+  - 深入分析 `login` 成功後 `fetchUser` 立即失敗 (`401`) 的問題，確認其根源為前端程式碼執行速度過快，發出請求時瀏覽器尚未完成 `HttpOnly` Cookie 的設定。
+  - 透過在 `login` 函式中加入 `100ms` 的 `setTimeout` 延遲作為臨時解決方案，嘗試解決此時序問題。
+- **調整除錯策略**:
+  - 釐清 Postman (手動、慢速) 與 Nuxt (自動、高速) 在處理 `HttpOnly` Cookie 時序上的根本差異。
+  - 為突破僵局，決定暫時擱置登入流程的時序問題，改為先串接另一個獨立的已驗證端點，以驗證 Cookie 機制本身的正確性。
