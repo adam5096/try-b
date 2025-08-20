@@ -73,3 +73,14 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+
+測試帳號密碼查找區:
+company:
+server/api/company/login.post.ts
+
+user:
+server/api/user/login.post.ts
+
+admin:
+待補充
