@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { ElMessageBox } from 'element-plus';
 import {
   Bell,
   Briefcase,
@@ -13,6 +14,7 @@ import {
 } from '@element-plus/icons-vue';
 import { companyRoutes as r } from '~/utils/companyRoutes';
 
+const authStore = useCompanyAuthStore();
 const router = useRouter();
 const isSidebarOpen = ref(false);
 
@@ -21,6 +23,26 @@ const newProgramPath = router.resolve(r.newProgram()).path; // 新增體驗
 const purchasePath = router.resolve(r.purchase()).path; // 方案
 const commentsPath = router.resolve(r.comments()).path; // 評價管理
 const settingsPath = router.resolve(r.settings()).path; // 帳戶設定
+
+async function handleLogout() {
+  try {
+    await ElMessageBox.confirm(
+      '您確定要登出嗎？',
+      '登出確認',
+      {
+        confirmButtonText: '確定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      },
+    );
+
+    await authStore.logout();
+    router.push('/company/login');
+  } catch (error) {
+    // 使用者點擊 "取消" 或關閉對話框
+    // 'cancel' 字串會被 ElMessageBox.confirm 的 Promise a catch 到
+  }
+}
 </script>
 
 <template>
@@ -86,7 +108,7 @@ const settingsPath = router.resolve(r.settings()).path; // 帳戶設定
             <el-icon><Briefcase /></el-icon>
             <span>方案</span>
           </el-menu-item>
-          <el-menu-item index="#">
+          <el-menu-item @click="handleLogout">
             <el-icon><SwitchButton /></el-icon>
             <span>登出</span>
           </el-menu-item>

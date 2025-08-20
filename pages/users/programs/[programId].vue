@@ -5,6 +5,7 @@ import { userRoutes } from '~/utils/userRoutes';
 definePageMeta({
   name: 'user-program-detail',
   layout: 'user',
+  middleware: 'user-auth',
 });
 
 const router = useRouter();

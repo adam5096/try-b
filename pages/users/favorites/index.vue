@@ -4,6 +4,7 @@ import { ref, computed } from 'vue';
 definePageMeta({
   name: 'user-favorites',
   layout: 'user',
+  middleware: 'user-auth',
 });
 
 type FavoriteItem = {

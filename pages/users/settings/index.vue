@@ -5,6 +5,7 @@ import { UploadFilled } from '@element-plus/icons-vue';
 definePageMeta({
   name: 'user-settings',
   layout: 'user',
+  middleware: 'user-auth',
 });
 
 // --- Data Models ---

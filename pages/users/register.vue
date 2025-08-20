@@ -1,8 +1,52 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+import { ElMessage } from 'element-plus';
+import { useUserAuthStore } from '~/stores/user/useAuthStore';
+import type { UserRegisterData } from '~/types/user';
+
 definePageMeta({
   name: 'user-register',
-  layout: 'user'
-})
+  layout: 'user',
+});
+
+const authStore = useUserAuthStore();
+const router = useRouter();
+
+const formData = ref<Omit<UserRegisterData, 'password'>>({
+  name: '',
+  account: '',
+  email: '',
+});
+const password = ref('');
+const confirmPassword = ref('');
+const isLoading = ref(false);
+
+async function handleSubmit() {
+  if (password.value !== confirmPassword.value) {
+    ElMessage.error('兩次輸入的密碼不一致');
+    return;
+  }
+  if (!formData.value.name || !formData.value.account || !formData.value.email || !password.value) {
+    ElMessage.error('請填寫所有必填欄位');
+    return;
+  }
+
+  isLoading.value = true;
+  try {
+    const registerPayload: UserRegisterData = {
+      ...formData.value,
+      password: password.value,
+    };
+    await authStore.register(registerPayload);
+    ElMessage.success('註冊成功！現在您可以登入了。');
+    router.push({ name: 'user-login' });
+  } catch (error: any) {
+    const errorMessage = error.data?.message || '註冊失敗，請稍後再試。';
+    ElMessage.error(errorMessage);
+  } finally {
+    isLoading.value = false;
+  }
+}
 </script>
 
 <template>
@@ -18,8 +62,7 @@ definePageMeta({
       </div>
       <form
         class="mt-8 space-y-6"
-        action="#"
-        method="POST"
+        @submit.prevent="handleSubmit"
       >
         <div class="rounded-md -space-y-px">
           <div class="pt-4">
@@ -29,6 +72,7 @@ definePageMeta({
             >姓名</label>
             <input
               id="name"
+              v-model="formData.name"
               name="name"
               type="text"
               autocomplete="name"
@@ -39,11 +83,28 @@ definePageMeta({
           </div>
           <div class="pt-4">
             <label
+              for="account"
+              class="block text-sm font-medium text-gray-700"
+            >帳號</label>
+            <input
+              id="account"
+              v-model="formData.account"
+              name="account"
+              type="text"
+              autocomplete="username"
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"
+              placeholder="請輸入您的帳號"
+            >
+          </div>
+          <div class="pt-4">
+            <label
               for="email-address"
               class="block text-sm font-medium text-gray-700"
             >電子郵件</label>
             <input
               id="email-address"
+              v-model="formData.email"
               name="email"
               type="email"
               autocomplete="email"
@@ -59,6 +120,7 @@ definePageMeta({
             >密碼</label>
             <input
               id="password"
+              v-model="password"
               name="password"
               type="password"
               autocomplete="new-password"
@@ -74,6 +136,7 @@ definePageMeta({
             >確認密碼</label>
             <input
               id="confirm-password"
+              v-model="confirmPassword"
               name="confirm-password"
               type="password"
               autocomplete="new-password"
@@ -87,9 +150,11 @@ definePageMeta({
         <div>
           <button
             type="submit"
-            class="group relative flex w-full justify-center rounded-md border border-transparent bg-gray-400 py-2 px-4 text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            :disabled="isLoading"
+            class="group relative flex w-full justify-center rounded-md border border-transparent bg-gray-400 py-2 px-4 text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-300"
           >
-            註冊
+            <span v-if="isLoading">註冊中...</span>
+            <span v-else>註冊</span>
           </button>
         </div>
         <div class="text-center text-xs text-gray-500">
