@@ -56,7 +56,6 @@ const userLinks = ref([
 ]);
 
 const authStore = useUserAuthStore();
-const router = useRouter();
 
 async function handleLogout() {
   try {
@@ -70,7 +69,7 @@ async function handleLogout() {
       }
     );
     await authStore.logout();
-    await router.push({ name: 'user-login' });
+    await navigateTo({ name: 'user-login' });
   } catch (error) {
     // Suppress error when user clicks "cancel"
     if (error !== 'cancel') {
