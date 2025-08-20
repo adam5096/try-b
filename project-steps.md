@@ -856,3 +856,11 @@
   - 建立了 `.env` 檔案來存放後端 API 的 Base URL (`NUXT_PUBLIC_API_BASE_URL`)。
   - 修改 `nuxt.config.ts` 中的 `runtimeConfig`，使其能讀取 `.env` 中的設定，並保留 `/api` 作為本地開發的備用路徑。
 - **安全性實踐**: 釐清並確認了 `.env` 檔案應被 `.gitignore` 排除，且部署平台的環境變數需獨立設定，以確保金鑰與敏感資訊的安全。
+
+### FEAT: 企業端登入 API 整合
+- **建立 API 型別定義**: 於 `types/company.ts` 中，根據後端規格新增 `CompanyLoginResponse` 型別，並更新 `CompanyUser` 型別，以強化型別安全。
+- **重構 Pinia 狀態管理**:
+  - 修改 `stores/company/useAuthStore.ts` 中的 `login` 函式，使其對接真實登入 API (`/api/v1/company/login`)。
+  - 實作請求資料轉換，將前端表單欄位對應至後端 `identifier` 與 `password` 欄位。
+  - 優化登入流程，直接利用登入 API 回應中的使用者資料更新狀態，並移除後續多餘的 `fetchUser` API 請求，提升執行效率。
+  - 更新 `logout` 與 `fetchUser` 函式以對應新的 API 路徑，並加入基礎錯誤處理。

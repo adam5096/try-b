@@ -12,13 +12,21 @@ export interface CompanyRegisterForm {
 }
 
 export interface CompanyUser {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
+  Id: number;
+  Account: string;
+  Email: string;
+  Role: 'Company';
+  NickName?: string;
 }
 
 export interface LoginData {
   account: string;
   psd: string;
+}
+
+export interface CompanyLoginResponse {
+  status: number;
+  message: string;
+  token: string;
+  user: CompanyUser;
 }
