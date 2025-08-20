@@ -5,7 +5,7 @@ import type {
   LoginData,
   CompanyLoginResponse,
   CompanyProfile,
-} from '~/types/company';
+} from '~/types/company/company';
 
 export const useCompanyAuthStore = defineStore('companyAuth', () => {
   const userCookie = useCookie<CompanyProfile | null>('companyAuthUser');

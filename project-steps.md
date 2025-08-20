@@ -849,7 +849,7 @@
 - **檢視與確認登出邏輯**: 於 `layouts/user.vue` 中，確認了桌面與行動版登出按鈕皆已正確綁定 `handleLogout` 事件。
 - **驗證二次確認機制**: 確認 `handleLogout` 函式內部已使用 `ElMessageBox.confirm` 實現二次確認對話框，符合預期流程，有效防止使用者誤觸。
 
-# 2025-08-21
+# 2025-08-20
 ### MGT: API 整合策略與環境變數設定
 - **API 整合策略確立**: 確立採用「批次性整合」與「環境變數」管理 API URL 的開發策略，以取代高風險的「大爆炸式整合」，提升開發流程的健壯性與環境切換的靈活性。
 - **環境變數設定**:
@@ -877,3 +877,14 @@
 - **調整除錯策略**:
   - 釐清 Postman (手動、慢速) 與 Nuxt (自動、高速) 在處理 `HttpOnly` Cookie 時序上的根本差異。
   - 為突破僵局，決定暫時擱置登入流程的時序問題，改為先串接另一個獨立的已驗證端點，以驗證 Cookie 機制本身的正確性。
+
+### FEAT: 取得登入企業的計畫列表
+- **API 型別定義**: 於 `types/company/program.ts` 中新增 `Program` 與 `ProgramsResponse` 等相關型別，確保資料結構的型別安全。
+- **建立 Pinia Store**: 建立 `stores/company/useProgramStore.ts` 來集中管理企業計畫的狀態，包含計畫列表、總數與分頁邏輯。
+- **實作 API 請求**: 在 Store 中新增 `fetchPrograms` action，使用 `useFetch` 對接 `/api/v1/company/{company_id}/programs` 真實 API 端點，並處理載入與錯誤狀態。
+- **UI 頁面建構**: 建立 `pages/company/programs/index.vue` 頁面，使用新建的 Store 獲取資料，並透過 `v-for` 渲染計畫列表與分頁元件。
+
+### REFACTOR: 專案型別定義結構優化
+- **目錄結構重構**: 在 `types/` 目錄下新增 `admin`、`company` 與 `users` 三個子資料夾，以按功能模組分類型別定義。
+- **檔案遷移**: 將 `company.ts`、`program.ts` 與 `user.ts` 等型別檔案，從根層級移動至對應的子資料夾中。
+- **全域路徑更新**: 全面掃描並更新專案中所有引用到上述型別檔案的 `import` 路徑，確保在重構後，所有頁面與 store 的型別導入皆能正常運作。

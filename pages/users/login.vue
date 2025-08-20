@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useUserAuthStore } from '~/stores/user/useAuthStore';
-import type { UserLoginData } from '~/types/user';
+import type { UserLoginData } from '~/types/users/user';
 
 definePageMeta({
   name: 'user-login',
