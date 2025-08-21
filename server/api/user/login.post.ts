@@ -1,5 +1,5 @@
 import { defineEventHandler, readBody, setCookie } from 'h3';
-import type { UserLoginData } from '~/types/user';
+import type { UserLoginData } from '~/types/users/user';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<UserLoginData>(event);

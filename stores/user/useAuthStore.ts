@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed } from 'vue';
-import type { User, UserLoginData, UserRegisterData } from '~/types/user';
+import type { User, UserLoginData, UserRegisterData } from '~/types/users/user';
 
 export const useUserAuthStore = defineStore('userAuth', () => {
   const user = useCookie<User | null>('userAuthUser', { default: () => null });

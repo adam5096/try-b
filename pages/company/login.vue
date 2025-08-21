@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { LoginData } from '~/types/company';
+import type { LoginData } from '~/types/company/company';
 
 const authStore = useCompanyAuthStore();
 const router = useRouter();

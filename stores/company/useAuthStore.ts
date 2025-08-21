@@ -1,9 +1,16 @@
 import { defineStore } from 'pinia';
-import { computed } from 'vue';
-import type { CompanyUser, LoginData } from '~/types/company';
+import { computed, ref } from 'vue';
+import type {
+  CompanyUser,
+  LoginData,
+  CompanyLoginResponse,
+  CompanyProfile,
+} from '~/types/company/company';
 
 export const useCompanyAuthStore = defineStore('companyAuth', () => {
-  const user = useCookie<CompanyUser | null>('companyAuthUser', { default: () => null });
+  const userCookie = useCookie<CompanyProfile | null>('companyAuthUser');
+  const user = ref<CompanyProfile | null>(userCookie.value ?? null);
+
   const { $api } = useNuxtApp();
   const api = $api as typeof $fetch;
 
@@ -11,26 +18,46 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 
   async function fetchUser() {
     try {
-      const data = await api<CompanyUser>('/company/user');
-      user.value = data;
+      const data = await api<CompanyProfile>('/api/v1/company');
+      return data;
     } catch (error) {
       user.value = null;
+      console.error('Failed to fetch user profile:', error);
+      return null;
     }
   }
 
   async function login(loginData: LoginData) {
-    await api('/company/login', {
+    await api<CompanyLoginResponse>('/api/v1/company/login', {
       method: 'POST',
-      body: loginData,
+      body: {
+        identifier: loginData.account,
+        password: loginData.psd,
+      },
     });
-    await fetchUser();
+
+    // Add a slight delay to allow the browser to process the HttpOnly cookie from the login response
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // After successful login, fetch the detailed company profile
+    const detailedProfile = await fetchUser();
+    if (detailedProfile) {
+      user.value = detailedProfile;
+      userCookie.value = detailedProfile; // Explicitly set the cookie
+    }
   }
 
   async function logout() {
-    await api('/company/logout', {
-      method: 'POST',
-    });
-    user.value = null;
+    try {
+      await api('/api/v1/company/logout', {
+        method: 'POST',
+      });
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      user.value = null;
+      userCookie.value = null; // Explicitly clear the cookie
+    }
   }
 
   return {
