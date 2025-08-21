@@ -39,15 +39,14 @@ export default defineNuxtConfig({
     // injectPosition: 0,
     viewer: false,
   },
+  routeRules: {
+    '/api-proxy/**': {
+      proxy: 'https://trybeta.rocket-coding.com/**',
+    },
+  },
   vite: {
     server: {
-      proxy: {
-        '/api-proxy': {
-          target: 'https://trybeta.rocket-coding.com',
-          changeOrigin: true,
-          rewrite: path => path.replace(/^\/api-proxy/, ''),
-        },
-      },
+      // proxy is handled by routeRules now
     },
   },
   // build: {

@@ -944,3 +944,20 @@
 - **釐清 Mock API 與真實 API 的關係**:
   - **闡明 `server/api/` 的角色**: 確認此目錄為 Nuxt 3 內建的「API 模擬層」，其檔案在部署至 Vercel 後會自動轉換為 Serverless Functions，可作為開發歷史紀錄與除錯備案。
   - **確認環境變數的隔離**: 明確了 Mock API (`/api/...`) 與真實 API (`NUXT_PUBLIC_API_BASE_URL`) 之間由環境變數 (`.env` vs Vercel 環境變數) 進行切換，兩者不會產生衝突，確保了不同環境的獨立性與靈活性。
+
+### FIX: 企業計畫 API 請求方法與代理修正
+- **診斷 500 錯誤**: 透過比對 Postman (使用 `GET` 成功) 與應用程式 (使用 `POST` 失敗) 的行為，確認後端伺服器預期的請求方法為 `GET`。
+- **修正請求方法**: 修改 `stores/company/useProgramStore.ts`，將 API 請求從 `method: 'POST'` 改為 `method: 'GET'`，並將分頁參數從 `body` 移至 `params`，使其符合 `GET` 請求的標準。
+- **診斷 404 錯誤**: 修正後，錯誤轉變為 `404 Not Found`。經分析確認，這是因為 Nuxt 在伺服器端渲染 (SSR) 時，無法使用僅限客戶端的 `vite.server.proxy` 設定。
+- **修正代理設定**:
+  - 於 `nuxt.config.ts` 中，移除 `vite.server.proxy` 設定。
+  - 改用 Nuxt 3 內建的 `routeRules` 來設定代理，此方法能同時處理來自伺服器端 (SSR) 與客戶端 (瀏覽器) 的請求。
+- **成果**: 成功解決了所有請求與代理層面的錯誤，前端應用程式現已能穩定地從後端 API 獲取並渲染計畫列表資料。
+
+### REFACTOR: 企業端驗證 Store 可讀性
+- **釐清程式碼可讀性問題**: 根據開發者回饋，確認 `useAuthStore` 中將「登入」與「取得使用者資料」合併在單一 `login` 函式的作法，雖然高效能但過於抽象，違反了「清晰勝於聰明」的專案原則。
+- **重構 `useAuthStore` 以分離職責**:
+  - 新增獨立的 `fetchUser` 函式，專注於執行 `GET /api/v1/company` 以取得完整的企業使用者資料。
+  - 修改 `login` 函式，使其職責縮小為僅處理 `POST /api/v1/company/login` 以獲取 `token`，並在成功後接續呼叫 `fetchUser`。
+  - 此舉雖然增加了一次 API 請求，但大幅提升了程式碼的邏輯清晰度、可維護性與對新進開發者的友善度。
+- **強化程式碼文檔**: 為 `login`、`fetchUser` 與 `logout` 等核心函式，補上繁體中文註解，明確闡述其執行流程與設計目的。

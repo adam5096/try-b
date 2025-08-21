@@ -13,11 +13,11 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
     if (!authStore.isLoggedIn || !authStore.user || !authStore.companyId) return;
 
     const { data, error } = await useApiFetch<ProgramsResponse>(`/api/v1/company/${authStore.companyId}/programs`, {
-      method: 'POST',
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${authStore.token}`,
       },
-      body: {
+      params: {
         page: page.value,
         limit: limit.value,
       },
