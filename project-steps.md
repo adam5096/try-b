@@ -903,3 +903,11 @@
   - 於 `pages/company/index.vue` 中，移除靜態 `plans` 陣列，改為從 `useCompanyProgramStore` 獲取真實計畫列表。
   - 根據 API 回應的 `Program` 型別，動態渲染計畫卡片，並將分頁元件與 Store 中的狀態進行綁定。
   - 實作 `console.log`，將 API 回應的完整資料印出，以便後續進行未對應欄位的資料映射。
+
+### REFACTOR: 企業端驗證 Store 可讀性
+- **釐清程式碼可讀性問題**: 根據開發者回饋，確認 `useAuthStore` 中將「登入」與「取得使用者資料」合併在單一 `login` 函式的作法，雖然高效能但過於抽象，違反了「清晰勝於聰明」的專案原則。
+- **重構 `useAuthStore` 以分離職責**:
+  - 新增獨立的 `fetchUser` 函式，專注於執行 `GET /api/v1/company` 以取得完整的企業使用者資料。
+  - 修改 `login` 函式，使其職責縮小為僅處理 `POST /api/v1/company/login` 以獲取 `token`，並在成功後接續呼叫 `fetchUser`。
+  - 此舉雖然增加了一次 API 請求，但大幅提升了程式碼的邏輯清晰度、可維護性與對新進開發者的友善度。
+- **強化程式碼文檔**: 為 `login`、`fetchUser` 與 `logout` 等核心函式，補上繁體中文註解，明確闡述其執行流程與設計目的。
