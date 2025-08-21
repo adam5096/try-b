@@ -9,9 +9,9 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
   const limit = ref(21);
 
   async function fetchPrograms() {
-    if (!authStore.isLoggedIn || !authStore.company) return;
+    if (!authStore.isLoggedIn || !authStore.user) return;
 
-    const { data, error } = await useFetch<ProgramsResponse>(`/api-proxy/api/v1/company/${authStore.company.Id}/programs`, {
+    const { data, error } = await useFetch<ProgramsResponse>(`/api-proxy/api/v1/company/${authStore.user.Id}/programs`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${authStore.token}`,

@@ -887,4 +887,19 @@
 ### REFACTOR: 專案型別定義結構優化
 - **目錄結構重構**: 在 `types/` 目錄下新增 `admin`、`company` 與 `users` 三個子資料夾，以按功能模組分類型別定義。
 - **檔案遷移**: 將 `company.ts`、`program.ts` 與 `user.ts` 等型別檔案，從根層級移動至對應的子資料夾中。
-- **全域路徑更新**: 全面掃描並更新專案中所有引用到上述型別檔案的 `import` 路徑，確保在重構後，所有頁面與 store 的型別導入皆能正常運作。
+- **全域路徑更新**: 全面掃描並更新專案中所有引用到上述型別檔案的 `import` 路徑，確保在重構後，所有頁面與 store 的型別導入皆能正常運T運作。
+
+# 2025-08-21
+### FEAT: 企業端驗證流程修復與 API 串接
+- **診斷驗證流程**: 深入追查 `pages/company/index.vue` 無法取得資料的問題，確認根本原因為登入後 `token` 未被正確儲存與使用。
+- **重構驗證狀態管理**:
+  - 修改 `stores/company/useAuthStore.ts`，使其能從登入 API 的回應中正確解析 `token` 與 `user` 資訊。
+  - 導入 `useCookie` 來取代原有的 `HttpOnly` 機制，將 `token` 與 `user` 顯性地儲存於客戶端 Cookie 中，解決了 `token` 丟失的問題。
+  - 移除登入流程中不必要的 `setTimeout` 延遲與後續多餘的 `fetchUser` 請求，優化了執行效率。
+- **修正資料獲取邏輯**:
+  - 更新 `stores/company/useProgramStore.ts`，將其對 `authStore` 的依賴從不存在的 `company` 物件，修正為新的 `user` 物件，確保能正確取得 `companyId`。
+  - 確保 API 請求的 `Authorization` 標頭能正確地從 `authStore` 獲取 `token`。
+- **串接計畫列表 API**:
+  - 於 `pages/company/index.vue` 中，移除靜態 `plans` 陣列，改為從 `useCompanyProgramStore` 獲取真實計畫列表。
+  - 根據 API 回應的 `Program` 型別，動態渲染計畫卡片，並將分頁元件與 Store 中的狀態進行綁定。
+  - 實作 `console.log`，將 API 回應的完整資料印出，以便後續進行未對應欄位的資料映射。

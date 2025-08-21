@@ -1,69 +1,71 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import type {
-  CompanyUser,
   LoginData,
   CompanyLoginResponse,
-  CompanyProfile,
+  CompanyUser,
 } from '~/types/company/company';
 
 export const useCompanyAuthStore = defineStore('companyAuth', () => {
-  const userCookie = useCookie<CompanyProfile | null>('companyAuthUser');
-  const user = ref<CompanyProfile | null>(userCookie.value ?? null);
+  const tokenCookie = useCookie<string | null>('companyAuthToken');
+  const userCookie = useCookie<CompanyUser | null>('companyAuthUser');
+
+  const token = ref<string | null>(tokenCookie.value ?? null);
+  const user = ref<CompanyUser | null>(userCookie.value ?? null);
 
   const { $api } = useNuxtApp();
   const api = $api as typeof $fetch;
 
-  const isLoggedIn = computed(() => !!user.value);
-
-  async function fetchUser() {
-    try {
-      const data = await api<CompanyProfile>('/api/v1/company');
-      return data;
-    } catch (error) {
-      user.value = null;
-      console.error('Failed to fetch user profile:', error);
-      return null;
-    }
-  }
+  const isLoggedIn = computed(() => !!token.value && !!user.value);
 
   async function login(loginData: LoginData) {
-    await api<CompanyLoginResponse>('/api/v1/company/login', {
-      method: 'POST',
-      body: {
-        identifier: loginData.account,
-        password: loginData.psd,
-      },
-    });
+    try {
+      const response = await api<CompanyLoginResponse>('/api/v1/company/login', {
+        method: 'POST',
+        body: {
+          identifier: loginData.account,
+          password: loginData.psd,
+        },
+      });
 
-    // Add a slight delay to allow the browser to process the HttpOnly cookie from the login response
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // After successful login, fetch the detailed company profile
-    const detailedProfile = await fetchUser();
-    if (detailedProfile) {
-      user.value = detailedProfile;
-      userCookie.value = detailedProfile; // Explicitly set the cookie
+      if (response && response.token && response.user) {
+        token.value = response.token;
+        tokenCookie.value = response.token;
+        user.value = response.user;
+        userCookie.value = response.user;
+      } else {
+        throw new Error('登入失敗：無效的回應格式');
+      }
+    } catch (error) {
+      await logout();
+      console.error('登入時發生錯誤:', error);
+      throw error;
     }
   }
 
   async function logout() {
-    try {
-      await api('/api/v1/company/logout', {
-        method: 'POST',
-      });
-    } catch (error) {
-      console.error('Logout failed:', error);
-    } finally {
-      user.value = null;
-      userCookie.value = null; // Explicitly clear the cookie
+    if (token.value) {
+      try {
+        await api('/api/v1/company/logout', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        });
+      } catch (error) {
+        console.error('登出時 API 呼叫失敗:', error);
+      }
     }
+    user.value = null;
+    userCookie.value = null;
+    token.value = null;
+    tokenCookie.value = null;
   }
 
   return {
     user,
+    token,
     isLoggedIn,
-    fetchUser,
     login,
     logout,
   };
