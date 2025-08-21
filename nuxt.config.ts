@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
-      apiBase: '/api',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || '/api',
     },
   },
   fonts: {
@@ -39,9 +39,15 @@ export default defineNuxtConfig({
     // injectPosition: 0,
     viewer: false,
   },
+  routeRules: {
+    '/api-proxy/**': {
+      proxy: 'https://trybeta.rocket-coding.com/**',
+    },
+  },
   vite: {
-    plugins: [
-    ],
+    server: {
+      // proxy is handled by routeRules now
+    },
   },
   // build: {
   //   transpile: ['dayjs', 'dayjs-nuxt'],

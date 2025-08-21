@@ -1,5 +1,5 @@
 import { defineEventHandler, getCookie } from 'h3';
-import type { User } from '~/types/user';
+import type { User } from '~/types/users/user';
 
 export default defineEventHandler((event): User => {
   const token = getCookie(event, 'user-auth-token');

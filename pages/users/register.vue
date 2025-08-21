@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useUserAuthStore } from '~/stores/user/useAuthStore';
-import type { UserRegisterData } from '~/types/user';
+import type { UserRegisterData } from '~/types/users/user';
 
 definePageMeta({
   name: 'user-register',
