@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 import type { ProgramsResponse, Program } from '~/types/company/program';
 
 export const useCompanyProgramStore = defineStore('company-program', () => {
@@ -9,10 +10,10 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
   const limit = ref(21);
 
   async function fetchPrograms() {
-    if (!authStore.isLoggedIn || !authStore.company) return;
+    if (!authStore.isLoggedIn || !authStore.user || !authStore.companyId) return;
 
-    const { data, error } = await useFetch<ProgramsResponse>(`/api-proxy/api/v1/company/${authStore.company.Id}/programs`, {
-      method: 'POST',
+    const { data, error } = await useApiFetch<ProgramsResponse>(`/api/v1/company/${authStore.companyId}/programs`, {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${authStore.token}`,
       },

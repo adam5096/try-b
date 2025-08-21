@@ -5,22 +5,11 @@ import {
   Location,
   User,
 } from '@element-plus/icons-vue';
-
-type TagType = 'success' | 'info' | 'warning' | 'danger';
-
-interface Plan {
-  id: number;
-  title: string;
-  status: string;
-  status_tag: TagType;
-  description: string;
-  industry: string;
-  location: string;
-  headcount: string;
-  applicants: number | string;
-  applicant_status: string;
-  date?: string;
-}
+import { computed, onMounted, watch } from 'vue';
+import dayjs from 'dayjs';
+import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
+import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
+import type { Program } from '~/types/company/program';
 
 definePageMeta({
   layout: 'company',
@@ -34,162 +23,25 @@ const searchForm = {
   sort: 'date_desc',
 };
 
-const plans: Plan[] = [
-  {
-    id: 1,
-    title: '軟體工程師體驗日',
-    status: '審核中',
-    status_tag: 'info',
-    description: '體驗前端與後端開發工作，了解軟體工程師的日常工作內容與挑戰',
-    industry: '資訊科技',
-    location: '台北市信義區松仁路100號',
-    headcount: '5-10人',
-    applicants: 0,
-    applicant_status: '開放',
-  },
-  {
-    id: 2,
-    title: '數位行銷實務工作坊',
-    status: '已發佈',
-    status_tag: 'success',
-    description: '學習數位行銷策略規劃、社群媒體經營與數據分析，體驗行銷人員的工作日常',
-    industry: '行銷廣告',
-    date: '2025/10/12',
-    location: '台北市大安區忠孝東路四段',
-    headcount: '8-15人',
-    applicants: '已額滿',
-    applicant_status: '額滿',
-  },
-  {
-    id: 3,
-    title: '金融分析師一日體驗',
-    status: '待發佈',
-    status_tag: 'warning',
-    description: '體驗金融市場分析、投資組合管理，了解金融分析師的專業技能與工作內容',
-    industry: '金融服務',
-    date: '2025/10/08',
-    location: '台北市信義區松智路17號',
-    headcount: '4-8人',
-    applicants: 0,
-    applicant_status: '開放',
-  },
-  {
-    id: 4,
-    title: '人力資源專員工作體驗',
-    status: '待發佈',
-    status_tag: 'warning',
-    description: '了解招聘流程、員工培訓與績效管理，體驗HR專業人員的日常工作',
-    industry: '人力資源',
-    date: '2025/10/05',
-    location: '台北市內湖區瑞光路399號',
-    headcount: '5-10人',
-    applicants: 0,
-    applicant_status: '開放',
-  },
-  {
-    id: 5,
-    title: '產品設計師工作坊',
-    status: '已發佈',
-    status_tag: 'success',
-    description: '體驗UI/UX設計流程, 學習使用者研究與原型設計, 了解產品設計師的工作職責',
-    industry: '設計創意',
-    date: '2025/10/03',
-    location: '台北市松山區南京東路三段',
-    headcount: '5-10人',
-    applicants: 5,
-    applicant_status: '開放',
-  },
-  {
-    id: 6,
-    title: '客戶服務體驗日',
-    status: '已拒絕',
-    status_tag: 'danger',
-    description: '體驗客戶服務流程, 學習溝通技巧與問題解決能力, 了解客服人員的工作挑戰',
-    industry: '客戶服務',
-    date: '2025/09/28',
-    location: '新北市板橋區民生路三段',
-    headcount: '10-20人',
-    applicants: 0,
-    applicant_status: '拒絕',
-  },
-  {
-    id: 7,
-    title: '軟體工程師體驗日',
-    status: '審核中',
-    status_tag: 'info',
-    description: '體驗前端與後端開發工作，了解軟體工程師的日常工作內容與挑戰',
-    industry: '資訊科技',
-    location: '台北市信義區松仁路100號',
-    headcount: '5-10人',
-    applicants: 0,
-    applicant_status: '開放',
-  },
-  {
-    id: 8,
-    title: '數位行銷實務工作坊',
-    status: '已發佈',
-    status_tag: 'success',
-    description: '學習數位行銷策略規劃、社群媒體經營與數據分析，體驗行銷人員的工作日常',
-    industry: '行銷廣告',
-    date: '2025/10/12',
-    location: '台北市大安區忠孝東路四段',
-    headcount: '8-15人',
-    applicants: '已額滿',
-    applicant_status: '額滿',
-  },
-  {
-    id: 9,
-    title: '金融分析師一日體驗',
-    status: '待發佈',
-    status_tag: 'warning',
-    description: '體驗金融市場分析、投資組合管理，了解金融分析師的專業技能與工作內容',
-    industry: '金融服務',
-    date: '2025/10/08',
-    location: '台北市信義區松智路17號',
-    headcount: '4-8人',
-    applicants: 0,
-    applicant_status: '開放',
-  },
-  {
-    id: 10,
-    title: '人力資源專員工作體驗',
-    status: '待發佈',
-    status_tag: 'warning',
-    description: '了解招聘流程、員工培訓與績效管理，體驗HR專業人員的日常工作',
-    industry: '人力資源',
-    date: '2025/10/05',
-    location: '台北市內湖區瑞光路399號',
-    headcount: '5-10人',
-    applicants: 0,
-    applicant_status: '開放',
-  },
-  {
-    id: 11,
-    title: '產品設計師工作坊',
-    status: '已發佈',
-    status_tag: 'success',
-    description: '體驗UI/UX設計流程, 學習使用者研究與原型設計, 了解產品設計師的工作職責',
-    industry: '設計創意',
-    date: '2025/10/03',
-    location: '台北市松山區南京東路三段',
-    headcount: '5-10人',
-    applicants: 5,
-    applicant_status: '開放',
-  },
-  {
-    id: 12,
-    title: '客戶服務體驗日',
-    status: '已拒絕',
-    status_tag: 'danger',
-    description: '體驗客戶服務流程, 學習溝通技巧與問題解決能力, 了解客服人員的工作挑戰',
-    industry: '客戶服務',
-    date: '2025/09/28',
-    location: '新北市板橋區民生路三段',
-    headcount: '10-20人',
-    applicants: 0,
-    applicant_status: '拒絕',
-  },
-];
+const programStore = useCompanyProgramStore();
+const authStore = useCompanyAuthStore();
+const programs = computed<Program[]>(() => programStore.programs);
+
+// 監聽登入狀態，確保在 authStore 準備就緒後才獲取資料
+watch(() => authStore.isLoggedIn, (isLoggedIn) => {
+  if (isLoggedIn) {
+    programStore.fetchPrograms();
+  }
+}, { immediate: true });
+
+watch(programs, (newPrograms) => {
+  if (newPrograms && newPrograms.length > 0) {
+  }
+}, { immediate: true });
+
+const handlePageChange = (page: number) => {
+  programStore.setPage(page);
+};
 </script>
 
 <template>
@@ -245,41 +97,41 @@ const plans: Plan[] = [
 
       <!-- Plan Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        <el-card v-for="(plan, index) in plans" :key="index">
+        <el-card v-for="program in programs" :key="program.Id">
           <template #header>
             <div class="flex justify-between items-center">
-              <span class="font-bold">{{ plan.title }}</span>
-              <el-tag :type="plan.status_tag">
-                {{ plan.status }}
+              <span class="font-bold">{{ program.Name }}</span>
+              <el-tag type="info">
+                狀態待確認
               </el-tag>
             </div>
           </template>
           <div class="text-gray-600 mb-4">
-            {{ plan.description }}
+            {{ program.Intro }}
           </div>
           <div class="space-y-2 text-sm">
             <div class="flex items-center gap-2">
               <el-icon><Briefcase /></el-icon>
-              <span>{{ plan.industry }}</span>
-              <span v-if="plan.date" class="ml-auto text-gray-500">{{ plan.date }}</span>
+              <span>{{ program.Industry.Title }}</span>
+              <span class="ml-auto text-gray-500">{{ dayjs(program.ProgramStartDate).format('YYYY/MM/DD') }}</span>
             </div>
             <div class="flex items-center gap-2">
               <el-icon><Location /></el-icon>
-              <span>{{ plan.location }}</span>
+              <span>地點待確認</span>
             </div>
             <div class="flex items-center gap-2">
               <el-icon><User /></el-icon>
-              <span>成行人數：{{ plan.headcount }}</span>
+              <span>成行人數：人數待確認</span>
             </div>
           </div>
           <template #footer>
             <div class="flex justify-between items-center">
               <span>已申請人數：
-                <span :class="{ 'text-red-500': plan.applicant_status === '額滿' }">
-                  {{ plan.applicants }}
+                <span class="text-red-500">
+                  人數待確認
                 </span>
               </span>
-              <NuxtLink :to="{ name: 'company-program-detail', params: { programId: plan.id } }">
+              <NuxtLink :to="`/company/programs/${program.Id}`">
                 <el-button type="primary" plain>
                   查看詳情
                 </el-button>
@@ -294,8 +146,10 @@ const plans: Plan[] = [
         <el-pagination
           background
           layout="prev, pager, next"
-          :total="12"
-          :page-size="6"
+          :total="programStore.total"
+          :page-size="programStore.limit"
+          :current-page="programStore.page"
+          @current-change="handlePageChange"
         />
       </div>
     </div>
