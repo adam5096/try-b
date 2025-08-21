@@ -919,3 +919,28 @@
 - **釐清 Mock API 與真實 API 的關係**:
   - **闡明 `server/api/` 的角色**: 確認此目錄為 Nuxt 3 內建的「API 模擬層」，其檔案在部署至 Vercel 後會自動轉換為 Serverless Functions，可作為開發歷史紀錄與除錯備案。
   - **確認環境變數的隔離**: 明確了 Mock API (`/api/...`) 與真實 API (`NUXT_PUBLIC_API_BASE_URL`) 之間由環境變數 (`.env` vs Vercel 環境變數) 進行切換，兩者不會產生衝突，確保了不同環境的獨立性與靈活性。
+
+### FEAT: 企業計畫列表 API 整合除錯
+- **診斷時序問題**: 透過在 `watch` 與 `fetchPrograms` 中加入 `console.log`，確認了 `fetchPrograms` 雖被觸發，但因 `companyId` 尚未從 Cookie 中完全恢復而提前中止。
+- **驗證 Cookie 持久化**: 透過登出再登入，強制刷新驗證 Cookie，解決了因舊版 Cookie 缺少 `companyId` 導致的驗證失敗問題。
+- **釐清 API 回應不匹配**: 透過比對 Postman 與瀏覽器中的 `login` API 回應，確認前端程式碼預期的 `CompanyId` 欄位，在真實 API 中應為 `Id`。
+- **修正資料來源**:
+  - 修改 `stores/company/useAuthStore.ts`，將 `companyId` 的資料來源從 `response.user.CompanyId` 修正為 `response.user.Id`。
+  - 同步更新 `types/company/company.ts` 中的 `CompanyUser` 型別，移除 `CompanyId` 屬性，確保型別定義與真實 API 一致。
+- **成果**: 成功解決了前端所有阻礙，並正確地向 `/api/v1/company/{id}/programs` 端點發出了 API 請求，將問題的焦點成功轉移至後端的 `500` 伺服器錯誤。
+
+### REFACTOR: 企業端驗證 Store 可讀性
+- **釐清程式碼可讀性問題**: 根據開發者回饋，確認 `useAuthStore` 中將「登入」與「取得使用者資料」合併在單一 `login` 函式的作法，雖然高效能但過於抽象，違反了「清晰勝於聰明」的專案原則。
+- **重構 `useAuthStore` 以分離職責**:
+  - 新增獨立的 `fetchUser` 函式，專注於執行 `GET /api/v1/company` 以取得完整的企業使用者資料。
+  - 修改 `login` 函式，使其職責縮小為僅處理 `POST /api/v1/company/login` 以獲取 `token`，並在成功後接續呼叫 `fetchUser`。
+  - 此舉雖然增加了一次 API 請求，但大幅提升了程式碼的邏輯清晰度、可維護性與對新進開發者的友善度。
+- **強化程式碼文檔**: 為 `login`、`fetchUser` 與 `logout` 等核心函式，補上繁體中文註解，明確闡述其執行流程與設計目的。
+
+### MGT: 開發流程與架構
+- **確立 Mock API 優先的開發流程**:
+  - **決策**: 採納「契約先行」與「API 模擬」的開發模式。未來所有新功能在整合真實 API 前，都應先在 `server/api/` 目錄下建立對應的 Mock API。
+  - **理由**: 此舉能讓前後端開發完全解耦並行，加速前端 UI 與商業邏輯的開發，並留下可供追溯、可作為備案的「活規格文件」。
+- **釐清 Mock API 與真實 API 的關係**:
+  - **闡明 `server/api/` 的角色**: 確認此目錄為 Nuxt 3 內建的「API 模擬層」，其檔案在部署至 Vercel 後會自動轉換為 Serverless Functions，可作為開發歷史紀錄與除錯備案。
+  - **確認環境變數的隔離**: 明確了 Mock API (`/api/...`) 與真實 API (`NUXT_PUBLIC_API_BASE_URL`) 之間由環境變數 (`.env` vs Vercel 環境變數) 進行切換，兩者不會產生衝突，確保了不同環境的獨立性與靈活性。

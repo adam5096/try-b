@@ -10,9 +10,11 @@ import type {
 export const useCompanyAuthStore = defineStore('companyAuth', () => {
   const tokenCookie = useCookie<string | null>('companyAuthToken');
   const userCookie = useCookie<CompanyProfile | null>('companyAuthUser');
+  const companyIdCookie = useCookie<number | null>('companyId');
 
   const token = ref<string | null>(tokenCookie.value ?? null);
   const user = ref<CompanyProfile | null>(userCookie.value ?? null);
+  const companyId = ref<number | null>(companyIdCookie.value ?? null);
 
   const { $api } = useNuxtApp();
   const api = $api as typeof $fetch;
@@ -60,6 +62,12 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
       if (response && response.token) {
         token.value = response.token;
         tokenCookie.value = response.token;
+
+        // 從登入回應中取得並儲存 CompanyId
+        // 根據 API response, user 物件中包含 Id 而非 CompanyId
+        companyId.value = response.user.Id;
+        companyIdCookie.value = response.user.Id;
+
         // 登入成功後，立即獲取詳細的使用者資料
         await fetchUser();
       } else {
@@ -92,11 +100,14 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
     userCookie.value = null;
     token.value = null;
     tokenCookie.value = null;
+    companyId.value = null;
+    companyIdCookie.value = null;
   }
 
   return {
     user,
     token,
+    companyId,
     isLoggedIn,
     login,
     logout,

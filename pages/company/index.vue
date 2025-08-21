@@ -36,7 +36,6 @@ watch(() => authStore.isLoggedIn, (isLoggedIn) => {
 
 watch(programs, (newPrograms) => {
   if (newPrograms && newPrograms.length > 0) {
-    console.log('API Response (Programs):', JSON.parse(JSON.stringify(newPrograms)));
   }
 }, { immediate: true });
 
