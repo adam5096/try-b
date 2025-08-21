@@ -8,6 +8,7 @@ import {
 import { computed, onMounted, watch } from 'vue';
 import dayjs from 'dayjs';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
+import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 import type { Program } from '~/types/company/program';
 
 definePageMeta({
@@ -23,11 +24,15 @@ const searchForm = {
 };
 
 const programStore = useCompanyProgramStore();
+const authStore = useCompanyAuthStore();
 const programs = computed<Program[]>(() => programStore.programs);
 
-onMounted(() => {
-  programStore.fetchPrograms();
-});
+// 監聽登入狀態，確保在 authStore 準備就緒後才獲取資料
+watch(() => authStore.isLoggedIn, (isLoggedIn) => {
+  if (isLoggedIn) {
+    programStore.fetchPrograms();
+  }
+}, { immediate: true });
 
 watch(programs, (newPrograms) => {
   if (newPrograms && newPrograms.length > 0) {
