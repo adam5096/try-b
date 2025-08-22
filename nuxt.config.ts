@@ -62,4 +62,17 @@ export default defineNuxtConfig({
   imports: {
     dirs: ['stores/**'],
   },
+  app: {
+    head: {
+      link: [
+        // 預先連線至圖片 CDN
+        { rel: 'preconnect', href: 'https://images.unsplash.com' },
+        { rel: 'preconnect', href: 'https://i.imgur.com' },
+
+        // Google Fonts 已經由 @nuxt/fonts 模組自動處理，此處備用
+        // { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        // { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+      ],
+    },
+  },
 })

@@ -93,8 +93,14 @@ const stats = [
     <section class="relative h-hero-section text-white ">
       <!-- Layer 1: Background Image -->
       <div class="absolute inset-0 z-10 mask-fade-from-center-to-left">
-        <NuxtImg src="/img/home/home-worker-bg.webp" alt="Office working environment"
-          class="h-full w-full  object-cover" />
+        <NuxtImg
+          src="/img/home/home-worker-bg.webp"
+          alt="Office working environment"
+          class="h-full w-full object-cover"
+          width="1920"
+          height="1280"
+          preload
+        />
       </div>
 
       <!-- Layer 2: Blue Shape with Gradient Mask -->
