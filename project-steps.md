@@ -973,3 +973,9 @@
   - 修正了在 `pages/index.vue` 中，因自動化腳本錯誤地將 `<NuxtImg>` 元件改為 `<SharedNuxtImg>` 而導致的渲染錯誤。
   - 透過清除 `.nuxt` 快取並重啟開發伺服器，解決了因元件路徑變更而引發的 `DevalueError: Cannot stringify a function` 伺服器端渲染警告。
 
+### PERF: 首頁外部資源預先連線
+- **分析載入瓶頸**: 根據 Lighthouse 報告與程式碼分析，確認首頁 (`pages/index.vue`) 中來自外部網域 (`images.unsplash.com`, `i.imgur.com`) 的圖片是影響 LCP (最大內容繪製) 的潛在因素。
+- **實作預先連線 (Preconnect)**: 於 `nuxt.config.ts` 中設定 `<link rel="preconnect">`，指示瀏覽器提早與這些外部圖片主機建立連線（DNS 查詢、TCP 交握、TLS 協商）。
+- **優化設定**: 確認專案使用的 `@nuxt/fonts` 模組已自動處理 Google Fonts 的連線優化，因此僅針對圖片 CDN 進行設定，避免重複配置。
+- **預期成效**: 降低首次載入外部圖片時的延遲，進一步改善 LCP 指標與使用者體驗。
+
