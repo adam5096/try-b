@@ -151,15 +151,15 @@ const stats = [
             <div class="flex justify-center mt-auto">
               <ul class="space-y-2 text-left">
                 <li class="flex items-start min-h-[2rem]">
-                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
+                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>實習與專案合作機會</span>
                 </li>
                 <li class="flex items-start min-h-[2rem]">
-                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
+                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>職涯探索工作坊</span>
                 </li>
                 <li class="flex items-start min-h-[2rem]">
-                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
+                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>業界導師一對一指導與深度對談</span>
                 </li>
               </ul>
@@ -180,15 +180,15 @@ const stats = [
             <div class="flex justify-center mt-auto">
               <ul class="space-y-2 text-left">
                 <li class="flex items-start min-h-[2rem]">
-                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
+                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>彈性時段職業體驗專案</span>
                 </li>
                 <li class="flex items-start min-h-[2rem]">
-                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
+                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>多元職務角色體驗計畫</span>
                 </li>
                 <li class="flex items-start min-h-[2rem]">
-                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
+                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>快速找尋就職方向</span>
                 </li>
               </ul>
@@ -211,15 +211,15 @@ const stats = [
             <div class="flex justify-center mt-auto">
               <ul class="space-y-2 text-left">
                 <li class="flex items-start min-h-[2rem]">
-                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
+                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>先體驗，後合作</span>
                 </li>
                 <li class="flex items-start min-h-[2rem]">
-                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
+                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>展現企業魅力，不再浪費培訓預算</span>
                 </li>
                 <li class="flex items-start min-h-[2rem]">
-                  <HomeCheckIcon class="mr-2 flex-shrink-0" />
+                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
                   <span>零長期成本，高回報人才管道</span>
                 </li>
               </ul>
@@ -244,7 +244,7 @@ const stats = [
             <div class="relative">
               <NuxtImg class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop" alt="投資理財顧問體驗" />
               <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors">
-                <HeartIcon class="w-8 h-8" />
+                <SharedHeartIcon class="w-8 h-8" />
               </button>
             </div>
             <div class="p-6 flex flex-col flex-grow">
@@ -253,11 +253,11 @@ const stats = [
               <p class="mt-2 text-gray-600 text-sm flex-grow">跟隨資深理財顧問了解金融市場分析、學習投資組合規劃，體驗為客戶制定理財策略的專業服務流程。</p>
               <div class="mt-4 space-y-2 text-sm text-gray-700">
                 <div class="flex items-center gap-2">
-                  <LocationPinIcon class="w-5 h-5 flex-shrink-0" />
+                  <SharedLocationPinIcon class="w-5 h-5 flex-shrink-0" />
                   <span>台北市大安區</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <CalendarIcon class="w-5 h-5 flex-shrink-0" />
+                  <SharedCalendarIcon class="w-5 h-5 flex-shrink-0" />
                   <span>2025/09/10 - 2023/11/20</span>
                 </div>
               </div>
@@ -276,7 +276,7 @@ const stats = [
             <div class="relative">
               <NuxtImg class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=2070&auto=format&fit=crop" alt="UI/UX設計師工作坊" />
               <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors">
-                <HeartIcon class="w-8 h-8" />
+                <SharedHeartIcon class="w-8 h-8" />
               </button>
             </div>
             <div class="p-6 flex flex-col flex-grow">
@@ -285,11 +285,11 @@ const stats = [
               <p class="mt-2 text-gray-600 text-sm flex-grow">深入設計思維流程，從用戶研究到原型製作，體驗數位產品設計的完整過程，了解設計師的創作思路。</p>
               <div class="mt-4 space-y-2 text-sm text-gray-700">
                 <div class="flex items-center gap-2">
-                  <LocationPinIcon class="w-5 h-5 flex-shrink-0" />
+                  <SharedLocationPinIcon class="w-5 h-5 flex-shrink-0" />
                   <span>金門縣烈嶼鄉</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <CalendarIcon class="w-5 h-5 flex-shrink-0" />
+                  <SharedCalendarIcon class="w-5 h-5 flex-shrink-0" />
                   <span>2025/10/01 - 2023/12/20</span>
                 </div>
               </div>
@@ -308,7 +308,7 @@ const stats = [
             <div class="relative">
               <NuxtImg class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop" alt="新創企業營運體驗" />
               <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors">
-                <HeartIcon class="w-8 h-8" />
+                <SharedHeartIcon class="w-8 h-8" />
               </button>
             </div>
             <div class="p-6 flex flex-col flex-grow">
@@ -317,11 +317,11 @@ const stats = [
               <p class="mt-2 text-gray-600 text-sm flex-grow">加入新創團隊實際參與產品開發、市場策略制定，體驗創業家的決策焦慮，了解新創生態的運作模式。</p>
               <div class="mt-4 space-y-2 text-sm text-gray-700">
                 <div class="flex items-center gap-2">
-                  <LocationPinIcon class="w-5 h-5 flex-shrink-0" />
+                  <SharedLocationPinIcon class="w-5 h-5 flex-shrink-0" />
                   <span>屏東縣恆春鎮</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <CalendarIcon class="w-5 h-5 flex-shrink-0" />
+                  <SharedCalendarIcon class="w-5 h-5 flex-shrink-0" />
                   <span>2025/07/01 - 2025/10/31</span>
                 </div>
               </div>
@@ -361,12 +361,12 @@ const stats = [
             <p class="text-gray-600 flex-grow">「參與 TRYβ 的產品測試讓我不僅能接觸到最新的科技產品，還能賺取額外的收入。平台使用非常方便，任務說明清晰，是學生兼職的好選擇！」</p>
             <div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
               <div class="flex items-center gap-1 text-yellow-500">
-                <StarIcon class="w-5 h-5" />
-                <StarIcon class="w-5 h-5" />
-                <StarIcon class="w-5 h-5" />
+                <SharedStarIcon class="w-5 h-5" />
+                <SharedStarIcon class="w-5 h-5" />
+                <SharedStarIcon class="w-5 h-5" />
               </div>
               <div class="flex items-center gap-2 text-gray-500">
-                <CalendarIcon class="w-5 h-5" />
+                <SharedCalendarIcon class="w-5 h-5" />
                 <span>2023/11/20</span>
               </div>
             </div>
@@ -384,12 +384,12 @@ const stats = [
             <p class="text-gray-600 flex-grow">「TRY β 讓我有夠分享我的消費經驗和見解，同時感覺自己的聲音有被聽見的。每次完成任務後收到的反饋讓我覺得自己的意見被重視。」</p>
             <div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
               <div class="flex items-center gap-1 text-yellow-500">
-                <StarIcon class="w-5 h-5" />
-                <StarIcon class="w-5 h-5" />
-                <StarIcon class="w-5 h-5" />
+                <SharedStarIcon class="w-5 h-5" />
+                <SharedStarIcon class="w-5 h-5" />
+                <SharedStarIcon class="w-5 h-5" />
               </div>
               <div class="flex items-center gap-2 text-gray-500">
-                <CalendarIcon class="w-5 h-5" />
+                <SharedCalendarIcon class="w-5 h-5" />
                 <span>2023/09/28</span>
               </div>
             </div>
@@ -407,12 +407,12 @@ const stats = [
             <p class="text-gray-600 flex-grow">「即使是我這樣的銀髮族，也能在 TRY  找到適合的測試任務。這讓我保持對科技的關連性，也讓我感覺自己的經驗和觀點仍然有價值。」</p>
             <div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
               <div class="flex items-center gap-1 text-yellow-500">
-                <StarIcon class="w-5 h-5" />
-                <StarIcon class="w-5 h-5" />
-                <StarIcon class="w-5 h-5" />
+                <SharedStarIcon class="w-5 h-5" />
+                <SharedStarIcon class="w-5 h-5" />
+                <SharedStarIcon class="w-5 h-5" />
               </div>
               <div class="flex items-center gap-2 text-gray-500">
-                <CalendarIcon class="w-5 h-5" />
+                <SharedCalendarIcon class="w-5 h-5" />
                 <span>2023/09/28</span>
               </div>
             </div>
@@ -482,7 +482,7 @@ const stats = [
             <!-- Testimonial Card -->
             <div v-for="(testimonial, index) in testimonials" :key="index" class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden">
               <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
-                <BetaIcon class="w-full h-full object-contain" />
+                <SharedBetaIcon class="w-full h-full object-contain" />
               </div>
               <div class="relative z-10 flex items-center gap-4">
                 <NuxtImg :src="testimonial.avatar" alt="Client Avatar" class="w-16 h-16 rounded-full object-cover" />
@@ -493,14 +493,14 @@ const stats = [
               </div>
               <div class="relative z-10 flex items-center">
                 <template v-for="i in 5" :key="i">
-                  <StarIcon v-if="testimonial.rating >= i" class="w-5 h-5 text-yellow-400" />
-                  <StarIcon v-else-if="testimonial.rating > i - 1" class="w-5 h-5 text-yellow-400" :style="{ clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)' }" />
-                  <StarIcon v-else class="w-5 h-5 text-gray-300" />
+                  <SharedStarIcon v-if="testimonial.rating >= i" class="w-5 h-5 text-yellow-400" />
+                  <SharedStarIcon v-else-if="testimonial.rating > i - 1" class="w-5 h-5 text-yellow-400" :style="{ clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)' }" />
+                  <SharedStarIcon v-else class="w-5 h-5 text-gray-300" />
                 </template>
               </div>
               <p class="relative z-10 text-gray-700 leading-relaxed flex-grow">{{ testimonial.quote }}</p>
               <div class="relative z-10 flex items-center gap-2 text-gray-500 mt-auto pt-4">
-                <CalendarIcon class="w-5 h-5" />
+                <SharedCalendarIcon class="w-5 h-5" />
                 <span>{{ testimonial.date }}</span>
               </div>
             </div>
@@ -521,7 +521,7 @@ const stats = [
           <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch order-2 lg:order-1">
             <div v-for="(story, index) in successStories" :key="index" class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden min-h-[400px]">
               <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
-                <BetaIcon class="w-full h-full object-contain" />
+                <SharedBetaIcon class="w-full h-full object-contain" />
               </div>
 
               <div class="relative z-10 flex flex-col flex-grow">

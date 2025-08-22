@@ -56,7 +56,7 @@ const roles = ref([
               class="flex items-start"
             >
               <div class="flex-shrink-0">
-                <HomeCheckIcon class="mr-3 h-5 w-5 text-primary-blue" />
+                <SharedHomeCheckIcon class="mr-3 h-5 w-5 text-primary-blue" />
               </div>
               <span>{{ feature }}</span>
             </li>

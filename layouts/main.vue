@@ -86,7 +86,7 @@ const socialLinks = ref([
           <div class="flex items-center">
             <!-- Mobile Menu Button -->
             <button class="lg:hidden" @click="toggleMenu">
-              <HamburgerIcon class="h-8 w-8 text-gray-700" />
+              <SharedHamburgerIcon class="h-8 w-8 text-gray-700" />
             </button>
 
             <!-- 右側導覽 -->
@@ -96,7 +96,7 @@ const socialLinks = ref([
               ]" class="flex flex-col gap-8 lg:flex-row lg:items-center">
               <!-- Close button for mobile -->
               <button class="absolute top-8 right-8 lg:hidden" @click="toggleMenu">
-                <CloseIcon class="h-8 w-8 text-gray-700" />
+                <SharedCloseIcon class="h-8 w-8 text-gray-700" />
               </button>
 
               <!-- 搜尋欄 (Mobile Only) -->
@@ -145,7 +145,7 @@ const socialLinks = ref([
       
       <!-- Beta Icon Layer -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none opacity-20">
-        <BetaIcon class="w-[800px] h-auto text-white" />
+        <SharedBetaIcon class="w-[800px] h-auto text-white" />
       </div>
 
       <!-- Content Layer -->
