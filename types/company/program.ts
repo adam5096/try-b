@@ -36,3 +36,28 @@ export interface ProgramsResponse {
   items: Program[];
   message: string | null;
 }
+
+export interface ProgramStepPayload {
+  name: string;
+  description: string;
+}
+
+export interface CreateProgramPayload {
+  name: string;
+  intro: string;
+  industry_id: number;
+  job_title_id: number;
+  address: string;
+  address_map: string;
+  contact_name: string;
+  contact_phone: string;
+  contact_email: string;
+  min_people: number;
+  max_people: number;
+  publish_start_date: string;
+  publish_duration_days: number;
+  program_start_date: string;
+  program_end_date: string;
+  steps: ProgramStepPayload[];
+  images: string[];
+}

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
-import type { ProgramsResponse, Program } from '~/types/company/program';
+import type { ProgramsResponse, Program, CreateProgramPayload } from '~/types/company/program';
 
 export const useCompanyProgramStore = defineStore('company-program', () => {
   const authStore = useCompanyAuthStore();
@@ -39,6 +39,33 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
     fetchPrograms();
   }
 
+  async function createProgram(payload: CreateProgramPayload) {
+    if (!authStore.isLoggedIn || !authStore.user || !authStore.companyId) {
+      return { success: false, error: new Error('User not authenticated') };
+    }
+
+    const { data, error } = await useApiFetch(`/api/v1/company/${authStore.companyId}/programs`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
+      },
+      body: payload,
+    });
+
+    if (error.value) {
+      console.error('Failed to create program:', error.value);
+      return { success: false, error: error.value };
+    }
+
+    if (data.value) {
+      // 新增成功後，可以選擇重新整理列表或直接導航
+      await fetchPrograms(); 
+      return { success: true, data: data.value };
+    }
+
+    return { success: false, error: new Error('Unknown error occurred') };
+  }
+
   return {
     programs,
     total,
@@ -46,5 +73,6 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
     limit,
     fetchPrograms,
     setPage,
+    createProgram,
   };
 });

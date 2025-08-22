@@ -954,6 +954,13 @@
   - 改用 Nuxt 3 內建的 `routeRules` 來設定代理，此方法能同時處理來自伺服器端 (SSR) 與客戶端 (瀏覽器) 的請求。
 - **成果**: 成功解決了所有請求與代理層面的錯誤，前端應用程式現已能穩定地從後端 API 獲取並渲染計畫列表資料。
 
+### FIX: API 代理衝突與路徑錯誤
+- **診斷 404 錯誤根源**: 深入追查後發現，即使 `routeRules` 設定正確，請求 URL 中依然包含多餘的 `/api-proxy/` 前綴，且 Nuxt 會優先處理 `server/api/` 中的本地 Mock API 而非代理規則。
+- **移除衝突的 Mock API**: 刪除了 `server/api/company/login.post.ts` 與 `server/api/company/index.get.ts` 兩個檔案，確保 Nuxt 不會再覆蓋代理規則。
+- **修正請求 URL**: 從 `composables/useApiFetch.ts` 與 `plugins/api.ts` 中移除了 `baseURL` 設定，此舉消除了所有 API 請求中多餘的 URL 前綴。
+- **解決 TypeScript 錯誤**: 針對因刪除檔案而產生的 `server/tsconfig.json` 錯誤，確認其為 Nuxt 快取所致，透過重啟開發伺服器即可解決。
+- **成果**: 徹底解決了所有前端的 `404` 代理問題。目前應用程式能正確將請求發送至目標後端，但因後端伺服器無回應而收到 `522` 錯誤，此結果與 Postman 一致，表示前端設定已正確無誤。
+
 ### REFACTOR: 企業端驗證 Store 可讀性
 - **釐清程式碼可讀性問題**: 根據開發者回饋，確認 `useAuthStore` 中將「登入」與「取得使用者資料」合併在單一 `login` 函式的作法，雖然高效能但過於抽象，違反了「清晰勝於聰明」的專案原則。
 - **重構 `useAuthStore` 以分離職責**:
