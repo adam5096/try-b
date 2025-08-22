@@ -40,7 +40,7 @@
 
 @layer utilities {
   .bg-testimonial-pattern {
-    background-image: url('~/assets/img/home/testimonial-bg.webp');
+    background-image: url('/img/home/testimonial-bg.webp');
   }
 
   .text-stroke-background {

@@ -913,7 +913,7 @@
 - **強化程式碼文檔**: 為 `login`、`fetchUser` 與 `logout` 等核心函式，補上繁體中文註解，明確闡述其執行流程與設計目的。
 
 
-# 2025-08-22
+# 2025-08-22t
 ### MGT: 開發流程與架構
 - **確立 Mock API 優先的開發流程**:
   - **決策**: 採納「契約先行」與「API 模擬」的開發模式。未來所有新功能在整合真實 API 前，都應先在 `server/api/` 目錄下建立對應的 Mock API。
@@ -970,3 +970,36 @@
   - 修改 `login` 函式，使其職責縮小為僅處理 `POST /api/v1/company/login` 以獲取 `token`，並在成功後接續呼叫 `fetchUser`。
   - 此舉雖然增加了一次 API 請求，但大幅提升了程式碼的邏輯清晰度、可維護性與對新進開發者的友善度。
 - **強化程式碼文檔**: 為 `login`、`fetchUser` 與 `logout` 等核心函式，補上繁體中文註解，明確闡述其執行流程與設計目的。
+
+### PERF: 全站圖片資源優化 (Nuxt Image)
+- **確立資源管理策略**：釐清 `assets` (建置期處理) 與 `public` (執行期處理) 目錄的職責，並確立將圖片資源統一存放於 `public` 目錄，以交由 `@nuxt/image` 模組全權處理優化。
+- **遷移圖片資源**：將 `assets/img/home/` 目錄下的所有圖片，成功遷移至新建的 `public/img/home/` 目錄中，並移除了舊的 `assets/img` 資料夾，保持專案結構清晰。
+- **全面重構圖片引用**:
+  - 系統性地掃描並修復了整個專案中所有引用舊 `assets` 路徑的檔案。
+  - 將 `pages/index.vue`、`layouts/main.vue`、`layouts/user.vue`、`pages/company/login.vue` 與 `components/BetaIcon.vue` 中的原生 `<img>` 標籤，全面升級為 `<NuxtImg>` 元件。
+  - 修正了 `assets/css/main.css` 中的 `background-image` `url()` 路徑。
+- **修復程式碼品質問題**:
+  - 解決了因 `<NuxtImg>` 元件未正確自我封閉而引發的 Linter 錯誤。
+  - 修復了因 `components/BetaIcon.vue` 未更新引用路徑而導致的 Vite 500 伺服器錯誤，確保開發伺服器能正常運行。
+
+### MGT: 開發流程與架構
+- **確立 Mock API 優先的開發流程**:
+  - **決策**: 採納「契約先行」與「API 模擬」的開發模式。未來所有新功能在整合真實 API 前，都應先在 `server/api/` 目錄下建立對應的 Mock API。
+  - **理由**: 此舉能讓前後端開發完全解耦並行，加速前端 UI 與商業邏輯的開發，並留下可供追溯、可作為備案的「活規格文件」。
+- **釐清 Mock API 與真實 API 的關係**:
+  - **闡明 `server/api/` 的角色**: 確認此目錄為 Nuxt 3 內建的「API 模擬層」，其檔案在部署至 Vercel 後會自動轉換為 Serverless Functions，可作為開發歷史紀錄與除錯備案。
+  - **確認環境變數的隔離**: 明確了 Mock API (`/api/...`) 與真實 API (`NUXT_PUBLIC_API_BASE_URL`) 之間由環境變數 (`.env` vs Vercel 環境變數) 進行切換，兩者不會產生衝突，確保了不同環境的獨立性與靈活性。
+
+### FIX: 企業計畫 API 請求方法與代理修正
+- **診斷 500 錯誤**: 透過比對 Postman (使用 `GET` 成功) 與應用程式 (使用 `POST` 失敗) 的行為，確認後端伺服器預期的請求方法為 `GET`。
+- **修正請求方法**: 修改 `stores/company/useProgramStore.ts`，將 API 請求從 `method: 'POST'` 改為 `method: 'GET'`，並將分頁參數從 `body` 移至 `params`，使其符合 `GET` 請求的標準。
+- **診斷 404 錯誤**: 修正後，錯誤轉變為 `404 Not Found`。經分析確認，這是因為 Nuxt 在伺服器端渲染 (SSR) 時，無法使用僅限客戶端的 `vite.server.proxy` 設定。
+- **修正代理設定**:
+  - 於 `nuxt.config.ts` 中，移除 `vite.server.proxy` 設定。
+  - 改用 Nuxt 3 內建的 `routeRules` 來設定代理，此方法能同時處理來自伺服器端 (SSR) 與客戶端 (瀏覽器) 的請求。
+- **成果**: 成功解決了所有請求與代理層面的錯誤，前端應用程式現已能穩定地從後端 API 獲取並渲染計畫列表資料。
+
+### FIX: API 代理衝突與路徑錯誤
+- **診斷 404 錯誤根源**: 深入追查後發現，即使 `routeRules` 設定正確，請求 URL 中依然包含多餘的 `/api-proxy/` 前綴，且 Nuxt 會優先處理 `server/api/` 中的本地 Mock API 而非代理規則。
+- **移除衝突的 Mock API**: 刪除了 `server/api/company/login.post.ts` 與 `server/api/company/index.get.ts` 兩個檔案，確保 Nuxt 不會再覆蓋代理規則。
+- **修正請求 URL**: 從 `composables/useApiFetch.ts`

@@ -1,12 +1,5 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import ssiLogo from '@/assets/img/home/partners/ssi-logo.webp';
-import googleLogo from '@/assets/img/home/partners/google-logo.webp';
-import hexschoolLogo from '@/assets/img/home/partners/hexschool-logo.webp';
-import linkedinLogo from '@/assets/img/home/partners/linkedin-logo.webp';
-import logo104 from '@/assets/img/home/partners/104-logo.webp';
-import cathaybkLogo from '@/assets/img/home/partners/cathaybk-logo.webp';
-import microsoftLogo from '@/assets/img/home/partners/microsoft-logo.webp';
 import { userRoutes } from '~/utils/userRoutes';
 
 definePageMeta({
@@ -17,14 +10,14 @@ definePageMeta({
 // Header-related logic has been moved to layouts/main.vue
 
 const partners = [
-  { name: 'Scuba Schools International', logo: ssiLogo },
-  { name: 'Google', logo: googleLogo },
-  { name: 'Hexschool', logo: hexschoolLogo },
-  { name: 'LinkedIn', logo: linkedinLogo },
-  { name: '104 Job Bank', logo: logo104 },
-  { name: 'Cathay United Bank', logo: cathaybkLogo },
-  { name: 'Microsoft', logo: microsoftLogo }
-]
+  { name: 'Scuba Schools International', logo: '/img/home/partners/ssi-logo.webp' },
+  { name: 'Google', logo: '/img/home/partners/google-logo.webp' },
+  { name: 'Hexschool', logo: '/img/home/partners/hexschool-logo.webp' },
+  { name: 'LinkedIn', logo: '/img/home/partners/linkedin-logo.webp' },
+  { name: '104 Job Bank', logo: '/img/home/partners/104-logo.webp' },
+  { name: 'Cathay United Bank', logo: '/img/home/partners/cathaybk-logo.webp' },
+  { name: 'Microsoft', logo: '/img/home/partners/microsoft-logo.webp' },
+];
 
 // Footer State ---
 const quickLinks = ref([
@@ -100,13 +93,13 @@ const stats = [
     <section class="relative h-hero-section text-white ">
       <!-- Layer 1: Background Image -->
       <div class="absolute inset-0 z-10 mask-fade-from-center-to-left">
-        <img src="@/assets/img/home/home-worker-bg.webp" alt="Office working environment"
+        <NuxtImg src="/img/home/home-worker-bg.webp" alt="Office working environment"
           class="h-full w-full  object-cover" />
       </div>
 
       <!-- Layer 2: Blue Shape with Gradient Mask -->
       <div class="absolute inset-0 z-20 mask-gradient-to-right">
-        <img src="@/assets/img/home/hero-bg.webp" alt="Blue decorative shape"
+        <NuxtImg src="/img/home/hero-bg.webp" alt="Blue decorative shape"
           class="h-full w-full  object-cover lg:object-fill" />
       </div>
 
@@ -150,7 +143,7 @@ const stats = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <img src="~/assets/img/home/who-is-the-user-01.webp" alt="學生與新鮮人" />
+                <NuxtImg src="/img/home/who-is-the-user-01.webp" alt="學生與新鮮人" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">學生與新鮮人</h3>
@@ -179,7 +172,7 @@ const stats = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <img src="~/assets/img/home/who-is-the-user-02.webp" alt="兼職與轉職者" />
+                <NuxtImg src="/img/home/who-is-the-user-02.webp" alt="兼職與轉職者" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
@@ -208,7 +201,7 @@ const stats = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <img src="~/assets/img/home/who-is-the-user-03.webp" alt="創意工作者、中小企業" />
+                <NuxtImg src="/img/home/who-is-the-user-03.webp" alt="創意工作者、中小企業" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">
@@ -249,7 +242,7 @@ const stats = [
           <!-- Card 1 -->
           <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1">
             <div class="relative">
-              <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop" alt="投資理財顧問體驗">
+              <NuxtImg class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop" alt="投資理財顧問體驗" />
               <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors">
                 <HeartIcon class="w-8 h-8" />
               </button>
@@ -281,7 +274,7 @@ const stats = [
           <!-- Card 2 -->
           <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1">
             <div class="relative">
-              <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=2070&auto=format&fit=crop" alt="UI/UX設計師工作坊">
+              <NuxtImg class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=2070&auto=format&fit=crop" alt="UI/UX設計師工作坊" />
               <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors">
                 <HeartIcon class="w-8 h-8" />
               </button>
@@ -313,7 +306,7 @@ const stats = [
           <!-- Card 3 -->
           <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1">
             <div class="relative">
-              <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop" alt="新創企業營運體驗">
+              <NuxtImg class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop" alt="新創企業營運體驗" />
               <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors">
                 <HeartIcon class="w-8 h-8" />
               </button>
@@ -359,7 +352,7 @@ const stats = [
           <!-- Card 1 -->
           <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
             <div class="flex items-center mb-4">
-              <img class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 周O萱">
+              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 周O萱" />
               <div>
                 <p class="font-bold text-lg">周O萱</p>
                 <p class="text-sm text-gray-500">大學生 | 23歲</p>
@@ -382,7 +375,7 @@ const stats = [
           <!-- Card 2 -->
           <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
             <div class="flex items-center mb-4">
-              <img class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 林O偉">
+              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 林O偉" />
               <div>
                 <p class="font-bold text-lg">林O偉</p>
                 <p class="text-sm text-gray-500">上班族 | 35歲</p>
@@ -405,7 +398,7 @@ const stats = [
           <!-- Card 3 -->
           <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
             <div class="flex items-center mb-4">
-              <img class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 張O伯">
+              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 張O伯" />
               <div>
                 <p class="font-bold text-lg">張O伯</p>
                 <p class="text-sm text-gray-500">退休人士 | 68歲</p>
@@ -443,14 +436,14 @@ const stats = [
         >
           <!-- Background Text -->
           <div class="absolute inset-0 z-0">
-            <img src="@/assets/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
+            <NuxtImg src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
           </div>
           <div
             v-for="partner in partners"
             :key="partner.name"
             class="flex max-h-partner-logo-height max-w-partner-logo-width items-center justify-center"
           >
-            <img
+            <NuxtImg
               class="max-h-full max-w-full object-contain"
               :src="partner.logo"
               :alt="partner.name"
@@ -492,7 +485,7 @@ const stats = [
                 <BetaIcon class="w-full h-full object-contain" />
               </div>
               <div class="relative z-10 flex items-center gap-4">
-                <img :src="testimonial.avatar" alt="Client Avatar" class="w-16 h-16 rounded-full object-cover">
+                <NuxtImg :src="testimonial.avatar" alt="Client Avatar" class="w-16 h-16 rounded-full object-cover" />
                 <div>
                   <h3 class="font-bold text-lg">{{ testimonial.name }}</h3>
                   <p class="text-gray-500">{{ testimonial.title }}</p>
@@ -574,7 +567,7 @@ const stats = [
      <section class="relative overflow-hidden py-section-padding bg-brand-gray">
       <!-- Background Text -->
       <div class="absolute inset-0 z-0">
-            <img src="@/assets/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
+            <NuxtImg src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
           </div>
       <!-- Foreground Content -->
       <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 text-center md:px-12">
