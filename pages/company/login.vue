@@ -47,8 +47,8 @@ definePageMeta({
   <div class="flex h-screen bg-white">
     <!-- Left side with background image -->
     <div class="hidden lg:block lg:w-1/2">
-      <img
-        src="~/assets/img/home/home-worker-bg.webp"
+      <NuxtImg
+        src="/img/home/home-worker-bg.webp"
         alt="Login background"
         class="h-full w-full object-cover"
       />

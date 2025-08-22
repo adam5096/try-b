@@ -102,8 +102,8 @@ onBeforeUnmount(() => {
           <h1 class="flex flex-none items-center text-2xl">
             <NuxtLink to="/" class="flex items-center gap-2">
               <div class="w-site-logo-width h-site-logo-height">
-                <img
-                  src="@/assets/img/home/try-beta-logo.webp"
+                <NuxtImg
+                  src="/img/home/try-beta-logo.webp"
                   alt="TRY Beta 網站商標"
                   class="h-full w-full object-contain"
                 />
@@ -168,7 +168,7 @@ onBeforeUnmount(() => {
           <!-- Mobile Menu Button -->
           <div class="lg:hidden">
             <button @click="toggleMenu">
-              <HamburgerIcon class="h-8 w-8 text-gray-700" />
+              <SharedHamburgerIcon class="h-8 w-8 text-gray-700" />
             </button>
           </div>
           
@@ -181,7 +181,7 @@ onBeforeUnmount(() => {
             ]">
             <!-- Close button for mobile -->
             <button class="absolute top-6 right-6" @click="toggleMenu">
-              <CloseIcon class="h-8 w-8 text-gray-700" />
+              <SharedCloseIcon class="h-8 w-8 text-gray-700" />
             </button>
 
             <!-- Navigation Links -->

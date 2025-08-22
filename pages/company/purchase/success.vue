@@ -18,7 +18,7 @@
         <div
           class="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full"
         >
-          <CheckIcon class="w-12 h-12 text-green-500" />
+          <SharedCheckIcon class="w-12 h-12 text-green-500" />
         </div>
         <h3 class="mt-4 text-3xl font-bold">
           付款成功！
@@ -95,7 +95,6 @@
 </template>
 
 <script setup lang="ts">
-import CheckIcon from '~/components/CheckIcon.vue';
 import { companyRoutes as r } from '~/utils/companyRoutes';
 
 definePageMeta({

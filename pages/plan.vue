@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CheckIcon from '@/components/CheckIcon.vue';
+import CheckIcon from '~/components/shared/CheckIcon.vue';
 
 definePageMeta({
   name: 'plan',
