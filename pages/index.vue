@@ -143,7 +143,7 @@ const stats = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <NuxtImg src="/img/home/who-is-the-user-01.webp" alt="學生與新鮮人" />
+                <NuxtImg src="/img/home/who_is_the_user/who-is-the-user-01.webp" alt="學生與新鮮人" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">學生與新鮮人</h3>
@@ -172,7 +172,7 @@ const stats = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <NuxtImg src="/img/home/who-is-the-user-02.webp" alt="兼職與轉職者" />
+                <NuxtImg src="/img/home/who_is_the_user/who-is-the-user-02.webp" alt="兼職與轉職者" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
@@ -201,7 +201,7 @@ const stats = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <NuxtImg src="/img/home/who-is-the-user-03.webp" alt="創意工作者、中小企業" />
+                <NuxtImg src="/img/home/who_is_the_user/who-is-the-user-03.webp" alt="創意工作者、中小企業" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">
