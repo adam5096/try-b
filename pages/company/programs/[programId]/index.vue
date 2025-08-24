@@ -20,20 +20,49 @@ definePageMeta({
   layout: 'company',
 });
 
-const program = {
-  title: '軟體工程師體驗日',
-  status: '審核中',
-  statusTag: 'info',
-  description:
-    '此體驗計畫旨在提供參與者深入了解軟體工程師的日常工作與挑戰。內容涵蓋前端與後端開發、版本控制、敏捷開發流程等。學員將有機會與業界資深工程師互動，並參與小型專案實作。',
-  industry: '資訊科技',
-  location: '台北市信義區松仁路100號',
-  headcount: '5-10人',
-  startDate: '2025/08/15',
-  endDate: '2025/08/16',
-  publishDate: '2025/07/15',
-  applicationDeadline: '2025/08/01',
-};
+// 模擬從 API 獲取單一 program 的資料
+// useAsyncData 確保在設定 meta 之前，資料已經載入
+const { data: program } = await useAsyncData(`program-${route.params.programId}`, async () => {
+  // 在真實情境中，您會在這裡呼叫 API
+  // const response = await fetch(`/api/programs/${route.params.programId}`);
+  // const data = await response.json();
+  // return data;
+
+  // --- 以下為模擬資料 ---
+  const mockProgram = {
+    title: '軟體工程師體驗日',
+    status: '審核中',
+    statusTag: 'info',
+    description:
+      '此體驗計畫旨在提供參與者深入了解軟體工程師的日常工作與挑戰。內容涵蓋前端與後端開發、版本控制、敏捷開發流程等。學員將有機會與業界資深工程師互動，並參與小型專案實作。',
+    industry: '資訊科技',
+    location: '台北市信義區松仁路100號',
+    headcount: '5-10人',
+    startDate: '2025/08/15',
+    endDate: '2025/08/16',
+    publishDate: '2025/07/15',
+    applicationDeadline: '2025/08/01',
+    // 假設未來 API 會提供一個封面圖 URL
+    // coverImage: 'https://example.com/cover.jpg',
+  };
+  // --- 模擬資料結束 ---
+
+  return mockProgram;
+});
+
+// --- SEO Meta ---
+// 確保 program 資料存在才設定 meta
+if (program.value) {
+  useSeoMeta({
+    title: `親身體驗 ${program.value.industry} 的日常｜${program.value.title}`,
+    description: `想知道成為一名 ${program.value.title.replace('體驗日', '').replace('體驗', '')} 是什麼感覺嗎？加入我們的體驗計畫，深入了解工作細節與挑戰，為你的職涯做出最佳選擇。`, // 截取前 150 字作為描述
+    ogTitle: `親身體驗 ${program.value.industry} 的日常｜${program.value.title}`,
+    ogDescription: `想知道成為一名 ${program.value.title.replace('體驗日', '').replace('體驗', '')} 是什麼感覺嗎？加入我們的體驗計畫，深入了解工作細節與挑戰，為你的職涯做出最佳選擇。`,
+    // ogImage: program.value.coverImage, // 未來當有圖片時使用
+  });
+}
+// --- End SEO Meta ---
+
 
 const applicants = [
   {
