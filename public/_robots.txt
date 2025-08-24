@@ -1,2 +1,7 @@
-User-Agent: *
+# Allow all crawlers to access all content
+User-agent: *
 Disallow:
+
+# Point crawlers to the sitemap
+# 請記得在網站上線後，將 yourdomain.com 替換成您的真實網域
+Sitemap: https://try-b.vercel.app/sitemap.xml

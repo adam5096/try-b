@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/eslint',
     '@nuxtjs/seo',
+    '@nuxtjs/sitemap', // Sitemap 模組
     ['@element-plus/nuxt', { idInjection: false }],
     '@nuxt/image',
     '@pinia/nuxt',
@@ -39,8 +40,18 @@ export default defineNuxtConfig({
     // injectPosition: 0,
     viewer: false,
   },
+
+  // Sitemap 模組設定
+  site: {
+    // 請記得在網站上線後，將 yourdomain.com 替換成您的真實網域
+    url: 'https://try-b.vercel.app',
+  },
+
   routeRules: {
     '/api/**': {
+      proxy: 'https://trybeta.rocket-coding.com/api/**',
+    },
+    '/company/**': {
       proxy: 'https://trybeta.rocket-coding.com/api/**',
     },
   },
