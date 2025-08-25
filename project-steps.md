@@ -16,3 +16,5 @@
 - 修正 `usePlanStore` 中 `CompanyPlan` 型別與 Mock API 回傳資料結構不一致問題
 - 建立公司資訊 Mock API (`/api/v1/company/index.get.ts`)
 - 建立公司計畫列表 Mock API (`/api/v1/company/[companyId]/programs.get.ts`)
+- 重構 `useProgramStore`，改用響應式 `useFetch` 自動獲取計畫列表
+- 修正 `Program` 型別定義，使其與 Mock API 資料結構一致

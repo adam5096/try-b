@@ -50,6 +50,9 @@ export default defineEventHandler((event) => {
 
   return {
     status: 'success',
-    data: mockPrograms,
+    data: {
+      items: mockPrograms,
+      total: mockPrograms.length,
+    },
   };
 });
