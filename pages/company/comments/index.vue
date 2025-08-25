@@ -95,11 +95,7 @@ function handlePageChange (page: number) {
 
 <template>
   <div class="space-y-6">
-    <div class="p-4 bg-white rounded-lg shadow-sm">
-      <p class="text-sm text-gray-700">
-        目前的方案 日期: 2025/7/1 - 2025/8/1 10:10AM 體驗人數上限 10 人 剩餘體驗人數 5 人
-      </p>
-    </div>
+    <CompanyPlanStatusHeader />
 
     <h1 class="text-2xl font-bold">
       體驗者評價管理

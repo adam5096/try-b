@@ -35,9 +35,7 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
 
 <template>
   <div class="space-y-6 p-6">
-    <div class="rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-600">
-      目前的方案 日期：2025/7/1 - 2025/8/1 10:10AM 體驗人數上限 10 人 剩餘體驗人數 5 人
-    </div>
+    <CompanyPlanStatusHeader />
 
     <div>
       <h2 class="text-2xl font-bold">

@@ -89,14 +89,7 @@ async function handleSubmit() {
 
 <template>
   <div class="p-6 bg-white rounded-lg shadow-sm">
-    <div class="mb-6 flex justify-between items-center" role="alert">
-      <div class="text-sm text-red-500">
-        目前的方案 <span class="font-medium">已過期</span> 體驗人數 <span class="font-medium">已達上限</span>
-      </div>
-      <el-button type="primary">
-        購買方案
-      </el-button>
-    </div>
+    <CompanyPlanStatusHeader />
     <h2 class="text-2xl font-bold mb-6">
       新增體驗計畫
     </h2>
