@@ -5,10 +5,9 @@ import {
   Location,
   User,
 } from '@element-plus/icons-vue';
-import { computed, onMounted, watch } from 'vue';
+import { computed } from 'vue';
 import dayjs from 'dayjs';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
-import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 import type { Program } from '~/types/company/program';
 
 definePageMeta({
@@ -24,20 +23,10 @@ const searchForm = {
 };
 
 const programStore = useCompanyProgramStore();
-const authStore = useCompanyAuthStore();
 const programs = computed<Program[]>(() => programStore.programs);
 
-// 監聽登入狀態，確保在 authStore 準備就緒後才獲取資料
-watch(() => authStore.isLoggedIn, (isLoggedIn) => {
-  if (isLoggedIn) {
-    programStore.fetchPrograms();
-  }
-}, { immediate: true });
-
-watch(programs, (newPrograms) => {
-  if (newPrograms && newPrograms.length > 0) {
-  }
-}, { immediate: true });
+// The fetching logic is now handled reactively inside the store.
+// No need for onMounted or watch here anymore.
 
 const handlePageChange = (page: number) => {
   programStore.setPage(page);
@@ -92,48 +81,45 @@ const handlePageChange = (page: number) => {
       </el-tabs>
 
       <!-- Plan Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        <el-card v-for="program in programs" :key="program.Id">
+      <div v-if="programStore.isLoading" class="text-center p-8">
+        <p>資料載入中...</p>
+      </div>
+      <div v-else-if="programStore.error" class="text-center p-8 text-red-500">
+        <p>無法載入計畫列表，請稍後再試。</p>
+      </div>
+      <div v-else-if="programs.length === 0" class="text-center p-8 text-gray-500">
+        <p>目前沒有任何計畫。</p>
+      </div>
+      <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+        <el-card v-for="program in programs" :key="program.id">
           <template #header>
             <div class="flex justify-between items-center">
-              <span class="font-bold">{{ program.Name }}</span>
+              <span class="font-bold">{{ program.title }}</span>
               <el-tag type="info">
-                狀態待確認
+                {{ program.status }}
               </el-tag>
             </div>
           </template>
-          <div class="text-gray-600 mb-4">
-            {{ program.Intro }}
-          </div>
+          <!-- Card Body -->
           <div class="space-y-2 text-sm">
             <div class="flex items-center gap-2">
-              <el-icon><Briefcase /></el-icon>
-              <span>{{ program.Industry.Title }}</span>
-              <span class="ml-auto text-gray-500">{{ dayjs(program.ProgramStartDate).format('YYYY/MM/DD') }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <el-icon><Location /></el-icon>
-              <span>地點待確認</span>
-            </div>
-            <div class="flex items-center gap-2">
               <el-icon><User /></el-icon>
-              <span>成行人數：人數待確認</span>
+              <span>已申請人數：{{ program.applicants }}</span>
+              <span class="ml-auto text-gray-500">瀏覽次數：{{ program.views }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <el-icon><Briefcase /></el-icon>
+              <span>{{ program.startDate }} - {{ program.endDate }}</span>
             </div>
           </div>
-          <template #footer>
-            <div class="flex justify-between items-center">
-              <span>已申請人數：
-                <span class="text-red-500">
-                  人數待確認
-                </span>
-              </span>
-              <NuxtLink :to="`/company/programs/${program.Id}`">
-                <el-button type="primary" plain>
-                  查看詳情
-                </el-button>
-              </NuxtLink>
-            </div>
-          </template>
+          <!-- Card Footer -->
+          <div class="mt-4 pt-4 border-t flex justify-end items-center">
+            <NuxtLink :to="`/company/programs/${program.id}`">
+              <el-button type="primary" plain>
+                查看詳情
+              </el-button>
+            </NuxtLink>
+          </div>
         </el-card>
       </div>
 

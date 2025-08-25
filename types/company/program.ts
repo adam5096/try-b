@@ -16,17 +16,27 @@ export interface ProgramStep {
   UpdatedAt: string;
 }
 
+// export interface Program {
+//   Id: number;
+//   Name: string;
+//   Intro: string;
+//   Industry: Industry;
+//   JobTitle: JobTitle;
+//   PublishStartDate: string;
+//   PublishEndDate: string;
+//   ProgramStartDate: string;
+//   ProgramEndDate: string;
+//   Steps: ProgramStep[];
+// }
+
 export interface Program {
-  Id: number;
-  Name: string;
-  Intro: string;
-  Industry: Industry;
-  JobTitle: JobTitle;
-  PublishStartDate: string;
-  PublishEndDate: string;
-  ProgramStartDate: string;
-  ProgramEndDate: string;
-  Steps: ProgramStep[];
+  id: string;
+  title: string;
+  status: string;
+  applicants: number;
+  views: number;
+  startDate: string;
+  endDate: string;
 }
 
 export interface ProgramsResponse {

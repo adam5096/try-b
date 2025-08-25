@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const route = useRoute()
 
@@ -8,96 +8,20 @@ definePageMeta({
   layout: 'company',
 });
 
-const pendingApplicants = [
-  {
-    id: 1,
-    name: '林小美',
-    title: 'UI/UX設計師',
-    program: '數位行銷體驗計畫',
-    department: '行銷部門',
-    date: '2025/10/15 14:30',
-    status: '待審核',
-  },
-  {
-    id: 2,
-    name: '王大明',
-    title: '產品經理',
-    program: '前端開發體驗計畫',
-    department: '技術部門',
-    date: '2025/10/14 09:15',
-    status: '待審核',
-  },
-  {
-    id: 3,
-    name: '張雅琪',
-    title: '數據分析師',
-    program: '產品管理體驗計畫',
-    department: '產品部門',
-    date: '2025/10/13 16:45',
-    status: '待審核',
-  },
-  {
-    id: 4,
-    name: '李志豪',
-    title: '人力資源專員',
-    program: '數據分析體驗計畫',
-    department: '數據部門',
-    date: '2025/10/12 11:20',
-    status: '待審核',
-  },
-  {
-    id: 5,
-    name: '陳美玲',
-    title: '軟體工程師',
-    program: '人資管理體驗計畫',
-    department: '人資部門',
-    date: '2025/10/11 13:50',
-    status: '待審核',
-  },
-]
+const { data: applicantsData, pending } = useAsyncData(
+  `program-${route.params.programId}-applicants`,
+  () => $fetch<{ applicants: any[] }>(`/api/v1/company/programs/${route.params.programId}/applicants`),
+);
 
-const approvedApplicants = [
-  {
-    id: 6,
-    name: '吳建志',
-    title: '行銷專員',
-    program: '後端開發體驗計畫',
-    department: '技術部門',
-    applyDate: '2025/10/10 10:30',
-    approveDate: '2025/10/11 14:20',
-    status: '已通過',
-  },
-  {
-    id: 7,
-    name: '林佳穎',
-    title: '財務分析師',
-    program: '社群行銷體驗計畫',
-    department: '行銷部門',
-    applyDate: '2025/10/09 15:45',
-    approveDate: '2025/10/10 09:30',
-    status: '已拒絕',
-  },
-  {
-    id: 8,
-    name: '黃志明',
-    title: '客戶服務專員',
-    program: '財務管理體驗計畫',
-    department: '財務部門',
-    applyDate: '2025/10/08 11:15',
-    approveDate: '2025/10/09 16:40',
-    status: '已通過',
-  },
-  {
-    id: 9,
-    name: '楊雅玲',
-    title: '後端工程師',
-    program: '客戶服務體驗計畫',
-    department: '客服部門',
-    applyDate: '2025/10/07 09:20',
-    approveDate: '2025/10/08 13:10',
-    status: '已通過',
-  },
-]
+const applicants = computed(() => applicantsData.value?.applicants || []);
+
+const pendingApplicants = computed(() =>
+  applicants.value.filter(a => a.status === '待審核'),
+);
+
+const reviewedApplicants = computed(() =>
+  applicants.value.filter(a => a.status !== '待審核'),
+);
 
 const pendingSort = ref('date-desc')
 const approvedSort = ref('date-desc')
@@ -126,7 +50,7 @@ const approvedStatus = ref('all')
     <div class="card-base mb-6 bg-white">
       <div class="flex flex-col items-start gap-4 p-6 md:flex-row md:items-center md:justify-between">
         <h2 class="card-title">
-          待審核申請 (5)
+          待審核申請 ({{ pendingApplicants.length }})
         </h2>
           <div class="flex items-center gap-2">
           <span class="text-sm text-zinc-500 whitespace-nowrap">排序方式：</span>
@@ -138,8 +62,8 @@ const approvedStatus = ref('all')
           </ClientOnly>
         </div>
       </div>
-      <el-table :data="pendingApplicants" style="width: 100%">
-        <el-table-column label="申請者" width="180">
+      <el-table :data="pendingApplicants" style="width: 100%" v-loading="pending">
+        <el-table-column label="申請者" min-width="220">
           <template #default="{ row }">
             <div class="flex items-center gap-2">
               <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
@@ -148,27 +72,29 @@ const approvedStatus = ref('all')
                   {{ row.name }}
                 </p>
                 <p class="text-sm text-zinc-500">
-                  {{ row.title }}
+                  {{ row.school }}
                 </p>
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="計畫名稱">
+        <el-table-column label="科系" min-width="180">
           <template #default="{ row }">
-            <p>{{ row.program }}</p>
-            <p class="text-sm text-zinc-500">
-              {{ row.department }}
-            </p>
+            <p>{{ row.major }}</p>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="申請日期" />
-        <el-table-column label="狀態">
+        <el-table-column prop="applyDate" label="申請日期" min-width="120" />
+        <el-table-column label="審核日期" min-width="120">
+          <template #default>
+            <span>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="狀態" min-width="100">
           <template #default="{ row }">
             <span class="tag-amber">{{ row.status }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" min-width="100">
           <template #default="{ row }">
             <NuxtLink
               :to="{
@@ -189,7 +115,7 @@ const approvedStatus = ref('all')
     <div class="card-base mb-6 bg-white">
       <div class="flex flex-col items-start gap-4 p-6 md:flex-row md:items-center md:justify-between">
         <h2 class="card-title">
-          已審核申請 (4)
+          已審核申請 ({{ reviewedApplicants.length }})
         </h2>
         <div class="flex flex-wrap items-center justify-end gap-4">
           <div class="flex items-center gap-2">
@@ -213,8 +139,8 @@ const approvedStatus = ref('all')
           </div>
         </div>
       </div>
-      <el-table :data="approvedApplicants" style="width: 100%">
-        <el-table-column label="申請者" width="180">
+      <el-table :data="reviewedApplicants" style="width: 100%" v-loading="pending">
+        <el-table-column label="申請者" min-width="220">
           <template #default="{ row }">
             <div class="flex items-center gap-2">
               <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
@@ -223,30 +149,31 @@ const approvedStatus = ref('all')
                   {{ row.name }}
                 </p>
                 <p class="text-sm text-zinc-500">
-                  {{ row.title }}
+                  {{ row.school }}
                 </p>
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="計畫名稱">
+        <el-table-column label="科系" min-width="180">
           <template #default="{ row }">
-            <p>{{ row.program }}</p>
-            <p class="text-sm text-zinc-500">
-              {{ row.department }}
-            </p>
+            <p>{{ row.major }}</p>
           </template>
         </el-table-column>
-        <el-table-column prop="applyDate" label="申請日期" />
-        <el-table-column prop="approveDate" label="審核日期" />
-        <el-table-column label="狀態">
+        <el-table-column prop="applyDate" label="申請日期" min-width="120" />
+        <el-table-column label="審核日期" min-width="120">
+          <template #default="{ row }">
+            <span>{{ row.approveDate || '-' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="狀態" min-width="100">
           <template #default="{ row }">
             <span :class="{ 'tag-green': row.status === '已通過', 'tag-red': row.status === '已拒絕' }">{{
               row.status
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" min-width="100">
           <template #default="{ row }">
             <NuxtLink
               :to="{
@@ -266,9 +193,9 @@ const approvedStatus = ref('all')
     <!-- Pagination -->
     <div class="flex items-center justify-between">
       <p class="text-sm text-zinc-500">
-        顯示 1-9 筆，共 9 筆申請
+        顯示 1-{{ applicants.length }} 筆，共 {{ applicants.length }} 筆申請
       </p>
-      <el-pagination background layout="prev, pager, next" :total="9" />
+      <el-pagination background layout="prev, pager, next" :total="applicants.length" />
     </div>
   </div>
 </template> 
