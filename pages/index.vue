@@ -2,6 +2,19 @@
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 
+// --- SEO Meta ---
+// 為首頁客製化 SEO 資訊，覆蓋 app.vue 中的全域設定
+useSeoMeta({
+  title: '害怕入錯行？來 TRY β 先體驗再決定！',
+  description: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
+  ogTitle: '害怕入錯行？來 TRY β 先體驗再決定！',
+  // 注意：og:image 理想上需要一個完整的 URL (例如 https://www.yourdomain.com/img/home/home-worker-bg.webp)
+  // 這裡暫時使用相對路徑，但建議您提供網站的 base URL 或使用圖片 CDN
+  ogImage: '/img/home/home-worker-bg.webp',
+  ogDescription: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
+});
+// --- End SEO Meta ---
+
 definePageMeta({
   name: 'index',
   layout: 'main',
