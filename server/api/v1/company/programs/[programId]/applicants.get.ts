@@ -28,6 +28,7 @@ export default defineEventHandler(async (event) => {
       applyDate: '2025/07/21',
       status: '已通過',
       statusTag: 'success',
+      approveDate: '2025/07/25',
     },
     {
       id: 3,
@@ -37,6 +38,7 @@ export default defineEventHandler(async (event) => {
       applyDate: '2025/07/22',
       status: '已拒絕',
       statusTag: 'danger',
+      approveDate: '2025/07/26',
     },
     {
       id: 4,
@@ -55,6 +57,7 @@ export default defineEventHandler(async (event) => {
       applyDate: '2025/07/24',
       status: '已通過',
       statusTag: 'success',
+      approveDate: '2025/07/27',
     },
   ];
 
