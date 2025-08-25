@@ -18,3 +18,11 @@
 - 建立公司計畫列表 Mock API (`/api/v1/company/[companyId]/programs.get.ts`)
 - 重構 `useProgramStore`，改用響應式 `useFetch` 自動獲取計畫列表
 - 修正 `Program` 型別定義，使其與 Mock API 資料結構一致
+
+#### e-company-8 查看體驗者申請審核頁面
+- 建立單一申請者資料 Mock API (`/api/v1/company/programs/[programId]/applicants/[applicantId].get.ts`)
+- 建立申請者資料型別定義檔案 (`types/company/applicant.ts`)
+- 更新申請者審核頁面 (`applicants/[applicantId].vue`)，串接 Mock API 並套用型別
+- 修正申請者審核頁面中聯絡資訊的排版對齊問題
+- 修正申請計畫區塊的欄位顯示邏輯，確保所有資訊正確呈現
+- 修復因型別推斷不完整導致的 TypeScript 錯誤
