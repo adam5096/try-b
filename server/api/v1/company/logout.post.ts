@@ -1,6 +1,8 @@
+import { defineEventHandler, deleteCookie } from 'h3';
+
 export default defineEventHandler(async (event) => {
   // 清除名為 'company-token' 的 cookie
-  deleteCookie(event, 'company-token');
+  deleteCookie(event, 'companyAuthToken');
 
   return {
     status: 'success',

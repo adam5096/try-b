@@ -12,3 +12,7 @@
 - 更新活動申請者列表頁面 (`applicants/index.vue`)，串接 Mock API
 - 重構 Mock API，統一收納於 `/api/v1` 路徑下
 - 為既有 `company` 及 `user` 真實 API 建立對應 Mock API 版本
+- 修正 `usePlanStore`，改用 `useFetch` 解決伺服器端渲染 (SSR) 問題
+- 修正 `usePlanStore` 中 `CompanyPlan` 型別與 Mock API 回傳資料結構不一致問題
+- 建立公司資訊 Mock API (`/api/v1/company/index.get.ts`)
+- 建立公司計畫列表 Mock API (`/api/v1/company/[companyId]/programs.get.ts`)

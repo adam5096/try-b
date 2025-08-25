@@ -69,7 +69,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         companyIdCookie.value = response.user.Id;
 
         // 登入成功後，立即獲取詳細的使用者資料
-        await fetchUser();
+        // await fetchUser(); // 暫時註解此行以避免初始登入時不必要的呼叫
       } else {
         throw new Error('登入失敗：無效的回應格式');
       }
