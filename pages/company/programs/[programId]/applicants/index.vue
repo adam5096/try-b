@@ -63,7 +63,7 @@ const approvedStatus = ref('all')
         </div>
       </div>
       <el-table :data="pendingApplicants" style="width: 100%" v-loading="pending">
-        <el-table-column label="申請者" width="220">
+        <el-table-column label="申請者" min-width="220">
           <template #default="{ row }">
             <div class="flex items-center gap-2">
               <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
@@ -78,18 +78,23 @@ const approvedStatus = ref('all')
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="科系">
+        <el-table-column label="科系" min-width="180">
           <template #default="{ row }">
             <p>{{ row.major }}</p>
           </template>
         </el-table-column>
-        <el-table-column prop="applyDate" label="申請日期" />
-        <el-table-column label="狀態">
+        <el-table-column prop="applyDate" label="申請日期" min-width="120" />
+        <el-table-column label="審核日期" min-width="120">
+          <template #default>
+            <span>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="狀態" min-width="100">
           <template #default="{ row }">
             <span class="tag-amber">{{ row.status }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" min-width="100">
           <template #default="{ row }">
             <NuxtLink
               :to="{
@@ -135,7 +140,7 @@ const approvedStatus = ref('all')
         </div>
       </div>
       <el-table :data="reviewedApplicants" style="width: 100%" v-loading="pending">
-        <el-table-column label="申請者" width="220">
+        <el-table-column label="申請者" min-width="220">
           <template #default="{ row }">
             <div class="flex items-center gap-2">
               <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
@@ -150,21 +155,25 @@ const approvedStatus = ref('all')
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="科系">
+        <el-table-column label="科系" min-width="180">
           <template #default="{ row }">
             <p>{{ row.major }}</p>
           </template>
         </el-table-column>
-        <el-table-column prop="applyDate" label="申請日期" />
-        <el-table-column prop="approveDate" label="審核日期" />
-        <el-table-column label="狀態">
+        <el-table-column prop="applyDate" label="申請日期" min-width="120" />
+        <el-table-column label="審核日期" min-width="120">
+          <template #default="{ row }">
+            <span>{{ row.approveDate || '-' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="狀態" min-width="100">
           <template #default="{ row }">
             <span :class="{ 'tag-green': row.status === '已通過', 'tag-red': row.status === '已拒絕' }">{{
               row.status
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" min-width="100">
           <template #default="{ row }">
             <NuxtLink
               :to="{
