@@ -118,11 +118,7 @@ const timeline = [
 <template>
   <div class="p-6 lg:p-8">
     <!-- Top info bar -->
-    <div class="mb-6 rounded-lg bg-zinc-100 p-4">
-      <p class="text-sm text-zinc-600">
-        目前的方案 日期：2025/7/1 - 2025/8/1 10:10AM 體驗人數上限 10 人 剩餘體驗人數 5 人
-      </p>
-    </div>
+    <CompanyPlanStatusHeader />
 
     <!-- Page Header -->
     <div class="mb-6">

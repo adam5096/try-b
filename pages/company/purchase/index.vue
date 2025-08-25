@@ -64,11 +64,7 @@ function selectPlan(planId: number) {
 <template>
   <div class="p-8">
     <!-- Current Plan Static Info -->
-    <div class="p-4 bg-white rounded-lg shadow-sm mb-6">
-      <p class="text-sm text-gray-500">
-        目前的方案 日期：2025/7/1 - 2025/8/1 10:10AM 體驗人數上限 10 人 剩餘體驗人數 5 人
-      </p>
-    </div>
+    <CompanyPlanStatusHeader />
 
     <!-- Current Plan Details -->
     <div class="mb-8">

@@ -47,11 +47,7 @@ const handlePageChange = (page: number) => {
 <template>
   <div>
     <!-- Header -->
-    <div class="p-4 bg-white rounded-lg">
-      <p class="text-sm text-gray-500">
-        目前的方案 日期：2025/7/1 - 2025/8/1 10:10AM 體驗人數上限 10 人 剩餘體驗人數 5 人
-      </p>
-    </div>
+    <CompanyPlanStatusHeader />
 
     <!-- Main Content -->
     <div class="mt-6">
