@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
 import { ref, computed, watch } from 'vue';
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
-import type { ProgramsResponse, Program, CreateProgramPayload } from '~/types/company/program';
+import type { ProgramsResponse, CreateProgramPayload } from '~/types/company/program';
+import type { ProgramCreationResponse } from '~/types/company/programCreation';
 
 export const useCompanyProgramStore = defineStore('company-program', () => {
   const authStore = useCompanyAuthStore();
@@ -43,7 +44,7 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
       return { success: false, error: new Error('User not authenticated') };
     }
 
-    const { data: responseData, error: fetchError } = await useApiFetch(`/api/v1/company/${authStore.companyId}/programs`, {
+    const { data: responseData, error: fetchError } = await useApiFetch<ProgramCreationResponse>(`/api/v1/company/${authStore.companyId}/programs`, {
       method: 'POST',
       body: payload,
     });
