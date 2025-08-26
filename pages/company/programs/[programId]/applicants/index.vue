@@ -69,21 +69,13 @@ const approvedStatus = ref('all')
               <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
               <div>
                 <p class="font-bold">
-                  {{ row.name }}
-                </p>
-                <p class="text-sm text-zinc-500">
-                  {{ row.school }}
+                  {{ row.applicant_name }}
                 </p>
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="科系" min-width="150">
-          <template #default="{ row }">
-            <p>{{ row.major }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column prop="applyDate" label="申請日期" min-width="150" />
+        <el-table-column prop="submit_date" label="申請日期" min-width="150" />
         <el-table-column label="審核日期" min-width="150">
           <template #default>
             <span>-</span>
@@ -91,7 +83,7 @@ const approvedStatus = ref('all')
         </el-table-column>
         <el-table-column label="狀態" min-width="150">
           <template #default="{ row }">
-            <span class="tag-amber">{{ row.status }}</span>
+            <span class="tag-amber">{{ row.review_status }}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="150">
@@ -99,7 +91,7 @@ const approvedStatus = ref('all')
             <NuxtLink
               :to="{
                 name: 'company-program-applicant-detail',
-                params: { programId: route.params.programId, applicantId: row.id },
+                params: { programId: route.params.programId, applicantId: row.identity },
               }"
             >
               <el-button type="primary">
@@ -146,30 +138,22 @@ const approvedStatus = ref('all')
               <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
               <div>
                 <p class="font-bold">
-                  {{ row.name }}
-                </p>
-                <p class="text-sm text-zinc-500">
-                  {{ row.school }}
+                  {{ row.applicant_name }}
                 </p>
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="科系" min-width="150">
-          <template #default="{ row }">
-            <p>{{ row.major }}</p>
-          </template>
-        </el-table-column>
-        <el-table-column prop="applyDate" label="申請日期" min-width="150" />
+        <el-table-column prop="submit_date" label="申請日期" min-width="150" />
         <el-table-column label="審核日期" min-width="150">
           <template #default="{ row }">
-            <span>{{ row.approveDate || '-' }}</span>
+            <span>{{ row.review_date || '-' }}</span>
           </template>
         </el-table-column>
         <el-table-column label="狀態" min-width="150">
           <template #default="{ row }">
-            <span :class="{ 'tag-green': row.status === '已通過', 'tag-red': row.status === '已拒絕' }">{{
-              row.status
+            <span :class="{ 'tag-green': row.review_status === 'Approved', 'tag-red': row.review_status === 'Cancelled' }">{{
+              row.review_status
             }}</span>
           </template>
         </el-table-column>
@@ -178,7 +162,7 @@ const approvedStatus = ref('all')
             <NuxtLink
               :to="{
                 name: 'company-program-applicant-detail',
-                params: { programId: route.params.programId, applicantId: row.id },
+                params: { programId: route.params.programId, applicantId: row.identity },
               }"
             >
               <el-button type="primary">
