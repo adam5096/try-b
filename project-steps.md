@@ -41,3 +41,9 @@
 - 修正伺服器端渲染 (SSR) 環境下，因 API 路徑為相對路徑而導致的 URL 解析失敗錯誤。
 - 重構 `useAuthStore`，將所有 API 請求 (`login`, `logout`, `fetchUser`) 全面改用共用的 `useApiFetch` Composable，以統一處理 `baseURL` 與驗證標頭 (Authorization Header)。
 - 修正 `e-comp-8` 申請列表頁面的 API 端點錯誤，將請求路徑從 `/applicants` 更正為 `/applications`，解決 404 Not Found 問題。
+
+#### API 請求邏輯重構
+- 建立 `useApplicants` Composable (複數) 以專門處理申請者列表 (e-comp-7) 的 API 請求邏輯。
+- 重構申請者列表頁面 (`applicants/index.vue`)，改為呼叫新建的 `useApplicants` Composable。
+- 修正單一申請者 Composable (`useApplicant.ts`)，使其改用共用的 `useApiFetch` 以確保驗證 Token 的傳遞。
+- 修復因 Vue Router 參數型別 (`string | string[]`) 與 Composable 預期型別不匹配所引發的 TypeScript 錯誤。

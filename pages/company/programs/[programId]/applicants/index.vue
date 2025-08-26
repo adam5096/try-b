@@ -1,27 +1,27 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useApplicants } from '~/composables/api/company/useApplicants';
 
 const route = useRoute()
+const authStore = useCompanyAuthStore();
 
 definePageMeta({
   name: 'company-program-applicants-list',
   layout: 'company',
 });
 
-const { data: applicantsData, pending } = useAsyncData(
-  `program-${route.params.programId}-applicants`,
-  () => $fetch<{ applicants: any[] }>(`/api/v1/company/programs/${route.params.programId}/applications`),
+const { data: applicantsData, pending } = useApplicants(
+  computed(() => authStore.companyId),
+  computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId),
 );
 
-const applicants = computed(() => applicantsData.value?.applicants || []);
-
-const pendingApplicants = computed(() =>
-  applicants.value.filter(a => a.status === '待審核'),
-);
-
-const reviewedApplicants = computed(() =>
-  applicants.value.filter(a => a.status !== '待審核'),
-);
+const pendingApplicants = computed(() => applicantsData.value?.pending_applications || []);
+const reviewedApplicants = computed(() => applicantsData.value?.reviewed_applications || []);
+const totalApplicants = computed(() => applicantsData.value?.total_applicants || 0);
+const allApplicants = computed(() => [
+  ...(applicantsData.value?.pending_applications || []),
+  ...(applicantsData.value?.reviewed_applications || []),
+]);
 
 const pendingSort = ref('date-desc')
 const approvedSort = ref('date-desc')
@@ -193,9 +193,9 @@ const approvedStatus = ref('all')
     <!-- Pagination -->
     <div class="flex items-center justify-between">
       <p class="text-sm text-zinc-500">
-        顯示 1-{{ applicants.length }} 筆，共 {{ applicants.length }} 筆申請
+        顯示 1-{{ totalApplicants }} 筆，共 {{ totalApplicants }} 筆申請
       </p>
-      <el-pagination background layout="prev, pager, next" :total="applicants.length" />
+      <el-pagination background layout="prev, pager, next" :total="totalApplicants" />
     </div>
   </div>
 </template> 

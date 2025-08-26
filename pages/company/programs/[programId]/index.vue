@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import {
   User,
   Briefcase,
@@ -14,25 +14,40 @@ import {
 } from '@element-plus/icons-vue';
 import type { Program } from '~/types/company/program';
 import { useApiFetch } from '~/composables/api/shared/useApiFetch';
+
 const route = useRoute();
+const authStore = useCompanyAuthStore();
 
 definePageMeta({
   name: 'company-program-detail',
   layout: 'company',
 });
 
-// 模擬從 API 獲取單一 program 的資料
-// useAsyncData 確保在設定 meta 之前，資料已經載入
+// --- Data Fetching ---
+// 1. Fetch main program details
 const { data: program } = await useAsyncData<Program>(`program-${route.params.programId}`, async () => {
-  // 在真實情境中，您會在這裡呼叫 API
-  const { data } = await useApiFetch<Program>(`/api/v1/company/1/programs/${route.params.programId}`);
+  const { data } = await useApiFetch<Program>(`/api/v1/company/${authStore.companyId}/programs/${route.params.programId}`);
   if (!data.value) {
-    // 處理 API 回傳 null 的情況，可以導向錯誤頁或回傳一個符合 Program 型別的預設物件
-    // 這裡我們拋出錯誤，讓 Nuxt 的錯誤處理機制接管
     throw createError({ statusCode: 404, statusMessage: 'Program not found' });
   }
   return data.value;
 });
+
+// 2. Fetch application statistics from e-comp-7
+interface ApplicantsStatsResponse {
+  total_applicants: number;
+  reviewed_count: number;
+  pending_count: number;
+}
+const { data: stats } = await useApiFetch<ApplicantsStatsResponse>(
+  () => `/api/v1/company/${authStore.companyId}/programs/${route.params.programId}/applications`,
+);
+
+const totalApplicants = computed(() => stats.value?.total_applicants ?? 0);
+const reviewedApplicants = computed(() => stats.value?.reviewed_count ?? 0);
+const pendingApplicants = computed(() => stats.value?.pending_count ?? 0);
+// --- End Data Fetching ---
+
 
 // --- SEO Meta ---
 // 確保 program 資料存在才設定 meta
@@ -89,7 +104,7 @@ const formatDate = (dateString: string) => {
                 總申請人數
               </p>
               <p class="text-3xl font-bold text-blue-500">
-                {{ program.Statistics.TotalApplicants }}
+                {{ totalApplicants }}
               </p>
             </div>
             <div class="flex items-baseline justify-between">
@@ -97,7 +112,7 @@ const formatDate = (dateString: string) => {
                 已審核
               </p>
               <p class="text-3xl font-bold text-green-600">
-                {{ program.Statistics.ReviewedCount }}
+                {{ reviewedApplicants }}
               </p>
             </div>
             <div class="flex items-baseline justify-between">
@@ -105,7 +120,7 @@ const formatDate = (dateString: string) => {
                 待審核
               </p>
               <p class="text-3xl font-bold text-amber-500">
-                {{ program.Statistics.PendingCount }}
+                {{ pendingApplicants }}
               </p>
             </div>
           </div>
