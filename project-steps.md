@@ -36,3 +36,8 @@
 #### 登入流程與共用模組修正
 - 修正企業登入成功後的頁面導向邏輯，確保能穩定跳轉至管理後台
 - 全面排查並統一 `useApiFetch` 的引用路徑，修正因檔案移動造成的模組載入錯誤
+
+#### API 請求與錯誤修正
+- 修正伺服器端渲染 (SSR) 環境下，因 API 路徑為相對路徑而導致的 URL 解析失敗錯誤。
+- 重構 `useAuthStore`，將所有 API 請求 (`login`, `logout`, `fetchUser`) 全面改用共用的 `useApiFetch` Composable，以統一處理 `baseURL` 與驗證標頭 (Authorization Header)。
+- 修正 `e-comp-8` 申請列表頁面的 API 端點錯誤，將請求路徑從 `/applicants` 更正為 `/applications`，解決 404 Not Found 問題。

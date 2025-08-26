@@ -10,7 +10,7 @@ definePageMeta({
 
 const { data: applicantsData, pending } = useAsyncData(
   `program-${route.params.programId}-applicants`,
-  () => $fetch<{ applicants: any[] }>(`/api/v1/company/programs/${route.params.programId}/applicants`),
+  () => $fetch<{ applicants: any[] }>(`/api/v1/company/programs/${route.params.programId}/applications`),
 );
 
 const applicants = computed(() => applicantsData.value?.applicants || []);

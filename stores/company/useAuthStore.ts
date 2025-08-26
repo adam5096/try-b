@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { useApiFetch } from '~/composables/api/shared/useApiFetch';
 import type {
   LoginData,
   CompanyLoginResponse,
@@ -29,13 +30,13 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
     if (!token.value) return;
 
     try {
-      const response = await api<CompanyProfile>('/api/v1/company', {
-        headers: {
-          Authorization: `Bearer ${token.value}`,
-        },
-      });
-      user.value = response;
-      userCookie.value = response;
+      const { data: userData } = await useApiFetch<CompanyProfile>('/api/v1/company');
+      if (userData.value) {
+        user.value = userData.value;
+        userCookie.value = userData.value;
+      } else {
+        throw new Error('No user data returned');
+      }
     } catch (error) {
       // 如果 token 失效或驗證失敗，則清除所有登入狀態
       await logout();
@@ -51,7 +52,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
    */
   async function login(loginData: LoginData) {
     try {
-      const response = await api<CompanyLoginResponse>('/api/v1/company/login', {
+      const { data: responseData } = await useApiFetch<CompanyLoginResponse>('/api/v1/company/login', {
         method: 'POST',
         body: {
           identifier: loginData.account,
@@ -59,7 +60,8 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         },
       });
 
-      if (response && response.token) {
+      if (responseData.value && responseData.value.token) {
+        const response = responseData.value;
         token.value = response.token;
         tokenCookie.value = response.token;
 
@@ -72,7 +74,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         // await fetchUser(); // 暫時註解此行以避免初始登入時不必要的呼叫
       } else {
         // 如果後端回傳 Status: false 或沒有 token，也視為錯誤
-        throw new Error(response.message || '登入失敗：無效的回應格式');
+        throw new Error(responseData.value?.message || '登入失敗：無效的回應格式');
       }
     } catch (error) {
       await logout();
@@ -87,11 +89,8 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
   async function logout() {
     if (token.value) {
       try {
-        await api('/api/v1/company/logout', {
+        await useApiFetch('/api/v1/company/logout', {
           method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token.value}`,
-          },
         });
       } catch (error) {
         console.error('登出時 API 呼叫失敗:', error);
