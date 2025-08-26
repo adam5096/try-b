@@ -8,7 +8,7 @@ import {
 import { computed } from 'vue';
 import dayjs from 'dayjs';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
-import type { Program } from '~/types/company/program';
+import type { ProgramsListItem } from '~/types/company/program';
 
 definePageMeta({
   layout: 'company',
@@ -23,7 +23,7 @@ const searchForm = {
 };
 
 const programStore = useCompanyProgramStore();
-const programs = computed<Program[]>(() => programStore.programs);
+const programs = computed<ProgramsListItem[]>(() => programStore.programs);
 
 // The fetching logic is now handled reactively inside the store.
 // No need for onMounted or watch here anymore.

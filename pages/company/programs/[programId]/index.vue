@@ -12,6 +12,7 @@ import {
   DataLine,
   View,
 } from '@element-plus/icons-vue';
+import type { Program } from '~/types/company/program';
 
 const route = useRoute();
 
@@ -22,23 +23,25 @@ definePageMeta({
 
 // 模擬從 API 獲取單一 program 的資料
 // useAsyncData 確保在設定 meta 之前，資料已經載入
-const { data: program } = await useAsyncData(`program-${route.params.programId}`, async () => {
+const { data: program } = await useAsyncData<Program>(`program-${route.params.programId}`, async () => {
   // 在真實情境中，您會在這裡呼叫 API
-  const response = await $fetch(`/api/v1/company/1/programs/${route.params.programId}`);
-  // return data;
-
-  // 假設 API 回傳的資料結構如 notepad 所示
-  return response;
+  const { data } = await useApiFetch<Program>(`/api/v1/company/1/programs/${route.params.programId}`);
+  if (!data.value) {
+    // 處理 API 回傳 null 的情況，可以導向錯誤頁或回傳一個符合 Program 型別的預設物件
+    // 這裡我們拋出錯誤，讓 Nuxt 的錯誤處理機制接管
+    throw createError({ statusCode: 404, statusMessage: 'Program not found' });
+  }
+  return data.value;
 });
 
 // --- SEO Meta ---
 // 確保 program 資料存在才設定 meta
 if (program.value) {
   useSeoMeta({
-    title: `${program.value.name}｜Try B 企業實習體驗平台`,
-    description: program.value.intro.substring(0, 150), // 截取前 150 字作為描述
-    ogTitle: `${program.value.name}｜Try B 企業實習體驗平台`,
-    ogDescription: program.value.intro.substring(0, 150),
+    title: `${program.value.Name}｜Try B 企業實習體驗平台`,
+    description: program.value.Intro.substring(0, 150), // 截取前 150 字作為描述
+    ogTitle: `${program.value.Name}｜Try B 企業實習體驗平台`,
+    ogDescription: program.value.Intro.substring(0, 150),
     // ogImage: program.value.Images && program.value.Images[0], // 使用第一張圖當作 OG Image
   });
 }
@@ -63,10 +66,10 @@ const formatDate = (dateString: string) => {
     <!-- Page Header -->
     <div class="mb-6">
       <h1 class="text-2xl font-bold text-zinc-900">
-        {{ program.name }}
+        {{ program.Name }}
       </h1>
       <p class="text-sm text-zinc-500">
-        計畫ID: {{ route.params.programId }} | 狀態: {{ program.status_title }}
+        計畫ID: {{ route.params.programId }} | 狀態: {{ program.Status.Title }}
       </p>
     </div>
 
@@ -86,7 +89,7 @@ const formatDate = (dateString: string) => {
                 總申請人數
               </p>
               <p class="text-3xl font-bold text-blue-500">
-                {{ program.applied_count }}
+                {{ program.Statistics.TotalApplicants }}
               </p>
             </div>
             <div class="flex items-baseline justify-between">
@@ -94,7 +97,7 @@ const formatDate = (dateString: string) => {
                 已審核
               </p>
               <p class="text-3xl font-bold text-green-600">
-                28
+                {{ program.Statistics.ReviewedCount }}
               </p>
             </div>
             <div class="flex items-baseline justify-between">
@@ -102,7 +105,7 @@ const formatDate = (dateString: string) => {
                 待審核
               </p>
               <p class="text-3xl font-bold text-amber-500">
-                14
+                {{ program.Statistics.PendingCount }}
               </p>
             </div>
           </div>
@@ -146,7 +149,7 @@ const formatDate = (dateString: string) => {
                     體驗名稱
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    {{ program.name }}
+                    {{ program.Name }}
                   </dd>
                 </div>
                 <div>
@@ -155,7 +158,7 @@ const formatDate = (dateString: string) => {
                   </dt>
                   <dd class="text-zinc-800 mt-1">
                     <!-- 待處理：需要 ID 與名稱的對應表 -->
-                    ID: {{ program.industry_id }}
+                    {{ program.Industry.Title }}
                   </dd>
                 </div>
                 <div>
@@ -164,7 +167,7 @@ const formatDate = (dateString: string) => {
                   </dt>
                   <dd class="text-zinc-800 mt-1">
                     <!-- 待處理：需要 ID 與名稱的對應表 -->
-                    ID: {{ program.job_title_id }}
+                    {{ program.JobTitle.Title }}
                   </dd>
                 </div>
                 <div>
@@ -172,7 +175,7 @@ const formatDate = (dateString: string) => {
                     體驗地點
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    {{ program.address }}
+                    {{ program.Address }}
                   </dd>
                 </div>
               </dl>
@@ -187,7 +190,7 @@ const formatDate = (dateString: string) => {
                     聯絡人
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    {{ program.contact_name }}
+                    {{ program.ContactName }}
                   </dd>
                 </div>
                 <div>
@@ -195,7 +198,7 @@ const formatDate = (dateString: string) => {
                     電話
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    {{ program.contact_phone }}
+                    {{ program.ContactPhone }}
                   </dd>
                 </div>
                 <div>
@@ -203,7 +206,7 @@ const formatDate = (dateString: string) => {
                     Email
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    {{ program.contact_email }}
+                    {{ program.ContactEmail }}
                   </dd>
                 </div>
               </dl>
@@ -214,7 +217,7 @@ const formatDate = (dateString: string) => {
                   刊登期間
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  {{ formatDate(program.publish_start_date) }} - {{ formatDate(program.publish_end_date) }} <span class="ml-2 text-zinc-500">{{ program.publish_duration_days }}天</span>
+                  {{ formatDate(program.PublishStartDate) }} - {{ formatDate(program.PublishEndDate) }} <span class="ml-2 text-zinc-500">{{ program.PublishDurationDays }}天</span>
                 </p>
               </div>
               <div>
@@ -222,7 +225,7 @@ const formatDate = (dateString: string) => {
                   體驗日期
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  {{ formatDate(program.program_start_date) }} - {{ formatDate(program.program_end_date) }} <span class="ml-2 text-zinc-500">為期{{ program.program_duration_days }}天</span>
+                  {{ formatDate(program.ProgramStartDate) }} - {{ formatDate(program.ProgramEndDate) }} <span class="ml-2 text-zinc-500">為期{{ program.ProgramDurationDays }}天</span>
                 </p>
               </div>
               <div>
@@ -230,7 +233,7 @@ const formatDate = (dateString: string) => {
                   體驗人數
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  {{ program.min_people }} - {{ program.max_people }}人
+                  {{ program.MinPeople }} - {{ program.MaxPeople }}人
                 </p>
               </div>
             </div>
@@ -243,7 +246,7 @@ const formatDate = (dateString: string) => {
                 體驗介紹
               </h3>
               <p class="text-zinc-700 leading-relaxed text-sm">
-                {{ program.intro }}
+                {{ program.Intro }}
               </p>
             </div>
             <div>
@@ -343,7 +346,7 @@ const formatDate = (dateString: string) => {
           </h3>
         </template>
         <p class="text-sm text-zinc-700 mb-4">
-          {{ program.address }}
+          {{ program.Address }}
         </p>
         <div class="aspect-video bg-zinc-200 rounded-lg flex items-center justify-center">
           <p class="text-zinc-500">
@@ -370,7 +373,7 @@ const formatDate = (dateString: string) => {
               總瀏覽次數
             </p>
             <p class="text-2xl font-bold text-blue-500">
-              358
+              {{ program.Views.TotalViews }}
             </p>
           </div>
           <div class="flex items-baseline justify-between">
@@ -378,7 +381,7 @@ const formatDate = (dateString: string) => {
               本週瀏覽
             </p>
             <p class="text-2xl font-bold text-zinc-800">
-              87
+              {{ program.Views.DailyViews }}
             </p>
           </div>
           <div class="flex items-baseline justify-between">
