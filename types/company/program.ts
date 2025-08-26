@@ -30,13 +30,13 @@ export interface ProgramStep {
 // }
 
 export interface Program {
-  id: string;
-  title: string;
-  status: string;
-  applicants: number;
-  views: number;
-  startDate: string;
-  endDate: string;
+  Id: number;
+  Name: string;
+  StatusTitle: string;
+  applied_count: number;
+  views: number; // 假設 views 欄位 API 會提供
+  PublishStartDate: string;
+  ProgramEndDate: string;
 }
 
 export interface ProgramsResponse {

@@ -1,11 +1,19 @@
 import type { UseFetchOptions } from 'nuxt/app';
 
 export const useApiFetch = <T>(url: string, options: UseFetchOptions<T> = {}) => {
-  const config = useRuntimeConfig();
+  const authStore = useCompanyAuthStore();
 
-  const defaults: UseFetchOptions<T> = {
-    // baseURL: config.public.apiBase, // <--- 移除 baseURL
+  const customOptions: UseFetchOptions<T> = {
+    ...options,
   };
 
-  return useFetch(url, { ...defaults, ...options });
+  // 如果 token 存在，則自動加入 authorization header
+  if (authStore.token) {
+    customOptions.headers = {
+      ...customOptions.headers,
+      Authorization: `Bearer ${authStore.token}`,
+    };
+  }
+
+  return useFetch(url, customOptions);
 };

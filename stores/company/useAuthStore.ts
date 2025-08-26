@@ -71,7 +71,8 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         // 登入成功後，立即獲取詳細的使用者資料
         // await fetchUser(); // 暫時註解此行以避免初始登入時不必要的呼叫
       } else {
-        throw new Error('登入失敗：無效的回應格式');
+        // 如果後端回傳 Status: false 或沒有 token，也視為錯誤
+        throw new Error(response.message || '登入失敗：無效的回應格式');
       }
     } catch (error) {
       await logout();

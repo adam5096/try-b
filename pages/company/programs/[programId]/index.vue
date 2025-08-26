@@ -24,109 +24,49 @@ definePageMeta({
 // useAsyncData 確保在設定 meta 之前，資料已經載入
 const { data: program } = await useAsyncData(`program-${route.params.programId}`, async () => {
   // 在真實情境中，您會在這裡呼叫 API
-  // const response = await fetch(`/api/programs/${route.params.programId}`);
-  // const data = await response.json();
+  const response = await $fetch(`/api/v1/company/1/programs/${route.params.programId}`);
   // return data;
 
-  // --- 以下為模擬資料 ---
-  const mockProgram = {
-    title: '軟體工程師體驗日',
-    status: '審核中',
-    statusTag: 'info',
-    description:
-      '此體驗計畫旨在提供參與者深入了解軟體工程師的日常工作與挑戰。內容涵蓋前端與後端開發、版本控制、敏捷開發流程等。學員將有機會與業界資深工程師互動，並參與小型專案實作。',
-    industry: '資訊科技',
-    location: '台北市信義區松仁路100號',
-    headcount: '5-10人',
-    startDate: '2025/08/15',
-    endDate: '2025/08/16',
-    publishDate: '2025/07/15',
-    applicationDeadline: '2025/08/01',
-    // 假設未來 API 會提供一個封面圖 URL
-    // coverImage: 'https://example.com/cover.jpg',
-  };
-  // --- 模擬資料結束 ---
-
-  return mockProgram;
+  // 假設 API 回傳的資料結構如 notepad 所示
+  return response;
 });
 
 // --- SEO Meta ---
 // 確保 program 資料存在才設定 meta
 if (program.value) {
   useSeoMeta({
-    title: `親身體驗 ${program.value.industry} 的日常｜${program.value.title}`,
-    description: `想知道成為一名 ${program.value.title.replace('體驗日', '').replace('體驗', '')} 是什麼感覺嗎？加入我們的體驗計畫，深入了解工作細節與挑戰，為你的職涯做出最佳選擇。`, // 截取前 150 字作為描述
-    ogTitle: `親身體驗 ${program.value.industry} 的日常｜${program.value.title}`,
-    ogDescription: `想知道成為一名 ${program.value.title.replace('體驗日', '').replace('體驗', '')} 是什麼感覺嗎？加入我們的體驗計畫，深入了解工作細節與挑戰，為你的職涯做出最佳選擇。`,
-    // ogImage: program.value.coverImage, // 未來當有圖片時使用
+    title: `${program.value.name}｜Try B 企業實習體驗平台`,
+    description: program.value.intro.substring(0, 150), // 截取前 150 字作為描述
+    ogTitle: `${program.value.name}｜Try B 企業實習體驗平台`,
+    ogDescription: program.value.intro.substring(0, 150),
+    // ogImage: program.value.Images && program.value.Images[0], // 使用第一張圖當作 OG Image
   });
 }
 // --- End SEO Meta ---
 
 
-const applicants = [
-  {
-    id: 1,
-    name: '林小美',
-    school: '台灣大學',
-    major: '資訊工程學系',
-    applyDate: '2025/07/20',
-    status: '待審核',
-    statusTag: 'warning',
-  },
-  {
-    id: 2,
-    name: '王大明',
-    school: '成功大學',
-    major: '電機工程學系',
-    applyDate: '2025/07/21',
-    status: '已通過',
-    statusTag: 'success',
-  },
-  {
-    id: 3,
-    name: '張雅琪',
-    school: '交通大學',
-    major: '資訊管理學系',
-    applyDate: '2025/07/22',
-    status: '已拒絕',
-    statusTag: 'danger',
-  },
-];
-
-const timeline = [
-  {
-    content: '發布體驗計畫',
-    timestamp: '2025-07-15',
-    type: 'primary',
-  },
-  {
-    content: '收到新的申請',
-    timestamp: '2025-07-20',
-  },
-  {
-    content: '審核通過一位申請者',
-    timestamp: '2025-07-23',
-  },
-  {
-    content: '計畫開始',
-    timestamp: '2025-08-15',
-  },
-];
+const formatDate = (dateString: string) => {
+  if (!dateString) { return ''; }
+  return new Date(dateString).toLocaleDateString('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+};
 </script>
 
 <template>
-  <div class="p-6 lg:p-8">
+  <div v-if="program" class="p-6 lg:p-8">
     <!-- Top info bar -->
     <CompanyPlanStatusHeader />
 
     <!-- Page Header -->
     <div class="mb-6">
       <h1 class="text-2xl font-bold text-zinc-900">
-        數位行銷實習體驗計畫
+        {{ program.name }}
       </h1>
       <p class="text-sm text-zinc-500">
-        計畫ID: PRJ-20230615-001 | 狀態: 已發布
+        計畫ID: {{ route.params.programId }} | 狀態: {{ program.status_title }}
       </p>
     </div>
 
@@ -146,7 +86,7 @@ const timeline = [
                 總申請人數
               </p>
               <p class="text-3xl font-bold text-blue-500">
-                42
+                {{ program.applied_count }}
               </p>
             </div>
             <div class="flex items-baseline justify-between">
@@ -206,7 +146,7 @@ const timeline = [
                     體驗名稱
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    數位行銷實習體驗計畫
+                    {{ program.name }}
                   </dd>
                 </div>
                 <div>
@@ -214,7 +154,8 @@ const timeline = [
                     產業類別
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    數位行銷、廣告媒體
+                    <!-- 待處理：需要 ID 與名稱的對應表 -->
+                    ID: {{ program.industry_id }}
                   </dd>
                 </div>
                 <div>
@@ -222,7 +163,8 @@ const timeline = [
                     職務類別
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    行銷企劃、社群媒體經營、內容創作
+                    <!-- 待處理：需要 ID 與名稱的對應表 -->
+                    ID: {{ program.job_title_id }}
                   </dd>
                 </div>
                 <div>
@@ -230,7 +172,7 @@ const timeline = [
                     體驗地點
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    台北市信義區松仁路100號15樓
+                    {{ program.address }}
                   </dd>
                 </div>
               </dl>
@@ -245,7 +187,7 @@ const timeline = [
                     聯絡人
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    林小姐 (人資部門)
+                    {{ program.contact_name }}
                   </dd>
                 </div>
                 <div>
@@ -253,7 +195,7 @@ const timeline = [
                     電話
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    02-2345-6789
+                    {{ program.contact_phone }}
                   </dd>
                 </div>
                 <div>
@@ -261,7 +203,7 @@ const timeline = [
                     Email
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    hr@digitalmarketing.com.tw
+                    {{ program.contact_email }}
                   </dd>
                 </div>
               </dl>
@@ -272,7 +214,7 @@ const timeline = [
                   刊登期間
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  2023/07/01 - 2023/08/01 <span class="ml-2 text-zinc-500">30天</span>
+                  {{ formatDate(program.publish_start_date) }} - {{ formatDate(program.publish_end_date) }} <span class="ml-2 text-zinc-500">{{ program.publish_duration_days }}天</span>
                 </p>
               </div>
               <div>
@@ -280,7 +222,7 @@ const timeline = [
                   體驗日期
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  2023/06/15 - 2023/06/17 <span class="ml-2 text-zinc-500">為期三天</span>
+                  {{ formatDate(program.program_start_date) }} - {{ formatDate(program.program_end_date) }} <span class="ml-2 text-zinc-500">為期{{ program.program_duration_days }}天</span>
                 </p>
               </div>
               <div>
@@ -288,7 +230,7 @@ const timeline = [
                   體驗人數
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  6-10人
+                  {{ program.min_people }} - {{ program.max_people }}人
                 </p>
               </div>
             </div>
@@ -301,7 +243,7 @@ const timeline = [
                 體驗介紹
               </h3>
               <p class="text-zinc-700 leading-relaxed text-sm">
-                本計畫提供大學生及研究生一個深入了解數位行銷產業的機會。參與者將有機會參與實際專案，學習SEO、SEM、社群媒體行銷、內容創作等數位行銷技能。我們希望透過這個體驗計畫，讓學生在畢業前就能接觸到業界實務，提升就業競爭力。
+                {{ program.intro }}
               </p>
             </div>
             <div>
@@ -382,28 +324,12 @@ const timeline = [
           </h3>
         </template>
         <dl class="space-y-4 text-sm">
-          <div>
+          <div v-for="(step, index) in program.Steps" :key="index">
             <dt class="font-semibold text-zinc-800">
-              階段一
+              {{ step.Name }}
             </dt>
             <dd class="text-zinc-600 mt-1">
-              企業介紹與數位行銷產業概況 (1小時)、數位行銷工具與平台介紹 (2小時)
-            </dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-zinc-800">
-              階段二
-            </dt>
-            <dd class="text-zinc-600 mt-1">
-              實際案例分析與討論 (1小時)、分組實作：社群媒體行銷策劃 (2小時)
-            </dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-zinc-800">
-              階段三
-            </dt>
-            <dd class="text-zinc-600 mt-1">
-              成果發表與專業人員回饋 (3小時)
+              {{ step.Description }}
             </dd>
           </div>
         </dl>
@@ -417,7 +343,7 @@ const timeline = [
           </h3>
         </template>
         <p class="text-sm text-zinc-700 mb-4">
-          高雄市三民區察哈爾街四段44號
+          {{ program.address }}
         </p>
         <div class="aspect-video bg-zinc-200 rounded-lg flex items-center justify-center">
           <p class="text-zinc-500">
