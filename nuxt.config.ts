@@ -48,9 +48,9 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    // '/api/**': {
-    //   proxy: 'https://trybeta.rocket-coding.com/api/**',
-    // },
+    '/api/**': {
+      proxy: 'https://trybeta.rocket-coding.com/api/**',
+    },
     // '/company/**': {
     //   proxy: 'https://trybeta.rocket-coding.com/api/**',
     // },

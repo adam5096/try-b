@@ -8,7 +8,7 @@ import {
 import { computed } from 'vue';
 import dayjs from 'dayjs';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
-import type { Program } from '~/types/company/program';
+import type { ProgramsListItem } from '~/types/company/program';
 
 definePageMeta({
   layout: 'company',
@@ -23,7 +23,7 @@ const searchForm = {
 };
 
 const programStore = useCompanyProgramStore();
-const programs = computed<Program[]>(() => programStore.programs);
+const programs = computed<ProgramsListItem[]>(() => programStore.programs);
 
 // The fetching logic is now handled reactively inside the store.
 // No need for onMounted or watch here anymore.
@@ -91,12 +91,12 @@ const handlePageChange = (page: number) => {
         <p>目前沒有任何計畫。</p>
       </div>
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        <el-card v-for="program in programs" :key="program.id">
+        <el-card v-for="program in programs" :key="program.Id">
           <template #header>
             <div class="flex justify-between items-center">
-              <span class="font-bold">{{ program.title }}</span>
+              <span class="font-bold">{{ program.Name }}</span>
               <el-tag type="info">
-                {{ program.status }}
+                {{ program.StatusTitle }}
               </el-tag>
             </div>
           </template>
@@ -104,17 +104,17 @@ const handlePageChange = (page: number) => {
           <div class="space-y-2 text-sm">
             <div class="flex items-center gap-2">
               <el-icon><User /></el-icon>
-              <span>已申請人數：{{ program.applicants }}</span>
+              <span>已申請人數：{{ program.applied_count }}</span>
               <span class="ml-auto text-gray-500">瀏覽次數：{{ program.views }}</span>
             </div>
             <div class="flex items-center gap-2">
               <el-icon><Briefcase /></el-icon>
-              <span>{{ program.startDate }} - {{ program.endDate }}</span>
+              <span>{{ program.PublishStartDate }} - {{ program.ProgramEndDate }}</span>
             </div>
           </div>
           <!-- Card Footer -->
           <div class="mt-4 pt-4 border-t flex justify-end items-center">
-            <NuxtLink :to="`/company/programs/${program.id}`">
+            <NuxtLink :to="`/company/programs/${program.Id}`">
               <el-button type="primary" plain>
                 查看詳情
               </el-button>
