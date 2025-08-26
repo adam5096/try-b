@@ -19,10 +19,7 @@ definePageMeta({
   layout: 'company',
 });
 
-const { data: applicantData, pending } = useAsyncData<ApplicantDetail>(
-  `applicant-${route.params.applicantId}`,
-  () => $fetch(`/api/v1/company/programs/${route.params.programId}/applicants/${route.params.applicantId}`),
-);
+const { data: applicantData, pending } = useApplicant(route.params.programId, route.params.applicantId);
 
 const applicant = computed<Partial<ApplicantDetail>>(() => applicantData.value || {});
 const programPlan = computed<Partial<ProgramPlan>>(() => applicant.value?.program_plan || {});

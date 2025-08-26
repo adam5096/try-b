@@ -13,7 +13,7 @@ import {
   View,
 } from '@element-plus/icons-vue';
 import type { Program } from '~/types/company/program';
-
+import { useApiFetch } from '~/composables/api/shared/useApiFetch';
 const route = useRoute();
 
 definePageMeta({

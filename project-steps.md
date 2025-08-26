@@ -32,3 +32,7 @@
 - 建立企業新增體驗活動 API 的 TypeScript 型別定義檔案 (`types/company/programCreation.ts`)
 - 分離新增體驗活動的型別定義，避免修改共用的 `program.ts`
 - 更新 `useProgramStore`，使其在 `createProgram` 方法中串接並使用新的 `ProgramCreationResponse` 型別
+
+#### 登入流程與共用模組修正
+- 修正企業登入成功後的頁面導向邏輯，確保能穩定跳轉至管理後台
+- 全面排查並統一 `useApiFetch` 的引用路徑，修正因檔案移動造成的模組載入錯誤

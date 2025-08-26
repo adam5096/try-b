@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue';
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 import type { ProgramsResponse, CreateProgramPayload } from '~/types/company/program';
 import type { ProgramCreationResponse } from '~/types/company/programCreation';
+import { useApiFetch } from '~/composables/api/shared/useApiFetch';
 
 export const useCompanyProgramStore = defineStore('company-program', () => {
   const authStore = useCompanyAuthStore();

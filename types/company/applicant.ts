@@ -24,6 +24,8 @@ export interface PastProgram {
 }
 
 export interface ApplicantDetail {
+  review_status_id: number;
+  review_status_name: string;
   name: string;
   phone: string;
   age: number;
