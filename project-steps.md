@@ -26,3 +26,9 @@
 - 修正申請者審核頁面中聯絡資訊的排版對齊問題
 - 修正申請計畫區塊的欄位顯示邏輯，確保所有資訊正確呈現
 - 修復因型別推斷不完整導致的 TypeScript 錯誤
+
+### 2025-08-26
+#### e-comp-9 企業新增體驗活動 API
+- 建立企業新增體驗活動 API 的 TypeScript 型別定義檔案 (`types/company/programCreation.ts`)
+- 分離新增體驗活動的型別定義，避免修改共用的 `program.ts`
+- 更新 `useProgramStore`，使其在 `createProgram` 方法中串接並使用新的 `ProgramCreationResponse` 型別
