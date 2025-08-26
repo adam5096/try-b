@@ -71,16 +71,8 @@ const approvedStatus = ref('all')
                 <p class="font-bold">
                   {{ row.applicant_name }}
                 </p>
-                <p class="text-sm text-zinc-500">
-                  {{ row.school }}
-                </p>
               </div>
             </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="科系" min-width="150">
-          <template #default="{ row }">
-            <p>{{ row.major }}</p>
           </template>
         </el-table-column>
         <el-table-column prop="submit_date" label="申請日期" min-width="150" />
@@ -148,16 +140,8 @@ const approvedStatus = ref('all')
                 <p class="font-bold">
                   {{ row.applicant_name }}
                 </p>
-                <p class="text-sm text-zinc-500">
-                  {{ row.school }}
-                </p>
               </div>
             </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="科系" min-width="150">
-          <template #default="{ row }">
-            <p>{{ row.major }}</p>
           </template>
         </el-table-column>
         <el-table-column prop="submit_date" label="申請日期" min-width="150" />
