@@ -89,7 +89,7 @@ export interface ProgramsResponse {
   total: number;
   page: number;
   limit: number;
-  items: ProgramsListItem[];
+  items: Program[];
   message: string | null;
 }
 

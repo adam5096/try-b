@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
-import { computed, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import type { CompanyPlan } from '~/types/company/plan';
+import { useApiFetch } from '~/composables/api/shared/useApiFetch';
 
 export const useCompanyPlanStore = defineStore('companyPlan', () => {
   const authStore = useCompanyAuthStore();

@@ -18,15 +18,14 @@ async function handleLogin() {
   try {
     await authStore.login(loginData.value);
     
-    const route = useRoute();
-    const redirectPath = route.query.redirect as string;
+    const redirectPath = useRoute().query.redirect as string;
 
     // Security enhancement: Only redirect to internal company pages.
     // Otherwise, default to the company index page.
     if (redirectPath && redirectPath.startsWith('/company/')) {
-      await navigateTo(redirectPath);
+      await router.push(redirectPath);
     } else {
-      await navigateTo('/company');
+      await router.push(routes.company.landing());
     }
 
   } catch (error: any) {
