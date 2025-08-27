@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { useUserAuthStore } from '~/stores/user/useAuthStore';
 import type { UserLoginData } from '~/types/users/user';
 
@@ -11,6 +11,13 @@ definePageMeta({
 const authStore = useUserAuthStore();
 const route = useRoute();
 const router = useRouter();
+
+// Redirect if already logged in
+watchEffect(() => {
+  if (authStore.isLoggedIn) {
+    router.push({ name: 'user-landing' });
+  }
+});
 
 const loginData = ref<Omit<UserLoginData, 'password'>>({
   account: '',
@@ -29,11 +36,12 @@ async function handleLogin() {
     };
     await authStore.login(loginPayload);
 
-    // Always redirect to the user landing page after successful login.
-    await navigateTo({ name: 'user-landing' });
+    // 登入成功後，Nuxt 的路由中間件或 watchEffect 會自動處理重新導向
+    // 因此這裡不需要手動導航
+    // await navigateTo({ name: 'user-landing' });
     
   } catch (error: any) {
-    errorMessage.value = '登入失敗，請檢查您的帳號和密碼。';
+    errorMessage.value = error.message || '登入失敗，請檢查您的帳號和密碼。';
     console.error('Login failed:', error);
   } finally {
     isLoading.value = false;
