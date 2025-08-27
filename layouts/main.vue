@@ -107,9 +107,9 @@ const socialLinks = ref([
 
               <!-- 右側導覽 -->
               <div class="flex flex-col gap-8 lg:flex-row lg:items-center">
-                <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                <NuxtLink :to="{ name: 'user-landing' }" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   探索我們
-                </a>
+                </NuxtLink>
                 <NuxtLink :to="{ name: 'plan' }" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   方案
                 </NuxtLink>

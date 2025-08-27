@@ -48,24 +48,18 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/api/**': {
-      proxy: 'https://trybeta.rocket-coding.com/api/**',
-    },
-    // '/company/**': {
-    //   proxy: 'https://trybeta.rocket-coding.com/api/**',
-    // },
   },
-  // vite: {
-  //   server: {
-  //     proxy: {
-  //       '/api': {
-  //         target: process.env.NUXT_PUBLIC_API_BASE_URL,
-  //         changeOrigin: true,
-  //         rewrite: (path) => path.replace(/^\/api/, ''),
-  //       },
-  //     },
-  //   },
-  // },
+  vite: {
+    server: {
+      proxy: {
+        '/api-proxy': {
+          target: 'https://trybeta.rocket-coding.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api-proxy/, '/api'),
+        },
+      },
+    },
+  },
   // build: {
   //   transpile: ['dayjs', 'dayjs-nuxt'],
   // },

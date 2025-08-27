@@ -19,3 +19,13 @@
 - 導入 Element Plus 的表單驗證機制，為「審核意見」欄位加入必填規則，取代原有的手動 `if` 判斷，以解決後端回應 `400 Bad Request` (缺少 `comment` 欄位) 的問題。
 - 於申請者列表頁 (`applicants/index.vue`) 的 `onMounted` 生命週期中呼叫 `refresh` 方法，確保從審核頁返回時能強制刷新列表，即時反映最新的審核狀態。
 
+#### 體驗者端-使用者登入 (u-users-1)
+- 建立 `useUserLogin.ts` Composable 封裝使用者登入 API (`/api/v1/users/login`) 的請求邏輯。
+- 重構共用 API 請求函式 (`useApiFetch.ts`)，使其能根據請求 URL (`/user` 或 `/company`) 自動附加對應模組的 JWT token，解決了模組間 token 錯亂的潛在衝突。
+- 更新 `useUserAuthStore` 以整合新的登入邏輯，並使其結構與 `company` 模組一致，同步管理 `token` 與 `user` 狀態。
+- 修正 `nuxt.config.ts` 中的 Vite 代理設定，解決了開發環境中因代理規則不符而導致的 API 請求 404 錯誤。
+- 優化登入頁面 (`login.vue`) 的使用者體驗，透過 `watchEffect` 監聽登入狀態，實現成功登入後自動導航至使用者首頁。
+
+#### 通用佈局 (Layouts)
+- 修改 `main.vue` 佈局，將「探索我們」按鈕連結至體驗者首頁 (`user-landing`)，提供訪客快速瀏覽主要內容的入口。
+
