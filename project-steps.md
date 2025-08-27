@@ -12,3 +12,10 @@
 - 重構方案相關的 TypeScript 型別定義，將其拆分為 `plan/current.ts` 與 `plan/list.ts`，並置於 `types/company/plan` 子目錄下，以提高程式碼的清晰度與可維護性。
 - 優化方案描述的 UX，為 `description` 欄位為空值的方案提供符合其量級的備用文案，提升頁面資訊完整度與價值感。
 
+#### 企業端-體驗者審核 (e-comp-17)
+- 建立 `useSubmitReview.ts` Composable 封裝審核提交 (`PUT`) 的 API 邏輯，並處理 loading 與 error 狀態。
+- 於申請者詳情頁 (`[applicantId].vue`) 串接審核功能，提交後以 `ElMessageBox` 彈窗提供即時成功或失敗的反饋，並在成功後自動導航回列表頁。
+- 修正 `useSubmitReview` Composable，改用共用的 `useApiFetch` 以確保請求能自動夾帶 JWT token，解決 API 回應「請登入」的認證問題。
+- 導入 Element Plus 的表單驗證機制，為「審核意見」欄位加入必填規則，取代原有的手動 `if` 判斷，以解決後端回應 `400 Bad Request` (缺少 `comment` 欄位) 的問題。
+- 於申請者列表頁 (`applicants/index.vue`) 的 `onMounted` 生命週期中呼叫 `refresh` 方法，確保從審核頁返回時能強制刷新列表，即時反映最新的審核狀態。
+

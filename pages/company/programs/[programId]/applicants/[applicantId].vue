@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, reactive } from 'vue';
+import { useApplicant } from '~/composables/api/company/useApplicant';
+import { useSubmitReview } from '~/composables/api/company/useSubmitReview';
+import { ElMessageBox, ElMessage } from 'element-plus';
+import type { FormInstance, FormRules } from 'element-plus';
 import {
   User,
   Briefcase,
@@ -13,13 +17,24 @@ import dayjs from 'dayjs';
 import type { ApplicantDetail, ProgramPlan } from '~/types/company/applicant';
 
 const route = useRoute();
+const {
+  submit: submitReviewApi,
+  loading: isSubmitting,
+  error: submitError,
+  data: submitResult,
+} = useSubmitReview();
+
+const formRef = ref<FormInstance>();
 
 definePageMeta({
   name: 'company-program-applicant-detail',
   layout: 'company',
 });
 
-const { data: applicantData, pending } = useApplicant(route.params.programId, route.params.applicantId);
+const { data: applicantData, pending } = useApplicant(
+  String(route.params.programId),
+  String(route.params.applicantId),
+);
 
 const applicant = computed<Partial<ApplicantDetail>>(() => applicantData.value || {});
 const programPlan = computed<Partial<ProgramPlan>>(() => applicant.value?.program_plan || {});
@@ -39,12 +54,44 @@ const decisionForm = ref({
   notifyMethod: 'email',
 });
 
-const submitReview = async () => {
-  await navigateTo({
-    name: 'company-program-applicants-list',
-    params: {
-      programId: route.params.programId,
-    },
+const rules = reactive<FormRules>({
+  feedback: [
+    { required: true, message: '請填寫審核意見。', trigger: 'blur' },
+  ],
+});
+
+const submitReview = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate(async (valid) => {
+    if (valid) {
+      const programId = String(route.params.programId);
+      const applicantId = String(route.params.applicantId);
+
+      await submitReviewApi(programId, applicantId, {
+        status_id: decisionForm.value.status === 'pending' ? 2 : 1,
+        comment: decisionForm.value.feedback,
+      });
+
+      if (submitError.value) {
+        await ElMessageBox.alert(
+          `提交失敗：${submitError.value.data?.message || submitError.value.message}`,
+          '錯誤',
+          { type: 'error' },
+        );
+      } else if (submitResult.value) {
+        await ElMessageBox.alert(submitResult.value.comment, '審核完成', {
+          type: 'success',
+          callback: async () => {
+            await navigateTo({
+              name: 'company-program-applicants-list',
+              params: {
+                programId,
+              },
+            });
+          },
+        });
+      }
+    }
   });
 };
 </script>
@@ -241,8 +288,13 @@ const submitReview = async () => {
             審核決定
           </h3>
         </template>
-        <el-form :model="decisionForm" label-position="top">
-          <el-form-item label="審核結果">
+        <el-form
+          ref="formRef"
+          :model="decisionForm"
+          :rules="rules"
+          label-position="top"
+        >
+          <el-form-item label="審核結果" prop="status">
             <el-radio-group v-model="decisionForm.status">
               <el-radio :value="'pending'">
                 核准申請
@@ -252,7 +304,7 @@ const submitReview = async () => {
               </el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="審核意見">
+          <el-form-item label="審核意見" prop="feedback">
             <el-input
               v-model="decisionForm.feedback"
               type="textarea"
@@ -268,7 +320,11 @@ const submitReview = async () => {
           <el-form-item class="mt-6">
             <div class="flex-1 flex justify-end gap-4">
               <el-button>取消</el-button>
-              <el-button type="primary" @click="submitReview">
+              <el-button
+                type="primary"
+                :loading="isSubmitting"
+                @click="submitReview(formRef)"
+              >
                 提交審核結果
               </el-button>
             </div>
