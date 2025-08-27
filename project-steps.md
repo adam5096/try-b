@@ -10,4 +10,5 @@
 - 串接取得所有企業付費方案的 API (`e-comp-13`)，並動態渲染於方案頁面 (`purchase/index.vue`)。
 - 建立獨立的 Composable (`useAllPlans.ts`) 統一管理 API 請求邏輯。
 - 重構方案相關的 TypeScript 型別定義，將其拆分為 `plan/current.ts` 與 `plan/list.ts`，並置於 `types/company/plan` 子目錄下，以提高程式碼的清晰度與可維護性。
+- 優化方案描述的 UX，為 `description` 欄位為空值的方案提供符合其量級的備用文案，提升頁面資訊完整度與價值感。
 

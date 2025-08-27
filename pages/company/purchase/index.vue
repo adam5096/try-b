@@ -1,7 +1,7 @@
 <!-- ep10-3 企業方案頁面 -->
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { Check } from '@element-plus/icons-vue'
 import { useAllPlans } from '~/composables/api/company/useAllPlans';
 
@@ -15,6 +15,24 @@ const { plans, isLoading, error, fetchAllPlans } = useAllPlans();
 
 onMounted(() => {
   fetchAllPlans();
+});
+
+const fallbackDescriptions: { [key: number]: string } = {
+  2: '適合小型企業與新創公司',
+  3: '適合持續成長的中小型企業',
+  4: '適合中型企業與快速成長公司',
+  5: '適合尋求規模化成長的大型企業',
+  6: '適合大型企業與尋求長期合作的夥伴',
+};
+
+const processedPlans = computed(() => {
+  if (!plans.value) {
+    return [];
+  }
+  return plans.value.map(plan => ({
+    ...plan,
+    description: plan.description || fallbackDescriptions[plan.id] || '為您的企業需求量身打造',
+  }));
 });
 
 interface CurrentPlan {
@@ -133,7 +151,7 @@ function selectPlan(planId: number) {
         <div v-else-if="error">
           <p>讀取方案時發生錯誤: {{ error.message }}</p>
         </div>
-        <el-card v-for="plan in plans" v-else :key="plan.id" shadow="hover">
+        <el-card v-for="plan in processedPlans" v-else :key="plan.id" shadow="hover">
           <div class="flex justify-between items-center">
             <div class="flex items-center gap-8">
               <div class="w-48">
@@ -145,7 +163,7 @@ function selectPlan(planId: number) {
                 </p>
               </div>
               <p class="text-sm text-gray-800">
-                {{ plan.description || '暫無描述' }}
+                {{ plan.description }}
               </p>
             </div>
             <div class="flex items-center gap-8">
