@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useApplicants } from '~/composables/api/company/useApplicants';
 
 const route = useRoute()
@@ -10,10 +10,14 @@ definePageMeta({
   layout: 'company',
 });
 
-const { data: applicantsData, pending } = useApplicants(
+const { data: applicantsData, pending, refresh: refreshApplicants } = useApplicants(
   computed(() => authStore.companyId),
   computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId),
 );
+
+onMounted(() => {
+  refreshApplicants();
+});
 
 const pendingApplicants = computed(() => applicantsData.value?.pending_applications || []);
 const reviewedApplicants = computed(() => applicantsData.value?.reviewed_applications || []);
