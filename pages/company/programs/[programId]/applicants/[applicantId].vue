@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useApplicant } from '~/composables/api/company/useApplicant';
 import {
   User,
   Briefcase,
@@ -19,7 +20,10 @@ definePageMeta({
   layout: 'company',
 });
 
-const { data: applicantData, pending } = useApplicant(route.params.programId, route.params.applicantId);
+const { data: applicantData, pending } = useApplicant(
+  String(route.params.programId),
+  String(route.params.applicantId),
+);
 
 const applicant = computed<Partial<ApplicantDetail>>(() => applicantData.value || {});
 const programPlan = computed<Partial<ProgramPlan>>(() => applicant.value?.program_plan || {});
