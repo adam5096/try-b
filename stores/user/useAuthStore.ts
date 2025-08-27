@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import type { User, UserLoginData, UserRegisterData } from '~/types/users/user';
 import { useUserLogin } from '~/composables/api/users/useUserLogin';
+import { useUserRegister } from '~/composables/api/users/useUserRegister';
 
 export const useUserAuthStore = defineStore('userAuth', () => {
   const tokenCookie = useCookie<string | null>('userAuthToken');
@@ -29,11 +30,12 @@ export const useUserAuthStore = defineStore('userAuth', () => {
   }
 
   async function register(registerData: UserRegisterData) {
-    const { $api } = useNuxtApp();
-    await ($api as typeof $fetch)('/user/register', {
-      method: 'POST',
-      body: registerData,
-    });
+    const userRegister = useUserRegister();
+    const { error } = await userRegister.register(registerData);
+
+    if (error.value) {
+      throw error.value;
+    }
   }
   
   async function logout() {
