@@ -8,6 +8,8 @@ export interface User {
   email: string;
   role: 'Participant' | string; // Assuming 'Participant' is a possible role
   avatar?: string; // Optional avatar
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // Based on the request body for user registration API

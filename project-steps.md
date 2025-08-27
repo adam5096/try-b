@@ -29,3 +29,10 @@
 #### 通用佈局 (Layouts)
 - 修改 `main.vue` 佈局，將「探索我們」按鈕連結至體驗者首頁 (`user-landing`)，提供訪客快速瀏覽主要內容的入口。
 
+#### 體驗者端-使用者註冊 (u-users-10)
+- 建立 `useUserRegister.ts` Composable 以封裝註冊 API (`POST /api/v1/users`) 的請求邏輯，遵循專案既有的程式碼風格。
+- 更新 `useAuthStore` 中的 `register` 動作，使其使用新建的 Composable 進行 API 呼叫，並加入完整的錯誤處理機制。
+- 擴充 `User` TypeScript 型別，加入 `createdAt` 與 `updatedAt` 欄位，使其與後端 API 回應的資料結構保持一致。
+- 驗證 `register.vue` 頁面的前端邏輯，確保其在註冊成功後能正確顯示成功訊息並將使用者導向登入頁面。
+- 修復 `useAuthStore` 中的 TypeScript 型別推斷錯誤，確保程式碼的健壯性。
+
