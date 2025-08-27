@@ -18,15 +18,14 @@ async function handleLogin() {
   try {
     await authStore.login(loginData.value);
     
-    const route = useRoute();
-    const redirectPath = route.query.redirect as string;
+    const redirectPath = useRoute().query.redirect as string;
 
     // Security enhancement: Only redirect to internal company pages.
     // Otherwise, default to the company index page.
     if (redirectPath && redirectPath.startsWith('/company/')) {
-      await navigateTo(redirectPath);
+      await router.push(redirectPath);
     } else {
-      await navigateTo('/company');
+      await router.push(routes.company.landing());
     }
 
   } catch (error: any) {
@@ -47,8 +46,8 @@ definePageMeta({
   <div class="flex h-screen bg-white">
     <!-- Left side with background image -->
     <div class="hidden lg:block lg:w-1/2">
-      <img
-        src="~/assets/img/home/home-worker-bg.webp"
+      <NuxtImg
+        src="/img/home/home-worker-bg.webp"
         alt="Login background"
         class="h-full w-full object-cover"
       />

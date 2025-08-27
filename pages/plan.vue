@@ -1,5 +1,16 @@
 <script setup lang="ts">
-import CheckIcon from '@/components/CheckIcon.vue';
+import CheckIcon from '~/components/shared/CheckIcon.vue';
+
+// --- SEO Meta ---
+// 為方案頁客製化 SEO 資訊
+useSeoMeta({
+  title: '錯聘成本太高？TRY β 讓您「先試後聘」找到對的人',
+  description: '傳統招募流程耗時且昂貴。TRY β 提供彈性的刊登方案，讓企業能快速發布體驗活動，直接觀察候選人表現，找到真正符合企業文化的人才。',
+  ogTitle: '錯聘成本太高？TRY β 讓您「先試後聘」找到對的人',
+  // 此頁面暫無合適的獨立圖片，將沿用 app.vue 中設定的全域預設 og:image
+  ogDescription: '傳統招募流程耗時且昂貴。TRY β 提供彈性的刊登方案，讓企業能快速發布體驗活動，直接觀察候選人表現，找到真正符合企業文化的人才。',
+});
+// --- End SEO Meta ---
 
 definePageMeta({
   name: 'plan',

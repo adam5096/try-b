@@ -1,8 +1,6 @@
 <template>
   <div class="space-y-6">
-    <div class="bg-white p-4 rounded-lg shadow">
-      <p>目前的方案 日期：2025/7/1 - 2025/8/1 10:10AM 體驗人數上限 10 人 剩餘體驗人數 5 人</p>
-    </div>
+    <CompanyPlanStatusHeader />
 
     <div class="bg-white p-6 md:p-10 rounded-lg shadow">
       <h2 class="text-xl font-bold mb-6 text-center">
@@ -18,7 +16,7 @@
         <div
           class="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full"
         >
-          <CheckIcon class="w-12 h-12 text-green-500" />
+          <SharedCheckIcon class="w-12 h-12 text-green-500" />
         </div>
         <h3 class="mt-4 text-3xl font-bold">
           付款成功！
@@ -95,7 +93,6 @@
 </template>
 
 <script setup lang="ts">
-import CheckIcon from '~/components/CheckIcon.vue';
 import { companyRoutes as r } from '~/utils/companyRoutes';
 
 definePageMeta({

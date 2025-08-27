@@ -65,8 +65,8 @@ const socialLinks = ref([
           <h1 class="flex flex-none items-center text-2xl">
             <NuxtLink to="/" class="flex items-center gap-2">
               <div class="w-site-logo-width h-site-logo-height">
-                <img
-                  src="@/assets/img/home/try-beta-logo.webp"
+                <NuxtImg
+                  src="/img/home/try-beta-logo.webp"
                   alt="TRY Beta 網站商標"
                   class="h-full w-full object-contain"
                 />
@@ -86,7 +86,7 @@ const socialLinks = ref([
           <div class="flex items-center">
             <!-- Mobile Menu Button -->
             <button class="lg:hidden" @click="toggleMenu">
-              <HamburgerIcon class="h-8 w-8 text-gray-700" />
+              <SharedHamburgerIcon class="h-8 w-8 text-gray-700" />
             </button>
 
             <!-- 右側導覽 -->
@@ -96,7 +96,7 @@ const socialLinks = ref([
               ]" class="flex flex-col gap-8 lg:flex-row lg:items-center">
               <!-- Close button for mobile -->
               <button class="absolute top-8 right-8 lg:hidden" @click="toggleMenu">
-                <CloseIcon class="h-8 w-8 text-gray-700" />
+                <SharedCloseIcon class="h-8 w-8 text-gray-700" />
               </button>
 
               <!-- 搜尋欄 (Mobile Only) -->
@@ -107,9 +107,9 @@ const socialLinks = ref([
 
               <!-- 右側導覽 -->
               <div class="flex flex-col gap-8 lg:flex-row lg:items-center">
-                <a href="#" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                <NuxtLink :to="{ name: 'user-landing' }" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   探索我們
-                </a>
+                </NuxtLink>
                 <NuxtLink :to="{ name: 'plan' }" class="px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors font-medium">
                   方案
                 </NuxtLink>
@@ -137,7 +137,7 @@ const socialLinks = ref([
     <footer class="relative text-white bg-cover bg-center overflow-hidden">
       <!-- Background Image Layer -->
       <div class="absolute inset-0 z-0">
-        <img src="@/assets/img/home/home-worker-bg.webp" alt="Footer background" class="w-full h-full object-cover object-center" />
+        <NuxtImg src="/img/home/home-worker-bg.webp" alt="Footer background" class="w-full h-full object-cover object-center" />
       </div>
 
       <!-- Blue Overlay Layer -->
@@ -145,7 +145,7 @@ const socialLinks = ref([
       
       <!-- Beta Icon Layer -->
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none opacity-20">
-        <BetaIcon class="w-[800px] h-auto text-white" />
+        <SharedBetaIcon class="w-[800px] h-auto text-white" />
       </div>
 
       <!-- Content Layer -->
@@ -155,7 +155,7 @@ const socialLinks = ref([
           <!-- Column 1: Logo and Socials -->
           <div class="flex flex-col items-center md:items-start">
             <div class="flex items-center gap-4">
-              <img src="@/assets/img/home/try-beta-logo.webp" alt="TRYB Logo" class="w-40 h-auto filter-to-white">
+              <NuxtImg src="/img/home/try-beta-logo.webp" alt="TRYB Logo" class="w-40 h-auto filter-to-white" />
             </div>
             <div class="mt-6 flex gap-6">
               <a v-for="link in socialLinks" :key="link.name" :href="link.href" class="text-white hover:text-btn-yellow transition-colors">

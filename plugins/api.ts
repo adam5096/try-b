@@ -6,7 +6,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
 
   const api = ofetch.create({
-    baseURL: config.public.apiBase,
+    // baseURL: config.public.apiBase,
 
     onResponseError({ request, response }) {
       // We only want to handle 401 errors on the client side.

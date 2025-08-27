@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import {
   User,
   Briefcase,
@@ -12,96 +12,79 @@ import {
   DataLine,
   View,
 } from '@element-plus/icons-vue';
+import type { Program } from '~/types/company/program';
+import { useApiFetch } from '~/composables/api/shared/useApiFetch';
 
 const route = useRoute();
+const authStore = useCompanyAuthStore();
 
 definePageMeta({
   name: 'company-program-detail',
   layout: 'company',
 });
 
-const program = {
-  title: '軟體工程師體驗日',
-  status: '審核中',
-  statusTag: 'info',
-  description:
-    '此體驗計畫旨在提供參與者深入了解軟體工程師的日常工作與挑戰。內容涵蓋前端與後端開發、版本控制、敏捷開發流程等。學員將有機會與業界資深工程師互動，並參與小型專案實作。',
-  industry: '資訊科技',
-  location: '台北市信義區松仁路100號',
-  headcount: '5-10人',
-  startDate: '2025/08/15',
-  endDate: '2025/08/16',
-  publishDate: '2025/07/15',
-  applicationDeadline: '2025/08/01',
+// --- Data Fetching ---
+// 1. Fetch main program details
+const { data: program } = await useAsyncData<Program>(`program-${route.params.programId}`, async () => {
+  const { data } = await useApiFetch<Program>(`/api/v1/company/${authStore.companyId}/programs/${route.params.programId}`);
+  if (!data.value) {
+    throw createError({ statusCode: 404, statusMessage: 'Program not found' });
+  }
+  return data.value;
+});
+
+// 2. Fetch application statistics from e-comp-7
+interface ApplicantsStatsResponse {
+  total_applicants: number;
+  reviewed_count: number;
+  pending_count: number;
+}
+const { data: stats } = await useApiFetch<ApplicantsStatsResponse>(
+  () => `/api/v1/company/${authStore.companyId}/programs/${route.params.programId}/applications`,
+);
+
+const totalApplicants = computed(() => stats.value?.total_applicants ?? 0);
+const reviewedApplicants = computed(() => stats.value?.reviewed_count ?? 0);
+const pendingApplicants = computed(() => stats.value?.pending_count ?? 0);
+// --- End Data Fetching ---
+
+
+// --- SEO Meta ---
+// 確保 program 資料存在才設定 meta
+if (program.value) {
+  useSeoMeta({
+    title: `${program.value.Name}｜Try B 企業實習體驗平台`,
+    description: program.value.Intro.substring(0, 150), // 截取前 150 字作為描述
+    ogTitle: `${program.value.Name}｜Try B 企業實習體驗平台`,
+    ogDescription: program.value.Intro.substring(0, 150),
+    // ogImage: program.value.Images && program.value.Images[0], // 使用第一張圖當作 OG Image
+  });
+}
+// --- End SEO Meta ---
+
+
+const formatDate = (dateString: string) => {
+  if (!dateString) { return ''; }
+  return new Date(dateString).toLocaleDateString('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
 };
-
-const applicants = [
-  {
-    id: 1,
-    name: '林小美',
-    school: '台灣大學',
-    major: '資訊工程學系',
-    applyDate: '2025/07/20',
-    status: '待審核',
-    statusTag: 'warning',
-  },
-  {
-    id: 2,
-    name: '王大明',
-    school: '成功大學',
-    major: '電機工程學系',
-    applyDate: '2025/07/21',
-    status: '已通過',
-    statusTag: 'success',
-  },
-  {
-    id: 3,
-    name: '張雅琪',
-    school: '交通大學',
-    major: '資訊管理學系',
-    applyDate: '2025/07/22',
-    status: '已拒絕',
-    statusTag: 'danger',
-  },
-];
-
-const timeline = [
-  {
-    content: '發布體驗計畫',
-    timestamp: '2025-07-15',
-    type: 'primary',
-  },
-  {
-    content: '收到新的申請',
-    timestamp: '2025-07-20',
-  },
-  {
-    content: '審核通過一位申請者',
-    timestamp: '2025-07-23',
-  },
-  {
-    content: '計畫開始',
-    timestamp: '2025-08-15',
-  },
-];
 </script>
 
 <template>
-  <div class="p-6 lg:p-8">
+  <div v-if="program" class="p-6 lg:p-8">
     <!-- Top info bar -->
-    <div class="mb-6 rounded-lg bg-zinc-100 p-4">
-      <p class="text-sm text-zinc-600">
-        目前的方案 日期：2025/7/1 - 2025/8/1 10:10AM 體驗人數上限 10 人 剩餘體驗人數 5 人
-      </p>
-    </div>
+    <CompanyPlanStatusHeader />
 
     <!-- Page Header -->
     <div class="mb-6">
       <h1 class="text-2xl font-bold text-zinc-900">
-        數位行銷實習體驗計畫
+        {{ program.Name }}
       </h1>
       <p class="text-sm text-zinc-500">
-        計畫ID: PRJ-20230615-001 | 狀態: 已發布
+        計畫ID: {{ route.params.programId }} | 狀態: {{ program.Status.Title }}
       </p>
     </div>
 
@@ -121,7 +104,7 @@ const timeline = [
                 總申請人數
               </p>
               <p class="text-3xl font-bold text-blue-500">
-                42
+                {{ totalApplicants }}
               </p>
             </div>
             <div class="flex items-baseline justify-between">
@@ -129,7 +112,7 @@ const timeline = [
                 已審核
               </p>
               <p class="text-3xl font-bold text-green-600">
-                28
+                {{ reviewedApplicants }}
               </p>
             </div>
             <div class="flex items-baseline justify-between">
@@ -137,7 +120,7 @@ const timeline = [
                 待審核
               </p>
               <p class="text-3xl font-bold text-amber-500">
-                14
+                {{ pendingApplicants }}
               </p>
             </div>
           </div>
@@ -181,7 +164,7 @@ const timeline = [
                     體驗名稱
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    數位行銷實習體驗計畫
+                    {{ program.Name }}
                   </dd>
                 </div>
                 <div>
@@ -189,7 +172,8 @@ const timeline = [
                     產業類別
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    數位行銷、廣告媒體
+                    <!-- 待處理：需要 ID 與名稱的對應表 -->
+                    {{ program.Industry.Title }}
                   </dd>
                 </div>
                 <div>
@@ -197,7 +181,8 @@ const timeline = [
                     職務類別
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    行銷企劃、社群媒體經營、內容創作
+                    <!-- 待處理：需要 ID 與名稱的對應表 -->
+                    {{ program.JobTitle.Title }}
                   </dd>
                 </div>
                 <div>
@@ -205,7 +190,7 @@ const timeline = [
                     體驗地點
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    台北市信義區松仁路100號15樓
+                    {{ program.Address }}
                   </dd>
                 </div>
               </dl>
@@ -220,7 +205,7 @@ const timeline = [
                     聯絡人
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    林小姐 (人資部門)
+                    {{ program.ContactName }}
                   </dd>
                 </div>
                 <div>
@@ -228,7 +213,7 @@ const timeline = [
                     電話
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    02-2345-6789
+                    {{ program.ContactPhone }}
                   </dd>
                 </div>
                 <div>
@@ -236,7 +221,7 @@ const timeline = [
                     Email
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    hr@digitalmarketing.com.tw
+                    {{ program.ContactEmail }}
                   </dd>
                 </div>
               </dl>
@@ -247,7 +232,7 @@ const timeline = [
                   刊登期間
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  2023/07/01 - 2023/08/01 <span class="ml-2 text-zinc-500">30天</span>
+                  {{ formatDate(program.PublishStartDate) }} - {{ formatDate(program.PublishEndDate) }} <span class="ml-2 text-zinc-500">{{ program.PublishDurationDays }}天</span>
                 </p>
               </div>
               <div>
@@ -255,7 +240,7 @@ const timeline = [
                   體驗日期
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  2023/06/15 - 2023/06/17 <span class="ml-2 text-zinc-500">為期三天</span>
+                  {{ formatDate(program.ProgramStartDate) }} - {{ formatDate(program.ProgramEndDate) }} <span class="ml-2 text-zinc-500">為期{{ program.ProgramDurationDays }}天</span>
                 </p>
               </div>
               <div>
@@ -263,7 +248,7 @@ const timeline = [
                   體驗人數
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  6-10人
+                  {{ program.MinPeople }} - {{ program.MaxPeople }}人
                 </p>
               </div>
             </div>
@@ -276,7 +261,7 @@ const timeline = [
                 體驗介紹
               </h3>
               <p class="text-zinc-700 leading-relaxed text-sm">
-                本計畫提供大學生及研究生一個深入了解數位行銷產業的機會。參與者將有機會參與實際專案，學習SEO、SEM、社群媒體行銷、內容創作等數位行銷技能。我們希望透過這個體驗計畫，讓學生在畢業前就能接觸到業界實務，提升就業競爭力。
+                {{ program.Intro }}
               </p>
             </div>
             <div>
@@ -357,28 +342,12 @@ const timeline = [
           </h3>
         </template>
         <dl class="space-y-4 text-sm">
-          <div>
+          <div v-for="(step, index) in program.Steps" :key="index">
             <dt class="font-semibold text-zinc-800">
-              階段一
+              {{ step.Name }}
             </dt>
             <dd class="text-zinc-600 mt-1">
-              企業介紹與數位行銷產業概況 (1小時)、數位行銷工具與平台介紹 (2小時)
-            </dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-zinc-800">
-              階段二
-            </dt>
-            <dd class="text-zinc-600 mt-1">
-              實際案例分析與討論 (1小時)、分組實作：社群媒體行銷策劃 (2小時)
-            </dd>
-          </div>
-          <div>
-            <dt class="font-semibold text-zinc-800">
-              階段三
-            </dt>
-            <dd class="text-zinc-600 mt-1">
-              成果發表與專業人員回饋 (3小時)
+              {{ step.Description }}
             </dd>
           </div>
         </dl>
@@ -392,7 +361,7 @@ const timeline = [
           </h3>
         </template>
         <p class="text-sm text-zinc-700 mb-4">
-          高雄市三民區察哈爾街四段44號
+          {{ program.Address }}
         </p>
         <div class="aspect-video bg-zinc-200 rounded-lg flex items-center justify-center">
           <p class="text-zinc-500">
@@ -419,7 +388,7 @@ const timeline = [
               總瀏覽次數
             </p>
             <p class="text-2xl font-bold text-blue-500">
-              358
+              {{ program.Views.TotalViews }}
             </p>
           </div>
           <div class="flex items-baseline justify-between">
@@ -427,7 +396,7 @@ const timeline = [
               本週瀏覽
             </p>
             <p class="text-2xl font-bold text-zinc-800">
-              87
+              {{ program.Views.DailyViews }}
             </p>
           </div>
           <div class="flex items-baseline justify-between">

@@ -1,42 +1,66 @@
 import { defineStore } from 'pinia';
+import { ref, computed, watch } from 'vue';
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
-import type { ProgramsResponse, Program } from '~/types/company/program';
+import type { ProgramsResponse, CreateProgramPayload } from '~/types/company/program';
+import type { ProgramCreationResponse } from '~/types/company/programCreation';
+import { useApiFetch } from '~/composables/api/shared/useApiFetch';
 
 export const useCompanyProgramStore = defineStore('company-program', () => {
   const authStore = useCompanyAuthStore();
-  const programs = ref<Program[]>([]);
-  const total = ref(0);
   const page = ref(1);
   const limit = ref(21);
 
-  async function fetchPrograms() {
-    if (!authStore.isLoggedIn || !authStore.user || !authStore.companyId) return;
+  const { data, pending: isLoading, error, execute } = useApiFetch<ProgramsResponse>(() => `/api/v1/company/${authStore.companyId}/programs`, {
+    immediate: false, // We will trigger this manually
+    params: {
+      page,
+      limit,
+    },
+  });
 
-    const { data, error } = await useApiFetch<ProgramsResponse>(`/api/v1/company/${authStore.companyId}/programs`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${authStore.token}`,
-      },
-      params: {
-        page: page.value,
-        limit: limit.value,
-      },
-    });
+  // Watch for companyId to become available and then fetch programs
+  watch(
+    () => authStore.companyId,
+    (newCompanyId) => {
+      if (newCompanyId) {
+        execute(); // This is the new fetchPrograms trigger
+      }
+    },
+    { immediate: true },
+  );
 
-    if (error.value) {
-      console.error('Failed to fetch programs', error.value);
-      return;
-    }
-
-    if (data.value) {
-      programs.value = data.value.items;
-      total.value = data.value.total;
-    }
-  }
+  const programs = computed(() => data.value?.items || []);
+  const total = computed(() => data.value?.total || 0);
 
   function setPage(newPage: number) {
     page.value = newPage;
-    fetchPrograms();
+    // execute(); // useFetch will re-run automatically when `page` param changes
+  }
+  
+  // Expose `execute` as `fetchPrograms` for external use if needed (e.g., manual refresh)
+  const fetchPrograms = execute;
+
+  async function createProgram(payload: CreateProgramPayload) {
+    if (!authStore.companyId) {
+      return { success: false, error: new Error('User not authenticated') };
+    }
+
+    const { data: responseData, error: fetchError } = await useApiFetch<ProgramCreationResponse>(`/api/v1/company/${authStore.companyId}/programs`, {
+      method: 'POST',
+      body: payload,
+    });
+
+    if (fetchError.value) {
+      console.error('Failed to create program:', fetchError.value);
+      return { success: false, error: fetchError.value };
+    }
+
+    if (responseData.value) {
+      await fetchPrograms();
+      return { success: true, data: responseData.value };
+    }
+
+    return { success: false, error: new Error('Unknown error occurred') };
   }
 
   return {
@@ -44,7 +68,10 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
     total,
     page,
     limit,
+    isLoading,
+    error,
     fetchPrograms,
     setPage,
+    createProgram,
   };
 });

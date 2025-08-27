@@ -143,7 +143,7 @@
         <div>
           <h2 class="mb-3 text-xl font-semibold text-gray-900">體驗地點</h2>
           <p class="flex items-center gap-2 text-gray-800">
-            <LocationPinIcon class="h-5 w-5 text-gray-600" />
+            <SharedLocationPinIcon class="h-5 w-5 text-gray-600" />
             <span>{{ program.location }}</span>
           </p>
         </div>
@@ -225,7 +225,7 @@
 
 <script setup lang="ts">
 definePageMeta({ name: 'admin-single-program-info', layout: 'admin' as any })
-import LocationPinIcon from '~/components/LocationPinIcon.vue'
+import LocationPinIcon from '~/components/shared/LocationPinIcon.vue'
 import { ref } from 'vue'
 
 type ReviewStatus = 'systemApproved' | 'systemRejected' | 'manualConfirmed' | 'manualRejected'
