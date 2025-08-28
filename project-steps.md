@@ -57,3 +57,11 @@
 - 建立專案 API 架構文件 (`docs/API_ARCHITECTURE.md`)，記錄統一的設計模式與路徑格式。
 - 解決 TypeScript 模組載入問題，執行 `pnpm nuxt prepare` 重新生成型別檔案。
 
+#### API 架構設計與 CORS 問題解決
+- 分析並解決 Users 模塊直連後端 API 時遭遇的 CORS 政策阻擋問題，確認在無後端控制權的情況下需要啟用代理轉發功能。
+- 重新啟用 Nuxt Vite proxy 配置，設定 `/api-proxy` 路徑轉發至 `https://trybeta.rocket-coding.com`，解決跨域請求問題。
+- 統一 Users 與 Company 模塊的 API 架構模式，兩個模塊都使用專用的 API fetch 函數 (`useUserApiFetch`, `useCompanyApiFetch`) 並依賴代理轉發。
+- 修改 Users 模塊的所有 API 路徑從 `/api/v1/*` 改為 `/api-proxy/v1/*`，確保請求能透過本地開發伺服器代理轉發。
+- 優化 `useUserApiFetch.ts` 配置，移除 `baseURL` 設定，依賴代理轉發機制處理路徑映射。
+- 驗證代理轉發功能正常運作，確認 `login` 與 `programs` API 請求都能成功返回 200 狀態碼，解決了開發環境中的 CORS 與路由問題。
+
