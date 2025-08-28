@@ -116,7 +116,7 @@ const formatProgramDate = (program: Program) => {
                 <img :src="program.CoverImage" class="w-full h-2/3 object-cover" alt="program image" />
                 <div class="p-4">
                   <h3 class="text-lg font-bold">{{ program.Name }}</h3>
-                  <p class="text-sm text-gray-500">{{ program.Industry.Title }}</p>
+                  <p class="text-sm text-gray-500">{{ program.Industry?.Title || '產業未分類' }}</p>
                 </div>
               </el-card>
             </el-carousel-item>
@@ -153,18 +153,18 @@ const formatProgramDate = (program: Program) => {
             <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow">
               <template #header>
                 <div class="flex justify-between items-center">
-                  <span class="font-bold text-lg">{{ program.Name }}</span>
+                  <span class="font-bold text-lg">{{ program.Name || program.ProgramName || '未命名計畫' }}</span>
                   <el-button text>
                     <font-awesome-icon :icon="['fas', 'heart']" />
                   </el-button>
                 </div>
               </template>
               <div class="text-sm text-gray-600">
-                <p class="min-h-[4.5rem]">{{ program.Intro }}</p>
+                <p class="min-h-[4.5rem]">{{ program.Intro || '暫無介紹' }}</p>
                 <div class="mt-4 space-y-2">
                   <div class="flex items-center gap-2">
                     <font-awesome-icon :icon="['fas', 'map-marker-alt']" />
-                    <span>{{ program.Address }}</span>
+                    <span>{{ program.Address || '地點未定' }}</span>
                   </div>
                   <div class="flex items-center gap-2">
                     <font-awesome-icon :icon="['fas', 'calendar-alt']" />
@@ -172,11 +172,12 @@ const formatProgramDate = (program: Program) => {
                   </div>
                 </div>
                 <div class="mt-4 flex justify-between text-xs text-gray-500 border-t pt-2">
-                  <span>已申請人數：{{ program.AppliedCount }} 人</span>
-                  <span>申請截止還有 {{ program.DaysLeft }} 天</span>
+                  <span>已申請人數：{{ program.AppliedCount || 0 }} 人</span>
+                  <span>申請截止還有 {{ program.DaysLeft || 0 }} 天</span>
                 </div>
                 <div class="mt-2 text-right text-blue-500 font-bold min-h-5">
                   <span v-if="program.IsOngoing !== null">{{ program.IsOngoing ? '進行中' : '已結束' }}</span>
+                  <span v-else class="text-gray-400">狀態未知</span>
                 </div>
               </div>
               <template #footer>

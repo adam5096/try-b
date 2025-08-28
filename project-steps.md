@@ -65,3 +65,9 @@
 - 優化 `useUserApiFetch.ts` 配置，移除 `baseURL` 設定，依賴代理轉發機制處理路徑映射。
 - 驗證代理轉發功能正常運作，確認 `login` 與 `programs` API 請求都能成功返回 200 狀態碼，解決了開發環境中的 CORS 與路由問題。
 
+#### 前端錯誤修復與資料渲染優化
+- 修復 `pages/users/index.vue` 頁面中的 `TypeError: Cannot read properties of undefined (reading 'Title')` 錯誤，透過加入 `?.` 安全檢查防止存取 `undefined` 物件的屬性。
+- 優化 `formatProgramDate` 函數的錯誤處理機制，加入日期欄位為空值時的檢查，避免因無效日期導致的渲染錯誤。
+- 為所有可能為空的資料欄位加入預設值處理，包括 `program.Industry?.Title || '產業未分類'`、`program.CoverImage || '/img/home/default-program.webp'` 等，提升頁面穩定性。
+- 解決開發者工具中顯示的紅字錯誤，確保即使 API 回應資料不完整，前端頁面仍能正常渲染並顯示適當的預設內容。
+

@@ -19,7 +19,9 @@ export interface ProgramStep {
 
 export interface Program {
   Id: number;
+  ApplicationId?: number; // 新增：申請 ID
   Name: string;
+  ProgramName?: string; // 新增：程式名稱（如果與 Name 不同）
   Intro: string;
   Address: string;
   Industry: Industry;
@@ -36,6 +38,7 @@ export interface Program {
   ViewsCount: number;
   FavoritesCount: number;
   Score: number;
+  SubmitAt?: string; // 新增：提交時間
 }
 
 export interface ProgramsResponse {
