@@ -36,9 +36,15 @@ async function handleLogin() {
     };
     await authStore.login(loginPayload);
 
-    // 登入成功後，Nuxt 的路由中間件或 watchEffect 會自動處理重新導向
-    // 因此這裡不需要手動導航
-    // await navigateTo({ name: 'user-landing' });
+    // 登入成功後，立即導航到使用者首頁
+    const redirectPath = route.query.redirect as string;
+    
+    // 安全檢查：只允許導向內部使用者頁面
+    if (redirectPath && redirectPath.startsWith('/users/')) {
+      await navigateTo(redirectPath);
+    } else {
+      await navigateTo({ name: 'user-landing' });
+    }
     
   } catch (error: any) {
     errorMessage.value = error.message || '登入失敗，請檢查您的帳號和密碼。';

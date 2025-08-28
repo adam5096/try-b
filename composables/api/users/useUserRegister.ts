@@ -1,4 +1,4 @@
-import { useApiFetch } from '~/composables/api/shared/useApiFetch';
+import { useUserApiFetch } from '~/composables/api/users/useUserApiFetch';
 import type { UserRegisterData } from '~/types/users/user';
 
 interface RegisterResponse {
@@ -14,7 +14,7 @@ interface RegisterResponse {
 
 export const useUserRegister = () => {
   async function register(registerData: UserRegisterData) {
-    return await useApiFetch<RegisterResponse>('/v1/users', {
+    return await useUserApiFetch<RegisterResponse>('/api-proxy/v1/users/register', {
       method: 'POST',
       body: registerData,
     });

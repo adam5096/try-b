@@ -1,100 +1,67 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
+import { useUserAuthStore } from '~/stores/user/useAuthStore';
+import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
+import type { Program } from '~/types/users/program';
 
 definePageMeta({
   name: 'user-landing',
   layout: 'user',
+  middleware: 'user-auth',
 });
 
-const popularPrograms = ref([
-  { id: 1, title: '軟體工程師體驗營', company: '科技公司 A', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop' },
-  { id: 2, title: '咖啡師職人體驗', company: '文青咖啡館', image: 'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?q=80&w=1974&auto=format&fit=crop' },
-  { id: 3, title: '數位行銷實戰體驗', company: '電商平台 B', image: 'https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=2071&auto=format&fit=crop' },
-  { id: 4, title: '永續農業見習', company: '有機農場 C', image: 'https://images.unsplash.com/photo-1492496913980-501348b61469?q=80&w=1974&auto=format&fit=crop' },
-]);
-
-const generalPrograms = ref([
-    {
-    id: 5,
-    title: '投資理財顧問體驗',
-    company: '金融公司 D',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop',
-    description: '跟隨資深理財顧問了解金融市場分析、學習投資組合規劃，體驗為客戶制定理財策略的專業服務流程。',
-    location: '台北市大安區',
-    date: '2025/09/10 - 2025/11/20',
-    applicants: 0,
-    deadline: 40,
-    status: '體驗進行中'
-  },
-  {
-    id: 6,
-    title: 'UI/UX設計師工作坊',
-    company: '設計工作室 E',
-    image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=2070&auto=format&fit=crop',
-    description: '深入設計思維流程，從用戶研究到原型製作，體驗數位產品設計的完整過程，了解設計師的創作思路。',
-    location: '金門縣烈嶼鄉',
-    date: '2025/10/01 - 2025/12/20',
-    applicants: 0,
-    deadline: 10,
-    status: ''
-  },
-  {
-    id: 7,
-    title: '新創企業營運體驗',
-    company: '新創公司 F',
-    image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop',
-    description: '加入新創團隊實際參與產品開發、市場策略制定，體驗創業家的決策焦慮，了解新創生態的運作模式。',
-    location: '屏東縣恆春鎮',
-    date: '2025/07/01 - 2025/10/31',
-    applicants: 0,
-    deadline: 10,
-    status: ''
-  },
-    {
-    id: 8,
-    title: '投資理財顧問體驗',
-    company: '金融公司 D',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop',
-    description: '跟隨資深理財顧問了解金融市場分析、學習投資組合規劃，體驗為客戶制定理財策略的專業服務流程。',
-    location: '台北市大安區',
-    date: '2025/09/10 - 2025/11/20',
-    applicants: 0,
-    deadline: 40,
-    status: '體驗進行中'
-  },
-  {
-    id: 9,
-    title: 'UI/UX設計師工作坊',
-    company: '設計工作室 E',
-    image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=2070&auto=format&fit=crop',
-    description: '深入設計思維流程，從用戶研究到原型製作，體驗數位產品設計的完整過程，了解設計師的創作思路。',
-    location: '金門縣烈嶼鄉',
-    date: '2025/10/01 - 2025/12/20',
-    applicants: 0,
-    deadline: 10,
-    status: ''
-  },
-  {
-    id: 10,
-    title: '新創企業營運體驗',
-    company: '新創公司 F',
-    image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop',
-    description: '加入新創團隊實際參與產品開發、市場策略制定，體驗創業家的決策焦慮，了解新創生態的運作模式。',
-    location: '屏東縣恆春鎮',
-    date: '2025/07/01 - 2025/10/31',
-    applicants: 0,
-    deadline: 10,
-    status: ''
-  },
-]);
+const authStore = useUserAuthStore();
+const programsStore = useUserProgramsStore();
 
 const searchKeyword = ref('');
 const industry = ref('');
 const jobType = ref('');
 const location = ref('');
 const sort = ref('');
+
 const currentPage = ref(1);
+const pageSize = 6;
+
+watch(
+  () => authStore.isLoggedIn,
+  (logged) => {
+    if (logged) {
+      programsStore.fetchPrograms({ page: currentPage.value, limit: pageSize });
+    }
+  },
+  { immediate: true },
+);
+
+watch(currentPage, (p) => {
+  if (authStore.isLoggedIn) {
+    programsStore.fetchPrograms({ 
+      page: p, 
+      limit: pageSize,
+      keyword: searchKeyword.value,
+      industry: industry.value,
+      jobType: jobType.value,
+      location: location.value,
+      sort: sort.value
+    });
+  }
+});
+
+// 監聽篩選條件變化
+watch([searchKeyword, industry, jobType, location, sort], () => {
+  if (authStore.isLoggedIn) {
+    currentPage.value = 1; // 重置到第一頁
+    programsStore.fetchPrograms({ 
+      page: 1, 
+      limit: pageSize,
+      keyword: searchKeyword.value,
+      industry: industry.value,
+      jobType: jobType.value,
+      location: location.value,
+      sort: sort.value
+    });
+  }
+});
 
 const industries = ref([
   { value: 'tech', label: '科技業' },
@@ -122,6 +89,17 @@ const sortOptions = ref([
   { value: 'deadline', label: '截止日期' },
 ]);
 
+// 格式化程式日期顯示
+const formatProgramDate = (program: Program) => {
+  const startDate = new Date(program.ProgramStartDate);
+  const endDate = new Date(program.ProgramEndDate);
+  
+  const formatDate = (date: Date) => {
+    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+  };
+  
+  return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+};
 </script>
 
 <template>
@@ -132,17 +110,20 @@ const sortOptions = ref([
         <section class="mb-16">
           <h2 class="text-2xl font-bold mb-2">熱門體驗計畫總覽</h2>
           <p class="text-gray-500 mb-8">在這裡探索最受歡迎的體驗計畫，看看大家都喜歡哪些活動！</p>
-          <el-carousel :interval="4000" type="card" height="300px">
-            <el-carousel-item v-for="program in popularPrograms" :key="program.id">
+          <el-carousel v-if="programsStore.popular && programsStore.popular.length > 0" :interval="4000" type="card" height="300px">
+            <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
               <el-card :body-style="{ padding: '0px' }" class="h-full">
-                <img :src="program.image" class="w-full h-2/3 object-cover" />
+                <img :src="program.CoverImage" class="w-full h-2/3 object-cover" alt="program image" />
                 <div class="p-4">
-                  <h3 class="text-lg font-bold">{{ program.title }}</h3>
-                  <p class="text-sm text-gray-500">{{ program.company }}</p>
+                  <h3 class="text-lg font-bold">{{ program.Name }}</h3>
+                  <p class="text-sm text-gray-500">{{ program.Industry.Title }}</p>
                 </div>
               </el-card>
             </el-carousel-item>
           </el-carousel>
+          <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
+            <p class="text-gray-500">{{ programsStore.loading ? '載入中...' : '暫無熱門計畫' }}</p>
+          </div>
         </section>
 
         <!-- General Programs Section -->
@@ -168,51 +149,54 @@ const sortOptions = ref([
           </div>
 
           <!-- Program Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <el-card v-for="program in generalPrograms" :key="program.id" class="shadow-lg hover:shadow-xl transition-shadow">
+          <div v-if="programsStore.items && programsStore.items.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow">
               <template #header>
                 <div class="flex justify-between items-center">
-                  <span class="font-bold text-lg">{{ program.title }}</span>
+                  <span class="font-bold text-lg">{{ program.Name }}</span>
                   <el-button text>
                     <font-awesome-icon :icon="['fas', 'heart']" />
                   </el-button>
                 </div>
               </template>
               <div class="text-sm text-gray-600">
-                <p class="min-h-[4.5rem]">{{ program.description }}</p>
+                <p class="min-h-[4.5rem]">{{ program.Intro }}</p>
                 <div class="mt-4 space-y-2">
                   <div class="flex items-center gap-2">
                     <font-awesome-icon :icon="['fas', 'map-marker-alt']" />
-                    <span>{{ program.location }}</span>
+                    <span>{{ program.Address }}</span>
                   </div>
                   <div class="flex items-center gap-2">
                     <font-awesome-icon :icon="['fas', 'calendar-alt']" />
-                    <span>{{ program.date }}</span>
+                    <span>{{ formatProgramDate(program) }}</span>
                   </div>
                 </div>
                 <div class="mt-4 flex justify-between text-xs text-gray-500 border-t pt-2">
-                  <span>已申請人數：{{ program.applicants }} 人</span>
-                  <span>申請截止還有 {{ program.deadline }} 天</span>
+                  <span>已申請人數：{{ program.AppliedCount }} 人</span>
+                  <span>申請截止還有 {{ program.DaysLeft }} 天</span>
                 </div>
-                 <div class="mt-2 text-right text-blue-500 font-bold min-h-5">
-                   <span v-if="program.status">{{ program.status }}</span>
-                 </div>
+                <div class="mt-2 text-right text-blue-500 font-bold min-h-5">
+                  <span v-if="program.IsOngoing !== null">{{ program.IsOngoing ? '進行中' : '已結束' }}</span>
+                </div>
               </div>
               <template #footer>
-                <NuxtLink :to="userRoutes.programDetail(program.id)">
+                                  <NuxtLink :to="userRoutes.programDetail(program.Id)">
                   <el-button type="primary" class="w-full">查看詳情</el-button>
                 </NuxtLink>
               </template>
             </el-card>
           </div>
-          
+          <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
+            <p class="text-gray-500">{{ programsStore.loading ? '載入中...' : '暫無體驗計畫' }}</p>
+          </div>
+
           <!-- Pagination -->
-          <div class="mt-12 flex justify-center">
+          <div v-if="programsStore.items && programsStore.items.length > 0 && programsStore.total > pageSize" class="mt-12 flex justify-center">
             <el-pagination
               v-model:current-page="currentPage"
-              :page-size="6"
+              :page-size="pageSize"
               layout="prev, pager, next"
-              :total="generalPrograms.length"
+              :total="programsStore.total"
             />
           </div>
         </section>

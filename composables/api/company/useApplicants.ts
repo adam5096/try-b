@@ -1,4 +1,4 @@
-import { useApiFetch } from '~/composables/api/shared/useApiFetch';
+import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 export interface ApplicantsListResponse {
   total_applicants: number;
@@ -16,7 +16,7 @@ export const useApplicants = (companyId: MaybeRefOrGetter<number | null>, progra
     return `/api/v1/company/${resolvedCompanyId}/programs/${resolvedProgramId}/applications`;
   });
 
-  return useApiFetch<ApplicantsListResponse>(url, {
+  return useCompanyApiFetch<ApplicantsListResponse>(url, {
     immediate: !!toValue(companyId),
   });
 };

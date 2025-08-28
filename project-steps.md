@@ -36,3 +36,24 @@
 - 驗證 `register.vue` 頁面的前端邏輯，確保其在註冊成功後能正確顯示成功訊息並將使用者導向登入頁面。
 - 修復 `useAuthStore` 中的 TypeScript 型別推斷錯誤，確保程式碼的健壯性。
 
+### 2025-08-28
+#### 體驗者端-體驗計畫總覽 (u-users-3)
+- 建立 `useUserPrograms.ts` Composable 封裝取得全部體驗計畫總覽的 API (`/api/v1/users/programs`) 請求邏輯，支援分頁與篩選參數。
+- 建立 `useProgramsStore.ts` Pinia store 管理體驗計畫的狀態，包含 `items`、`popular`、`total`、`currentPage` 等資料結構。
+- 更新 `pages/users/index.vue` 頁面，將靜態資料替換為動態 API 資料，並實作 `watch` 監聽器觸發資料重新載入。
+- 修正欄位映射問題，將 API 回應的大寫欄位名稱 (`program.Name`, `program.CoverImage`, `program.Address` 等) 正確對應到前端顯示需求。
+- 新增 `formatProgramDate` 函數處理日期格式化，並加入 `v-if` 檢查防止 SSR 期間的渲染錯誤。
+
+#### API 架構統一與優化
+- 統一 Users 與 Company 模塊的 API 架構設計，確保兩個模塊使用一致的認證與請求處理邏輯。
+- 建立 `useUserApiFetch.ts` 專用於 Users 模塊的 API 請求處理，自動注入 JWT token 並與 Company 模塊保持一致的架構模式。
+- 恢復 Nuxt Vite proxy 配置，解決開發環境中 API 請求的 CORS 與路由問題。
+- 修正環境變數 `NUXT_PUBLIC_API_BASE_URL=/api-proxy` 的配置，確保 proxy 轉發功能正常運作。
+- 解決登入後路由導航失敗的問題，透過重新實作 `authStore.fetchUser()` 與加入 `middleware: 'user-auth'` 確保認證狀態正確更新。
+
+#### 技術債務與架構改進
+- 移除不必要的 `useCompanyApiFetch.ts` 檔案，簡化 API 架構複雜度。
+- 更新 `useApiFetch.ts` 共享基礎函數，專注於 Company 模塊的 token 注入邏輯。
+- 建立專案 API 架構文件 (`docs/API_ARCHITECTURE.md`)，記錄統一的設計模式與路徑格式。
+- 解決 TypeScript 模組載入問題，執行 `pnpm nuxt prepare` 重新生成型別檔案。
+

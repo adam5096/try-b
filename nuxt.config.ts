@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || '',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || 'https://trybeta.rocket-coding.com',
     },
   },
   fonts: {
@@ -55,14 +55,16 @@ export default defineNuxtConfig({
         '/api-proxy': {
           target: 'https://trybeta.rocket-coding.com',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api-proxy/, '/api'),
+          secure: true,
+          rewrite: (path) => {
+            const newPath = path.replace(/^\/api-proxy/, '/api');
+            console.log(`🔀 Proxy rewrite: ${path} → ${newPath}`);
+            return newPath;
+          },
         },
       },
     },
   },
-  // build: {
-  //   transpile: ['dayjs', 'dayjs-nuxt'],
-  // },
 
   imports: {
     dirs: ['stores/**'],
