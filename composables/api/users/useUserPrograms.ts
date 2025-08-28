@@ -16,10 +16,24 @@ export const useUserPrograms = () => {
     const queryString = queryParams.toString();
     const url = `/api-proxy/v1/users/programs${queryString ? '?' + queryString : ''}`;
 
-    // JWT token 會由 useUserApiFetch 自動從 auth store 中獲取
-    return await useUserApiFetch<ProgramsResponse>(url, {
-      method: 'GET'
-    });
+    try {
+      // 使用新的 useUserApiFetch
+      const data = await useUserApiFetch<ProgramsResponse>(url, {
+        method: 'GET'
+      });
+      
+      return {
+        data: { value: data },
+        error: { value: null },
+        pending: { value: false }
+      };
+    } catch (error) {
+      return {
+        data: { value: null },
+        error: { value: error },
+        pending: { value: false }
+      };
+    }
   };
 
   return {

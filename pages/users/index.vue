@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 import { useUserAuthStore } from '~/stores/user/useAuthStore';
 import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
@@ -8,7 +8,6 @@ import type { Program } from '~/types/users/program';
 definePageMeta({
   name: 'user-landing',
   layout: 'user',
-  middleware: 'user-auth',
 });
 
 const authStore = useUserAuthStore();
@@ -23,44 +22,35 @@ const sort = ref('');
 const currentPage = ref(1);
 const pageSize = 6;
 
-watch(
-  () => authStore.isLoggedIn,
-  (logged) => {
-    if (logged) {
-      programsStore.fetchPrograms({ page: currentPage.value, limit: pageSize });
-    }
-  },
-  { immediate: true },
-);
+// 頁面載入時直接獲取資料，不需要登入驗證
+onMounted(() => {
+  programsStore.fetchPrograms({ page: currentPage.value, limit: pageSize });
+});
 
 watch(currentPage, (p) => {
-  if (authStore.isLoggedIn) {
-    programsStore.fetchPrograms({ 
-      page: p, 
-      limit: pageSize,
-      keyword: searchKeyword.value,
-      industry: industry.value,
-      jobType: jobType.value,
-      location: location.value,
-      sort: sort.value
-    });
-  }
+  programsStore.fetchPrograms({ 
+    page: p, 
+    limit: pageSize,
+    keyword: searchKeyword.value,
+    industry: industry.value,
+    jobType: jobType.value,
+    location: location.value,
+    sort: sort.value
+  });
 });
 
 // 監聽篩選條件變化
 watch([searchKeyword, industry, jobType, location, sort], () => {
-  if (authStore.isLoggedIn) {
-    currentPage.value = 1; // 重置到第一頁
-    programsStore.fetchPrograms({ 
-      page: 1, 
-      limit: pageSize,
-      keyword: searchKeyword.value,
-      industry: industry.value,
-      jobType: jobType.value,
-      location: location.value,
-      sort: sort.value
-    });
-  }
+  currentPage.value = 1; // 重置到第一頁
+  programsStore.fetchPrograms({ 
+    page: 1, 
+    limit: pageSize,
+    keyword: searchKeyword.value,
+    industry: industry.value,
+    jobType: jobType.value,
+    location: location.value,
+    sort: sort.value
+  });
 });
 
 const industries = ref([
@@ -91,15 +81,40 @@ const sortOptions = ref([
 
 // 格式化程式日期顯示
 const formatProgramDate = (program: Program) => {
-  const startDate = new Date(program.ProgramStartDate);
-  const endDate = new Date(program.ProgramEndDate);
+  if (!program.ProgramStartDate || !program.ProgramEndDate) {
+    return '日期未定';
+  }
   
-  const formatDate = (date: Date) => {
-    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
-  };
-  
-  return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+  try {
+    const startDate = new Date(program.ProgramStartDate);
+    const endDate = new Date(program.ProgramEndDate);
+    
+    // 檢查日期是否有效
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return '日期格式錯誤';
+    }
+    
+    const formatDate = (date: Date) => {
+      return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+    };
+    
+    return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+  } catch (error) {
+    console.error('Error formatting program date:', error);
+    return '日期格式錯誤';
+  }
 };
+
+const activeStatus = ref('all');
+
+const setActiveStatus = (status: string) => {
+  activeStatus.value = status;
+};
+
+const getStatusCount = (status: string) => {
+  if (!programsStore.items) return 0;
+  return programsStore.items.filter(program => program.Status === status).length;
+};  
 </script>
 
 <template>
@@ -113,9 +128,9 @@ const formatProgramDate = (program: Program) => {
           <el-carousel v-if="programsStore.popular && programsStore.popular.length > 0" :interval="4000" type="card" height="300px">
             <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
               <el-card :body-style="{ padding: '0px' }" class="h-full">
-                <img :src="program.CoverImage" class="w-full h-2/3 object-cover" alt="program image" />
+                <img :src="program.CoverImage || '/img/home/home-worker-bg.webp'" class="w-full h-2/3 object-cover" alt="program image" />
                 <div class="p-4">
-                  <h3 class="text-lg font-bold">{{ program.Name }}</h3>
+                  <h3 class="text-lg font-bold">{{ program.ProgramName || program.Name || '未命名計畫' }}</h3>
                   <p class="text-sm text-gray-500">{{ program.Industry?.Title || '產業未分類' }}</p>
                 </div>
               </el-card>
@@ -148,43 +163,129 @@ const formatProgramDate = (program: Program) => {
             </el-select>
           </div>
 
+          <!-- Status Tabs -->
+          <div class="mb-8">
+            <div class="flex flex-wrap gap-2">
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'all' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('all')"
+              >
+                全部計劃({{ programsStore.total || 0 }})
+              </button>
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'approved' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('approved')"
+              >
+                已通過({{ getStatusCount('已通過') }})
+              </button>
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'published' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('published')"
+              >
+                已發佈({{ getStatusCount('已發佈') }})
+              </button>
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'pending' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('pending')"
+              >
+                待發佈({{ getStatusCount('待發佈') }})
+              </button>
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'rejected' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('rejected')"
+              >
+                已拒絕({{ getStatusCount('已拒絕') }})
+              </button>
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'reviewing' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('reviewing')"
+              >
+                審核中({{ getStatusCount('審核中') }})
+              </button>
+            </div>
+          </div>
+
           <!-- Program Cards -->
           <div v-if="programsStore.items && programsStore.items.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow">
-              <template #header>
-                <div class="flex justify-between items-center">
-                  <span class="font-bold text-lg">{{ program.Name || program.ProgramName || '未命名計畫' }}</span>
-                  <el-button text>
-                    <font-awesome-icon :icon="['fas', 'heart']" />
-                  </el-button>
-                </div>
-              </template>
-              <div class="text-sm text-gray-600">
-                <p class="min-h-[4.5rem]">{{ program.Intro || '暫無介紹' }}</p>
-                <div class="mt-4 space-y-2">
-                  <div class="flex items-center gap-2">
-                    <font-awesome-icon :icon="['fas', 'map-marker-alt']" />
-                    <span>{{ program.Address || '地點未定' }}</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <font-awesome-icon :icon="['fas', 'calendar-alt']" />
-                    <span>{{ formatProgramDate(program) }}</span>
-                  </div>
-                </div>
-                <div class="mt-4 flex justify-between text-xs text-gray-500 border-t pt-2">
-                  <span>已申請人數：{{ program.AppliedCount || 0 }} 人</span>
-                  <span>申請截止還有 {{ program.DaysLeft || 0 }} 天</span>
-                </div>
-                <div class="mt-2 text-right text-blue-500 font-bold min-h-5">
-                  <span v-if="program.IsOngoing !== null">{{ program.IsOngoing ? '進行中' : '已結束' }}</span>
-                  <span v-else class="text-gray-400">狀態未知</span>
+            <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC]">
+              <!-- Cover Image with Status Tag -->
+              <div class="relative">
+                <img 
+                  :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
+                  class="w-full h-48 object-cover" 
+                  alt="program image" 
+                />
+                <!-- Status Tag (左上角) -->
+                <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
+                  {{ program.Status || '已發佈' }}
                 </div>
               </div>
-              <template #footer>
-                                  <NuxtLink :to="userRoutes.programDetail(program.Id)">
-                  <el-button type="primary" class="w-full">查看詳情</el-button>
+              
+              <!-- Program Content -->
+              <div class="p-4">
+                <!-- Title -->
+                <h3 class="text-lg font-bold text-black mb-2">{{ program.ProgramName || program.Name || '未命名計畫' }}</h3>
+                
+                <!-- Description -->
+                <p class="text-sm text-gray-600 mb-4 min-h-[3rem]">{{ program.Intro || '暫無介紹' }}</p>
+                
+                <!-- Program Details -->
+                <div class="space-y-2 mb-4">
+                  <div class="flex items-center gap-2">
+                    <font-awesome-icon :icon="['fas', 'briefcase']" class="text-gray-500 w-4" />
+                    <span class="text-sm text-black">{{ program.Industry?.Title || '產業未分類' }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <font-awesome-icon :icon="['fas', 'calendar']" class="text-gray-500 w-4" />
+                    <span class="text-sm text-black">{{ formatProgramDate(program) }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="text-gray-500 w-4" />
+                    <span class="text-sm text-black">{{ program.Address || '地點未定' }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <font-awesome-icon :icon="['fas', 'users']" class="text-gray-500 w-4" />
+                    <span class="text-sm text-black">活動人數: {{ program.MinParticipants || 1 }}-{{ program.MaxParticipants || 12 }}人</span>
+                  </div>
+                </div>
+                
+                <!-- Company Name -->
+                <div class="text-xs text-gray-500 mb-2">
+                  公司: {{ program.CompanyName || '未指定公司' }}
+                </div>
+                
+                <!-- Application Count -->
+                <div class="text-xs text-gray-500 mb-4">
+                  已申請人數: {{ program.AppliedCount || 0 }}人
+                </div>
+                
+                <!-- Action Button -->
+                <NuxtLink 
+                  v-if="authStore.isLoggedIn" 
+                  :to="userRoutes.programDetail(program.Id)" 
+                  class="block"
+                >
+                  <button 
+                    class="w-full bg-btn-yellow text-black font-medium py-3 px-4 rounded-lg hover:bg-btn-yellow/80 transition-colors"
+                  >
+                    查看詳情
+                  </button>
                 </NuxtLink>
-              </template>
+                <button 
+                  v-else 
+                  class="w-full bg-gray-400 text-white font-medium py-3 px-4 rounded-lg cursor-not-allowed opacity-50"
+                  disabled
+                  title="請先登入以查看詳情"
+                >
+                  查看詳情
+                </button>
+              </div>
             </el-card>
           </div>
           <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">

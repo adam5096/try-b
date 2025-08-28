@@ -33,21 +33,39 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
         ...params
       };
 
-      const { data, error: apiError } = await apiFetchPrograms(queryParams);
+      console.log('Fetching programs with params:', queryParams);
+
+      const { data, error: apiError, pending } = await apiFetchPrograms(queryParams);
+
+      console.log('API Response:', { data: data.value, error: apiError.value, pending: pending.value });
 
       if (apiError.value) {
-        throw new Error(apiError.value.data?.message || '取得計畫列表失敗');
+        console.error('API Error:', apiError.value);
+        throw new Error(apiError.value.data?.message || apiError.value.message || '取得計畫列表失敗');
       }
 
       if (data.value) {
-        programs.value = data.value.items;
-        total.value = data.value.total;
-        currentPage.value = data.value.page;
-        currentLimit.value = data.value.limit;
+        console.log('Setting programs data:', data.value);
+        programs.value = data.value.items || [];
+        total.value = data.value.total || 0;
+        currentPage.value = data.value.page || 1;
+        currentLimit.value = data.value.limit || 6;
+        
+        console.log('Store updated:', {
+          programsCount: programs.value.length,
+          total: total.value,
+          currentPage: currentPage.value
+        });
+      } else {
+        console.warn('No data received from API');
+        programs.value = [];
+        total.value = 0;
       }
     } catch (err) {
+      console.error('Error in fetchPrograms:', err);
       error.value = err instanceof Error ? err.message : '取得計畫列表時發生未知錯誤';
-      console.error('Error fetching programs:', err);
+      programs.value = [];
+      total.value = 0;
     } finally {
       loading.value = false;
     }

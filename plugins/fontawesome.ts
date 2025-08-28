@@ -21,7 +21,10 @@ import {
   faStar,
   faCircleUser,
   faArrowRightFromBracket,
-  faArrowRightToBracket
+  faArrowRightToBracket,
+  faBriefcase,
+  faCalendar,
+  faUsers
 } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons'
 
@@ -50,7 +53,10 @@ library.add(
   faStar,
   faCircleUser,
   faArrowRightFromBracket,
-  faArrowRightToBracket
+  faArrowRightToBracket,
+  faBriefcase,
+  faCalendar,
+  faUsers
 )
 
 export default defineNuxtPlugin((nuxtApp) => {
