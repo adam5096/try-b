@@ -1,5 +1,5 @@
 import type { FetchError } from 'ofetch';
-import { useApiFetch } from '~/composables/api/shared/useApiFetch';
+import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 interface SubmitReviewPayload {
   status_id: 1 | 2; // 1 for rejected, 2 for approved
@@ -29,7 +29,7 @@ export const useSubmitReview = () => {
 
     const url = `/api/v1/programs/${programId}/applications/${participantId}/review`;
 
-    const { data: result, error: fetchError } = await useApiFetch<SubmitReviewResponse>(url, {
+    const { data: result, error: fetchError } = await useCompanyApiFetch<SubmitReviewResponse>(url, {
       method: 'PUT',
       body: payload,
     });

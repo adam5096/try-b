@@ -17,15 +17,34 @@ export const useUserAuthStore = defineStore('userAuth', () => {
     const { login: performLogin } = useUserLogin();
     const { data: responseData, error } = await performLogin(loginData);
     
-    if (responseData.value && responseData.value.token) {
+    // 添加調試信息
+    console.log('Login response:', { data: responseData.value, error: error.value });
+    
+    if (error.value) {
+      await logout();
+      throw new Error(error.value.data?.message || error.value.message || '登入失敗：伺服器錯誤');
+    }
+    
+    if (responseData.value && responseData.value.token && responseData.value.user) {
       const response = responseData.value;
       token.value = response.token;
       tokenCookie.value = response.token;
-      user.value = response.user;
-      userCookie.value = response.user;
+      
+      // 將 API 回應的 user 格式轉換為內部 User 格式
+      const mappedUser: User = {
+        id: response.user.Id,
+        name: response.user.Account, // 使用 Account 作為 name
+        account: response.user.Account,
+        email: response.user.Email,
+        role: response.user.Role,
+      };
+      
+      user.value = mappedUser;
+      userCookie.value = mappedUser;
     } else {
       await logout();
-      throw new Error(error.value?.data?.message || '登入失敗：無效的回應格式');
+      console.error('Invalid response format:', responseData.value);
+      throw new Error('登入失敗：回應格式無效或缺少必要資訊');
     }
   }
 
@@ -48,8 +67,22 @@ export const useUserAuthStore = defineStore('userAuth', () => {
     tokenCookie.value = null;
   }
   
-  // 這個函式可能不再需要，因為使用者資料在登入時已一併取得
-  // async function fetchUser() { ... }
+  // 檢查使用者登入狀態的函數
+  async function fetchUser() {
+    // 如果已有 token 和 user，則認為已登入
+    if (token.value && user.value) {
+      return;
+    }
+    
+    // 如果沒有 token，則清除登入狀態
+    if (!token.value) {
+      await logout();
+      return;
+    }
+    
+    // 可以在此處添加對後端的驗證請求
+    // 目前簡化為檢查本地狀態
+  }
 
   return {
     user,
@@ -58,5 +91,6 @@ export const useUserAuthStore = defineStore('userAuth', () => {
     login,
     register,
     logout,
+    fetchUser,
   };
 });

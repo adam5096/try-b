@@ -1,16 +1,24 @@
-import { useApiFetch } from '~/composables/api/shared/useApiFetch';
+import { useUserApiFetch } from '~/composables/api/users/useUserApiFetch';
 import type { User, UserLoginData } from '~/types/users/user';
+
+// API 回應中的 User 格式（大寫欄位名）
+interface ApiUser {
+  Id: number;
+  Account: string;
+  Email: string;
+  Role: string;
+}
 
 interface LoginResponse {
   status: number;
   message: string;
   token: string;
-  user: User;
+  user: ApiUser;
 }
 
 export const useUserLogin = () => {
   async function login(loginData: UserLoginData) {
-    return await useApiFetch<LoginResponse>('/v1/users/login', {
+    return await useUserApiFetch<LoginResponse>('/api-proxy/v1/users/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json'
