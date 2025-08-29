@@ -3,6 +3,7 @@ import { ref, watch, onMounted } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 import { useUserAuthStore } from '~/stores/user/useAuthStore';
 import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
+import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 import type { Program } from '~/types/users/program';
 
 definePageMeta({
@@ -12,6 +13,10 @@ definePageMeta({
 
 const authStore = useUserAuthStore();
 const programsStore = useUserProgramsStore();
+const programDetailStore = useUserProgramDetailStore();
+
+// 開發環境用的 fallback programId（後端清單缺少真正的 programId 時使用）
+const FALLBACK_PROGRAM_ID = 45;
 
 const searchKeyword = ref('');
 const industry = ref('');
@@ -114,6 +119,52 @@ const setActiveStatus = (status: string) => {
 const getStatusCount = (status: string) => {
   if (!programsStore.items) return 0;
   return programsStore.items.filter(program => program.Status === status).length;
+};
+
+// 解析清單項目的 ProgramId（兼容不同欄位命名）
+const resolveProgramId = (program: any) => {
+  // 僅接受可用的 Program Id 欄位；不再使用 ApplicationId 以免誤傳
+  return (
+    program?.Id ??
+    program?.id ??
+    program?.ProgramId ??
+    program?.programId ??
+    program?.Program?.Id ??
+    program?.Program?.id ??
+    program?.ID ??
+    null
+  );
+};
+
+// 處理查看詳情按鈕點擊
+const handleViewDetail = async (program: any) => {
+  try {
+    const programId = resolveProgramId(program);
+    if (programId === undefined || programId === null || programId === '') {
+      console.warn('Invalid programId provided to handleViewDetail:', program);
+      if (process.dev && FALLBACK_PROGRAM_ID) {
+        console.log(`[dev:fallback] 此卡片缺少 programId，改用 fallback=${FALLBACK_PROGRAM_ID}`);
+        await programDetailStore.fetchDetail(FALLBACK_PROGRAM_ID);
+        await navigateTo(userRoutes.programDetail(FALLBACK_PROGRAM_ID));
+        return;
+      } else {
+        console.log('[warn] 此體驗卡片缺少 programId，暫時無法查看詳情');
+        return;
+      }
+    }
+    // 先取得計畫詳情
+    await programDetailStore.fetchDetail(programId);
+    
+    // 導航到計畫詳情頁
+    await navigateTo(userRoutes.programDetail(programId));
+  } catch (error) {
+    console.error('Error handling view detail:', error);
+    // 如果取得詳情失敗，仍然導航到詳情頁，讓詳情頁處理錯誤狀態
+    const programId = resolveProgramId(program);
+    if (programId !== undefined && programId !== null && programId !== '') {
+      await navigateTo(userRoutes.programDetail(programId));
+    }
+  }
 };  
 </script>
 
@@ -266,17 +317,13 @@ const getStatusCount = (status: string) => {
                 </div>
                 
                 <!-- Action Button -->
-                <NuxtLink 
+                <button 
                   v-if="authStore.isLoggedIn" 
-                  :to="userRoutes.programDetail(program.Id)" 
-                  class="block"
+                  @click="handleViewDetail(program)"
+                  class="w-full bg-btn-yellow text-black font-medium py-3 px-4 rounded-lg hover:bg-btn-yellow/80 transition-colors"
                 >
-                  <button 
-                    class="w-full bg-btn-yellow text-black font-medium py-3 px-4 rounded-lg hover:bg-btn-yellow/80 transition-colors"
-                  >
-                    查看詳情
-                  </button>
-                </NuxtLink>
+                  查看詳情
+                </button>
                 <button 
                   v-else 
                   class="w-full bg-gray-400 text-white font-medium py-3 px-4 rounded-lg cursor-not-allowed opacity-50"

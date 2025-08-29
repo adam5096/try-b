@@ -16,7 +16,7 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
   const popular = computed(() => {
     // 取得評分最高的前 5 個計畫作為熱門計畫
     return [...programs.value]
-      .sort((a, b) => b.Score - a.Score)
+      .sort((a, b) => (b.Score ?? 0) - (a.Score ?? 0))
       .slice(0, 5);
   });
 
@@ -41,12 +41,29 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
 
       if (apiError.value) {
         console.error('API Error:', apiError.value);
-        throw new Error(apiError.value.data?.message || apiError.value.message || '取得計畫列表失敗');
+        const err = apiError.value as { data?: { message?: string }; message?: string };
+        throw new Error(err?.data?.message ?? err?.message ?? '取得計畫列表失敗');
       }
 
       if (data.value) {
         console.log('Setting programs data:', data.value);
-        programs.value = data.value.items || [];
+        // 正規化：確保每一筆清單都有可用的 Program Id
+        const normalizedItems = (data.value.items || []).map((raw: any) => {
+          // 嚴格優先使用真正的 Program.Id（詳細頁 API 使用的 Id）
+          const programIdCandidate =
+            raw?.Program?.Id ??
+            raw?.Program?.id ??
+            raw?.Id ??
+            raw?.id ??
+            null; // 不再使用 ProgramId/ApplicationId 以避免誤導到 404
+
+          return {
+            ...raw,
+            Id: programIdCandidate,
+          } as unknown as Program;
+        });
+
+        programs.value = normalizedItems;
         total.value = data.value.total || 0;
         currentPage.value = data.value.page || 1;
         currentLimit.value = data.value.limit || 6;

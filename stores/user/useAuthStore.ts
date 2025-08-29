@@ -15,36 +15,37 @@ export const useUserAuthStore = defineStore('userAuth', () => {
   
   async function login(loginData: UserLoginData) {
     const { login: performLogin } = useUserLogin();
-    const { data: responseData, error } = await performLogin(loginData);
-    
-    // 添加調試信息
-    console.log('Login response:', { data: responseData.value, error: error.value });
-    
-    if (error.value) {
+    try {
+      // 使用 $fetch 回傳實際資料物件
+      const response = await performLogin(loginData);
+
+      // 調試資訊
+      console.log('Login response:', response);
+
+      if (response && response.token && response.user) {
+        token.value = response.token;
+        tokenCookie.value = response.token;
+
+        // 將 API 回應的 user 格式轉換為內部 User 格式
+        const mappedUser: User = {
+          id: response.user.Id,
+          name: response.user.Account,
+          account: response.user.Account,
+          email: response.user.Email,
+          role: response.user.Role,
+        };
+
+        user.value = mappedUser;
+        userCookie.value = mappedUser;
+      } else {
+        await logout();
+        console.error('Invalid response format:', response);
+        throw new Error('登入失敗：回應格式無效或缺少必要資訊');
+      }
+    } catch (err: any) {
       await logout();
-      throw new Error(error.value.data?.message || error.value.message || '登入失敗：伺服器錯誤');
-    }
-    
-    if (responseData.value && responseData.value.token && responseData.value.user) {
-      const response = responseData.value;
-      token.value = response.token;
-      tokenCookie.value = response.token;
-      
-      // 將 API 回應的 user 格式轉換為內部 User 格式
-      const mappedUser: User = {
-        id: response.user.Id,
-        name: response.user.Account, // 使用 Account 作為 name
-        account: response.user.Account,
-        email: response.user.Email,
-        role: response.user.Role,
-      };
-      
-      user.value = mappedUser;
-      userCookie.value = mappedUser;
-    } else {
-      await logout();
-      console.error('Invalid response format:', responseData.value);
-      throw new Error('登入失敗：回應格式無效或缺少必要資訊');
+      const message = err?.data?.message || err?.message || '登入失敗：伺服器錯誤';
+      throw new Error(message);
     }
   }
 
