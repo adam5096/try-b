@@ -78,3 +78,18 @@
 - 修改 `useUserPrograms.ts` 的錯誤處理機制，針對 401 未授權錯誤提供友善的降級處理，避免因認證問題阻擋資料顯示。
 - 更新頁面資料獲取邏輯，移除登入狀態檢查，確保分頁、篩選等功能對所有用戶開放，提升頁面可用性與用戶體驗。
 
+### 2025-08-29
+#### 體驗者端-單一計畫頁 (u-users-5)
+- 建立 `types/users/programDetail.ts` 型別，定義單一計畫回應結構。
+- 建立 `useUserProgramDetail.ts` composable 與 `useUserProgramDetailStore.ts` store，封裝詳情 API 與 loading/error 狀態。
+- 重構 `pages/users/programs/[programId].vue` 使用 store 資料渲染，加入 Skeleton 載入元件與共用錯誤元件（顯示於內容區域）。
+- 實作列表頁到詳情頁的邏輯鍊條：在 `pages/users/index.vue` 點擊卡片時先取詳情並再導頁。
+- 嚴格解析 program 主鍵 Id，避免將 `ApplicationId` 誤當成 `programId` 導致 404。
+- 加入 dev 環境 fallback 流程：當缺少 `programId` 時以測試 Id `45` 取代並繼續流程（正式環境不啟用）。
+- 將原本以 `ElMessage` 呈現的提示改為 `console.log` 紀錄，避免展示環境的視覺干擾。
+
+#### 體驗者端-清單與型別強化
+- 正規化清單資料 Id 欄位（優先 `Program.Id` → `Id`/`id`），為詳情導頁建立穩健基礎。
+- 修復熱門排序的可能 `Score` 空值問題，改用 `(Score ?? 0)`，移除 TypeScript 警告。
+- 收斂 API 錯誤型別，對 `apiError.value` 進行窄化，避免 `data`/`message` 屬性不存在的型別錯誤。
+
