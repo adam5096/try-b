@@ -15,8 +15,7 @@ const authStore = useUserAuthStore();
 const programsStore = useUserProgramsStore();
 const programDetailStore = useUserProgramDetailStore();
 
-// 開發環境用的 fallback programId（後端清單缺少真正的 programId 時使用）
-const FALLBACK_PROGRAM_ID = 45;
+// 已移除開發環境用的 fallback programId，改以實際回傳的 Id 為準
 
 // 圖片載入錯誤時回退至預設圖片
 const onProgramImageError = (e: Event) => {
@@ -132,19 +131,9 @@ const getStatusCount = (status: string) => {
   return 0;
 };
 
-// 解析清單項目的 ProgramId（兼容不同欄位命名）
+// 解析清單項目的 ProgramId（以回傳的 Id 為主，保守兼容 id）
 const resolveProgramId = (program: any) => {
-  // 僅接受可用的 Program Id 欄位；不再使用 ApplicationId 以免誤傳
-  return (
-    program?.Id ??
-    program?.id ??
-    program?.ProgramId ??
-    program?.programId ??
-    program?.Program?.Id ??
-    program?.Program?.id ??
-    program?.ID ??
-    null
-  );
+  return program?.Id ?? program?.id ?? null;
 };
 
 // 處理查看詳情按鈕點擊
@@ -152,16 +141,8 @@ const handleViewDetail = async (program: any) => {
   try {
     const programId = resolveProgramId(program);
     if (programId === undefined || programId === null || programId === '') {
-      console.warn('Invalid programId provided to handleViewDetail:', program);
-      if (process.dev && FALLBACK_PROGRAM_ID) {
-        console.log(`[dev:fallback] 此卡片缺少 programId，改用 fallback=${FALLBACK_PROGRAM_ID}`);
-        await programDetailStore.fetchDetail(FALLBACK_PROGRAM_ID);
-        await navigateTo(userRoutes.programDetail(FALLBACK_PROGRAM_ID));
-        return;
-      } else {
-        console.log('[warn] 此體驗卡片缺少 programId，暫時無法查看詳情');
-        return;
-      }
+      console.warn('此體驗卡片缺少有效的 programId，暫時無法查看詳情');
+      return;
     }
     // 先取得計畫詳情
     await programDetailStore.fetchDetail(programId);
