@@ -181,7 +181,12 @@ const handleViewDetail = async (program: any) => {
           <el-carousel v-if="programsStore.popular && programsStore.popular.length > 0" :interval="4000" type="card" height="300px">
             <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
               <el-card :body-style="{ padding: '0px' }" class="h-full">
-                <img :src="program.CoverImage || '/img/home/home-worker-bg.webp'" class="w-full h-2/3 object-cover" alt="program image" />
+                <img 
+                  :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
+                  class="w-full h-2/3 object-cover" 
+                  alt="program image" 
+                  @error="(e: Event) => { (e.target as HTMLImageElement).src = '/img/home/home-worker-bg.webp'; }"
+                />
                 <div class="p-4">
                   <h3 class="text-lg font-bold">{{ program.Name || '未命名計畫' }}</h3>
                   <p class="text-sm text-gray-500">{{ program.Industry?.Title || '產業未分類' }}</p>
@@ -273,6 +278,7 @@ const handleViewDetail = async (program: any) => {
                   :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
                   class="w-full h-48 object-cover" 
                   alt="program image" 
+                  @error="(e: Event) => { (e.target as HTMLImageElement).src = '/img/home/home-worker-bg.webp'; }"
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">

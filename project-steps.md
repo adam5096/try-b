@@ -12,3 +12,5 @@
 - 更新 `pages/users/index.vue` 將 `ProgramName` 改為 `Name`，移除 `Status` 顯示與統計，調整卡片欄位顯示。
 - 修正 linter 問題並通過檢查；驗證 Postman 與開發代理結果一致，清單成功載入。
 - 強化錯誤處理回傳格式與 Loading 狀態，保持與現有內容調性一致。
+- 新增圖片 fallback：熱門區與一般清單 `<img>` 皆在 `onerror` 回退至 `/img/home/home-worker-bg.webp`。
+- 建立熱門精選邏輯：在 `useProgramsStore` 預留 `isPopularProgram` 與 `computePopularPrograms`，以 Score > 10 篩選並排序前 5 筆，之後可擴展加權規則（收藏、瀏覽、成長率等）。

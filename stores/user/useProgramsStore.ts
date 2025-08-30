@@ -11,14 +11,25 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  // Computed properties
-  const items = computed(() => programs.value);
-  const popular = computed(() => {
-    // 取得評分最高的前 5 個計畫作為熱門計畫
-    return [...programs.value]
+  // 熱門邏輯：預留擴展點
+  const isPopularProgram = (program: Program): boolean => {
+    // 目前規則：Score > 10 才視為熱門
+    // 未來可擴充：加入 FavoritesCount、ViewsCount、近7日成長率等加權計算
+    const score = program.Score ?? 0;
+    return score > 10;
+  };
+
+  const computePopularPrograms = (list: Program[]): Program[] => {
+    // 預留擴展：可改為多指標加權排序或時間區間篩選
+    return [...list]
+      .filter(isPopularProgram)
       .sort((a, b) => (b.Score ?? 0) - (a.Score ?? 0))
       .slice(0, 5);
-  });
+  };
+
+  // Computed properties
+  const items = computed(() => programs.value);
+  const popular = computed(() => computePopularPrograms(programs.value));
 
   const { fetchPrograms: apiFetchPrograms } = useUserPrograms();
 
