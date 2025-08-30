@@ -118,7 +118,9 @@ const setActiveStatus = (status: string) => {
 
 const getStatusCount = (status: string) => {
   if (!programsStore.items) return 0;
-  return programsStore.items.filter(program => program.Status === status).length;
+  // 由於新版本沒有 Status 欄位，暫時返回 0
+  // 未來可以根據其他欄位來判斷狀態
+  return 0;
 };
 
 // 解析清單項目的 ProgramId（兼容不同欄位命名）
@@ -181,7 +183,7 @@ const handleViewDetail = async (program: any) => {
               <el-card :body-style="{ padding: '0px' }" class="h-full">
                 <img :src="program.CoverImage || '/img/home/home-worker-bg.webp'" class="w-full h-2/3 object-cover" alt="program image" />
                 <div class="p-4">
-                  <h3 class="text-lg font-bold">{{ program.ProgramName || program.Name || '未命名計畫' }}</h3>
+                  <h3 class="text-lg font-bold">{{ program.Name || '未命名計畫' }}</h3>
                   <p class="text-sm text-gray-500">{{ program.Industry?.Title || '產業未分類' }}</p>
                 </div>
               </el-card>
@@ -254,7 +256,7 @@ const handleViewDetail = async (program: any) => {
               </button>
               <button 
                 class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="activeStatus === 'reviewing' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                :class="activeStatus === 'reviewing' ? 'bg-primary-blue-light text-white' : 'bg-gray-600 hover:bg-gray-200'"
                 @click="setActiveStatus('reviewing')"
               >
                 審核中({{ getStatusCount('審核中') }})
@@ -274,14 +276,14 @@ const handleViewDetail = async (program: any) => {
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
-                  {{ program.Status || '已發佈' }}
+                  已發佈
                 </div>
               </div>
               
               <!-- Program Content -->
               <div class="p-4">
                 <!-- Title -->
-                <h3 class="text-lg font-bold text-black mb-2">{{ program.ProgramName || program.Name || '未命名計畫' }}</h3>
+                <h3 class="text-lg font-bold text-black mb-2">{{ program.Name || '未命名計畫' }}</h3>
                 
                 <!-- Description -->
                 <p class="text-sm text-gray-600 mb-4 min-h-[3rem]">{{ program.Intro || '暫無介紹' }}</p>
@@ -302,13 +304,13 @@ const handleViewDetail = async (program: any) => {
                   </div>
                   <div class="flex items-center gap-2">
                     <font-awesome-icon :icon="['fas', 'users']" class="text-gray-500 w-4" />
-                    <span class="text-sm text-black">活動人數: {{ program.MinParticipants || 1 }}-{{ program.MaxParticipants || 12 }}人</span>
+                    <span class="text-sm text-black">活動人數: {{ program.AppliedCount || 0 }}人</span>
                   </div>
                 </div>
                 
                 <!-- Company Name -->
                 <div class="text-xs text-gray-500 mb-2">
-                  公司: {{ program.CompanyName || '未指定公司' }}
+                  公司: {{ program.Industry?.Title || '未指定產業' }}
                 </div>
                 
                 <!-- Application Count -->

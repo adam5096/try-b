@@ -49,17 +49,12 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
         console.log('Setting programs data:', data.value);
         // 正規化：確保每一筆清單都有可用的 Program Id
         const normalizedItems = (data.value.items || []).map((raw: any) => {
-          // 嚴格優先使用真正的 Program.Id（詳細頁 API 使用的 Id）
-          const programIdCandidate =
-            raw?.Program?.Id ??
-            raw?.Program?.id ??
-            raw?.Id ??
-            raw?.id ??
-            null; // 不再使用 ProgramId/ApplicationId 以避免誤導到 404
+          // 使用新的 response body 結構，直接使用 Id 欄位
+          const programId = raw?.Id ?? null;
 
           return {
             ...raw,
-            Id: programIdCandidate,
+            Id: programId,
           } as unknown as Program;
         });
 
