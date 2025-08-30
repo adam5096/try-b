@@ -18,6 +18,15 @@ const programDetailStore = useUserProgramDetailStore();
 // 開發環境用的 fallback programId（後端清單缺少真正的 programId 時使用）
 const FALLBACK_PROGRAM_ID = 45;
 
+// 圖片載入錯誤時回退至預設圖片
+const onProgramImageError = (e: Event) => {
+  const img = e.target as HTMLImageElement;
+  if (img && img.src !== '/img/home/home-worker-bg.webp') {
+    img.src = '/img/home/home-worker-bg.webp';
+    img.onerror = null; // 避免 fallback 再次觸發造成遞迴
+  }
+};
+
 const searchKeyword = ref('');
 const industry = ref('');
 const jobType = ref('');
@@ -185,7 +194,7 @@ const handleViewDetail = async (program: any) => {
                   :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
                   class="w-full h-2/3 object-cover" 
                   alt="program image" 
-                  @error="(e: Event) => { (e.target as HTMLImageElement).src = '/img/home/home-worker-bg.webp'; }"
+                  @error="onProgramImageError"
                 />
                 <div class="p-4">
                   <h3 class="text-lg font-bold">{{ program.Name || '未命名計畫' }}</h3>
@@ -278,7 +287,7 @@ const handleViewDetail = async (program: any) => {
                   :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
                   class="w-full h-48 object-cover" 
                   alt="program image" 
-                  @error="(e: Event) => { (e.target as HTMLImageElement).src = '/img/home/home-worker-bg.webp'; }"
+                  @error="onProgramImageError"
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
