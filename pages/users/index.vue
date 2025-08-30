@@ -270,7 +270,7 @@ const handleViewDetail = async (program: any) => {
               </button>
               <button 
                 class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="activeStatus === 'reviewing' ? 'bg-primary-blue-light text-white' : 'bg-gray-600 hover:bg-gray-200'"
+                :class="activeStatus === 'reviewing' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
                 @click="setActiveStatus('reviewing')"
               >
                 審核中({{ getStatusCount('審核中') }})
@@ -319,19 +319,16 @@ const handleViewDetail = async (program: any) => {
                   </div>
                   <div class="flex items-center gap-2">
                     <font-awesome-icon :icon="['fas', 'users']" class="text-gray-500 w-4" />
-                    <span class="text-sm text-black">活動人數: {{ program.AppliedCount || 0 }}人</span>
+                    <span class="text-sm text-black">已申請人數: {{ program.AppliedCount || 0 }}人</span>
                   </div>
                 </div>
                 
                 <!-- Company Name -->
                 <div class="text-xs text-gray-500 mb-2">
-                  公司: {{ program.Industry?.Title || '未指定產業' }}
+                  產業: {{ program.Industry?.Title || '未指定產業' }}
                 </div>
                 
-                <!-- Application Count -->
-                <div class="text-xs text-gray-500 mb-4">
-                  已申請人數: {{ program.AppliedCount || 0 }}人
-                </div>
+                
                 
                 <!-- Action Button -->
                 <button 

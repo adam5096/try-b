@@ -15,3 +15,7 @@
 - 新增圖片 fallback：熱門區與一般清單 `<img>` 皆在 `onerror` 回退至 `/img/home/home-worker-bg.webp`。
 - 建立熱門精選邏輯：在 `useProgramsStore` 預留 `isPopularProgram` 與 `computePopularPrograms`，以 Score > 10 篩選並排序前 5 筆，之後可擴展加權規則（收藏、瀏覽、成長率等）。
 -. 抽離圖片錯誤處理：將 inline `@error` 事件改為 `onProgramImageError` 函式，避免將邏輯混雜於 template、提升可讀性與可測性（同時避免遞迴觸發）。
+ - 修正使用者清單卡片顯示：將「公司」標籤改為「產業」，避免以產業誤當公司名稱顯示。
+ - 合併人數欄位：把上方「活動人數」改為單一「已申請人數」，並刪除下方重複區塊以消除語意重複。
+ - 通過 Lint 檢查並驗證 UI 呈現；不改動 API 與型別定義。
+ - 參考檔案 `pages/users/index.vue` 完成編修，未涉及 store 與 composables 變更。
