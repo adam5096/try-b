@@ -1,15 +1,19 @@
-import { useUserApiFetch } from '~/composables/api/users/useUserApiFetch';
+import { useUserApiFetchRaw } from '~/composables/api/users/useUserApiFetch';
 import type { SubmitApplicationPayload, SubmitApplicationResponse, SubmitApplicationAlreadyAppliedError } from '~/types/users/application';
 
 export const useUserApplications = () => {
 	const submitApplication = async (programId: number | string, payload: SubmitApplicationPayload) => {
 		const url = `/api-proxy/v1/programs/${programId}/applications`;
 		try {
-			const response = await useUserApiFetch<SubmitApplicationResponse>(url, {
+			const { data, status } = await useUserApiFetchRaw<SubmitApplicationResponse>(url, {
 				method: 'POST',
 				body: payload,
 			});
-			return { data: response, status: 201 as 200 | 201 };
+			if (status === 200 || status === 201) {
+				return { data, status } as { data: SubmitApplicationResponse; status: 200 | 201 };
+			}
+			// 其他非預期成功狀態，統一丟出錯誤以便上層處理
+			return Promise.reject({ status, data });
 		} catch (err: any) {
 			const status = err?.status as number | undefined;
 			if (status === 400) {

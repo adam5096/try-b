@@ -29,3 +29,7 @@
  - 更新 `components/users/ApplyExperience.vue`：接收 `programId`、整合申請 API、成功顯示提示並 emit `submitted`；400 顯示「已經申請過」並 emit `close` 關閉對話框；email 採用 `v-model.trim` 避免空白導致驗證誤報；`resume_id` 以暫置選單 1/2 供測試。
  - 更新 `pages/users/programs/[programId].vue`：傳入 `:program-id`，監聽 `submitted/close`；成功導回 `user-landing`，400 僅關閉對話框停留原頁。
  - 全面通過 Lint 檢查並驗證代理重寫與授權標頭；優化錯誤處理與 UX。
+ - 修復 users 申請 API 狀態碼判斷：移除硬編碼 `201`，回傳實際 `200/201`。
+ - 新增 `useUserApiFetchRaw`：取得 raw 回應含 HTTP 狀態碼，沿用 Users JWT 注入策略。
+ - 更新 `composables/api/users/useUserApplications.ts`：改用 raw 版，統一成功條件（`200/201`）與 `400` 已申請錯誤拋出；其他狀態交由上層處理。
+ - 通過 Lint 檢查；不改動 UI，保留 `ApplyExperience.vue` 既有成功訊息。
