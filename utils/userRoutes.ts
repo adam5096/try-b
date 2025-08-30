@@ -17,10 +17,18 @@ export const userRoutes = {
     name: 'user-comment-detail',
     params: { commentId },
   }),
-  programDetail: (programId: string | number) => ({
-    name: 'user-program-detail',
-    params: { programId },
-  }),
+  programDetail: (programId: string | number) => {
+    // 參數驗證
+    if (!programId) {
+      console.warn('programId is required for programDetail route');
+      return '/users/programs/404'; // 或拋出錯誤
+    }
+    
+    return {
+      name: 'user-program-detail',
+      params: { programId: programId.toString() },
+    };
+  },
   companyDetail: (companyId: string | number) => ({
     name: 'user-company-detail',
     params: { companyId },

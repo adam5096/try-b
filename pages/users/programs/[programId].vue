@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
+import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 
 definePageMeta({
   name: 'user-program-detail',
@@ -10,7 +11,10 @@ definePageMeta({
 
 const router = useRouter();
 const isFavorited = ref(false);
-const showApply = ref(false); // 新增
+const showApply = ref(false);
+
+// 使用 store 管理計畫詳情
+const programDetailStore = useUserProgramDetailStore();
 
 const toggleFavorite = () => {
   isFavorited.value = !isFavorited.value;
@@ -20,25 +24,63 @@ const goBack = () => {
   router.push({ name: 'user-landing' });
 };
 
-// 假資料：企業資訊（之後可換 API）
-const companyId = ref<number | string>(1);
-const companyName = ref('某某某科技資訊公司');
+// 取得路由參數中的計畫 ID
+const route = useRoute();
+const programId = computed(() => route.params.programId as string);
 
-// 體驗流程與地點（假資料）
-const flowSteps = ref([
-  { label: '階段一', text: '企業介紹與數位行銷產業概況 (1小時)、數位行銷工具與平台介紹 (2小時)' },
-  { label: '階段二', text: '實際案例分析與討論 (1小時)、分組實作：社群媒體行銷策劃 (2小時)' },
-  { label: '階段三', text: '成果發表與專業人員回饋 (3小時)' },
-]);
-const venue = ref('高雄市三民區');
+// 計算屬性：從 store 取得計畫詳情
+const programDetail = computed(() => programDetailStore.programDetail);
+const isLoading = computed(() => programDetailStore.loading);
+const hasError = computed(() => programDetailStore.hasError);
+const errorMessage = computed(() => programDetailStore.error);
 
-// 體驗照片（假資料：之後可換實際圖片 URL）
-const galleryPhotos = ref([
-  { id: 1, src: '', alt: '體驗照片 1' },
-  { id: 2, src: '', alt: '體驗照片 2' },
-  { id: 3, src: '', alt: '體驗照片 3' },
-  { id: 4, src: '', alt: '體驗照片 4' },
-]);
+// 頁面載入時取得計畫詳情
+onMounted(async () => {
+  if (programId.value) {
+    try {
+      await programDetailStore.fetchDetail(programId.value);
+    } catch (error) {
+      console.error('Failed to fetch program detail:', error);
+    }
+  }
+});
+
+// 錯誤處理函數
+const handleRefresh = async () => {
+  if (programId.value) {
+    await programDetailStore.refreshDetail();
+  }
+};
+
+const handleBack = () => {
+  router.push({ name: 'user-landing' });
+};
+
+const handleContact = () => {
+  // 這裡可以實作聯絡客服的邏輯
+  console.log('Contact customer service');
+};
+
+// 日期格式化函數
+const formatDate = (dateString: string) => {
+  if (!dateString || dateString === '0001-01-01T00:00:00') {
+    return '日期未定';
+  }
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return '日期格式錯誤';
+    }
+    
+    return `${date.getFullYear()}年${String(date.getMonth() + 1).padStart(2, '0')}月${String(date.getDate()).padStart(2, '0')}日`;
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return '日期格式錯誤';
+  }
+};
+
+// 移除假資料，使用 store 中的真實資料
 
 const onApplySubmitted = async () => {
   showApply.value = false;
@@ -53,7 +95,14 @@ const onApplySubmitted = async () => {
       <div class="mb-8 flex items-center justify-between">
         <h1 class="text-2xl font-bold text-primary-blue-dark">體驗詳情</h1>
         <div class="flex items-center gap-4">
-          <el-button type="primary" size="large" @click="showApply = true">我要申請</el-button>
+          <el-button 
+            v-if="programDetail" 
+            type="primary" 
+            size="large" 
+            @click="showApply = true"
+          >
+            我要申請
+          </el-button>
           <el-button size="large" @click="goBack">返回列表</el-button>
           <el-button size="large" @click="toggleFavorite">
             <div class="flex items-center gap-2">
@@ -64,11 +113,53 @@ const onApplySubmitted = async () => {
         </div>
       </div>
 
+      <!-- 載入狀態 -->
+      <div v-if="isLoading" class="mb-8">
+        <SharedSkeletonLoader 
+          :show-title="true" 
+          :show-image="true" 
+          :lines="5" 
+        />
+      </div>
+
+      <!-- 錯誤狀態 -->
+      <div v-else-if="hasError" class="mb-8">
+        <SharedErrorMessage
+          :title="'載入計畫詳情失敗'"
+          :message="errorMessage || '載入計畫詳情時發生錯誤'"
+          @refresh="handleRefresh"
+          @back="handleBack"
+          @contact="handleContact"
+        />
+      </div>
+
+      <!-- 計畫詳情內容 -->
+      <div v-else-if="programDetail" class="space-y-8">
+
       <!-- 企業封面區塊 -->
       <section aria-label="企業封面" class="mb-8">
         <div class="relative h-44 w-full rounded-lg bg-gray-300">
-          <!-- 圓形 LOGO 佔位 -->
+          <!-- 企業封面圖片 -->
+          <img 
+            v-if="programDetail.company_cover" 
+            :src="programDetail.company_cover" 
+            class="w-full h-full object-cover rounded-lg"
+            alt="企業封面"
+          />
+          
+          <!-- 圓形 LOGO -->
           <div
+            v-if="programDetail.company_logo"
+            class="absolute left-6 top-6 flex h-16 w-16 items-center justify-center rounded-full border-2 border-gray-600 bg-white overflow-hidden"
+          >
+            <img 
+              :src="programDetail.company_logo" 
+              class="w-full h-full object-cover"
+              alt="企業 LOGO"
+            />
+          </div>
+          <div
+            v-else
             class="absolute left-6 top-6 flex h-16 w-16 items-center justify-center rounded-full border-2 border-gray-600 bg-white text-sm font-semibold text-gray-700"
           >
             LOGO
@@ -78,39 +169,41 @@ const onApplySubmitted = async () => {
           <h2
             class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-gray-800"
           >
-            企業封面
+            {{ programDetail.name }}
           </h2>
 
           <!-- 公司名稱：可點擊前往公司詳情頁 -->
           <button
             type="button"
             class="absolute bottom-6 left-6 text-base font-medium text-primary-blue-dark hover:underline"
-            @click="navigateTo(userRoutes.companyDetail(companyId))"
+            @click="navigateTo(userRoutes.companyDetail(1))"
           >
-            {{ companyName }}
+            {{ programDetail.company_name }}
           </button>
         </div>
 
-        <!-- 軟體工程師一日體驗內容（與企業封面同區塊） -->
+        <!-- 計畫內容（與企業封面同區塊） -->
         <div class="mt-6 rounded-lg bg-white p-8 shadow-sm">
           <!-- 內容卡抬頭：左標題／右關鍵資訊 -->
           <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
             <div class="md:col-span-2">
-              <h3 class="text-xl font-bold">軟體工程師一日體驗營</h3>
-              <p class="mt-1 text-sm text-gray-500">科技業／軟體工程師</p>
+              <h3 class="text-xl font-bold">{{ programDetail.name }}</h3>
+              <p class="mt-1 text-sm text-gray-500">
+                {{ programDetail.Industry?.Title || '產業未分類' }}／{{ programDetail.JobTitle?.Title || '職位未分類' }}
+              </p>
             </div>
             <div class="flex flex-col gap-2 text-sm text-gray-600">
               <div class="flex items-center justify-between">
-                <span>已申請人數：0人</span>
-                <span>申請截止還有10天</span>
+                <span>已申請人數：{{ programDetail.applied_count }}人</span>
+                <span>申請截止還有{{ programDetail.days_left }}天</span>
               </div>
               <div class="flex items-center justify-between">
-                <span>招募天數：3天</span>
-                <span>招募人數：10-20人</span>
+                <span>招募天數：{{ programDetail.program_duration_days }}天</span>
+                <span>招募人數：{{ programDetail.min_people }}-{{ programDetail.max_people }}人</span>
               </div>
               <div class="flex items-center gap-2">
                 <font-awesome-icon :icon="['fas','calendar-alt']" />
-                <span>2025年10月15日 - 2025年10月17日</span>
+                <span>{{ formatDate(programDetail.program_start_date) }} - {{ formatDate(programDetail.program_end_date) }}</span>
               </div>
             </div>
           </div>
@@ -121,7 +214,7 @@ const onApplySubmitted = async () => {
             <section>
               <h4 class="mb-3 text-lg font-bold">體驗介紹</h4>
               <p class="leading-7">
-                目具文化探索交流帶您深入了解台灣新世代文化與自然景觀。在活動當中，您將有機會參與實務教學課程、參與團隊站會、系統設計與程式實作，並透過講師經歷穿針引線，掌握基礎的全貌與軟體文化切面，藉此獲得更多的職涯靈感。
+                {{ programDetail.intro }}
               </p>
             </section>
 
@@ -187,20 +280,23 @@ const onApplySubmitted = async () => {
           <!-- 標題 + 流程列表 -->
           <div class="mb-6">
             <h3 class="mb-4 text-lg font-bold">體驗流程</h3>
-            <dl class="space-y-4">
-              <div v-for="(s, idx) in flowSteps" :key="idx" class="grid grid-cols-12 gap-4">
-                <dt class="col-span-12 font-semibold text-gray-700 md:col-span-2">{{ s.label }}</dt>
+            <dl v-if="programDetail.Steps && programDetail.Steps.length > 0" class="space-y-4">
+              <div v-for="(step, idx) in programDetail.Steps" :key="idx" class="grid grid-cols-12 gap-4">
+                <dt class="col-span-12 font-semibold text-gray-700 md:col-span-2">{{ step.Name }}</dt>
                 <dd class="col-span-12 leading-7 text-gray-700 md:col-span-10">
-                  {{ s.text }}
+                  {{ step.Description }}
                 </dd>
               </div>
             </dl>
+            <div v-else class="text-gray-500 text-center py-8">
+              暫無體驗流程資訊
+            </div>
           </div>
 
           <!-- 體驗地點 + 地圖 -->
           <div>
             <h3 class="mb-2 text-lg font-bold">體驗地點</h3>
-            <p class="mb-4 text-gray-700">{{ venue }}</p>
+            <p class="mb-4 text-gray-700">{{ programDetail.address }}</p>
             <div class="flex h-80 w-full items-center justify-center rounded bg-gray-300 text-3xl text-gray-700">
               地圖
             </div>
@@ -212,17 +308,26 @@ const onApplySubmitted = async () => {
       <section aria-label="體驗照片" class="mb-8">
         <div class="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
           <h3 class="mb-6 text-lg font-bold">體驗照片</h3>
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div v-for="photo in galleryPhotos" :key="photo.id" class="rounded bg-gray-300">
-              <!-- 若未提供圖片，顯示佔位；未來可改成 <img :src="photo.src" :alt="photo.alt" class="h-48 w-full object-cover rounded" /> -->
-              <div class="flex h-48 w-full items-center justify-center text-3xl text-gray-700">
+          <div v-if="programDetail.Images && programDetail.Images.length > 0" class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div v-for="(image, idx) in programDetail.Images" :key="idx" class="rounded bg-gray-300">
+              <img 
+                v-if="image" 
+                :src="image" 
+                :alt="`體驗照片 ${idx + 1}`" 
+                class="h-48 w-full object-cover rounded"
+              />
+              <div v-else class="flex h-48 w-full items-center justify-center text-3xl text-gray-700">
                 圖片
               </div>
             </div>
           </div>
+          <div v-else class="text-gray-500 text-center py-8">
+            暫無體驗照片
+          </div>
         </div>
       </section>
     </div>
+  </div>
   </main>
   <el-dialog
     v-model="showApply"
@@ -230,6 +335,6 @@ const onApplySubmitted = async () => {
     :close-on-click-modal="false"
     :destroy-on-close="true"
   >
-    <UsersApplyExperience @submitted="onApplySubmitted" />
+    <UsersApplyExperience :program-id="programId" @submitted="onApplySubmitted" @close="showApply = false" />
   </el-dialog>
 </template>

@@ -1,5 +1,5 @@
 import type { AllPlan } from '~/types/company/plan/list';
-import { useApiFetch } from '~/composables/api/shared/useApiFetch';
+import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 export function useAllPlans() {
   const {
@@ -7,7 +7,7 @@ export function useAllPlans() {
     pending: isLoading,
     error,
     execute: fetchAllPlans,
-  } = useApiFetch<AllPlan[]>('/api/v1/plans', {
+  } = useCompanyApiFetch<AllPlan[]>('/api/v1/plans', {
     immediate: false,
   });
 

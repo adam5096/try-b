@@ -1,38 +1,35 @@
 ( 已經搬移部分內容到 notion )
 
-### 2025-08-27
-#### 企業端-申請者列表 (e-comp-7)
-- 修正申請者列表頁面 (`applicants/index.vue`) 的表格欄位綁定，使其與 `e-comp-7` API 回應的欄位名稱 (`applicant_name`, `submit_date`, `review_status` 等) 一致，解決資料無法渲染的問題。
-- 臨時修復點擊「查看」按鈕時因 API 回應缺少 `applicant_id` 而導致的 500 錯誤，暫時改用 `identity` 作為跳轉參數。
-- 優化申請者列表頁面的使用者體驗 (UX)，移除 API 未提供的「科系」與「學校」欄位以避免顯示空白。
 
-#### 企業端-方案頁面 (e-comp-13)
-- 串接取得所有企業付費方案的 API (`e-comp-13`)，並動態渲染於方案頁面 (`purchase/index.vue`)。
-- 建立獨立的 Composable (`useAllPlans.ts`) 統一管理 API 請求邏輯。
-- 重構方案相關的 TypeScript 型別定義，將其拆分為 `plan/current.ts` 與 `plan/list.ts`，並置於 `types/company/plan` 子目錄下，以提高程式碼的清晰度與可維護性。
-- 優化方案描述的 UX，為 `description` 欄位為空值的方案提供符合其量級的備用文案，提升頁面資訊完整度與價值感。
 
-#### 企業端-體驗者審核 (e-comp-17)
-- 建立 `useSubmitReview.ts` Composable 封裝審核提交 (`PUT`) 的 API 邏輯，並處理 loading 與 error 狀態。
-- 於申請者詳情頁 (`[applicantId].vue`) 串接審核功能，提交後以 `ElMessageBox` 彈窗提供即時成功或失敗的反饋，並在成功後自動導航回列表頁。
-- 修正 `useSubmitReview` Composable，改用共用的 `useApiFetch` 以確保請求能自動夾帶 JWT token，解決 API 回應「請登入」的認證問題。
-- 導入 Element Plus 的表單驗證機制，為「審核意見」欄位加入必填規則，取代原有的手動 `if` 判斷，以解決後端回應 `400 Bad Request` (缺少 `comment` 欄位) 的問題。
-- 於申請者列表頁 (`applicants/index.vue`) 的 `onMounted` 生命週期中呼叫 `refresh` 方法，確保從審核頁返回時能強制刷新列表，即時反映最新的審核狀態。
-
-#### 體驗者端-使用者登入 (u-users-1)
-- 建立 `useUserLogin.ts` Composable 封裝使用者登入 API (`/api/v1/users/login`) 的請求邏輯。
-- 重構共用 API 請求函式 (`useApiFetch.ts`)，使其能根據請求 URL (`/user` 或 `/company`) 自動附加對應模組的 JWT token，解決了模組間 token 錯亂的潛在衝突。
-- 更新 `useUserAuthStore` 以整合新的登入邏輯，並使其結構與 `company` 模組一致，同步管理 `token` 與 `user` 狀態。
-- 修正 `nuxt.config.ts` 中的 Vite 代理設定，解決了開發環境中因代理規則不符而導致的 API 請求 404 錯誤。
-- 優化登入頁面 (`login.vue`) 的使用者體驗，透過 `watchEffect` 監聽登入狀態，實現成功登入後自動導航至使用者首頁。
-
-#### 通用佈局 (Layouts)
-- 修改 `main.vue` 佈局，將「探索我們」按鈕連結至體驗者首頁 (`user-landing`)，提供訪客快速瀏覽主要內容的入口。
-
-#### 體驗者端-使用者註冊 (u-users-10)
-- 建立 `useUserRegister.ts` Composable 以封裝註冊 API (`POST /api/v1/users`) 的請求邏輯，遵循專案既有的程式碼風格。
-- 更新 `useAuthStore` 中的 `register` 動作，使其使用新建的 Composable 進行 API 呼叫，並加入完整的錯誤處理機制。
-- 擴充 `User` TypeScript 型別，加入 `createdAt` 與 `updatedAt` 欄位，使其與後端 API 回應的資料結構保持一致。
-- 驗證 `register.vue` 頁面的前端邏輯，確保其在註冊成功後能正確顯示成功訊息並將使用者導向登入頁面。
-- 修復 `useAuthStore` 中的 TypeScript 型別推斷錯誤，確保程式碼的健壯性。
-
+## 2025-08-30
+- 開放 u-user-3 體驗計畫清單 API 為公開存取，移除 Token 需求。
+- 透過開發代理呼叫 `/api-proxy/v1/programs`，與遠端 `/api` 重寫規則一致。
+- 改用 `$fetch` 直取公開 API，避免 `useFetch` reactive 回傳造成 `pending=true`、`data=null`。
+- 調整 `types/users/program.ts` 以符合新 response；移除 `ApplicationId`、`ProgramName`、`Steps`（含 `ProgramStep`）、`SubmitAt`、`Status`、`CompanyName`、`MaxParticipants`、`MinParticipants`；保留 `Id`、`Name` 等必要欄位。
+- 更新 `composables/api/users/useUserPrograms.ts` 建立查詢字串並對接公開端點；回傳結構與 store 介面相容。
+- 更新 `stores/user/useProgramsStore.ts` 正規化清單並保存每筆 `Id` 至 store，支援後續申請/收藏流程。
+- 更新 `pages/users/index.vue` 將 `ProgramName` 改為 `Name`，移除 `Status` 顯示與統計，調整卡片欄位顯示。
+- 修正 linter 問題並通過檢查；驗證 Postman 與開發代理結果一致，清單成功載入。
+- 強化錯誤處理回傳格式與 Loading 狀態，保持與現有內容調性一致。
+- 新增圖片 fallback：熱門區與一般清單 `<img>` 皆在 `onerror` 回退至 `/img/home/home-worker-bg.webp`。
+- 建立熱門精選邏輯：在 `useProgramsStore` 預留 `isPopularProgram` 與 `computePopularPrograms`，以 Score > 10 篩選並排序前 5 筆，之後可擴展加權規則（收藏、瀏覽、成長率等）。
+-. 抽離圖片錯誤處理：將 inline `@error` 事件改為 `onProgramImageError` 函式，避免將邏輯混雜於 template、提升可讀性與可測性（同時避免遞迴觸發）。
+ - 修正使用者清單卡片顯示：將「公司」標籤改為「產業」，避免以產業誤當公司名稱顯示。
+ - 合併人數欄位：把上方「活動人數」改為單一「已申請人數」，並刪除下方重複區塊以消除語意重複。
+ - 通過 Lint 檢查並驗證 UI 呈現；不改動 API 與型別定義。
+ - 參考檔案 `pages/users/index.vue` 完成編修，未涉及 store 與 composables 變更。
+ - 移除 `pages/users/index.vue` 的開發用 fallback programId 與 dev 分支；`resolveProgramId` 收斂為 `Id ?? id`，全面以後端回傳 Id 為準。
+ - 對接詳情流程：按鈕「查看詳情」觸發 `handleViewDetail` → 呼叫 `useUserProgramDetailStore.fetchDetail(programId)` → 由 `composables/api/users/useUserProgramDetail.ts` 發送 `GET /api-proxy/v1/programs/:id` → 代理重寫至 `/api/v1/programs/:id` → 成功渲染 `users/programs/:id`。
+ - 更新 `types/users/programDetail.ts` 對齊 u user 5 回應：新增 `id`、`serial_num`、`views_count`、`favorites_count`、`score`、`total_views`、`weekly_views`、`daily_views`；移除 `is_ongoing`；其餘欄位維持一致。
+ - 保持清單 store 僅保存完整 items（含 `Id`），不另維護獨立 id 清單；詳情 store 維護 `currentProgramId` 與快取，實作仍通過 Lint 檢查。
+ - 驗證 Proxy rewrite 日誌（`/api-proxy/v1/programs/:id → /api/v1/programs/:id`）與 Postman 結果一致；使用者登入狀態下詳情請求攜帶 Authorization 標頭正常。
+ - 新增 users 申請型別至 `types/users/application.ts`，規範 payload 與回應。
+ - 建立 `composables/api/users/useUserApplications.ts`：串接 `POST /api-proxy/v1/programs/{program_id}/applications`，統一處理 201/200 成功與 400 已申請錯誤。
+ - 更新 `components/users/ApplyExperience.vue`：接收 `programId`、整合申請 API、成功顯示提示並 emit `submitted`；400 顯示「已經申請過」並 emit `close` 關閉對話框；email 採用 `v-model.trim` 避免空白導致驗證誤報；`resume_id` 以暫置選單 1/2 供測試。
+ - 更新 `pages/users/programs/[programId].vue`：傳入 `:program-id`，監聽 `submitted/close`；成功導回 `user-landing`，400 僅關閉對話框停留原頁。
+ - 全面通過 Lint 檢查並驗證代理重寫與授權標頭；優化錯誤處理與 UX。
+ - 修復 users 申請 API 狀態碼判斷：移除硬編碼 `201`，回傳實際 `200/201`。
+ - 新增 `useUserApiFetchRaw`：取得 raw 回應含 HTTP 狀態碼，沿用 Users JWT 注入策略。
+ - 更新 `composables/api/users/useUserApplications.ts`：改用 raw 版，統一成功條件（`200/201`）與 `400` 已申請錯誤拋出；其他狀態交由上層處理。
+ - 通過 Lint 檢查；不改動 UI，保留 `ApplyExperience.vue` 既有成功訊息。

@@ -1,100 +1,70 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
+import { useUserAuthStore } from '~/stores/user/useAuthStore';
+import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
+import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
+import type { Program } from '~/types/users/program';
 
 definePageMeta({
   name: 'user-landing',
   layout: 'user',
 });
 
-const popularPrograms = ref([
-  { id: 1, title: '軟體工程師體驗營', company: '科技公司 A', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop' },
-  { id: 2, title: '咖啡師職人體驗', company: '文青咖啡館', image: 'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?q=80&w=1974&auto=format&fit=crop' },
-  { id: 3, title: '數位行銷實戰體驗', company: '電商平台 B', image: 'https://images.unsplash.com/photo-1557862921-37829c790f19?q=80&w=2071&auto=format&fit=crop' },
-  { id: 4, title: '永續農業見習', company: '有機農場 C', image: 'https://images.unsplash.com/photo-1492496913980-501348b61469?q=80&w=1974&auto=format&fit=crop' },
-]);
+const authStore = useUserAuthStore();
+const programsStore = useUserProgramsStore();
+const programDetailStore = useUserProgramDetailStore();
 
-const generalPrograms = ref([
-    {
-    id: 5,
-    title: '投資理財顧問體驗',
-    company: '金融公司 D',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop',
-    description: '跟隨資深理財顧問了解金融市場分析、學習投資組合規劃，體驗為客戶制定理財策略的專業服務流程。',
-    location: '台北市大安區',
-    date: '2025/09/10 - 2025/11/20',
-    applicants: 0,
-    deadline: 40,
-    status: '體驗進行中'
-  },
-  {
-    id: 6,
-    title: 'UI/UX設計師工作坊',
-    company: '設計工作室 E',
-    image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=2070&auto=format&fit=crop',
-    description: '深入設計思維流程，從用戶研究到原型製作，體驗數位產品設計的完整過程，了解設計師的創作思路。',
-    location: '金門縣烈嶼鄉',
-    date: '2025/10/01 - 2025/12/20',
-    applicants: 0,
-    deadline: 10,
-    status: ''
-  },
-  {
-    id: 7,
-    title: '新創企業營運體驗',
-    company: '新創公司 F',
-    image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop',
-    description: '加入新創團隊實際參與產品開發、市場策略制定，體驗創業家的決策焦慮，了解新創生態的運作模式。',
-    location: '屏東縣恆春鎮',
-    date: '2025/07/01 - 2025/10/31',
-    applicants: 0,
-    deadline: 10,
-    status: ''
-  },
-    {
-    id: 8,
-    title: '投資理財顧問體驗',
-    company: '金融公司 D',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop',
-    description: '跟隨資深理財顧問了解金融市場分析、學習投資組合規劃，體驗為客戶制定理財策略的專業服務流程。',
-    location: '台北市大安區',
-    date: '2025/09/10 - 2025/11/20',
-    applicants: 0,
-    deadline: 40,
-    status: '體驗進行中'
-  },
-  {
-    id: 9,
-    title: 'UI/UX設計師工作坊',
-    company: '設計工作室 E',
-    image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=2070&auto=format&fit=crop',
-    description: '深入設計思維流程，從用戶研究到原型製作，體驗數位產品設計的完整過程，了解設計師的創作思路。',
-    location: '金門縣烈嶼鄉',
-    date: '2025/10/01 - 2025/12/20',
-    applicants: 0,
-    deadline: 10,
-    status: ''
-  },
-  {
-    id: 10,
-    title: '新創企業營運體驗',
-    company: '新創公司 F',
-    image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop',
-    description: '加入新創團隊實際參與產品開發、市場策略制定，體驗創業家的決策焦慮，了解新創生態的運作模式。',
-    location: '屏東縣恆春鎮',
-    date: '2025/07/01 - 2025/10/31',
-    applicants: 0,
-    deadline: 10,
-    status: ''
-  },
-]);
+// 已移除開發環境用的 fallback programId，改以實際回傳的 Id 為準
+
+// 圖片載入錯誤時回退至預設圖片
+const onProgramImageError = (e: Event) => {
+  const img = e.target as HTMLImageElement;
+  if (img && img.src !== '/img/home/home-worker-bg.webp') {
+    img.src = '/img/home/home-worker-bg.webp';
+    img.onerror = null; // 避免 fallback 再次觸發造成遞迴
+  }
+};
 
 const searchKeyword = ref('');
 const industry = ref('');
 const jobType = ref('');
 const location = ref('');
 const sort = ref('');
+
 const currentPage = ref(1);
+const pageSize = 6;
+
+// 頁面載入時直接獲取資料，不需要登入驗證
+onMounted(() => {
+  programsStore.fetchPrograms({ page: currentPage.value, limit: pageSize });
+});
+
+watch(currentPage, (p) => {
+  programsStore.fetchPrograms({ 
+    page: p, 
+    limit: pageSize,
+    keyword: searchKeyword.value,
+    industry: industry.value,
+    jobType: jobType.value,
+    location: location.value,
+    sort: sort.value
+  });
+});
+
+// 監聽篩選條件變化
+watch([searchKeyword, industry, jobType, location, sort], () => {
+  currentPage.value = 1; // 重置到第一頁
+  programsStore.fetchPrograms({ 
+    page: 1, 
+    limit: pageSize,
+    keyword: searchKeyword.value,
+    industry: industry.value,
+    jobType: jobType.value,
+    location: location.value,
+    sort: sort.value
+  });
+});
 
 const industries = ref([
   { value: 'tech', label: '科技業' },
@@ -122,6 +92,72 @@ const sortOptions = ref([
   { value: 'deadline', label: '截止日期' },
 ]);
 
+// 格式化程式日期顯示
+const formatProgramDate = (program: Program) => {
+  if (!program.ProgramStartDate || !program.ProgramEndDate) {
+    return '日期未定';
+  }
+  
+  try {
+    const startDate = new Date(program.ProgramStartDate);
+    const endDate = new Date(program.ProgramEndDate);
+    
+    // 檢查日期是否有效
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return '日期格式錯誤';
+    }
+    
+    const formatDate = (date: Date) => {
+      return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+    };
+    
+    return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+  } catch (error) {
+    console.error('Error formatting program date:', error);
+    return '日期格式錯誤';
+  }
+};
+
+const activeStatus = ref('all');
+
+const setActiveStatus = (status: string) => {
+  activeStatus.value = status;
+};
+
+const getStatusCount = (status: string) => {
+  if (!programsStore.items) return 0;
+  // 由於新版本沒有 Status 欄位，暫時返回 0
+  // 未來可以根據其他欄位來判斷狀態
+  return 0;
+};
+
+// 解析清單項目的 ProgramId（以回傳的 Id 為主，保守兼容 id）
+const resolveProgramId = (program: any) => {
+  return program?.Id ?? program?.id ?? null;
+};
+
+// 處理查看詳情按鈕點擊
+const handleViewDetail = async (program: any) => {
+  try {
+    const programId = resolveProgramId(program);
+    if (programId === undefined || programId === null || programId === '') {
+      console.warn('此體驗卡片缺少有效的 programId，暫時無法查看詳情');
+      return;
+    }
+    // 先取得計畫詳情
+    await programDetailStore.fetchDetail(programId);
+    
+    // 導航到計畫詳情頁
+    await navigateTo(userRoutes.programDetail(programId));
+  } catch (error) {
+    console.error('Error handling view detail:', error);
+    // 如果取得詳情失敗，仍然導航到詳情頁，讓詳情頁處理錯誤狀態
+    const programId = resolveProgramId(program);
+    if (programId !== undefined && programId !== null && programId !== '') {
+      await navigateTo(userRoutes.programDetail(programId));
+    }
+  }
+};  
 </script>
 
 <template>
@@ -132,17 +168,25 @@ const sortOptions = ref([
         <section class="mb-16">
           <h2 class="text-2xl font-bold mb-2">熱門體驗計畫總覽</h2>
           <p class="text-gray-500 mb-8">在這裡探索最受歡迎的體驗計畫，看看大家都喜歡哪些活動！</p>
-          <el-carousel :interval="4000" type="card" height="300px">
-            <el-carousel-item v-for="program in popularPrograms" :key="program.id">
+          <el-carousel v-if="programsStore.popular && programsStore.popular.length > 0" :interval="4000" type="card" height="300px">
+            <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
               <el-card :body-style="{ padding: '0px' }" class="h-full">
-                <img :src="program.image" class="w-full h-2/3 object-cover" />
+                <img 
+                  :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
+                  class="w-full h-2/3 object-cover" 
+                  alt="program image" 
+                  @error="onProgramImageError"
+                />
                 <div class="p-4">
-                  <h3 class="text-lg font-bold">{{ program.title }}</h3>
-                  <p class="text-sm text-gray-500">{{ program.company }}</p>
+                  <h3 class="text-lg font-bold">{{ program.Name || '未命名計畫' }}</h3>
+                  <p class="text-sm text-gray-500">{{ program.Industry?.Title || '產業未分類' }}</p>
                 </div>
               </el-card>
             </el-carousel-item>
           </el-carousel>
+          <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
+            <p class="text-gray-500">{{ programsStore.loading ? '載入中...' : '暫無熱門計畫' }}</p>
+          </div>
         </section>
 
         <!-- General Programs Section -->
@@ -167,52 +211,136 @@ const sortOptions = ref([
             </el-select>
           </div>
 
+          <!-- Status Tabs -->
+          <div class="mb-8">
+            <div class="flex flex-wrap gap-2">
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'all' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('all')"
+              >
+                全部計劃({{ programsStore.total || 0 }})
+              </button>
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'approved' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('approved')"
+              >
+                已通過({{ getStatusCount('已通過') }})
+              </button>
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'published' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('published')"
+              >
+                已發佈({{ getStatusCount('已發佈') }})
+              </button>
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'pending' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('pending')"
+              >
+                待發佈({{ getStatusCount('待發佈') }})
+              </button>
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'rejected' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('rejected')"
+              >
+                已拒絕({{ getStatusCount('已拒絕') }})
+              </button>
+              <button 
+                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                :class="activeStatus === 'reviewing' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+                @click="setActiveStatus('reviewing')"
+              >
+                審核中({{ getStatusCount('審核中') }})
+              </button>
+            </div>
+          </div>
+
           <!-- Program Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <el-card v-for="program in generalPrograms" :key="program.id" class="shadow-lg hover:shadow-xl transition-shadow">
-              <template #header>
-                <div class="flex justify-between items-center">
-                  <span class="font-bold text-lg">{{ program.title }}</span>
-                  <el-button text>
-                    <font-awesome-icon :icon="['fas', 'heart']" />
-                  </el-button>
+          <div v-if="programsStore.items && programsStore.items.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC]">
+              <!-- Cover Image with Status Tag -->
+              <div class="relative">
+                <img 
+                  :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
+                  class="w-full h-48 object-cover" 
+                  alt="program image" 
+                  @error="onProgramImageError"
+                />
+                <!-- Status Tag (左上角) -->
+                <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
+                  已發佈
                 </div>
-              </template>
-              <div class="text-sm text-gray-600">
-                <p class="min-h-[4.5rem]">{{ program.description }}</p>
-                <div class="mt-4 space-y-2">
-                  <div class="flex items-center gap-2">
-                    <font-awesome-icon :icon="['fas', 'map-marker-alt']" />
-                    <span>{{ program.location }}</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <font-awesome-icon :icon="['fas', 'calendar-alt']" />
-                    <span>{{ program.date }}</span>
-                  </div>
-                </div>
-                <div class="mt-4 flex justify-between text-xs text-gray-500 border-t pt-2">
-                  <span>已申請人數：{{ program.applicants }} 人</span>
-                  <span>申請截止還有 {{ program.deadline }} 天</span>
-                </div>
-                 <div class="mt-2 text-right text-blue-500 font-bold min-h-5">
-                   <span v-if="program.status">{{ program.status }}</span>
-                 </div>
               </div>
-              <template #footer>
-                <NuxtLink :to="userRoutes.programDetail(program.id)">
-                  <el-button type="primary" class="w-full">查看詳情</el-button>
-                </NuxtLink>
-              </template>
+              
+              <!-- Program Content -->
+              <div class="p-4">
+                <!-- Title -->
+                <h3 class="text-lg font-bold text-black mb-2">{{ program.Name || '未命名計畫' }}</h3>
+                
+                <!-- Description -->
+                <p class="text-sm text-gray-600 mb-4 min-h-[3rem]">{{ program.Intro || '暫無介紹' }}</p>
+                
+                <!-- Program Details -->
+                <div class="space-y-2 mb-4">
+                  <div class="flex items-center gap-2">
+                    <font-awesome-icon :icon="['fas', 'briefcase']" class="text-gray-500 w-4" />
+                    <span class="text-sm text-black">{{ program.Industry?.Title || '產業未分類' }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <font-awesome-icon :icon="['fas', 'calendar']" class="text-gray-500 w-4" />
+                    <span class="text-sm text-black">{{ formatProgramDate(program) }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="text-gray-500 w-4" />
+                    <span class="text-sm text-black">{{ program.Address || '地點未定' }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <font-awesome-icon :icon="['fas', 'users']" class="text-gray-500 w-4" />
+                    <span class="text-sm text-black">已申請人數: {{ program.AppliedCount || 0 }}人</span>
+                  </div>
+                </div>
+                
+                <!-- Company Name -->
+                <div class="text-xs text-gray-500 mb-2">
+                  產業: {{ program.Industry?.Title || '未指定產業' }}
+                </div>
+                
+                
+                
+                <!-- Action Button -->
+                <button 
+                  v-if="authStore.isLoggedIn" 
+                  @click="handleViewDetail(program)"
+                  class="w-full bg-btn-yellow text-black font-medium py-3 px-4 rounded-lg hover:bg-btn-yellow/80 transition-colors"
+                >
+                  查看詳情
+                </button>
+                <button 
+                  v-else 
+                  class="w-full bg-gray-400 text-white font-medium py-3 px-4 rounded-lg cursor-not-allowed opacity-50"
+                  disabled
+                  title="請先登入以查看詳情"
+                >
+                  查看詳情
+                </button>
+              </div>
             </el-card>
           </div>
-          
+          <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
+            <p class="text-gray-500">{{ programsStore.loading ? '載入中...' : '暫無體驗計畫' }}</p>
+          </div>
+
           <!-- Pagination -->
-          <div class="mt-12 flex justify-center">
+          <div v-if="programsStore.items && programsStore.items.length > 0 && programsStore.total > pageSize" class="mt-12 flex justify-center">
             <el-pagination
               v-model:current-page="currentPage"
-              :page-size="6"
+              :page-size="pageSize"
               layout="prev, pager, next"
-              :total="generalPrograms.length"
+              :total="programsStore.total"
             />
           </div>
         </section>
