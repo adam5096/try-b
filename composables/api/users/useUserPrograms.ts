@@ -1,5 +1,4 @@
 import type { ProgramsResponse, ProgramsQueryParams } from '~/types/users/program';
-import { useUserApiFetch } from '~/composables/api/users/useUserApiFetch';
 
 export const useUserPrograms = () => {
   const fetchPrograms = async (params: ProgramsQueryParams = {}) => {
@@ -14,13 +13,10 @@ export const useUserPrograms = () => {
     if (params.sort) queryParams.append('sort', params.sort);
 
     const queryString = queryParams.toString();
-    const url = `/api-proxy/v1/users/programs${queryString ? '?' + queryString : ''}`;
+    const url = `/api-proxy/v1/programs${queryString ? '?' + queryString : ''}`;
 
     try {
-      // 使用新的 useUserApiFetch
-      const data = await useUserApiFetch<ProgramsResponse>(url, {
-        method: 'GET'
-      });
+      const data = await $fetch<ProgramsResponse>(url, { method: 'GET' });
       
       return {
         data: { value: data },

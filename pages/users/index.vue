@@ -18,6 +18,15 @@ const programDetailStore = useUserProgramDetailStore();
 // 開發環境用的 fallback programId（後端清單缺少真正的 programId 時使用）
 const FALLBACK_PROGRAM_ID = 45;
 
+// 圖片載入錯誤時回退至預設圖片
+const onProgramImageError = (e: Event) => {
+  const img = e.target as HTMLImageElement;
+  if (img && img.src !== '/img/home/home-worker-bg.webp') {
+    img.src = '/img/home/home-worker-bg.webp';
+    img.onerror = null; // 避免 fallback 再次觸發造成遞迴
+  }
+};
+
 const searchKeyword = ref('');
 const industry = ref('');
 const jobType = ref('');
@@ -118,7 +127,9 @@ const setActiveStatus = (status: string) => {
 
 const getStatusCount = (status: string) => {
   if (!programsStore.items) return 0;
-  return programsStore.items.filter(program => program.Status === status).length;
+  // 由於新版本沒有 Status 欄位，暫時返回 0
+  // 未來可以根據其他欄位來判斷狀態
+  return 0;
 };
 
 // 解析清單項目的 ProgramId（兼容不同欄位命名）
@@ -179,9 +190,14 @@ const handleViewDetail = async (program: any) => {
           <el-carousel v-if="programsStore.popular && programsStore.popular.length > 0" :interval="4000" type="card" height="300px">
             <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
               <el-card :body-style="{ padding: '0px' }" class="h-full">
-                <img :src="program.CoverImage || '/img/home/home-worker-bg.webp'" class="w-full h-2/3 object-cover" alt="program image" />
+                <img 
+                  :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
+                  class="w-full h-2/3 object-cover" 
+                  alt="program image" 
+                  @error="onProgramImageError"
+                />
                 <div class="p-4">
-                  <h3 class="text-lg font-bold">{{ program.ProgramName || program.Name || '未命名計畫' }}</h3>
+                  <h3 class="text-lg font-bold">{{ program.Name || '未命名計畫' }}</h3>
                   <p class="text-sm text-gray-500">{{ program.Industry?.Title || '產業未分類' }}</p>
                 </div>
               </el-card>
@@ -271,17 +287,18 @@ const handleViewDetail = async (program: any) => {
                   :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
                   class="w-full h-48 object-cover" 
                   alt="program image" 
+                  @error="onProgramImageError"
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
-                  {{ program.Status || '已發佈' }}
+                  已發佈
                 </div>
               </div>
               
               <!-- Program Content -->
               <div class="p-4">
                 <!-- Title -->
-                <h3 class="text-lg font-bold text-black mb-2">{{ program.ProgramName || program.Name || '未命名計畫' }}</h3>
+                <h3 class="text-lg font-bold text-black mb-2">{{ program.Name || '未命名計畫' }}</h3>
                 
                 <!-- Description -->
                 <p class="text-sm text-gray-600 mb-4 min-h-[3rem]">{{ program.Intro || '暫無介紹' }}</p>
@@ -302,19 +319,16 @@ const handleViewDetail = async (program: any) => {
                   </div>
                   <div class="flex items-center gap-2">
                     <font-awesome-icon :icon="['fas', 'users']" class="text-gray-500 w-4" />
-                    <span class="text-sm text-black">活動人數: {{ program.MinParticipants || 1 }}-{{ program.MaxParticipants || 12 }}人</span>
+                    <span class="text-sm text-black">已申請人數: {{ program.AppliedCount || 0 }}人</span>
                   </div>
                 </div>
                 
                 <!-- Company Name -->
                 <div class="text-xs text-gray-500 mb-2">
-                  公司: {{ program.CompanyName || '未指定公司' }}
+                  產業: {{ program.Industry?.Title || '未指定產業' }}
                 </div>
                 
-                <!-- Application Count -->
-                <div class="text-xs text-gray-500 mb-4">
-                  已申請人數: {{ program.AppliedCount || 0 }}人
-                </div>
+                
                 
                 <!-- Action Button -->
                 <button 

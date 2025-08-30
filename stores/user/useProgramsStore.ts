@@ -11,14 +11,25 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  // Computed properties
-  const items = computed(() => programs.value);
-  const popular = computed(() => {
-    // 取得評分最高的前 5 個計畫作為熱門計畫
-    return [...programs.value]
+  // 熱門邏輯：預留擴展點
+  const isPopularProgram = (program: Program): boolean => {
+    // 目前規則：Score > 10 才視為熱門
+    // 未來可擴充：加入 FavoritesCount、ViewsCount、近7日成長率等加權計算
+    const score = program.Score ?? 0;
+    return score > 10;
+  };
+
+  const computePopularPrograms = (list: Program[]): Program[] => {
+    // 預留擴展：可改為多指標加權排序或時間區間篩選
+    return [...list]
+      .filter(isPopularProgram)
       .sort((a, b) => (b.Score ?? 0) - (a.Score ?? 0))
       .slice(0, 5);
-  });
+  };
+
+  // Computed properties
+  const items = computed(() => programs.value);
+  const popular = computed(() => computePopularPrograms(programs.value));
 
   const { fetchPrograms: apiFetchPrograms } = useUserPrograms();
 
@@ -49,17 +60,12 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
         console.log('Setting programs data:', data.value);
         // 正規化：確保每一筆清單都有可用的 Program Id
         const normalizedItems = (data.value.items || []).map((raw: any) => {
-          // 嚴格優先使用真正的 Program.Id（詳細頁 API 使用的 Id）
-          const programIdCandidate =
-            raw?.Program?.Id ??
-            raw?.Program?.id ??
-            raw?.Id ??
-            raw?.id ??
-            null; // 不再使用 ProgramId/ApplicationId 以避免誤導到 404
+          // 使用新的 response body 結構，直接使用 Id 欄位
+          const programId = raw?.Id ?? null;
 
           return {
             ...raw,
-            Id: programIdCandidate,
+            Id: programId,
           } as unknown as Program;
         });
 
