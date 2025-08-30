@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
+import { ElMessage } from 'element-plus';
+import { useUserApplications } from '~/composables/api/users/useUserApplications';
+import { useUserAuthStore } from '~/stores/user/useAuthStore';
 
 type DateModel = [Date, Date] | '';
 
@@ -9,10 +12,12 @@ interface ApplyForm {
   phone: string;
   email: string;
   dateRange: DateModel;
-  resume: string;
+  resume: number | null;
   message: string;
   agree: boolean;
 }
+
+const props = defineProps<{ programId: string | number }>();
 
 const formRef = ref<FormInstance>();
 const form = ref<ApplyForm>({
@@ -20,7 +25,7 @@ const form = ref<ApplyForm>({
   phone: '',
   email: '',
   dateRange: '',
-  resume: '',
+  resume: null,
   message: '',
   agree: false,
 });
@@ -51,11 +56,11 @@ const rules: FormRules<ApplyForm> = {
 };
 
 const resumeOptions = [
-  { label: '履歷 A', value: 'A' },
-  { label: '履歷 B', value: 'B' },
+  { label: '履歷 A', value: 1 },
+  { label: '履歷 B', value: 2 },
 ];
 
-const emit = defineEmits<{ (e: 'submitted'): void }>();
+const emit = defineEmits<{ (e: 'submitted'): void; (e: 'close'): void }>();
 
 const handleSubmit = async () => {
   if (!formRef.value) return;
@@ -63,8 +68,41 @@ const handleSubmit = async () => {
     if (!valid) return;
     try {
       submitting.value = true;
-      // TODO: 串接 API 提交資料
-      emit('submitted');
+      const authStore = useUserAuthStore();
+      const { submitApplication } = useUserApplications();
+
+      const participantId = authStore.user?.id;
+      if (!participantId) {
+        ElMessage.error('尚未登入，請先登入後再嘗試');
+        return;
+      }
+
+      if (!props.programId) {
+        ElMessage.error('缺少活動識別資訊，請重新進入此頁');
+        return;
+      }
+
+      const payload = {
+        participant_id: participantId,
+        participants_count: 1,
+        resume_type: 'existing resume' as const,
+        resume_id: form.value.resume as number,
+        motivation_content: form.value.message,
+        agree_terms: form.value.agree,
+      };
+
+      try {
+        await submitApplication(Number(props.programId), payload);
+        ElMessage.success('提交成功，等待企業審核');
+        emit('submitted');
+      } catch (e: any) {
+        if (e?.status === 400) {
+          ElMessage.warning('已經申請過，請查看其他活動');
+          emit('close');
+          return;
+        }
+        ElMessage.error(e?.message || '提交失敗，請稍後再試');
+      }
     } finally {
       submitting.value = false;
     }
@@ -85,7 +123,7 @@ const handleSubmit = async () => {
       </el-form-item>
 
       <el-form-item label="電子郵件" prop="email">
-        <el-input v-model="form.email" placeholder="abc@gmail.com" />
+        <el-input v-model.trim="form.email" placeholder="abc@gmail.com" />
       </el-form-item>
 
       <el-form-item label="參加日期" prop="dateRange">
@@ -114,7 +152,7 @@ const handleSubmit = async () => {
         <div>服務條款 與 隱私權政策</div>
       </div>
 
-      <div class="flex justify-center">
+      <div class="flex justify-center mb-4">
         <el-button type="primary" :disabled="!form.agree" :loading="submitting" @click="handleSubmit">提交申請</el-button>
       </div>
     </el-form>

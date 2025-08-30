@@ -335,6 +335,6 @@ const onApplySubmitted = async () => {
     :close-on-click-modal="false"
     :destroy-on-close="true"
   >
-    <UsersApplyExperience @submitted="onApplySubmitted" />
+    <UsersApplyExperience :program-id="programId" @submitted="onApplySubmitted" @close="showApply = false" />
   </el-dialog>
 </template>

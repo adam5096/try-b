@@ -24,3 +24,12 @@
  - 更新 `types/users/programDetail.ts` 對齊 u user 5 回應：新增 `id`、`serial_num`、`views_count`、`favorites_count`、`score`、`total_views`、`weekly_views`、`daily_views`；移除 `is_ongoing`；其餘欄位維持一致。
  - 保持清單 store 僅保存完整 items（含 `Id`），不另維護獨立 id 清單；詳情 store 維護 `currentProgramId` 與快取，實作仍通過 Lint 檢查。
  - 驗證 Proxy rewrite 日誌（`/api-proxy/v1/programs/:id → /api/v1/programs/:id`）與 Postman 結果一致；使用者登入狀態下詳情請求攜帶 Authorization 標頭正常。
+ - 新增 users 申請型別至 `types/users/application.ts`，規範 payload 與回應。
+ - 建立 `composables/api/users/useUserApplications.ts`：串接 `POST /api-proxy/v1/programs/{program_id}/applications`，統一處理 201/200 成功與 400 已申請錯誤。
+ - 更新 `components/users/ApplyExperience.vue`：接收 `programId`、整合申請 API、成功顯示提示並 emit `submitted`；400 顯示「已經申請過」並 emit `close` 關閉對話框；email 採用 `v-model.trim` 避免空白導致驗證誤報；`resume_id` 以暫置選單 1/2 供測試。
+ - 更新 `pages/users/programs/[programId].vue`：傳入 `:program-id`，監聽 `submitted/close`；成功導回 `user-landing`，400 僅關閉對話框停留原頁。
+ - 全面通過 Lint 檢查並驗證代理重寫與授權標頭；優化錯誤處理與 UX。
+ - 修復 users 申請 API 狀態碼判斷：移除硬編碼 `201`，回傳實際 `200/201`。
+ - 新增 `useUserApiFetchRaw`：取得 raw 回應含 HTTP 狀態碼，沿用 Users JWT 注入策略。
+ - 更新 `composables/api/users/useUserApplications.ts`：改用 raw 版，統一成功條件（`200/201`）與 `400` 已申請錯誤拋出；其他狀態交由上層處理。
+ - 通過 Lint 檢查；不改動 UI，保留 `ApplyExperience.vue` 既有成功訊息。
