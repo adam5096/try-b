@@ -28,6 +28,10 @@ export interface ProgramStep {
 }
 
 export interface ProgramDetail {
+  // 主鍵與序號
+  id: number;
+  serial_num: string;
+
   // 公司相關資訊
   company_name: string;
   company_logo: string;
@@ -66,10 +70,15 @@ export interface ProgramDetail {
   status_id: number;
   status_title: string | null;
   
-  // 申請相關
+  // 申請與統計
   applied_count: number;
   days_left: number;
-  is_ongoing: boolean | null;
+  views_count: number;
+  favorites_count: number;
+  score: number;
+  total_views: number;
+  weekly_views: number;
+  daily_views: number;
   
   // 關聯物件
   Industry: IndustryInfo;

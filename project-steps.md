@@ -19,3 +19,8 @@
  - 合併人數欄位：把上方「活動人數」改為單一「已申請人數」，並刪除下方重複區塊以消除語意重複。
  - 通過 Lint 檢查並驗證 UI 呈現；不改動 API 與型別定義。
  - 參考檔案 `pages/users/index.vue` 完成編修，未涉及 store 與 composables 變更。
+ - 移除 `pages/users/index.vue` 的開發用 fallback programId 與 dev 分支；`resolveProgramId` 收斂為 `Id ?? id`，全面以後端回傳 Id 為準。
+ - 對接詳情流程：按鈕「查看詳情」觸發 `handleViewDetail` → 呼叫 `useUserProgramDetailStore.fetchDetail(programId)` → 由 `composables/api/users/useUserProgramDetail.ts` 發送 `GET /api-proxy/v1/programs/:id` → 代理重寫至 `/api/v1/programs/:id` → 成功渲染 `users/programs/:id`。
+ - 更新 `types/users/programDetail.ts` 對齊 u user 5 回應：新增 `id`、`serial_num`、`views_count`、`favorites_count`、`score`、`total_views`、`weekly_views`、`daily_views`；移除 `is_ongoing`；其餘欄位維持一致。
+ - 保持清單 store 僅保存完整 items（含 `Id`），不另維護獨立 id 清單；詳情 store 維護 `currentProgramId` 與快取，實作仍通過 Lint 檢查。
+ - 驗證 Proxy rewrite 日誌（`/api-proxy/v1/programs/:id → /api/v1/programs/:id`）與 Postman 結果一致；使用者登入狀態下詳情請求攜帶 Authorization 標頭正常。
