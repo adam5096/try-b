@@ -39,3 +39,5 @@
 - 更新 `stores/user/useAuthStore.ts` 的 `register`：改用 `try/catch` 捕捉錯誤並統一訊息格式，減少上層判斷負擔。
 - 驗證 Lint 檢查為綠燈；不改動 API 介面與 UI 呈現，降低影響範圍。
 - 提出替代方案：可改用 `useApiFetch/useFetch` 回傳 `{ data, error }`，惟影響面較大，暫採最小變更策略以維持穩定性。
+ - 修復企業登入：在 `stores/company/useAuthStore.ts` 於 dev 使用 `/api-proxy/v1/company/login`（Vite 代理），prod 使用 `${public.apiBase}/api/v1/company/login`；改用 `$fetch` 直連並統一錯誤處理。
+ - 驗證登入成功；後續 API `current`、`programs` 404 已定位為路由/端點不一致，待後續調整對應路徑或改走本機 mock。

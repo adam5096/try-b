@@ -52,16 +52,23 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
    */
   async function login(loginData: LoginData) {
     try {
-      const { data: responseData } = await useApiFetch<CompanyLoginResponse>('/api/v1/company/login', {
+      const config = useRuntimeConfig();
+      const url = process.dev
+        ? '/api-proxy/v1/company/login'
+        : `${config.public.apiBase}/api/v1/company/login`;
+
+      const response = await $fetch<CompanyLoginResponse>(url, {
         method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+        },
         body: {
           identifier: loginData.account,
           password: loginData.psd,
         },
       });
 
-      if (responseData.value && responseData.value.token) {
-        const response = responseData.value;
+      if (response && response.token) {
         token.value = response.token;
         tokenCookie.value = response.token;
 
@@ -74,7 +81,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         // await fetchUser(); // 暫時註解此行以避免初始登入時不必要的呼叫
       } else {
         // 如果後端回傳 Status: false 或沒有 token，也視為錯誤
-        throw new Error(responseData.value?.message || '登入失敗：無效的回應格式');
+        throw new Error((response as any)?.message || '登入失敗：無效的回應格式');
       }
     } catch (error) {
       await logout();
