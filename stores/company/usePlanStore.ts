@@ -10,7 +10,7 @@ export const useCompanyPlanStore = defineStore('companyPlan', () => {
     pending: isLoading,
     error,
     execute: fetchCurrentPlan,
-  } = useCompanyApiFetch<CompanyPlan>('/api/v1/plans/current', {
+  } = useCompanyApiFetch<CompanyPlan>('/v1/plans/current', {
     immediate: false, // 改為 false，避免在沒有 token 時立即請求
   });
 

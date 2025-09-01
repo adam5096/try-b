@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { useApiFetch } from '~/composables/api/shared/useApiFetch';
+import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 import type {
   LoginData,
   CompanyLoginResponse,
@@ -37,7 +38,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
     if (!token.value) return;
 
     try {
-      const { data: userData } = await useApiFetch<CompanyProfile>('/api/v1/company');
+      const { data: userData } = await useCompanyApiFetch<CompanyProfile>('/v1/company');
       if (userData.value) {
         user.value = userData.value;
         userCookie.value = userData.value;
@@ -100,7 +101,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
   async function logout() {
     if (token.value) {
       try {
-        await useApiFetch('/api/v1/company/logout', {
+        await useCompanyApiFetch('/v1/company/logout', {
           method: 'POST',
         });
       } catch (error) {

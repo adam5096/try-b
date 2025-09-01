@@ -11,7 +11,7 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
   const page = ref(1);
   const limit = ref(21);
 
-  const { data, pending: isLoading, error, execute } = useCompanyApiFetch<ProgramsResponse>(() => `/api/v1/company/${authStore.companyId}/programs`, {
+  const { data, pending: isLoading, error, execute } = useCompanyApiFetch<ProgramsResponse>(() => `/v1/company/${authStore.companyId}/programs`, {
     immediate: false, // We will trigger this manually
     params: {
       page,
@@ -46,7 +46,7 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
       return { success: false, error: new Error('User not authenticated') };
     }
 
-    const basePath = `/api/v1/company/${authStore.companyId}/programs`;
+    const basePath = `/v1/company/${authStore.companyId}/programs`;
     const { data: responseData, error: fetchError } = await useCompanyApiFetch<ProgramCreationResponse>(basePath, {
       method: 'POST',
       body: payload,
