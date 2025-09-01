@@ -14,11 +14,21 @@ export const useUserApiFetch = <T>(url: MaybeRefOrGetter<string>, options: any =
     const userAuthStore = useUserAuthStore();
     const token = userAuthStore.token;
     
+    // 調試：檢查 token 注入
+    console.log('🔐 useUserApiFetch - Token injection:', {
+      url: urlString,
+      hasToken: !!token,
+      token: token ? `${token.substring(0, 20)}...` : 'null',
+      isLoggedIn: userAuthStore.isLoggedIn
+    });
+    
     if (token) {
       headers = {
         ...headers,
         'Authorization': `Bearer ${token}`
       };
+    } else {
+      console.warn('⚠️ No token found for authenticated request:', urlString);
     }
   }
   
@@ -44,11 +54,21 @@ export const useUserApiFetchRaw = async <T>(url: MaybeRefOrGetter<string>, optio
     const userAuthStore = useUserAuthStore();
     const token = userAuthStore.token;
 
+    // 調試：檢查 token 注入
+    console.log('🔐 useUserApiFetchRaw - Token injection:', {
+      url: urlString,
+      hasToken: !!token,
+      token: token ? `${token.substring(0, 20)}...` : 'null',
+      isLoggedIn: userAuthStore.isLoggedIn
+    });
+
     if (token) {
       headers = {
         ...headers,
         'Authorization': `Bearer ${token}`
       };
+    } else {
+      console.warn('⚠️ No token found for authenticated request:', urlString);
     }
   }
 

@@ -1,4 +1,5 @@
 import type { CommentsQueryParams, CommentsResponse } from '~/types/users/comment';
+import { useUserApiFetch } from './useUserApiFetch';
 
 export const useUserComments = () => {
   const fetchComments = async (params: CommentsQueryParams = {}) => {
@@ -12,10 +13,21 @@ export const useUserComments = () => {
     if (params.sort) queryParams.append('sort', params.sort);
 
     const queryString = queryParams.toString();
-    const url = `/api-proxy/v1/comments${queryString ? '?' + queryString : ''}`;
+    // 修正：使用符合 API 規格書的正確端點
+    const url = `/api-proxy/v1/users/2/evaluations${queryString ? '?' + queryString : ''}`;
 
     try {
-      const data = await $fetch<CommentsResponse>(url, { method: 'GET' });
+      // 調試：檢查認證狀態
+      const { useUserAuthStore } = await import('~/stores/user/useAuthStore');
+      const authStore = useUserAuthStore();
+      console.log('🔐 Auth status:', {
+        isLoggedIn: authStore.isLoggedIn,
+        hasToken: !!authStore.token,
+        token: authStore.token ? `${authStore.token.substring(0, 20)}...` : 'null'
+      });
+
+      // 修正：使用 useUserApiFetch 來確保 JWT token 被注入
+      const data = await useUserApiFetch<CommentsResponse>(url, { method: 'GET' });
       
       return {
         data: { value: data },
@@ -23,6 +35,7 @@ export const useUserComments = () => {
         pending: { value: false }
       };
     } catch (error) {
+      console.error('❌ Error fetching comments:', error);
       return {
         data: { value: null },
         error: { value: error },

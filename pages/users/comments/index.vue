@@ -39,8 +39,8 @@ const filterVisible = ref(false);
 const editingEvaluation = ref<{ [key: string]: { score: number; comment: string } }>({});
 
 // 計算屬性
-const totalReviews = computed(() => commentsData.value?.total || 0);
-const visibleReviews = computed(() => commentsData.value?.data || []);
+const totalReviews = computed(() => commentsData.value?.length || 0);
+const visibleReviews = computed(() => commentsData.value || []);
 
 // 狀態 ID 對應
 const statusIdToText = (statusId: number): ReviewStatus => {
