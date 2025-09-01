@@ -170,13 +170,27 @@ async function submitEvaluationForItem(item: ReviewItem) {
     
     // 錯誤處理
     let errorMessage = '提交失敗，請稍後重試';
-    if (error.message) {
+    
+    // 處理後端錯誤回應
+    if (error.data?.Message) {
+      errorMessage = error.data.Message;
+      
+      // 特殊處理「體驗尚未結束」錯誤
+      if (errorMessage === '體驗尚未結束') {
+        ElMessage.warning('體驗尚未結束');
+        // 退出編輯模式，收合多行輸入框
+        delete editingEvaluation.value[item.serial_num];
+        return;
+      }
+    } else if (error.message) {
       if (error.message.includes('網路')) {
         errorMessage = '網路連線異常，請檢查網路後重試';
       } else if (error.message.includes('認證') || error.message.includes('登入')) {
         errorMessage = '登入已過期，請重新登入';
       } else if (error.message.includes('維護')) {
         errorMessage = '服務暫時維護中，請稍後再試';
+      } else {
+        errorMessage = error.message;
       }
     }
     

@@ -50,3 +50,11 @@
 - 新增調試資訊：在 `useUserApiFetch.ts` 和 `useUserComments.ts` 中添加 console 日誌，便於追蹤 token 注入過程和認證狀態。
 - 驗證 API 整合成功：評價列表頁面現在能正確顯示 "共 5 則評價"，並成功渲染包含公司名稱、計畫名稱、狀態標籤等完整資訊的評價項目。
 - 通過 Lint 檢查：所有修改都符合專案的程式碼風格規範，未引入新的 linter 錯誤。
+
+## 2025-09-02 (續)
+- 實作 users 修改評價功能：建立 `PUT /api/v1/users/{userId}/programs/{programId}/evaluations` API 整合，使用硬編碼的 `userId=2` 和 `programId=45` 作為測試值。
+- 更新評價相關類型定義：在 `types/users/comment.ts` 中新增 `SubmitEvaluationSuccessResponse` 和 `SubmitEvaluationErrorResponse` 介面，支援後端定義的成功和錯誤回應格式。
+- 修正評價提交 API 邏輯：將 `composables/api/users/useUserEvaluation.ts` 從使用 `$fetch` 改為 `useUserApiFetch`，確保 JWT token 被正確注入，並更新 HTTP 方法為 `PUT`。
+- 強化錯誤處理機制：在 `pages/users/comments/index.vue` 中新增對「體驗尚未結束」錯誤的特殊處理，使用 `ElMessage.warning` 顯示警告訊息並自動退出編輯模式。
+- 優化用戶體驗：當收到「體驗尚未結束」錯誤時，系統會自動清除編輯狀態並收合評價輸入框，提供更流暢的互動體驗。
+- 通過 Lint 檢查：所有修改都符合專案的程式碼風格規範，未引入新的 linter 錯誤。

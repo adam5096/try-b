@@ -31,7 +31,22 @@ export interface SubmitEvaluationPayload {
   comment: string;
 }
 
-export interface SubmitEvaluationResponse {
-  success: boolean;
-  message?: string;
+// 修改評價成功回應
+export interface SubmitEvaluationSuccessResponse {
+  ProgramName: string;
+  ProgramStartDate: string;
+  ProgramEndDate: string;
+  CompanyName: string;
+  Score: number;
+  Comment: string;
+  SerialNum: string;
+  AiStatus: number;
 }
+
+// 修改評價錯誤回應
+export interface SubmitEvaluationErrorResponse {
+  Message: string;
+}
+
+// 修改評價回應（成功或錯誤）
+export type SubmitEvaluationResponse = SubmitEvaluationSuccessResponse | SubmitEvaluationErrorResponse;
