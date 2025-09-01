@@ -33,3 +33,9 @@
  - 新增 `useUserApiFetchRaw`：取得 raw 回應含 HTTP 狀態碼，沿用 Users JWT 注入策略。
  - 更新 `composables/api/users/useUserApplications.ts`：改用 raw 版，統一成功條件（`200/201`）與 `400` 已申請錯誤拋出；其他狀態交由上層處理。
  - 通過 Lint 檢查；不改動 UI，保留 `ApplyExperience.vue` 既有成功訊息。
+
+## 2025-09-01
+- 修復 users 註冊流程型別錯誤：移除 `{ error }` 解構，對齊 `$fetch` 直接回傳資料物件。
+- 更新 `stores/user/useAuthStore.ts` 的 `register`：改用 `try/catch` 捕捉錯誤並統一訊息格式，減少上層判斷負擔。
+- 驗證 Lint 檢查為綠燈；不改動 API 介面與 UI 呈現，降低影響範圍。
+- 提出替代方案：可改用 `useApiFetch/useFetch` 回傳 `{ data, error }`，惟影響面較大，暫採最小變更策略以維持穩定性。
