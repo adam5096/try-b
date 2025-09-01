@@ -9,9 +9,16 @@ import type {
 } from '~/types/company/company';
 
 export const useCompanyAuthStore = defineStore('companyAuth', () => {
-  const tokenCookie = useCookie<string | null>('companyAuthToken');
-  const userCookie = useCookie<CompanyProfile | null>('companyAuthUser');
-  const companyIdCookie = useCookie<number | null>('companyId');
+  // 統一 Cookie 選項，確保會被瀏覽器保存並於路由間持久化
+  const cookieOptions = {
+    path: '/',
+    sameSite: 'lax' as const,
+    maxAge: 60 * 60 * 24 * 7, // 7 天
+    secure: (import.meta as any).prod ?? false,
+  };
+  const tokenCookie = useCookie<string | null>('companyAuthToken', cookieOptions);
+  const userCookie = useCookie<CompanyProfile | null>('companyAuthUser', cookieOptions);
+  const companyIdCookie = useCookie<number | null>('companyId', cookieOptions);
 
   const token = ref<string | null>(tokenCookie.value ?? null);
   const user = ref<CompanyProfile | null>(userCookie.value ?? null);
@@ -52,10 +59,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
    */
   async function login(loginData: LoginData) {
     try {
-      const config = useRuntimeConfig();
-      const url = process.dev
-        ? '/api-proxy/v1/company/login'
-        : `${config.public.apiBase}/api/v1/company/login`;
+      const url = '/api-proxy/v1/company/login';
 
       const response = await $fetch<CompanyLoginResponse>(url, {
         method: 'POST',

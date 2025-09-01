@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed, watch } from 'vue';
 import type { CompanyPlan } from '~/types/company/plan/current';
-import { useApiFetch } from '~/composables/api/shared/useApiFetch';
+import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 export const useCompanyPlanStore = defineStore('companyPlan', () => {
   const authStore = useCompanyAuthStore();
@@ -10,7 +10,7 @@ export const useCompanyPlanStore = defineStore('companyPlan', () => {
     pending: isLoading,
     error,
     execute: fetchCurrentPlan,
-  } = useApiFetch<CompanyPlan>('/api/v1/plans/current', {
+  } = useCompanyApiFetch<CompanyPlan>('/api/v1/plans/current', {
     immediate: false, // 改為 false，避免在沒有 token 時立即請求
   });
 
