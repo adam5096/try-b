@@ -20,7 +20,7 @@ export const useUserPrograms = () => {
       ? config.public.apiBase
       : '/api-proxy';
     
-    const url = `${baseURL}/v1/programs${queryString ? '?' + queryString : ''}`;
+    const url = `${baseURL}/api/v1/programs${queryString ? '?' + queryString : ''}`;
 
     try {
       const data = await $fetch<ProgramsResponse>(url, { method: 'GET' });

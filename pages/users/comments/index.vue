@@ -350,7 +350,7 @@ onMounted(() => {
       <!-- 每頁顯示 -->
       <div class="flex items-center gap-3 whitespace-nowrap">
         <span class="text-gray-600">每頁顯示：</span>
-        <el-select v-model="pageSize" placeholder="選擇">
+        <el-select v-model="pageSize" placeholder="選擇" style="width: 120px;">
           <el-option 
             v-for="size in pageSizeOptions" 
             :key="size" 

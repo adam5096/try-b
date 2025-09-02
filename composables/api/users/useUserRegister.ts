@@ -14,7 +14,7 @@ interface RegisterResponse {
 
 export const useUserRegister = () => {
   async function register(registerData: UserRegisterData) {
-    return await useUserApiFetch<RegisterResponse>('/v1/users/register', {
+    return await useUserApiFetch<RegisterResponse>('/api/v1/users/register', {
       method: 'POST',
       body: registerData,
     });
