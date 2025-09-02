@@ -26,7 +26,7 @@ const authStore = useCompanyAuthStore();
 // --- Data Fetching ---
 // 1. Fetch main program details
 const { data: program } = await useAsyncData<Program>(`program-${route.params.programId}`, async () => {
-  const { data } = await useApiFetch<Program>(`/v1/company/${authStore.companyId}/programs/${route.params.programId}`);
+  const { data } = await useApiFetch<Program>(`/api/v1/company/${authStore.companyId}/programs/${route.params.programId}`);
   if (!data.value) {
     throw createError({ statusCode: 404, statusMessage: 'Program not found' });
   }
@@ -40,7 +40,7 @@ interface ApplicantsStatsResponse {
   pending_count: number;
 }
 const { data: stats } = await useApiFetch<ApplicantsStatsResponse>(
-  () => `/v1/company/${authStore.companyId}/programs/${route.params.programId}/applications`,
+  () => `/api/v1/company/${authStore.companyId}/programs/${route.params.programId}/applications`,
 );
 
 const totalApplicants = computed(() => stats.value?.total_applicants ?? 0);

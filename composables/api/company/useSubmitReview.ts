@@ -27,7 +27,7 @@ export const useSubmitReview = () => {
     error.value = null;
     data.value = null;
 
-    const url = `/v1/programs/${programId}/applications/${participantId}/review`;
+    const url = `/api/v1/programs/${programId}/applications/${participantId}/review`;
 
     const { data: result, error: fetchError } = await useCompanyApiFetch<SubmitReviewResponse>(url, {
       method: 'PUT',

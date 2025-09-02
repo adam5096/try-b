@@ -14,7 +14,7 @@ export const useUserComments = () => {
 
     const queryString = queryParams.toString();
     // 修正：使用符合 API 規格書的正確端點
-    const url = `/v1/users/2/evaluations${queryString ? '?' + queryString : ''}`;
+    const url = `/api/v1/users/2/evaluations${queryString ? '?' + queryString : ''}`;
 
     try {
       // 調試：檢查認證狀態
