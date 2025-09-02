@@ -50,20 +50,24 @@ const handleNextClick = async () => {
     const { confirmPassword, ...payload } = props.formData
 
     // 3. 使用環境感知的 API 函數呼叫 API
-    const response = await useApiFetch('/v1/company', {
+    const { data: response, error } = await useApiFetch('/v1/company', {
       method: 'POST',
       body: payload
     })
 
     // 4a. 處理成功的回應
-    console.log('註冊成功:', response)
+    if (error.value) {
+      throw error.value
+    }
+
+    console.log('註冊成功:', response.value)
     ElMessage({ message: '註冊成功！', type: 'success' })
     emit('next')
   } catch (error: any) {
     // 4b. 處理失敗的回應
-    console.error('註冊失敗:', error.data)
+    console.error('註冊失敗:', error)
     ElMessage({
-      message: `註冊失敗: ${error.data?.message || '請檢查您的資料或稍後再試'}`,
+      message: `註冊失敗: ${error?.data?.message || error?.message || '請檢查您的資料或稍後再試'}`,
       type: 'error',
       duration: 5000 // 讓錯誤訊息停留久一點
     })
