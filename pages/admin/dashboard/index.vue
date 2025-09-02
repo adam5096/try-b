@@ -199,14 +199,14 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar, User, StarFilled, TrendCharts, ArrowRight } from '@element-plus/icons-vue'
-import { navigateTo } from '#app'
-import { adminRoutes } from '~/utils/adminRoutes'
-
 definePageMeta({
   name: 'admin-dashboard',
   layout: 'admin',
 });
+
+import { Calendar, User, StarFilled, TrendCharts, ArrowRight } from '@element-plus/icons-vue'
+import { navigateTo } from '#app'
+import { adminRoutes } from '~/utils/adminRoutes'
 
 const metrics = [
   { key: 'totalPrograms', label: '總體驗計畫', value: '248', icon: 'calendar', delta: '12% 增長', note: '相比上個月' },

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus';
-import { ElMessage } from 'element-plus';
-
 definePageMeta({
   name: 'user-comments-detail',
   layout: 'user',
 });
+
+import { ref, computed } from 'vue';
+import type { FormInstance, FormRules } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 const route = useRoute();
 const commentId = computed(() => String(route.params.commentId ?? ''));

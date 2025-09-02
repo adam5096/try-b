@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
-import { useUserAuthStore } from '~/stores/user/useAuthStore';
-import type { UserLoginData } from '~/types/users/user';
-
 definePageMeta({
   name: 'user-login',
   layout: 'user'
 })
+
+import { ref, watchEffect } from 'vue';
+import { useUserAuthStore } from '~/stores/user/useAuthStore';
+import type { UserLoginData } from '~/types/users/user';
 
 const authStore = useUserAuthStore();
 const route = useRoute();

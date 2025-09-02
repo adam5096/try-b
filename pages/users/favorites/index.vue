@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-
 definePageMeta({
   name: 'user-favorites',
   layout: 'user',
   middleware: 'user-auth',
 });
+
+import { ref, computed } from 'vue';
 
 type FavoriteItem = {
   id: number;

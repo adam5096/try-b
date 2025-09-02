@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { userRoutes } from '~/utils/userRoutes';
-import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
-
 definePageMeta({
   name: 'user-program-detail',
   layout: 'user',
   middleware: 'user-auth',
 });
+
+import { ref, onMounted, computed } from 'vue';
+import { userRoutes } from '~/utils/userRoutes';
+import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 
 const router = useRouter();
 const isFavorited = ref(false);

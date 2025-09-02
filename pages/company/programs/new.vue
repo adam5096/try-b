@@ -1,15 +1,15 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'company',
+  name: 'company-programs-new',
+});
+
 import { ref } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
 import { ElNotification } from 'element-plus';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
 import type { CreateProgramPayload } from '~/types/company/program';
 import { useRouter } from 'vue-router';
-
-definePageMeta({
-  layout: 'company',
-  name: 'company-programs-new',
-});
 
 const programStore = useCompanyProgramStore();
 const router = useRouter();

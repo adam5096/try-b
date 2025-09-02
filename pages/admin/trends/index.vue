@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { Search, Rank, View, Star, User } from '@element-plus/icons-vue';
-
-
 definePageMeta({
   name: 'admin-trends',
   layout: 'admin',
 });
+
+import { ref, computed } from 'vue';
+import { Search, Rank, View, Star, User } from '@element-plus/icons-vue';
 
 // UI-only demo state for cutting layout
 const keyword = ref('');

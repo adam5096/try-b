@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Search } from '@element-plus/icons-vue'
-import { navigateTo } from '#app'
-import { adminRoutes } from '~/utils/adminRoutes'
-
 definePageMeta({
   name: 'admin-comments',
   layout: 'admin',
 })
+
+import { ref, computed } from 'vue'
+import { Search } from '@element-plus/icons-vue'
+import { navigateTo } from '#app'
+import { adminRoutes } from '~/utils/adminRoutes'
 
 type ReviewStatus = 'systemApproved' | 'systemRejected' | 'manualConfirmed' | 'manualRejected'
 

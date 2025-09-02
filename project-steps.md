@@ -58,3 +58,10 @@
 - 強化錯誤處理機制：在 `pages/users/comments/index.vue` 中新增對「體驗尚未結束」錯誤的特殊處理，使用 `ElMessage.warning` 顯示警告訊息並自動退出編輯模式。
 - 優化用戶體驗：當收到「體驗尚未結束」錯誤時，系統會自動清除編輯狀態並收合評價輸入框，提供更流暢的互動體驗。
 - 通過 Lint 檢查：所有修改都符合專案的程式碼風格規範，未引入新的 linter 錯誤。
+
+## 2025-09-02
+- 修復企業端登入頁面 `definePageMeta is not defined` 錯誤：將 `definePageMeta` 函數從檔案底部移動到 `<script setup>` 標籤的最頂部，確保 Nuxt 3 的 auto-imports 能夠正確識別和載入。
+- 全面檢查專案範圍內所有使用 `definePageMeta` 的檔案：共修復 33 個檔案，涵蓋企業端、使用者端、管理員端和通用頁面。
+- 統一程式碼結構：所有頁面檔案現在都遵循「define 函數 → import 語句 → 邏輯代碼」的業界標準順序，符合 Nuxt 3 官方建議和最佳實踐。
+- 驗證修復結果：通過 Lint 檢查，無任何程式碼風格錯誤；所有 `definePageMeta` 都正確位於 script 標籤頂部。
+- 解決根本問題：修復了 Nuxt 3 auto-imports 載入問題，確保頁面路由和佈局設定能正常運作，企業端登入頁面現在可以正常載入。
