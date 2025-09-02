@@ -19,9 +19,10 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string>, options: Us
     onRequest(context) {
       const urlString = toValue(url);
       
-      // 注入 Company 模塊的 JWT Token
-      const companyAuthStore = useCompanyAuthStore();
-      const token = companyAuthStore.token as unknown as string | null;
+      // 注入 Company 模塊的 JWT Token（避免循環依賴）
+      // 直接從 cookie 讀取 token，而不是從 store
+      const tokenCookie = useCookie<string | null>('companyAuthToken');
+      const token = tokenCookie.value;
 
       if (token) {
         context.options.headers = new Headers(context.options.headers as any);

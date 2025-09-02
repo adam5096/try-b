@@ -61,7 +61,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
   async function login(loginData: LoginData) {
     try {
       // 使用統一的 API 調用方式，與其他端點保持一致
-      const { data: response, error } = await useCompanyApiFetch<CompanyLoginResponse>('/v1/company/login', {
+      const { data: response, error } = useCompanyApiFetch<CompanyLoginResponse>('/v1/company/login', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -71,6 +71,9 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
           password: loginData.psd,
         },
       });
+
+      // 等待 API 調用完成
+      await response;
 
       if (error.value) {
         throw error.value;
