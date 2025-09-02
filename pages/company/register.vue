@@ -1,14 +1,14 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'main',
+});
+
 import { ref, reactive } from 'vue';
 import Step1 from '~/components/company/register/Step1.vue';
 import Step2 from '~/components/company/register/Step2.vue';
 import Step3 from '~/components/company/register/Step3.vue';
 
 const steps = [Step1, Step2, Step3];
-
-definePageMeta({
-  layout: 'main',
-});
 
 const currentStep = ref(1);
 

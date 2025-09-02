@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
-import type { ReviewItem, ReviewStatus, CommentsQueryParams, SubmitEvaluationPayload } from '~/types/users/comment';
-import { useUserComments } from '~/composables/api/users/useUserComments';
-import { useUserEvaluation } from '~/composables/api/users/useUserEvaluation';
-
 definePageMeta({
   name: 'user-comments',
   layout: 'user',
   middleware: 'user-auth',
 });
+
+import { ref, computed, onMounted, watch } from 'vue';
+import type { ReviewItem, ReviewStatus, CommentsQueryParams, SubmitEvaluationPayload } from '~/types/users/comment';
+import { useUserComments } from '~/composables/api/users/useUserComments';
+import { useUserEvaluation } from '~/composables/api/users/useUserEvaluation';
 
 // API 相關
 const { fetchComments } = useUserComments();

@@ -1,14 +1,14 @@
 <script setup lang="ts">
+definePageMeta({
+  name: 'company-program-applicants-list',
+  layout: 'company',
+});
+
 import { ref, computed, onMounted } from 'vue'
 import { useApplicants } from '~/composables/api/company/useApplicants';
 
 const route = useRoute()
 const authStore = useCompanyAuthStore();
-
-definePageMeta({
-  name: 'company-program-applicants-list',
-  layout: 'company',
-});
 
 const { data: applicantsData, pending, refresh: refreshApplicants } = useApplicants(
   computed(() => authStore.companyId),

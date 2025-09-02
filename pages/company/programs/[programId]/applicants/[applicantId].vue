@@ -1,4 +1,9 @@
 <script setup lang="ts">
+definePageMeta({
+  name: 'company-program-applicant-detail',
+  layout: 'company',
+});
+
 import { computed, ref, reactive } from 'vue';
 import { useApplicant } from '~/composables/api/company/useApplicant';
 import { useSubmitReview } from '~/composables/api/company/useSubmitReview';
@@ -25,11 +30,6 @@ const {
 } = useSubmitReview();
 
 const formRef = ref<FormInstance>();
-
-definePageMeta({
-  name: 'company-program-applicant-detail',
-  layout: 'company',
-});
 
 const { data: applicantData, pending } = useApplicant(
   String(route.params.programId),

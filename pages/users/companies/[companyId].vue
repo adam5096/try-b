@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
 definePageMeta({
   name: 'user-company-detail',
   layout: 'user',
 });
+
+import { ref } from 'vue';
 
 // 假資料：公司資訊（待串 API）
 const companyName = ref('某某某科技資訊公司');

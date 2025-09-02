@@ -93,12 +93,12 @@
 </template>
 
 <script setup lang="ts">
-import { companyRoutes as r } from '~/utils/companyRoutes';
-
 definePageMeta({
   layout: 'company',
   name: 'company-purchase-success',
 });
+
+import { companyRoutes as r } from '~/utils/companyRoutes';
 
 const router = useRouter();
 
