@@ -49,7 +49,7 @@ const handleNextClick = async () => {
     const { confirmPassword, ...payload } = props.formData
 
     // 3. 使用 Nuxt 3 內建的 $fetch 呼叫 API (透過代理)
-    const response = await $fetch('/api/v1/company', {
+    const response = await $fetch('/v1/company', {
       method: 'POST',
       body: payload
     })
