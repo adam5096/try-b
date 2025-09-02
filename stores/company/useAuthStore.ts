@@ -60,7 +60,14 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
    */
   async function login(loginData: LoginData) {
     try {
-      const url = '/api-proxy/v1/company/login';
+      const config = useRuntimeConfig();
+      
+      // 環境判斷：生產環境直接呼叫後端，開發環境使用代理
+      const url = process.env.NODE_ENV === 'production' 
+        ? `${config.public.apiBase}/api/v1/company/login`
+        : '/api-proxy/v1/company/login';
+
+      console.log('🔗 登入 API URL:', url); // 調試用
 
       const response = await $fetch<CompanyLoginResponse>(url, {
         method: 'POST',
@@ -82,8 +89,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         companyId.value = response.user.Id;
         companyIdCookie.value = response.user.Id;
 
-        // 登入成功後，立即獲取詳細的使用者資料
-        // await fetchUser(); // 暫時註解此行以避免初始登入時不必要的呼叫
+        console.log('✅ 登入成功:', response.user.Account);
       } else {
         // 如果後端回傳 Status: false 或沒有 token，也視為錯誤
         throw new Error((response as any)?.message || '登入失敗：無效的回應格式');
