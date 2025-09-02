@@ -1,12 +1,15 @@
 import type { SubmitEvaluationPayload, SubmitEvaluationResponse } from '~/types/users/comment';
+import { useUserApiFetch } from './useUserApiFetch';
 
 export const useUserEvaluation = () => {
   const submitEvaluation = async (serialNum: string | number, payload: SubmitEvaluationPayload) => {
-    const url = `/api-proxy/v1/comments/${serialNum}/evaluation`;
+    // 使用硬編碼的 programId (45) 和 userId (2) 作為測試值
+    const url = `/api-proxy/v1/users/2/programs/45/evaluations`;
 
     try {
-      const data = await $fetch<SubmitEvaluationResponse>(url, {
-        method: 'POST',
+      // 使用 useUserApiFetch 確保 JWT token 被注入
+      const data = await useUserApiFetch<SubmitEvaluationResponse>(url, {
+        method: 'PUT',
         body: payload,
       });
       
