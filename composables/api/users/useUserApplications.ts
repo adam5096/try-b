@@ -3,7 +3,7 @@ import type { SubmitApplicationPayload, SubmitApplicationResponse, SubmitApplica
 
 export const useUserApplications = () => {
 	const submitApplication = async (programId: number | string, payload: SubmitApplicationPayload) => {
-		const url = `/api-proxy/v1/programs/${programId}/applications`;
+		const url = `/v1/programs/${programId}/applications`;
 		try {
 			const { data, status } = await useUserApiFetchRaw<SubmitApplicationResponse>(url, {
 				method: 'POST',
