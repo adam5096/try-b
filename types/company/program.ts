@@ -32,6 +32,7 @@ export interface ProgramStatistics {
 
 export interface ProgramViews {
   TotalViews: number;
+  WeeklyViews: number;
   DailyViews: number;
 }
 
