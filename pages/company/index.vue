@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+definePageMeta({
+  layout: 'company',
+  name: 'company-index',
+});
+
 import {
   Search,
   Briefcase,
@@ -9,11 +14,6 @@ import { computed } from 'vue';
 import dayjs from 'dayjs';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
 import type { ProgramsListItem } from '~/types/company/program';
-
-definePageMeta({
-  layout: 'company',
-  name: 'company-index',
-});
 
 const searchForm = {
   name: '',

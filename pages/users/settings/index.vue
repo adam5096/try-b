@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
-import { UploadFilled } from '@element-plus/icons-vue';
-
 definePageMeta({
   name: 'user-settings',
   layout: 'user',
   middleware: 'user-auth',
 });
+
+import { reactive } from 'vue';
+import { UploadFilled } from '@element-plus/icons-vue';
 
 // --- Data Models ---
 const personalInfo = reactive({

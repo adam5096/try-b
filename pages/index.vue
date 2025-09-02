@@ -1,4 +1,9 @@
 <script setup lang="ts">
+definePageMeta({
+  name: 'index',
+  layout: 'main',
+});
+
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 
@@ -14,11 +19,6 @@ useSeoMeta({
   ogDescription: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
 });
 // --- End SEO Meta ---
-
-definePageMeta({
-  name: 'index',
-  layout: 'main',
-});
 
 // Header-related logic has been moved to layouts/main.vue
 

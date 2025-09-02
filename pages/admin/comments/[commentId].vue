@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { navigateTo, useRoute } from '#app'
-import { ArrowRight } from '@element-plus/icons-vue'
-import { adminRoutes } from '~/utils/adminRoutes'
-
 definePageMeta({
   name: 'admin-comment-review',
   layout: 'admin',
 })
+
+import { ref, computed } from 'vue'
+import { navigateTo, useRoute } from '#app'
+import { ArrowRight } from '@element-plus/icons-vue'
+import { adminRoutes } from '~/utils/adminRoutes'
 
 type ReviewStatus = 'systemApproved' | 'systemRejected' | 'manualConfirmed' | 'manualRejected'
 

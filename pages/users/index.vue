@@ -1,15 +1,15 @@
 <script setup lang="ts">
+definePageMeta({
+  name: 'user-landing',
+  layout: 'user',
+});
+
 import { ref, watch, onMounted } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 import { useUserAuthStore } from '~/stores/user/useAuthStore';
 import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
 import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 import type { Program } from '~/types/users/program';
-
-definePageMeta({
-  name: 'user-landing',
-  layout: 'user',
-});
 
 const authStore = useUserAuthStore();
 const programsStore = useUserProgramsStore();

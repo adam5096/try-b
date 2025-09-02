@@ -1,4 +1,9 @@
 <script setup lang="ts">
+definePageMeta({
+  name: 'companyLogin',
+  layout: 'blank',
+});
+
 import { ref } from 'vue';
 import type { LoginData } from '~/types/company/company';
 
@@ -35,11 +40,6 @@ async function handleLogin() {
     isLoading.value = false;
   }
 }
-
-definePageMeta({
-  name: 'companyLogin',
-  layout: 'blank',
-});
 </script>
 
 <template>

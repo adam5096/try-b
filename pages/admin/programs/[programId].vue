@@ -225,6 +225,7 @@
 
 <script setup lang="ts">
 definePageMeta({ name: 'admin-single-program-info', layout: 'admin' as any })
+
 import LocationPinIcon from '~/components/shared/LocationPinIcon.vue'
 import { ref } from 'vue'
 

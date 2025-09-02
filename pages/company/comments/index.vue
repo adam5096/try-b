@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-
 definePageMeta({
   layout: 'company',
   name: 'company-comments'
 })
+
+import { reactive, ref } from 'vue'
 
 const filters = reactive({
   programName: '',

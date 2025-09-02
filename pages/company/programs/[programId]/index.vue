@@ -1,4 +1,9 @@
 <script setup lang="ts">
+definePageMeta({
+  name: 'company-program-detail',
+  layout: 'company',
+});
+
 import { ref, computed } from 'vue';
 import {
   User,
@@ -17,11 +22,6 @@ import { useApiFetch } from '~/composables/api/shared/useApiFetch';
 
 const route = useRoute();
 const authStore = useCompanyAuthStore();
-
-definePageMeta({
-  name: 'company-program-detail',
-  layout: 'company',
-});
 
 // --- Data Fetching ---
 // 1. Fetch main program details
