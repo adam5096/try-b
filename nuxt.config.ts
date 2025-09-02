@@ -47,23 +47,12 @@ export default defineNuxtConfig({
     url: 'https://try-b.vercel.app',
   },
 
-  routeRules: {
-  },
-  vite: {
-    server: {
-      proxy: {
-        '/api-proxy': {
-          target: 'https://trybeta.rocket-coding.com',
-          changeOrigin: true,
-          secure: true,
-          rewrite: (path) => {
-            const newPath = path.replace(/^\/api-proxy/, '/api');
-            console.log(`🔀 Proxy rewrite: ${path} → ${newPath}`);
-            return newPath;
-          },
-        },
-      },
-    },
+  nitro: {
+    routeRules: {
+      '/api-proxy/**': {
+        proxy: 'https://trybeta.rocket-coding.com/**'
+      }
+    }
   },
 
   imports: {
