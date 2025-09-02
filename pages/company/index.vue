@@ -23,13 +23,29 @@ const searchForm = {
 };
 
 const programStore = useCompanyProgramStore();
-const programs = computed<ProgramsListItem[]>(() => programStore.programs);
+const programs = computed(() => programStore.programs);
 
 // The fetching logic is now handled reactively inside the store.
 // No need for onMounted or watch here anymore.
 
 const handlePageChange = (page: number) => {
   programStore.setPage(page);
+};
+
+const getProgramStatus = (program: any) => {
+  const now = new Date();
+  const publishStart = new Date(program.PublishStartDate);
+  const publishEnd = new Date(program.PublishEndDate);
+  const programStart = new Date(program.ProgramStartDate);
+  const programEnd = new Date(program.ProgramEndDate);
+  
+  if (now < publishStart) return '未發布';
+  if (now >= publishStart && now <= publishEnd) return '已發佈';
+  if (now > publishEnd && now < programStart) return '已截止';
+  if (now >= programStart && now <= programEnd) return '進行中';
+  if (now > programEnd) return '已結束';
+  
+  return '未知';
 };
 </script>
 
@@ -95,8 +111,8 @@ const handlePageChange = (page: number) => {
           <template #header>
             <div class="flex justify-between items-center">
               <span class="font-bold">{{ program.Name }}</span>
-              <el-tag type="info">
-                {{ program.StatusTitle }}
+              <el-tag type="info" style="width: 100px;">
+                {{ getProgramStatus(program) }}
               </el-tag>
             </div>
           </template>
@@ -105,7 +121,7 @@ const handlePageChange = (page: number) => {
             <div class="flex items-center gap-2">
               <el-icon><User /></el-icon>
               <span>已申請人數：{{ program.applied_count }}</span>
-              <span class="ml-auto text-gray-500">瀏覽次數：{{ program.views }}</span>
+              <span class="ml-auto text-gray-500">瀏覽次數：{{ program.Views?.TotalViews || 0 }}</span>
             </div>
             <div class="flex items-center gap-2">
               <el-icon><Briefcase /></el-icon>
