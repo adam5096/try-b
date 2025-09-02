@@ -39,3 +39,22 @@
 - 更新 `stores/user/useAuthStore.ts` 的 `register`：改用 `try/catch` 捕捉錯誤並統一訊息格式，減少上層判斷負擔。
 - 驗證 Lint 檢查為綠燈；不改動 API 介面與 UI 呈現，降低影響範圍。
 - 提出替代方案：可改用 `useApiFetch/useFetch` 回傳 `{ data, error }`，惟影響面較大，暫採最小變更策略以維持穩定性。
+ - 修復企業登入：在 `stores/company/useAuthStore.ts` 於 dev 使用 `/api-proxy/v1/company/login`（Vite 代理），prod 使用 `${public.apiBase}/api/v1/company/login`；改用 `$fetch` 直連並統一錯誤處理。
+ - 驗證登入成功；後續 API `current`、`programs` 404 已定位為路由/端點不一致，待後續調整對應路徑或改走本機 mock。
+
+## 2025-09-02
+- 修復 users 評價列表 API 認證問題：將 `useUserComments.ts` 從使用 `$fetch` 改為 `useUserApiFetch`，確保 JWT token 被正確注入到請求標頭中。
+- 修正評價列表 API 端點：從 `/api-proxy/v1/comments` 更新為符合 API 規格書的 `/api-proxy/v1/users/2/evaluations`。
+- 調整回應格式處理：將 `CommentsResponse` 類型定義從包含 `total`、`page`、`limit`、`data` 屬性的物件改為直接是 `ReviewItem[]` 陣列，對齊後端實際回應格式。
+- 更新頁面計算屬性：修正 `pages/users/comments/index.vue` 中的 `totalReviews` 和 `visibleReviews` 計算邏輯，使其能正確處理新的陣列回應格式。
+- 新增調試資訊：在 `useUserApiFetch.ts` 和 `useUserComments.ts` 中添加 console 日誌，便於追蹤 token 注入過程和認證狀態。
+- 驗證 API 整合成功：評價列表頁面現在能正確顯示 "共 5 則評價"，並成功渲染包含公司名稱、計畫名稱、狀態標籤等完整資訊的評價項目。
+- 通過 Lint 檢查：所有修改都符合專案的程式碼風格規範，未引入新的 linter 錯誤。
+
+## 2025-09-02 (續)
+- 實作 users 修改評價功能：建立 `PUT /api/v1/users/{userId}/programs/{programId}/evaluations` API 整合，使用硬編碼的 `userId=2` 和 `programId=45` 作為測試值。
+- 更新評價相關類型定義：在 `types/users/comment.ts` 中新增 `SubmitEvaluationSuccessResponse` 和 `SubmitEvaluationErrorResponse` 介面，支援後端定義的成功和錯誤回應格式。
+- 修正評價提交 API 邏輯：將 `composables/api/users/useUserEvaluation.ts` 從使用 `$fetch` 改為 `useUserApiFetch`，確保 JWT token 被正確注入，並更新 HTTP 方法為 `PUT`。
+- 強化錯誤處理機制：在 `pages/users/comments/index.vue` 中新增對「體驗尚未結束」錯誤的特殊處理，使用 `ElMessage.warning` 顯示警告訊息並自動退出編輯模式。
+- 優化用戶體驗：當收到「體驗尚未結束」錯誤時，系統會自動清除編輯狀態並收合評價輸入框，提供更流暢的互動體驗。
+- 通過 Lint 檢查：所有修改都符合專案的程式碼風格規範，未引入新的 linter 錯誤。

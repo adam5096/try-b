@@ -3,14 +3,15 @@ import { ref, computed, watch } from 'vue';
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 import type { ProgramsResponse, CreateProgramPayload } from '~/types/company/program';
 import type { ProgramCreationResponse } from '~/types/company/programCreation';
-import { useApiFetch } from '~/composables/api/shared/useApiFetch';
+import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 export const useCompanyProgramStore = defineStore('company-program', () => {
   const authStore = useCompanyAuthStore();
+  // 路徑固定使用 /api/...，由 useCompanyApiFetch 注入 baseURL 與 token
   const page = ref(1);
   const limit = ref(21);
 
-  const { data, pending: isLoading, error, execute } = useApiFetch<ProgramsResponse>(() => `/api/v1/company/${authStore.companyId}/programs`, {
+  const { data, pending: isLoading, error, execute } = useCompanyApiFetch<ProgramsResponse>(() => `/v1/company/${authStore.companyId}/programs`, {
     immediate: false, // We will trigger this manually
     params: {
       page,
@@ -45,7 +46,8 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
       return { success: false, error: new Error('User not authenticated') };
     }
 
-    const { data: responseData, error: fetchError } = await useApiFetch<ProgramCreationResponse>(`/api/v1/company/${authStore.companyId}/programs`, {
+    const basePath = `/v1/company/${authStore.companyId}/programs`;
+    const { data: responseData, error: fetchError } = await useCompanyApiFetch<ProgramCreationResponse>(basePath, {
       method: 'POST',
       body: payload,
     });
