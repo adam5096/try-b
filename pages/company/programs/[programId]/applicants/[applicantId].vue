@@ -49,7 +49,7 @@ const attachments = computed(() => (applicant.value?.PortfolioFiles || []).map(f
 const pastPrograms = computed(() => applicant.value?.past_programs || []);
 
 const decisionForm = ref({
-  status: 'pending',
+  status: 'pending', // 'pending' = 核准申請, 'rejected' = 婉拒申請
   feedback: '',
   notifyMethod: 'email',
 });
@@ -68,13 +68,16 @@ const submitReview = async (formEl: FormInstance | undefined) => {
       const applicantId = String(route.params.applicantId);
 
       await submitReviewApi(programId, applicantId, {
-        status_id: decisionForm.value.status === 'pending' ? 2 : 1,
+        status_id: decisionForm.value.status === 'pending' ? 2 : 3, // 2=核准申請, 3=婉拒申請
         comment: decisionForm.value.feedback,
       });
 
       if (submitError.value) {
+        // 直接顯示 HTTP 400 的 response body 內容
+        const responseBody = submitError.value.data?.Message || submitError.value.data?.message || submitError.value.message || '未知錯誤';
+        
         await ElMessageBox.alert(
-          `提交失敗：${submitError.value.data?.message || submitError.value.message}`,
+          responseBody,
           '錯誤',
           { type: 'error' },
         );
