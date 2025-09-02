@@ -7,10 +7,15 @@ import { type MaybeRefOrGetter, toValue } from 'vue';
  */
 export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string>, options: UseFetchOptions<T> = {}) => {
   const config = useRuntimeConfig();
+  
+  // 環境判斷：生產環境直接使用後端，開發環境使用代理
+  const baseURL = process.env.NODE_ENV === 'production' 
+    ? config.public.apiBase
+    : '/api-proxy';
+
   const customOptions: UseFetchOptions<T> = {
     ...options,
-    // 一律透過 Vite 代理，統一呼叫 /api-proxy → 後端 /api
-    baseURL: '/api-proxy',
+    baseURL,
     onRequest(context) {
       const urlString = toValue(url);
       

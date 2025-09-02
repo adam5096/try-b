@@ -3,10 +3,18 @@ import { useUserAuthStore } from '~/stores/user/useAuthStore';
 
 /**
  * 專用於 Users 模塊的 API Fetch 函數
- * 自動注入 User JWT Token
+ * 自動注入 User JWT Token，支援環境判斷
  */
 export const useUserApiFetch = <T>(url: MaybeRefOrGetter<string>, options: any = {}) => {
+  const config = useRuntimeConfig();
   const urlString = toValue(url);
+  
+  // 環境判斷：生產環境直接使用後端，開發環境使用代理
+  const baseURL = process.env.NODE_ENV === 'production' 
+    ? config.public.apiBase
+    : '/api-proxy';
+  
+  const fullUrl = urlString.startsWith('http') ? urlString : `${baseURL}${urlString}`;
   
   // 注入 User 模塊的 JWT Token（除了登入請求）
   let headers: Record<string, string> = {};
@@ -16,7 +24,7 @@ export const useUserApiFetch = <T>(url: MaybeRefOrGetter<string>, options: any =
     
     // 調試：檢查 token 注入
     console.log('🔐 useUserApiFetch - Token injection:', {
-      url: urlString,
+      url: fullUrl,
       hasToken: !!token,
       token: token ? `${token.substring(0, 20)}...` : 'null',
       isLoggedIn: userAuthStore.isLoggedIn
@@ -28,12 +36,12 @@ export const useUserApiFetch = <T>(url: MaybeRefOrGetter<string>, options: any =
         'Authorization': `Bearer ${token}`
       };
     } else {
-      console.warn('⚠️ No token found for authenticated request:', urlString);
+      console.warn('⚠️ No token found for authenticated request:', fullUrl);
     }
   }
   
   // 使用 $fetch
-  return $fetch<T>(urlString, {
+  return $fetch<T>(fullUrl, {
     ...options,
     headers: {
       ...headers,
@@ -46,7 +54,15 @@ export const useUserApiFetch = <T>(url: MaybeRefOrGetter<string>, options: any =
  * 取得包含 HTTP 狀態碼的回應
  */
 export const useUserApiFetchRaw = async <T>(url: MaybeRefOrGetter<string>, options: any = {}) => {
+  const config = useRuntimeConfig();
   const urlString = toValue(url);
+
+  // 環境判斷：生產環境直接使用後端，開發環境使用代理
+  const baseURL = process.env.NODE_ENV === 'production' 
+    ? config.public.apiBase
+    : '/api-proxy';
+  
+  const fullUrl = urlString.startsWith('http') ? urlString : `${baseURL}${urlString}`;
 
   // 注入 User 模塊的 JWT Token（除了登入請求）
   let headers: Record<string, string> = {};
@@ -56,7 +72,7 @@ export const useUserApiFetchRaw = async <T>(url: MaybeRefOrGetter<string>, optio
 
     // 調試：檢查 token 注入
     console.log('🔐 useUserApiFetchRaw - Token injection:', {
-      url: urlString,
+      url: fullUrl,
       hasToken: !!token,
       token: token ? `${token.substring(0, 20)}...` : 'null',
       isLoggedIn: userAuthStore.isLoggedIn
@@ -68,11 +84,11 @@ export const useUserApiFetchRaw = async <T>(url: MaybeRefOrGetter<string>, optio
         'Authorization': `Bearer ${token}`
       };
     } else {
-      console.warn('⚠️ No token found for authenticated request:', urlString);
+      console.warn('⚠️ No token found for authenticated request:', fullUrl);
     }
   }
 
-  const response = await $fetch.raw<T>(urlString, {
+  const response = await $fetch.raw<T>(fullUrl, {
     ...options,
     headers: {
       ...headers,
