@@ -13,7 +13,7 @@ export const useUserProgramDetail = () => {
   const fetchProgramDetail = async (programId: string | number): Promise<ProgramDetail> => {
     try {
       // 使用 vite proxy 配置的 API 路徑
-      const url = `/v1/programs/${programId}`;
+      const url = `/api/v1/programs/${programId}`;
       
       console.log('Fetching program detail:', { programId, url });
       

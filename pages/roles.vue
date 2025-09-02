@@ -40,9 +40,9 @@ const roles = ref([
           :key="role.title"
           class="flex w-full max-w-md flex-col items-center rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm md:w-1/2"
         >
-          <div class="mb-6 flex h-32 w-48 items-center justify-center rounded bg-gray-200 text-gray-500">
+          <!-- <div class="mb-6 flex h-32 w-48 items-center justify-center rounded bg-gray-200 text-gray-500">
             圖片
-          </div>
+          </div> -->
           <h3 class="mb-2 text-2xl font-bold text-primary-blue-dark">
             {{ role.title }}
           </h3>

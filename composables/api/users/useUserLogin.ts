@@ -18,7 +18,7 @@ interface LoginResponse {
 
 export const useUserLogin = () => {
   async function login(loginData: UserLoginData) {
-    return await useUserApiFetch<LoginResponse>('/v1/users/login', {
+    return await useUserApiFetch<LoginResponse>('/api/v1/users/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json'

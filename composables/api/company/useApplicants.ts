@@ -13,7 +13,7 @@ export const useApplicants = (companyId: MaybeRefOrGetter<number | null>, progra
     const resolvedCompanyId = toValue(companyId);
     const resolvedProgramId = toValue(programId);
     if (!resolvedCompanyId) return '';
-    return `/v1/company/${resolvedCompanyId}/programs/${resolvedProgramId}/applications`;
+    return `/api/v1/company/${resolvedCompanyId}/programs/${resolvedProgramId}/applications`;
   });
 
   return useCompanyApiFetch<ApplicantsListResponse>(url, {

@@ -38,7 +38,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
     if (!token.value) return;
 
     try {
-      const { data: userData } = await useCompanyApiFetch<CompanyProfile>('/v1/company');
+      const { data: userData } = await useCompanyApiFetch<CompanyProfile>('/api/v1/company');
       if (userData.value) {
         user.value = userData.value;
         userCookie.value = userData.value;
@@ -61,7 +61,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
   async function login(loginData: LoginData) {
     try {
       // 使用統一的 API 調用方式，與其他端點保持一致
-      const { data: response, error } = await useCompanyApiFetch<CompanyLoginResponse>('/v1/company/login', {
+      const { data: response, error } = await useCompanyApiFetch<CompanyLoginResponse>('/api/v1/company/login', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -101,7 +101,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
   async function logout() {
     if (token.value) {
       try {
-        await useCompanyApiFetch('/v1/company/logout', {
+        await useCompanyApiFetch('/api/v1/company/logout', {
           method: 'POST',
         });
       } catch (error) {

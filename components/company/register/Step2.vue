@@ -50,7 +50,7 @@ const handleNextClick = async () => {
     const { confirmPassword, ...payload } = props.formData
 
     // 3. 使用環境感知的 API 函數呼叫 API
-    const { data: response, error } = await useApiFetch('/v1/company', {
+    const { data: response, error } = await useApiFetch('/api/v1/company', {
       method: 'POST',
       body: payload
     })
