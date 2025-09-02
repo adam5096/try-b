@@ -2,6 +2,7 @@
 import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
+import { useApiFetch } from '~/composables/api/shared/useApiFetch'
 
 const props = defineProps<{
   formData: any
@@ -48,8 +49,8 @@ const handleNextClick = async () => {
     // 使用物件解構來建立一個新物件，同時排除僅供前端使用的 'confirmPassword' 欄位
     const { confirmPassword, ...payload } = props.formData
 
-    // 3. 使用 Nuxt 3 內建的 $fetch 呼叫 API (透過代理)
-    const response = await $fetch('/v1/company', {
+    // 3. 使用環境感知的 API 函數呼叫 API
+    const response = await useApiFetch('/v1/company', {
       method: 'POST',
       body: payload
     })
