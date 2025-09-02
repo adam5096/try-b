@@ -18,7 +18,7 @@ import {
   View,
 } from '@element-plus/icons-vue';
 import type { Program } from '~/types/company/program';
-import { useApiFetch } from '~/composables/api/shared/useApiFetch';
+import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 const route = useRoute();
 const authStore = useCompanyAuthStore();
@@ -26,7 +26,7 @@ const authStore = useCompanyAuthStore();
 // --- Data Fetching ---
 // 1. Fetch main program details
 const { data: program } = await useAsyncData<Program>(`program-${route.params.programId}`, async () => {
-  const { data } = await useApiFetch<Program>(`/api/v1/company/${authStore.companyId}/programs/${route.params.programId}`);
+  const { data } = await useCompanyApiFetch<Program>(`/api/v1/company/${authStore.companyId}/programs/${route.params.programId}`);
   if (!data.value) {
     throw createError({ statusCode: 404, statusMessage: 'Program not found' });
   }
@@ -39,7 +39,7 @@ interface ApplicantsStatsResponse {
   reviewed_count: number;
   pending_count: number;
 }
-const { data: stats } = await useApiFetch<ApplicantsStatsResponse>(
+const { data: stats } = await useCompanyApiFetch<ApplicantsStatsResponse>(
   () => `/api/v1/company/${authStore.companyId}/programs/${route.params.programId}/applications`,
 );
 
