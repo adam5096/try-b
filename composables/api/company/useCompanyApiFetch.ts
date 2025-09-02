@@ -13,20 +13,22 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string>, options: Us
     ? config.public.apiBase
     : '/api-proxy';
 
+  // 在 composable 層級初始化 cookie，避免在 onRequest 中重複創建
+  const tokenCookie = useCookie<string | null>('companyAuthToken');
+
   const customOptions: UseFetchOptions<T> = {
     ...options,
     baseURL,
     onRequest(context) {
       const urlString = toValue(url);
       
-      // 注入 Company 模塊的 JWT Token（避免循環依賴）
-      // 直接從 cookie 讀取 token，而不是從 store
-      const tokenCookie = useCookie<string | null>('companyAuthToken');
-      const token = tokenCookie.value;
-
-      if (token) {
+      // 檢查是否為登入端點，避免注入過期的 token
+      const isLoginEndpoint = urlString.includes('/login');
+      
+      // 只有在非登入端點且有 token 時才注入 Authorization header
+      if (!isLoginEndpoint && tokenCookie.value) {
         context.options.headers = new Headers(context.options.headers as any);
-        context.options.headers.set('Authorization', `Bearer ${token}`);
+        context.options.headers.set('Authorization', `Bearer ${tokenCookie.value}`);
       }
       
       // Chain the original onRequest if it exists from the call site
