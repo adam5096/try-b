@@ -2,7 +2,7 @@ import type { FetchError } from 'ofetch';
 import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 interface SubmitReviewPayload {
-  status_id: 1 | 2; // 1 for rejected, 2 for approved
+  status_id: 2 | 3; // 2 for approved, 3 for rejected
   comment: string;
 }
 
