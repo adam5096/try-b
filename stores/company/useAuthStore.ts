@@ -54,22 +54,14 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 
   /**
    * @description 企業使用者登入流程
-   *              1. 呼叫登入 API (POST /api/v1/company/login) 以取得 token
+   *              1. 呼叫登入 API (POST /v1/company/login) 以取得 token
    *              2. 成功後，儲存 token
    *              3. 接著呼叫 fetchUser() 取得完整的企業使用者資料
    */
   async function login(loginData: LoginData) {
     try {
-      const config = useRuntimeConfig();
-      
-      // 環境判斷：生產環境直接呼叫後端，開發環境使用代理
-      const url = process.env.NODE_ENV === 'production' 
-        ? `${config.public.apiBase}/api/v1/company/login`
-        : '/api-proxy/v1/company/login';
-
-      console.log('🔗 登入 API URL:', url); // 調試用
-
-      const response = await $fetch<CompanyLoginResponse>(url, {
+      // 使用統一的 API 調用方式，與其他端點保持一致
+      const { data: response, error } = await useCompanyApiFetch<CompanyLoginResponse>('/v1/company/login', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -80,19 +72,21 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         },
       });
 
-      if (response && response.token) {
-        token.value = response.token;
-        tokenCookie.value = response.token;
+      if (error.value) {
+        throw error.value;
+      }
+
+      if (response.value && response.value.token) {
+        token.value = response.value.token;
+        tokenCookie.value = response.value.token;
 
         // 從登入回應中取得並儲存 CompanyId
-        // 根據 API response, user 物件中包含 Id 而非 CompanyId
-        companyId.value = response.user.Id;
-        companyIdCookie.value = response.user.Id;
+        companyId.value = response.value.user.Id;
+        companyIdCookie.value = response.value.user.Id;
 
-        console.log('✅ 登入成功:', response.user.Account);
+        console.log('✅ 登入成功:', response.value.user.Account);
       } else {
-        // 如果後端回傳 Status: false 或沒有 token，也視為錯誤
-        throw new Error((response as any)?.message || '登入失敗：無效的回應格式');
+        throw new Error('登入失敗：無效的回應格式');
       }
     } catch (error) {
       await logout();
