@@ -84,6 +84,7 @@ async function handleLogin() {
               v-model="loginData.account"
               type="text"
               placeholder="請輸入您的帳號或電子郵件"
+              autocomplete="username"
               class="w-full rounded-md border border-gray-300 p-3 focus:border-primary-blue focus:outline-none focus:ring-1 focus:ring-primary-blue"
               required
             />
@@ -103,6 +104,7 @@ async function handleLogin() {
               v-model="loginData.psd"
               type="password"
               placeholder="請輸入您的密碼"
+              autocomplete="current-password"
               class="w-full rounded-md border border-gray-300 p-3 focus:border-primary-blue focus:outline-none focus:ring-1 focus:ring-primary-blue"
               required
             />

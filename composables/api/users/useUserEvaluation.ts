@@ -4,7 +4,7 @@ import { useUserApiFetch } from './useUserApiFetch';
 export const useUserEvaluation = () => {
   const submitEvaluation = async (serialNum: string | number, payload: SubmitEvaluationPayload) => {
     // 使用硬編碼的 programId (45) 和 userId (2) 作為測試值
-    const url = `/api-proxy/v1/users/2/programs/45/evaluations`;
+    const url = `/v1/users/2/programs/45/evaluations`;
 
     try {
       // 使用 useUserApiFetch 確保 JWT token 被注入

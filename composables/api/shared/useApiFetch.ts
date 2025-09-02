@@ -2,13 +2,20 @@ import type { UseFetchOptions } from 'nuxt/app';
 import { type MaybeRefOrGetter, toValue } from 'vue';
 
 /**
- * 共享的基礎 API Fetch 函數
- * 不包含特定模塊的認證邏輯，供所有模塊基礎使用
+ * 統一的 API 基礎函數
+ * 自動處理開發/生產環境的 API 端點選擇
  */
 export const useApiFetch = <T>(url: MaybeRefOrGetter<string>, options: UseFetchOptions<T> = {}) => {
+  const config = useRuntimeConfig();
+  
+  // 環境判斷：生產環境直接使用後端，開發環境使用代理
+  const baseURL = process.env.NODE_ENV === 'production' 
+    ? config.public.apiBase
+    : '/api-proxy';
+
   const customOptions: UseFetchOptions<T> = {
     ...options,
-    baseURL: useRuntimeConfig().public.apiBase,
+    baseURL,
     onRequest(context) {
       // Chain the original onRequest if it exists from the call site
       if (options.onRequest) {

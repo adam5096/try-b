@@ -7,20 +7,28 @@ import { type MaybeRefOrGetter, toValue } from 'vue';
  */
 export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string>, options: UseFetchOptions<T> = {}) => {
   const config = useRuntimeConfig();
+  
+  // 環境判斷：生產環境直接使用後端，開發環境使用代理
+  const baseURL = process.env.NODE_ENV === 'production' 
+    ? config.public.apiBase
+    : '/api-proxy';
+
+  // 在 composable 層級初始化 cookie，避免在 onRequest 中重複創建
+  const tokenCookie = useCookie<string | null>('companyAuthToken');
+
   const customOptions: UseFetchOptions<T> = {
     ...options,
-    // 一律透過 Vite 代理，統一呼叫 /api-proxy → 後端 /api
-    baseURL: '/api-proxy',
+    baseURL,
     onRequest(context) {
       const urlString = toValue(url);
       
-      // 注入 Company 模塊的 JWT Token
-      const companyAuthStore = useCompanyAuthStore();
-      const token = companyAuthStore.token as unknown as string | null;
-
-      if (token) {
+      // 檢查是否為登入端點，避免注入過期的 token
+      const isLoginEndpoint = urlString.includes('/login');
+      
+      // 只有在非登入端點且有 token 時才注入 Authorization header
+      if (!isLoginEndpoint && tokenCookie.value) {
         context.options.headers = new Headers(context.options.headers as any);
-        context.options.headers.set('Authorization', `Bearer ${token}`);
+        context.options.headers.set('Authorization', `Bearer ${tokenCookie.value}`);
       }
       
       // Chain the original onRequest if it exists from the call site

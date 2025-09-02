@@ -2,6 +2,7 @@ import type { ProgramsResponse, ProgramsQueryParams } from '~/types/users/progra
 
 export const useUserPrograms = () => {
   const fetchPrograms = async (params: ProgramsQueryParams = {}) => {
+    const config = useRuntimeConfig();
     const queryParams = new URLSearchParams();
     
     if (params.page) queryParams.append('page', params.page.toString());
@@ -13,7 +14,13 @@ export const useUserPrograms = () => {
     if (params.sort) queryParams.append('sort', params.sort);
 
     const queryString = queryParams.toString();
-    const url = `/api-proxy/v1/programs${queryString ? '?' + queryString : ''}`;
+    
+    // 環境判斷：生產環境直接使用後端，開發環境使用代理
+    const baseURL = process.env.NODE_ENV === 'production' 
+      ? config.public.apiBase
+      : '/api-proxy';
+    
+    const url = `${baseURL}/v1/programs${queryString ? '?' + queryString : ''}`;
 
     try {
       const data = await $fetch<ProgramsResponse>(url, { method: 'GET' });

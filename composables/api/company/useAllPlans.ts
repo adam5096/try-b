@@ -7,7 +7,7 @@ export function useAllPlans() {
     pending: isLoading,
     error,
     execute: fetchAllPlans,
-  } = useCompanyApiFetch<AllPlan[]>('/api/v1/plans', {
+  } = useCompanyApiFetch<AllPlan[]>('/v1/plans', {
     immediate: false,
   });
 
