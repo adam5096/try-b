@@ -261,9 +261,9 @@ const handleViewDetail = async (program: any) => {
 
           <!-- Program Cards -->
           <div v-if="programsStore.items && programsStore.items.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC]">
+            <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC] h-[580px] flex flex-col overflow-hidden">
               <!-- Cover Image with Status Tag -->
-              <div class="relative">
+              <div class="relative flex-shrink-0">
                 <img 
                   :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
                   class="w-full h-48 object-cover" 
@@ -277,51 +277,44 @@ const handleViewDetail = async (program: any) => {
               </div>
               
               <!-- Program Content -->
-              <div class="p-4">
+              <div class="p-4 flex flex-col flex-1 min-h-0">
                 <!-- Title -->
-                <h3 class="text-lg font-bold text-black mb-2">{{ program.Name || '未命名計畫' }}</h3>
+                <h3 class="text-lg font-bold text-black mb-2 line-clamp-2 leading-tight h-[3rem] flex items-start">{{ program.Name || '未命名計畫' }}</h3>
                 
-                <!-- Description -->
-                <p class="text-sm text-gray-600 mb-4 min-h-[3rem]">{{ program.Intro || '暫無介紹' }}</p>
+                <!-- Description - 伸展填滿剩餘空間 -->
+                <p class="text-sm text-gray-600 mb-3 flex-1 overflow-hidden text-ellipsis line-clamp-3">{{ program.Intro || '暫無介紹' }}</p>
                 
-                <!-- Program Details -->
-                <div class="space-y-2 mb-4">
-                  <div class="flex items-center gap-2">
-                    <font-awesome-icon :icon="['fas', 'briefcase']" class="text-gray-500 w-4" />
-                    <span class="text-sm text-black">{{ program.Industry?.Title || '產業未分類' }}</span>
+                <!-- Program Details - 固定高度區域 -->
+                <div class="space-y-1 mb-6 h-[5.5rem] flex flex-col justify-center">
+                  <div class="flex items-center gap-2 h-4">
+                    <font-awesome-icon :icon="['fas', 'briefcase']" class="text-gray-500 w-3 flex-shrink-0" />
+                    <span class="text-xs text-black truncate">{{ program.Industry?.Title || '產業未分類' }}</span>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <font-awesome-icon :icon="['fas', 'calendar']" class="text-gray-500 w-4" />
-                    <span class="text-sm text-black">{{ formatProgramDate(program) }}</span>
+                  <div class="flex items-center gap-2 h-4">
+                    <font-awesome-icon :icon="['fas', 'calendar']" class="text-gray-500 w-3 flex-shrink-0" />
+                    <span class="text-xs text-black truncate">{{ formatProgramDate(program) }}</span>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="text-gray-500 w-4" />
-                    <span class="text-sm text-black">{{ program.Address || '地點未定' }}</span>
+                  <div class="flex items-center gap-2 h-4">
+                    <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="text-gray-500 w-3 flex-shrink-0" />
+                    <span class="text-xs text-black truncate">{{ program.Address || '地點未定' }}</span>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <font-awesome-icon :icon="['fas', 'users']" class="text-gray-500 w-4" />
-                    <span class="text-sm text-black">已申請人數: {{ program.AppliedCount || 0 }}人</span>
+                  <div class="flex items-center gap-2 h-4">
+                    <font-awesome-icon :icon="['fas', 'users']" class="text-gray-500 w-3 flex-shrink-0" />
+                    <span class="text-xs text-black truncate">已申請人數: {{ program.AppliedCount || 0 }}人</span>
                   </div>
                 </div>
-                
-                <!-- Company Name -->
-                <div class="text-xs text-gray-500 mb-2">
-                  產業: {{ program.Industry?.Title || '未指定產業' }}
-                </div>
-                
-                
                 
                 <!-- Action Button -->
                 <button 
                   v-if="authStore.isLoggedIn" 
                   @click="handleViewDetail(program)"
-                  class="w-full bg-btn-yellow text-black font-medium py-3 px-4 rounded-lg hover:bg-btn-yellow/80 transition-colors"
+                  class="w-full bg-btn-yellow text-black font-medium py-2 px-4 rounded-lg hover:bg-btn-yellow/80 transition-colors text-sm"
                 >
                   查看詳情
                 </button>
                 <button 
                   v-else 
-                  class="w-full bg-gray-400 text-white font-medium py-3 px-4 rounded-lg cursor-not-allowed opacity-50"
+                  class="w-full bg-gray-400 text-white font-medium py-2 px-4 rounded-lg cursor-not-allowed opacity-50 text-sm"
                   disabled
                   title="請先登入以查看詳情"
                 >
@@ -360,5 +353,27 @@ const handleViewDetail = async (program: any) => {
 }
 .el-carousel__arrow:hover {
   background-color: rgba(31, 41, 55, 0.8);
+}
+
+/* 文字截斷樣式 */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>
