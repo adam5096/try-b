@@ -275,13 +275,10 @@ const onApplySubmitted = async () => {
             </div>
           </div>
 
-          <!-- 體驗地點 + 地圖 -->
+          <!-- 體驗地點 -->
           <div>
             <h3 class="mb-2 text-lg font-bold">體驗地點</h3>
             <p class="mb-4 text-gray-700">{{ programDetail.address }}</p>
-            <div class="flex h-80 w-full items-center justify-center rounded bg-gray-300 text-3xl text-gray-700">
-              地圖
-            </div>
           </div>
         </div>
       </section>
