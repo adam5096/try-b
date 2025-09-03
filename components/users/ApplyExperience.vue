@@ -126,17 +126,6 @@ const handleSubmit = async () => {
         <el-input v-model.trim="form.email" placeholder="abc@gmail.com" />
       </el-form-item>
 
-      <el-form-item label="參加日期" prop="dateRange">
-        <el-date-picker
-          v-model="form.dateRange"
-          type="daterange"
-          start-placeholder="開始日期"
-          end-placeholder="結束日期"
-          range-separator="至"
-          style="width: 100%;"
-        />
-      </el-form-item>
-
       <el-form-item label="履歷" prop="resume">
         <el-select v-model="form.resume" placeholder="請選擇履歷">
           <el-option v-for="opt in resumeOptions" :key="opt.value" :label="opt.label" :value="opt.value" />
