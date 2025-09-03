@@ -14,8 +14,8 @@ export const useApplicant = (
     // 當 companyId 為空時，返回 null，不發送請求
     if (!resolvedCompanyId || !resolvedProgramId || !resolvedApplicantId) return null;
     
-    // 根據 e comp 8 的 API 規範，單一申請者詳情使用 programs 端點
-    return `/api/v1/programs/${resolvedProgramId}/applicantions/${resolvedApplicantId}`;
+    // 根據 e comp 8 的 API 規範，單一申請者詳情使用 company 端點
+    return `/api/v1/company/${resolvedCompanyId}/programs/${resolvedProgramId}/applications/${resolvedApplicantId}`;
   });
 
   return useCompanyApiFetch<ApplicantDetail>(url, {
