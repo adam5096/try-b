@@ -12,11 +12,8 @@ const planStore = useCompanyPlanStore();
     <p v-else-if="planStore.error" class="text-sm text-red-500">
       無法載入方案資訊，請稍後再試。
     </p>
-    <p v-else-if="planStore.hasPlan" class="text-sm text-gray-500">
-      {{ planStore.planStatusText }}
-    </p>
     <p v-else class="text-sm text-gray-500">
-      目前尚無有效方案。
+      {{ planStore.planStatusText }}
     </p>
   </div>
 </template>
