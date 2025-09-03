@@ -111,7 +111,7 @@ const approvedStatus = ref('all')
             <NuxtLink
               :to="{
                 name: 'company-program-applicant-detail',
-                params: { programId: route.params.programId, applicantId: row.identity },
+                params: { programId: route.params.programId, applicantId: row.participant_id },
               }"
             >
               <el-button type="primary">
@@ -182,7 +182,7 @@ const approvedStatus = ref('all')
             <NuxtLink
               :to="{
                 name: 'company-program-applicant-detail',
-                params: { programId: route.params.programId, applicantId: row.identity },
+                params: { programId: route.params.programId, applicantId: row.participant_id },
               }"
             >
               <el-button type="primary">
