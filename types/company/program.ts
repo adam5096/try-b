@@ -119,3 +119,58 @@ export interface CreateProgramPayload {
   steps: ProgramStepPayload[];
   images: string[];
 }
+
+// e comp 7 API 回應型別定義
+export interface ProgramDetailStep {
+  Name: string;
+  Description: string;
+}
+
+export interface ProgramDetailResponse {
+  id: number;
+  company_name: string;
+  company_logo: string;
+  company_cover: string;
+  serial_num: string;
+  name: string;
+  intro: string;
+  industry_id: number;
+  job_title_id: number;
+  address: string;
+  address_map: string | null;
+  contact_name: string;
+  contact_phone: string;
+  contact_email: string;
+  min_people: number;
+  max_people: number;
+  publish_start_date: string;
+  publish_duration_days: number;
+  publish_end_date: string;
+  program_start_date: string;
+  program_end_date: string;
+  program_duration_days: number;
+  status_id: number;
+  status_title: string;
+  views_count: number;
+  favorites_count: number;
+  applied_count: number;
+  score: number;
+  days_left: number;
+  total_views: number;
+  weekly_views: number;
+  daily_views: number;
+  Industry: {
+    Id: number;
+    Title: string;
+  };
+  JobTitle: {
+    Id: number;
+    Title: string;
+  };
+  Status: {
+    Id: number;
+    Title: string;
+  };
+  Images: string[];
+  Steps: ProgramDetailStep[];
+}

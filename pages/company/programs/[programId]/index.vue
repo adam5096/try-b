@@ -17,35 +17,53 @@ import {
   DataLine,
   View,
 } from '@element-plus/icons-vue';
-import type { Program } from '~/types/company/program';
-import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
+import type { ProgramDetailResponse } from '~/types/company/program';
+import { useProgramDetail } from '~/composables/api/company/useProgramDetail';
+import { useCompanyProgramDetailStore } from '~/stores/company/useProgramDetailStore';
 
 const route = useRoute();
 const authStore = useCompanyAuthStore();
+const programDetailStore = useCompanyProgramDetailStore();
+
+// 檢查認證狀態
+if (!authStore.isLoggedIn) {
+  throw createError({ 
+    statusCode: 401, 
+    statusMessage: '請先登入企業帳號' 
+  });
+}
 
 // --- Data Fetching ---
-// 1. Fetch main program details
-const { data: program } = await useAsyncData<Program>(`program-${route.params.programId}`, async () => {
-  const { data } = await useCompanyApiFetch<Program>(`/api/v1/company/${authStore.companyId}/programs/${route.params.programId}`);
-  if (!data.value) {
-    throw createError({ statusCode: 404, statusMessage: 'Program not found' });
-  }
-  return data.value;
-});
-
-// 2. Fetch application statistics from e-comp-7
-interface ApplicantsStatsResponse {
-  total_applicants: number;
-  reviewed_count: number;
-  pending_count: number;
-}
-const { data: stats } = await useCompanyApiFetch<ApplicantsStatsResponse>(
-  () => `/api/v1/company/${authStore.companyId}/programs/${route.params.programId}/applications`,
+// 使用 e comp 7 API 取得計畫詳情
+const { data: programDetail, error: programError, pending: isLoading } = await useProgramDetail(
+  computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId)
 );
 
-const totalApplicants = computed(() => stats.value?.total_applicants ?? 0);
-const reviewedApplicants = computed(() => stats.value?.reviewed_count ?? 0);
-const pendingApplicants = computed(() => stats.value?.pending_count ?? 0);
+// 監聽 API 回應並更新 Store
+watch(programDetail, (newData) => {
+  if (newData) {
+    programDetailStore.setProgramDetail(newData);
+  }
+}, { immediate: true });
+
+watch(programError, (newError) => {
+  if (newError) {
+    programDetailStore.setError(newError.message || '載入計畫詳情失敗');
+  }
+}, { immediate: true });
+
+watch(isLoading, (loading) => {
+  programDetailStore.setLoading(loading);
+}, { immediate: true });
+
+// 從 Store 取得資料
+const program = computed(() => programDetailStore.programInfo);
+const programStats = computed(() => programDetailStore.programStats);
+
+// 申請統計資料 (從 e comp 7 API 回應中取得)
+const totalApplicants = computed(() => programStats.value?.appliedCount ?? 0);
+const reviewedApplicants = computed(() => 0); // 暫時設為 0，等待後續 API 實作
+const pendingApplicants = computed(() => 0); // 暫時設為 0，等待後續 API 實作
 // --- End Data Fetching ---
 
 
@@ -53,11 +71,11 @@ const pendingApplicants = computed(() => stats.value?.pending_count ?? 0);
 // 確保 program 資料存在才設定 meta
 if (program.value) {
   useSeoMeta({
-    title: `${program.value.Name}｜Try B 企業實習體驗平台`,
-    description: program.value.Intro.substring(0, 150), // 截取前 150 字作為描述
-    ogTitle: `${program.value.Name}｜Try B 企業實習體驗平台`,
-    ogDescription: program.value.Intro.substring(0, 150),
-    // ogImage: program.value.Images && program.value.Images[0], // 使用第一張圖當作 OG Image
+    title: `${program.value.name}｜Try B 企業實習體驗平台`,
+    description: program.value.intro.substring(0, 150), // 截取前 150 字作為描述
+    ogTitle: `${program.value.name}｜Try B 企業實習體驗平台`,
+    ogDescription: program.value.intro.substring(0, 150),
+    // ogImage: program.value.images && program.value.images[0], // 使用第一張圖當作 OG Image
   });
 }
 // --- End SEO Meta ---
@@ -71,20 +89,31 @@ const formatDate = (dateString: string) => {
     day: '2-digit',
   });
 };
+
+const refresh = () => {
+  window.location.reload();
+};
 </script>
 
 <template>
-  <div v-if="program" class="p-6 lg:p-8">
+  <div v-if="programError" class="p-6 lg:p-8">
+    <div class="text-center">
+      <h1 class="text-2xl font-bold text-red-600 mb-4">載入失敗</h1>
+      <p class="text-gray-600 mb-4">{{ programError.message }}</p>
+      <el-button type="primary" @click="refresh()">重新載入</el-button>
+    </div>
+  </div>
+  <div v-else-if="program" class="p-6 lg:p-8">
     <!-- Top info bar -->
     <CompanyPlanStatusHeader />
 
     <!-- Page Header -->
     <div class="mb-6">
       <h1 class="text-2xl font-bold text-zinc-900">
-        {{ program.Name }}
+        {{ program?.name }}
       </h1>
       <p class="text-sm text-zinc-500">
-        計畫ID: {{ route.params.programId }} | 狀態: {{ program.Status.Title }}
+        計畫ID: {{ route.params.programId }} | 狀態: {{ program?.status?.Title }}
       </p>
     </div>
 
@@ -164,7 +193,7 @@ const formatDate = (dateString: string) => {
                     體驗名稱
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    {{ program.Name }}
+                    {{ program?.name }}
                   </dd>
                 </div>
                 <div>
@@ -172,8 +201,7 @@ const formatDate = (dateString: string) => {
                     產業類別
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    <!-- 待處理：需要 ID 與名稱的對應表 -->
-                    {{ program.Industry.Title }}
+                    {{ program?.industry?.Title }}
                   </dd>
                 </div>
                 <div>
@@ -181,8 +209,7 @@ const formatDate = (dateString: string) => {
                     職務類別
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    <!-- 待處理：需要 ID 與名稱的對應表 -->
-                    {{ program.JobTitle.Title }}
+                    {{ program?.jobTitle?.Title }}
                   </dd>
                 </div>
                 <div>
@@ -190,7 +217,7 @@ const formatDate = (dateString: string) => {
                     體驗地點
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    {{ program.Address }}
+                    {{ program?.address }}
                   </dd>
                 </div>
               </dl>
@@ -205,7 +232,7 @@ const formatDate = (dateString: string) => {
                     聯絡人
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    {{ program.ContactName }}
+                    {{ program?.contactName }}
                   </dd>
                 </div>
                 <div>
@@ -213,7 +240,7 @@ const formatDate = (dateString: string) => {
                     電話
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    {{ program.ContactPhone }}
+                    {{ program?.contactPhone }}
                   </dd>
                 </div>
                 <div>
@@ -221,7 +248,7 @@ const formatDate = (dateString: string) => {
                     Email
                   </dt>
                   <dd class="text-zinc-800 mt-1">
-                    {{ program.ContactEmail }}
+                    {{ program?.contactEmail }}
                   </dd>
                 </div>
               </dl>
@@ -232,7 +259,7 @@ const formatDate = (dateString: string) => {
                   刊登期間
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  {{ formatDate(program.PublishStartDate) }} - {{ formatDate(program.PublishEndDate) }} <span class="ml-2 text-zinc-500">{{ program.PublishDurationDays }}天</span>
+                  {{ formatDate(program?.publishStartDate || '') }} - {{ formatDate(program?.publishEndDate || '') }} <span class="ml-2 text-zinc-500">{{ program?.publishDurationDays }}天</span>
                 </p>
               </div>
               <div>
@@ -240,7 +267,7 @@ const formatDate = (dateString: string) => {
                   體驗日期
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  {{ formatDate(program.ProgramStartDate) }} - {{ formatDate(program.ProgramEndDate) }} <span class="ml-2 text-zinc-500">為期{{ program.ProgramDurationDays }}天</span>
+                  {{ formatDate(program?.programStartDate || '') }} - {{ formatDate(program?.programEndDate || '') }} <span class="ml-2 text-zinc-500">為期{{ program?.programDurationDays }}天</span>
                 </p>
               </div>
               <div>
@@ -248,7 +275,7 @@ const formatDate = (dateString: string) => {
                   體驗人數
                 </p>
                 <p class="text-zinc-800 mt-1">
-                  {{ program.MinPeople }} - {{ program.MaxPeople }}人
+                  {{ program?.minPeople }} - {{ program?.maxPeople }}人
                 </p>
               </div>
             </div>
@@ -261,7 +288,7 @@ const formatDate = (dateString: string) => {
                 體驗介紹
               </h3>
               <p class="text-zinc-700 leading-relaxed text-sm">
-                {{ program.Intro }}
+                {{ program?.intro }}
               </p>
             </div>
             <div>
@@ -342,7 +369,7 @@ const formatDate = (dateString: string) => {
           </h3>
         </template>
         <dl class="space-y-4 text-sm">
-          <div v-for="(step, index) in program.Steps" :key="index">
+          <div v-for="(step, index) in program?.steps" :key="index">
             <dt class="font-semibold text-zinc-800">
               {{ step.Name }}
             </dt>
@@ -361,7 +388,7 @@ const formatDate = (dateString: string) => {
           </h3>
         </template>
         <p class="text-sm text-zinc-700 mb-4">
-          {{ program.Address }}
+          {{ program?.address }}
         </p>
         <div class="aspect-video bg-zinc-200 rounded-lg flex items-center justify-center">
           <p class="text-zinc-500">
@@ -388,7 +415,7 @@ const formatDate = (dateString: string) => {
               總瀏覽次數
             </p>
             <p class="text-2xl font-bold text-blue-500">
-              {{ program.Views.TotalViews }}
+              {{ programStats?.totalViews }}
             </p>
           </div>
           <div class="flex items-baseline justify-between">
@@ -396,7 +423,7 @@ const formatDate = (dateString: string) => {
               本週瀏覽
             </p>
             <p class="text-2xl font-bold text-zinc-800">
-              {{ program.Views.DailyViews }}
+              {{ programStats?.weeklyViews }}
             </p>
           </div>
           <div class="flex items-baseline justify-between">
@@ -404,7 +431,7 @@ const formatDate = (dateString: string) => {
               轉換率
             </p>
             <p class="text-2xl font-bold text-green-600">
-              11.7%
+              {{ programStats?.totalViews ? ((programStats.appliedCount / programStats.totalViews) * 100).toFixed(1) : 0 }}%
             </p>
           </div>
         </div>
