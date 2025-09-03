@@ -7,12 +7,14 @@ export interface ApplicantsListResponse {
     PendingCount: number;
   };
   PendingApplications: Array<{
+    participant_id: number;
     applicant_name: string;
     identity: number;
     submit_date: string;
     review_status: string;
   }>;
   ReviewedApplications: Array<{
+    participant_id: number;
     applicant_name: string;
     identity: number;
     submit_date: string;
