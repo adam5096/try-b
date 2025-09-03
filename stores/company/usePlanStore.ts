@@ -41,10 +41,10 @@ export const useCompanyPlanStore = defineStore('companyPlan', () => {
     }
 
     // 有效方案的顯示邏輯
-    const startDate = new Date(p.period.startDate).toLocaleDateString();
-    const endDate = new Date(p.period.endDate).toLocaleDateString();
+    const startDate = new Date(p.start_date).toLocaleDateString();
+    const endDate = new Date(p.end_date).toLocaleDateString();
 
-    return `目前的方案 ${p.planName} | 日期：${startDate} - ${endDate} | 體驗人數上限 ${p.usageQuota.limit} 人 | 剩餘 ${p.usageQuota.remaining} 人`;
+    return `目前的方案 ${p.plan_name} | 日期：${startDate} - ${endDate} | 體驗人數上限 ${p.max_participants} 人 | 剩餘 ${p.remaining_people} 人`;
   });
 
   return {

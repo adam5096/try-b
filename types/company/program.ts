@@ -12,6 +12,8 @@ export interface ProgramStep {
   Id: number;
   Name: string;
   Description: string;
+  CreatedAt: string;
+  UpdatedAt: string;
 }
 
 export interface ProgramImage {
@@ -70,6 +72,8 @@ export interface Program {
   status_title: string;
   Status: ProgramStatus;
   applied_count: number;
+  AppliedCount: number; // 新版本 API 回應欄位
+  CoverImage: string | null; // 新版本 API 回應欄位 - 封面圖片
   Images: ProgramImage[];
   Steps: ProgramStep[];
   Statistics: ProgramStatistics;
@@ -117,4 +121,53 @@ export interface CreateProgramPayload {
   program_end_date: string;
   steps: ProgramStepPayload[];
   images: string[];
+}
+
+// e comp 7 API 回應型別定義
+export interface ProgramDetailStep {
+  Name: string;
+  Description: string;
+}
+
+export interface ProgramDetailStatistics {
+  TotalApplicants: number;
+  ReviewedCount: number;
+  PendingCount: number;
+}
+
+export interface ProgramDetailResponse {
+  Id: number;
+  Name: string;
+  Intro: string;
+  Industry: {
+    Id: number;
+    Title: string;
+  };
+  JobTitle: {
+    Id: number;
+    Title: string;
+  };
+  Status: {
+    Id: number;
+    Title: string;
+  };
+  Address: string;
+  ContactName: string;
+  ContactPhone: string;
+  MinPeople: number;
+  MaxPeople: number;
+  PublishStartDate: string;
+  PublishDurationDays: number;
+  PublishEndDate: string;
+  ProgramStartDate: string;
+  ProgramEndDate: string;
+  ProgramDurationDays: number;
+  Statistics: ProgramDetailStatistics;
+  Steps: ProgramDetailStep[];
+  Images: ProgramImage[];
+  Views: {
+    TotalViews: number;
+    WeeklyViews: number;
+    DailyViews: number;
+  };
 }
