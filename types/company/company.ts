@@ -17,6 +17,7 @@ export interface CompanyUser {
   Email: string;
   Role: 'Company';
   NickName?: string;
+  companyId: number;
 }
 
 export interface LoginData {

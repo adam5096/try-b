@@ -81,8 +81,8 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         tokenCookie.value = response.value.token;
 
         // 從登入回應中取得並儲存 CompanyId
-        companyId.value = response.value.user.Id;
-        companyIdCookie.value = response.value.user.Id;
+        companyId.value = response.value.user.companyId;
+        companyIdCookie.value = response.value.user.companyId;
 
         console.log('✅ 登入成功:', response.value.user.Account);
       } else {
