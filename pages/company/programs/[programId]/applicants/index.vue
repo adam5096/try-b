@@ -10,21 +10,37 @@ import { useApplicants } from '~/composables/api/company/useApplicants';
 const route = useRoute()
 const authStore = useCompanyAuthStore();
 
-const { data: applicantsData, pending, refresh: refreshApplicants } = useApplicants(
+const { data: applicantsData, pending, error: applicantsError, refresh: refreshApplicants } = useApplicants(
   computed(() => authStore.companyId),
   computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId),
 );
 
 onMounted(() => {
+  console.log('🔍 申請者列表頁面載入');
+  console.log('Company ID:', authStore.companyId);
+  console.log('Program ID:', route.params.programId);
+  console.log('Auth Store:', authStore);
   refreshApplicants();
 });
 
-const pendingApplicants = computed(() => applicantsData.value?.pending_applications || []);
-const reviewedApplicants = computed(() => applicantsData.value?.reviewed_applications || []);
-const totalApplicants = computed(() => applicantsData.value?.total_applicants || 0);
+// 監聽錯誤
+watch(applicantsError, (error) => {
+  if (error) {
+    console.error('❌ 申請者 API 請求失敗:', error);
+  }
+}, { immediate: true });
+
+// 監聽資料變化
+watch(applicantsData, (data) => {
+  console.log('📊 申請者資料更新:', data);
+}, { immediate: true });
+
+const pendingApplicants = computed(() => applicantsData.value?.PendingApplications || []);
+const reviewedApplicants = computed(() => applicantsData.value?.ReviewedApplications || []);
+const totalApplicants = computed(() => applicantsData.value?.Statistics?.TotalApplicants || 0);
 const allApplicants = computed(() => [
-  ...(applicantsData.value?.pending_applications || []),
-  ...(applicantsData.value?.reviewed_applications || []),
+  ...(applicantsData.value?.PendingApplications || []),
+  ...(applicantsData.value?.ReviewedApplications || []),
 ]);
 
 const pendingSort = ref('date-desc')
