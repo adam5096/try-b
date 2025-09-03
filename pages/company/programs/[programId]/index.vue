@@ -20,6 +20,7 @@ import {
 import type { ProgramDetailResponse } from '~/types/company/program';
 import { useProgramDetail } from '~/composables/api/company/useProgramDetail';
 import { useCompanyProgramDetailStore } from '~/stores/company/useProgramDetailStore';
+import { parseIntroContent } from '~/utils/introParser';
 
 const route = useRoute();
 const authStore = useCompanyAuthStore();
@@ -35,7 +36,8 @@ if (!authStore.isLoggedIn) {
 
 // --- Data Fetching ---
 // 使用 e comp 7 API 取得計畫詳情
-const { data: programDetail, error: programError, pending: isLoading } = await useProgramDetail(
+const { data: programDetail, error: programError, pending: isLoading } = useProgramDetail(
+  computed(() => authStore.companyId),
   computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId)
 );
 
@@ -60,10 +62,16 @@ watch(isLoading, (loading) => {
 const program = computed(() => programDetailStore.programInfo);
 const programStats = computed(() => programDetailStore.programStats);
 
-// 申請統計資料 (從 e comp 7 API 回應中取得)
-const totalApplicants = computed(() => programStats.value?.appliedCount ?? 0);
-const reviewedApplicants = computed(() => 0); // 暫時設為 0，等待後續 API 實作
-const pendingApplicants = computed(() => 0); // 暫時設為 0，等待後續 API 實作
+// 解析 intro 內容
+const parsedIntro = computed(() => {
+  if (!program.value?.intro) return null;
+  return parseIntroContent(program.value.intro);
+});
+
+// 申請統計資料 (從 e comp 7 API 回應中的 Statistics 物件取得)
+const totalApplicants = computed(() => programStats.value?.totalApplicants ?? 0);
+const reviewedApplicants = computed(() => programStats.value?.reviewedCount ?? 0);
+const pendingApplicants = computed(() => programStats.value?.pendingCount ?? 0);
 // --- End Data Fetching ---
 
 
@@ -72,9 +80,9 @@ const pendingApplicants = computed(() => 0); // 暫時設為 0，等待後續 AP
 if (program.value) {
   useSeoMeta({
     title: `${program.value.name}｜Try B 企業實習體驗平台`,
-    description: program.value.intro.substring(0, 150), // 截取前 150 字作為描述
+    description: program.value.intro ? program.value.intro.substring(0, 150) : '企業實習體驗計畫詳情', // 安全地截取前 150 字作為描述
     ogTitle: `${program.value.name}｜Try B 企業實習體驗平台`,
-    ogDescription: program.value.intro.substring(0, 150),
+    ogDescription: program.value.intro ? program.value.intro.substring(0, 150) : '企業實習體驗計畫詳情',
     // ogImage: program.value.images && program.value.images[0], // 使用第一張圖當作 OG Image
   });
 }
@@ -283,74 +291,49 @@ const refresh = () => {
 
           <!-- Right Column -->
           <div class="md:col-span-2 space-y-8">
-            <div>
+            <!-- 體驗介紹 -->
+            <div v-if="parsedIntro?.experienceIntro || parsedIntro?.fallback">
               <h3 class="font-semibold text-zinc-800 mb-2">
                 體驗介紹
               </h3>
               <p class="text-zinc-700 leading-relaxed text-sm">
-                {{ program?.intro }}
+                {{ parsedIntro?.experienceIntro || parsedIntro?.fallback }}
               </p>
             </div>
-            <div>
+
+            <!-- 師資介紹 -->
+            <div v-if="parsedIntro?.teacherIntro">
               <h3 class="font-semibold text-zinc-800 mb-2">
                 師資介紹
               </h3>
-              <div class="space-y-4 text-sm">
-                <div>
-                  <h4 class="font-medium text-zinc-800">
-                    林德榮
-                  </h4>
-                  <p class="text-zinc-700 mt-1 leading-relaxed">
-                    資深研發顧問與雲端架構師 10 多年，擔任過後端開發、系統架構設計、技術顧問與團隊技術主管。深入理解敏捷開發、雲端平台、資料庫設計與 DevOps 實務，並從不同技術角色面向切入系統設計與開發經驗觀點，並結合實務專案經驗，擅長 B2B 系統架構設計與跨平台服務整合，運用不同的技術視角打開你的軟體開發新觀點。
-                  </p>
-                </div>
-                <div>
-                  <h4 class="font-medium text-zinc-800">
-                    經歷
-                  </h4>
-                  <ul class="list-disc list-inside text-zinc-700 mt-1 space-y-1">
-                    <li>國際雲端服務商 系統架構師</li>
-                    <li>主導企業雲端平台架構設計與開發，協助客戶完成數位轉型，實現高可用、高擴展性的微服務系統。</li>
-                    <li>知名新創公司 資深軟體工程師</li>
-                    <li>負責核心產品的後端開發與 API 設計，並導入 CI/CD 流程，縮短交付週期、提升團隊開發效率。</li>
-                    <li>跨境電商平台 技術顧問</li>
-                    <li>協助規劃新資料庫架構與分散式架構，改善高流量環境下的系統穩定性，並培訓內部開發團隊。</li>
-                  </ul>
-                </div>
+              <div class="text-sm">
+                <p class="text-zinc-700 leading-relaxed">
+                  {{ parsedIntro.teacherIntro }}
+                </p>
               </div>
             </div>
-            <div>
+
+            <!-- 參加限制 -->
+            <div v-if="parsedIntro?.requirements && parsedIntro.requirements.length > 0">
               <h3 class="font-semibold text-zinc-800 mb-2">
                 參加限制
               </h3>
               <ul class="list-decimal list-inside text-zinc-700 text-sm space-y-1">
-                <li>了解 JS 變數、陣列物件、DOM、監聽、AJAX 等知識，尚未熟練也沒關係。</li>
-                <li>在履歷上需附上最近寫過的 JS Code、Codepen、Github Pages 皆可，或是分享目前 freeCodeCamp 的 JS 研究進度。</li>
-                <li>18歲以上</li>
+                <li v-for="requirement in parsedIntro.requirements" :key="requirement">
+                  {{ requirement }}
+                </li>
               </ul>
             </div>
-            <div>
+
+            <!-- 行前須知與準備清單 -->
+            <div v-if="parsedIntro?.preparation && parsedIntro.preparation.length > 0">
               <h3 class="font-semibold text-zinc-800 mb-2">
-                行前須知、注意事項
+                行前須知與準備清單
               </h3>
               <ul class="list-decimal list-inside text-zinc-700 text-sm space-y-1">
-                <li>請攜帶個人筆記型電腦，以便參與實作環節</li>
-                <li>建議課前了解基本的數位行銷概念</li>
-                <li>活動當天請提早 15 分鐘到達，以便完成報到手續</li>
-                <li>午餐將由公司提供</li>
-                <li>如有特殊飲食需求，請在申請表中註明</li>
-              </ul>
-            </div>
-            <div>
-              <h3 class="font-semibold text-zinc-800 mb-2">
-                準備清單
-              </h3>
-              <ul class="list-decimal list-inside text-zinc-700 text-sm space-y-1">
-                <li>筆記型電腦</li>
-                <li>水壺</li>
-                <li>證件(身分證、健保卡)</li>
-                <li>手帕</li>
-                <li>長袖外套</li>
+                <li v-for="item in parsedIntro.preparation" :key="item">
+                  {{ item }}
+                </li>
               </ul>
             </div>
           </div>
@@ -378,23 +361,6 @@ const refresh = () => {
             </dd>
           </div>
         </dl>
-      </el-card>
-
-      <!-- Location -->
-      <el-card class="md:row-span-2">
-        <template #header>
-          <h3 class="font-bold text-zinc-900">
-            體驗地點
-          </h3>
-        </template>
-        <p class="text-sm text-zinc-700 mb-4">
-          {{ program?.address }}
-        </p>
-        <div class="aspect-video bg-zinc-200 rounded-lg flex items-center justify-center">
-          <p class="text-zinc-500">
-            地圖
-          </p>
-        </div>
       </el-card>
 
       <!-- Analytics -->

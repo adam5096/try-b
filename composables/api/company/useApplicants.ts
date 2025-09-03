@@ -12,11 +12,11 @@ export const useApplicants = (companyId: MaybeRefOrGetter<number | null>, progra
   const url = computed(() => {
     const resolvedCompanyId = toValue(companyId);
     const resolvedProgramId = toValue(programId);
-    if (!resolvedCompanyId) return '';
+    if (!resolvedCompanyId || !resolvedProgramId) return null;
     return `/api/v1/company/${resolvedCompanyId}/programs/${resolvedProgramId}/applications`;
   });
 
   return useCompanyApiFetch<ApplicantsListResponse>(url, {
-    immediate: !!toValue(companyId),
+    immediate: !!toValue(companyId) && !!toValue(programId),
   });
 };
