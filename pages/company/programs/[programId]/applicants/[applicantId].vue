@@ -31,9 +31,12 @@ const {
 
 const formRef = ref<FormInstance>();
 
+const authStore = useCompanyAuthStore();
+
 const { data: applicantData, pending } = useApplicant(
-  String(route.params.programId),
-  String(route.params.applicantId),
+  computed(() => authStore.companyId),
+  computed(() => String(route.params.programId)),
+  computed(() => String(route.params.applicantId)),
 );
 
 const applicant = computed<Partial<ApplicantDetail>>(() => applicantData.value || {});
@@ -67,7 +70,7 @@ const submitReview = async (formEl: FormInstance | undefined) => {
       const programId = String(route.params.programId);
       const applicantId = String(route.params.applicantId);
 
-      await submitReviewApi(programId, applicantId, {
+      await submitReviewApi(authStore.companyId, programId, applicantId, {
         status_id: decisionForm.value.status === 'pending' ? 2 : 3, // 2=核准申請, 3=婉拒申請
         comment: decisionForm.value.feedback,
       });

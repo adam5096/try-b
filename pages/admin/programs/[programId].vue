@@ -76,34 +76,22 @@
     <section class="rounded border border-gray-200 bg-white p-4 shadow-sm md:p-6">
       <div class="space-y-8">
         <!-- Intro -->
-        <div>
+        <div v-if="parsedIntro?.experienceIntro || parsedIntro?.fallback">
           <h2 class="mb-3 text-xl font-semibold text-gray-900">體驗介紹</h2>
-          <p class="leading-7 text-gray-800">{{ program.intro }}</p>
+          <p class="leading-7 text-gray-800">{{ parsedIntro?.experienceIntro || parsedIntro?.fallback }}</p>
         </div>
 
         <!-- Teacher -->
-        <div>
+        <div v-if="parsedIntro?.teacherIntro">
           <h2 class="mb-3 text-xl font-semibold text-gray-900">師資介紹</h2>
-          <h3 class="text-lg font-semibold text-gray-900">{{ program.teacher.name }}</h3>
-          <p class="mt-2 leading-7 text-gray-800">{{ program.teacher.bio }}</p>
-        </div>
-
-        <!-- Resume List -->
-        <div>
-          <h2 class="mb-3 text-xl font-semibold text-gray-900">經歷</h2>
-          <ul class="list-disc space-y-2 pl-6 text-gray-800">
-            <li v-for="(exp, idx) in program.experiences" :key="idx">
-              <div class="font-semibold">{{ exp.title }}</div>
-              <div class="text-gray-700">{{ exp.description }}</div>
-            </li>
-          </ul>
+          <p class="leading-7 text-gray-800">{{ parsedIntro.teacherIntro }}</p>
         </div>
 
         <!-- Requirements -->
-        <div>
+        <div v-if="parsedIntro?.requirements && parsedIntro.requirements.length > 0">
           <h2 class="mb-3 text-xl font-semibold text-gray-900">參加限制</h2>
           <ol class="list-decimal space-y-1 pl-6 text-gray-800">
-            <li v-for="(req, idx) in program.requirements" :key="idx">{{ req }}</li>
+            <li v-for="(req, idx) in parsedIntro.requirements" :key="idx">{{ req }}</li>
           </ol>
         </div>
       </div>
@@ -112,19 +100,11 @@
     <!-- Pre-Notes / Checklist / Flow / Location -->
     <section class="rounded border border-gray-200 bg-white p-4 shadow-sm md:p-6">
       <div class="space-y-8">
-        <!-- Pre-Notes -->
-        <div>
-          <h2 class="mb-3 text-xl font-semibold text-gray-900">行前須知、注意事項</h2>
+        <!-- Pre-Notes / Preparation -->
+        <div v-if="parsedIntro?.preparation && parsedIntro.preparation.length > 0">
+          <h2 class="mb-3 text-xl font-semibold text-gray-900">行前須知與準備清單</h2>
           <ol class="list-decimal space-y-1 pl-6 text-gray-800">
-            <li v-for="(n, i) in program.preNotes" :key="i">{{ n }}</li>
-          </ol>
-        </div>
-
-        <!-- Checklist -->
-        <div>
-          <h2 class="mb-3 text-xl font-semibold text-gray-900">準備清單</h2>
-          <ol class="list-decimal space-y-1 pl-6 text-gray-800">
-            <li v-for="(item, i) in program.checklist" :key="i">{{ item }}</li>
+            <li v-for="(item, i) in parsedIntro.preparation" :key="i">{{ item }}</li>
           </ol>
         </div>
 
@@ -227,7 +207,8 @@
 definePageMeta({ name: 'admin-single-program-info', layout: 'admin' as any })
 
 import LocationPinIcon from '~/components/shared/LocationPinIcon.vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { parseIntroContent } from '~/utils/introParser'
 
 type ReviewStatus = 'systemApproved' | 'systemRejected' | 'manualConfirmed' | 'manualRejected'
 
@@ -384,6 +365,12 @@ const program: ProgramDetails = {
 
 const reviewResult = ref<'approved' | 'rejected'>('approved')
 const reviewNote = ref('')
+
+// 解析 intro 內容
+const parsedIntro = computed(() => {
+  if (!program.intro) return null;
+  return parseIntroContent(program.intro);
+});
 
 const onSubmitReview = () => {
   // 僅示意 UI 提交行為；之後可串接 API

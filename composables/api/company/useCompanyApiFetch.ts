@@ -5,7 +5,7 @@ import { type MaybeRefOrGetter, toValue } from 'vue';
  * 專用於 Company 模塊的 API Fetch 函數
  * 自動注入 Company JWT Token，與 Users 模塊保持一致的架構
  */
-export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string>, options: UseFetchOptions<T> = {}) => {
+export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string | null>, options: UseFetchOptions<T> = {}) => {
   const config = useRuntimeConfig();
   
   // 環境判斷：生產環境直接使用後端，開發環境使用代理
@@ -16,11 +16,19 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string>, options: Us
   // 在 composable 層級初始化 cookie，避免在 onRequest 中重複創建
   const tokenCookie = useCookie<string | null>('companyAuthToken');
 
+  // 將 null URL 轉換為空字串，避免 TypeScript 錯誤
+  const safeUrl = computed(() => toValue(url) || '');
+
   const customOptions: UseFetchOptions<T> = {
     ...options,
     baseURL,
     onRequest(context) {
-      const urlString = toValue(url);
+      const urlString = toValue(safeUrl);
+      
+      // 如果 URL 為空，跳過請求
+      if (!urlString) {
+        return;
+      }
       
       // 檢查是否為登入端點，避免注入過期的 token
       const isLoginEndpoint = urlString.includes('/login');
@@ -42,5 +50,5 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string>, options: Us
     },
   };
   
-  return useFetch(url, customOptions);
+  return useFetch(safeUrl, customOptions);
 };

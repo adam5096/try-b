@@ -19,15 +19,22 @@ export const useSubmitReview = () => {
   const data = ref<SubmitReviewResponse | null>(null);
 
   const submit = async (
+    companyId: number | null,
     programId: string | number,
     participantId: string | number,
     payload: SubmitReviewPayload,
   ) => {
+    // 當 companyId 為空時，設置錯誤並返回
+    if (!companyId) {
+      error.value = { message: '企業資訊載入中，請稍後再試' } as FetchError;
+      return;
+    }
+
     loading.value = true;
     error.value = null;
     data.value = null;
 
-    const url = `/api/v1/programs/${programId}/applications/${participantId}/review`;
+    const url = `/api/v1/company/${companyId}/programs/${programId}/applications/${participantId}/review`;
 
     const { data: result, error: fetchError } = await useCompanyApiFetch<SubmitReviewResponse>(url, {
       method: 'PUT',

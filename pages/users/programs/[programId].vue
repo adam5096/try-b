@@ -8,6 +8,7 @@ definePageMeta({
 import { ref, onMounted, computed } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
+import { parseIntroContent } from '~/utils/introParser';
 
 const router = useRouter();
 const isFavorited = ref(false);
@@ -33,6 +34,12 @@ const programDetail = computed(() => programDetailStore.programDetail);
 const isLoading = computed(() => programDetailStore.loading);
 const hasError = computed(() => programDetailStore.hasError);
 const errorMessage = computed(() => programDetailStore.error);
+
+// 解析 intro 內容
+const parsedIntro = computed(() => {
+  if (!programDetail.value?.intro) return null;
+  return parseIntroContent(programDetail.value.intro);
+});
 
 // 頁面載入時取得計畫詳情
 onMounted(async () => {
@@ -211,63 +218,38 @@ const onApplySubmitted = async () => {
           <!-- 內文段落 -->
           <div class="space-y-8 text-gray-800">
             <!-- 體驗介紹 -->
-            <section>
+            <section v-if="parsedIntro?.experienceIntro || parsedIntro?.fallback">
               <h4 class="mb-3 text-lg font-bold">體驗介紹</h4>
               <p class="leading-7">
-                {{ programDetail.intro }}
+                {{ parsedIntro?.experienceIntro || parsedIntro?.fallback }}
               </p>
             </section>
 
             <!-- 師資介紹 -->
-            <section>
+            <section v-if="parsedIntro?.teacherIntro">
               <h4 class="mb-3 text-lg font-bold">師資介紹</h4>
-              <p class="mb-2 font-semibold">林德榮</p>
               <p class="leading-7">
-                產業軟體與平台架構經驗逾 10 年，歷任後端開發、系統架構與平台穩定度維運，亦擔任內部講師推動
-                DevOps 與工程文化。擅長 B2B／平台類產品的模組化與可維運性設計。
+                {{ parsedIntro.teacherIntro }}
               </p>
             </section>
 
-            <!-- 經歷 -->
-            <section>
-              <h4 class="mb-3 text-lg font-bold">經歷</h4>
-              <ul class="list-disc space-y-2 pl-6">
-                <li>國際級電商系統架構師：協助平台完成數位轉型，實現高可用與高擴展。</li>
-                <li>知名新創公司資深軟體工程師：參與 API 設計、導入 CI/CD 流程、優化交付週期。</li>
-                <li>跨部門平台技術顧問：建立高流量環境下的穩定性與監控機制。</li>
-              </ul>
-            </section>
-
             <!-- 參加限制 -->
-            <section>
+            <section v-if="parsedIntro?.requirements && parsedIntro.requirements.length > 0">
               <h4 class="mb-3 text-lg font-bold">參加限制</h4>
               <ol class="list-decimal space-y-1 pl-6">
-                <li>了解 JS 語法、陣列物件、DOM、事件、AJAX 等基礎。</li>
-                <li>建議具備可瀏覽的程式作品（JS Code、Codepen、GitHub Pages）。</li>
-                <li>18 歲以上。</li>
+                <li v-for="requirement in parsedIntro.requirements" :key="requirement">
+                  {{ requirement }}
+                </li>
               </ol>
             </section>
 
-            <!-- 行前須知、注意事項 -->
-            <section>
-              <h4 class="mb-3 text-lg font-bold">行前須知、注意事項</h4>
+            <!-- 行前須知與準備清單 -->
+            <section v-if="parsedIntro?.preparation && parsedIntro.preparation.length > 0">
+              <h4 class="mb-3 text-lg font-bold">行前須知與準備清單</h4>
               <ol class="list-decimal space-y-1 pl-6">
-                <li>準時參與並全程配合課程安排，珍惜與講師互動。</li>
-                <li>體驗課為入門性質，不保證完成後即能就業。</li>
-                <li>活動過程可能拍攝紀錄，僅作為教學回放用途。</li>
-                <li>如有不可抗力因素，請提前於平台取消。</li>
-              </ol>
-            </section>
-
-            <!-- 準備清單 -->
-            <section>
-              <h4 class="mb-3 text-lg font-bold">準備清單</h4>
-              <ol class="list-decimal space-y-1 pl-6">
-                <li>筆記型電腦</li>
-                <li>水壺</li>
-                <li>證件（身份證、健保卡）</li>
-                <li>手抄筆記工具</li>
-                <li>長效外接電源</li>
+                <li v-for="item in parsedIntro.preparation" :key="item">
+                  {{ item }}
+                </li>
               </ol>
             </section>
           </div>

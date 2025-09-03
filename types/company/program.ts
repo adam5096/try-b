@@ -12,6 +12,8 @@ export interface ProgramStep {
   Id: number;
   Name: string;
   Description: string;
+  CreatedAt: string;
+  UpdatedAt: string;
 }
 
 export interface ProgramImage {
@@ -71,6 +73,7 @@ export interface Program {
   Status: ProgramStatus;
   applied_count: number;
   AppliedCount: number; // 新版本 API 回應欄位
+  CoverImage: string | null; // 新版本 API 回應欄位 - 封面圖片
   Images: ProgramImage[];
   Steps: ProgramStep[];
   Statistics: ProgramStatistics;
@@ -126,39 +129,16 @@ export interface ProgramDetailStep {
   Description: string;
 }
 
+export interface ProgramDetailStatistics {
+  TotalApplicants: number;
+  ReviewedCount: number;
+  PendingCount: number;
+}
+
 export interface ProgramDetailResponse {
-  id: number;
-  company_name: string;
-  company_logo: string;
-  company_cover: string;
-  serial_num: string;
-  name: string;
-  intro: string;
-  industry_id: number;
-  job_title_id: number;
-  address: string;
-  address_map: string | null;
-  contact_name: string;
-  contact_phone: string;
-  contact_email: string;
-  min_people: number;
-  max_people: number;
-  publish_start_date: string;
-  publish_duration_days: number;
-  publish_end_date: string;
-  program_start_date: string;
-  program_end_date: string;
-  program_duration_days: number;
-  status_id: number;
-  status_title: string;
-  views_count: number;
-  favorites_count: number;
-  applied_count: number;
-  score: number;
-  days_left: number;
-  total_views: number;
-  weekly_views: number;
-  daily_views: number;
+  Id: number;
+  Name: string;
+  Intro: string;
   Industry: {
     Id: number;
     Title: string;
@@ -171,6 +151,23 @@ export interface ProgramDetailResponse {
     Id: number;
     Title: string;
   };
-  Images: string[];
+  Address: string;
+  ContactName: string;
+  ContactPhone: string;
+  MinPeople: number;
+  MaxPeople: number;
+  PublishStartDate: string;
+  PublishDurationDays: number;
+  PublishEndDate: string;
+  ProgramStartDate: string;
+  ProgramEndDate: string;
+  ProgramDurationDays: number;
+  Statistics: ProgramDetailStatistics;
   Steps: ProgramDetailStep[];
+  Images: ProgramImage[];
+  Views: {
+    TotalViews: number;
+    WeeklyViews: number;
+    DailyViews: number;
+  };
 }

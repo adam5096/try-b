@@ -1,10 +1,24 @@
 import type { ApplicantDetail } from '~/types/company/applicant';
 import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
-export const useApplicant = (programId: string | number, applicantId: string | number) => {
-  const url = `/api/v1/programs/${programId}/applications/${applicantId}`;
+export const useApplicant = (
+  companyId: MaybeRefOrGetter<number | null>,
+  programId: MaybeRefOrGetter<string | number>,
+  applicantId: MaybeRefOrGetter<string | number>
+) => {
+  const url = computed(() => {
+    const resolvedCompanyId = toValue(companyId);
+    const resolvedProgramId = toValue(programId);
+    const resolvedApplicantId = toValue(applicantId);
+    
+    // 當 companyId 為空時，返回 null，不發送請求
+    if (!resolvedCompanyId || !resolvedProgramId || !resolvedApplicantId) return null;
+    
+    return `/api/v1/company/${resolvedCompanyId}/programs/${resolvedProgramId}/applications/${resolvedApplicantId}`;
+  });
 
   return useCompanyApiFetch<ApplicantDetail>(url, {
-    key: `applicant-${applicantId}`,
+    key: `applicant-${toValue(applicantId)}`,
+    immediate: !!toValue(companyId) && !!toValue(programId) && !!toValue(applicantId),
   });
 };
