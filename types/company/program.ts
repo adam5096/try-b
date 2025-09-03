@@ -70,6 +70,7 @@ export interface Program {
   status_title: string;
   Status: ProgramStatus;
   applied_count: number;
+  AppliedCount: number; // 新版本 API 回應欄位
   Images: ProgramImage[];
   Steps: ProgramStep[];
   Statistics: ProgramStatistics;

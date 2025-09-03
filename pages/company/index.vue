@@ -120,7 +120,7 @@ const getProgramStatus = (program: any) => {
           <div class="space-y-2 text-sm">
             <div class="flex items-center gap-2">
               <el-icon><User /></el-icon>
-              <span>已申請人數：{{ program.applied_count }}</span>
+              <span>已申請人數：{{ program.AppliedCount }}</span>
               <span class="ml-auto text-gray-500">瀏覽次數：{{ program.Views?.TotalViews || 0 }}</span>
             </div>
             <div class="flex items-center gap-2">
