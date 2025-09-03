@@ -152,9 +152,9 @@ async function handleSubmit() {
           <el-input v-model="step.description" type="textarea" :rows="3" placeholder="描述此階段的內容、時間與目標" />
         </div>
         
-        <el-button :icon="Plus" @click="addStep" :disabled="form.steps.length >= 5">
+        <!-- <el-button :icon="Plus" @click="addStep" :disabled="form.steps.length >= 5">
           新增階段
-        </el-button>
+        </el-button> -->
       </el-form-item>
 
       <el-form-item label="計畫日期與人數">
@@ -197,7 +197,7 @@ async function handleSubmit() {
 
       <el-form-item>
         <el-checkbox v-model="agreeToTerms">
-          我已閱讀並同意 <el-link type="primary">服務條款</el-link> 與 <el-link type="primary">隱私權政策</el-link>
+          我已閱讀並同意 服務條款 與 隱私權政策
         </el-checkbox>
       </el-form-item>
 

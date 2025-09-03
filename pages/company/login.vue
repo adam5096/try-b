@@ -57,7 +57,7 @@ async function handleLogin() {
     <div class="flex w-full items-center justify-center lg:w-1/2">
       <div class="w-full max-w-sm p-8">
         <div class="mb-8 text-left">
-          <div class="mb-4 flex items-center gap-2">
+          <NuxtLink to="/" class="mb-4 flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div
               class="flex h-10 w-10 items-center justify-center border border-gray-400 p-1 text-xs"
             >
@@ -65,7 +65,7 @@ async function handleLogin() {
               <span class="font-bold text-primary-blue">β</span>
             </div>
             <span class="text-lg font-bold">TRYβ職業體驗平台</span>
-          </div>
+          </NuxtLink>
           <h2 class="text-3xl font-bold text-gray-800">
             歡迎回來
           </h2>
