@@ -20,10 +20,13 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
   const tokenCookie = useCookie<string | null>('companyAuthToken', cookieOptions);
   const userCookie = useCookie<CompanyProfile | null>('companyAuthUser', cookieOptions);
   const companyIdCookie = useCookie<number | null>('companyId', cookieOptions);
+  // 保存登入回應中的基本使用者資訊（含 Role、Account）以供版頭顯示
+  const basicUserCookie = useCookie<CompanyUser | null>('companyAuthBasic', cookieOptions);
 
   const token = ref<string | null>(tokenCookie.value ?? null);
   const user = ref<CompanyProfile | null>(userCookie.value ?? null);
   const companyId = ref<number | null>(companyIdCookie.value ?? null);
+  const basicUser = ref<CompanyUser | null>(basicUserCookie.value ?? null);
 
   const { $api } = useNuxtApp();
   const api = $api as typeof $fetch;
@@ -84,6 +87,10 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         companyId.value = response.value.user.companyId;
         companyIdCookie.value = response.value.user.companyId;
 
+        // 保存登入回應中的基本使用者資訊（Account/Role）
+        basicUser.value = response.value.user;
+        basicUserCookie.value = response.value.user;
+
         console.log('✅ 登入成功:', response.value.user.Account);
       } else {
         throw new Error('登入失敗：無效的回應格式');
@@ -114,12 +121,15 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
     tokenCookie.value = null;
     companyId.value = null;
     companyIdCookie.value = null;
+    basicUser.value = null;
+    basicUserCookie.value = null;
   }
 
   return {
     user,
     token,
     companyId,
+    basicUser,
     isLoggedIn,
     login,
     logout,
