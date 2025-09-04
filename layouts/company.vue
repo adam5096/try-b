@@ -68,10 +68,10 @@ async function handleLogout() {
             <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
             <div>
               <div class="text-sm font-medium">
-                企業管理員
+                {{ authStore.basicUser?.Role || '企業管理員' }}
               </div>
               <div class="text-xs text-gray-500">
-                陳曉明
+                {{ authStore.basicUser?.Account || '—' }}
               </div>
             </div>
           </div>

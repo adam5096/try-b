@@ -56,7 +56,6 @@ const rules: FormRules<ApplyForm> = {
 };
 
 const resumeOptions = [
-  { label: '履歷 A', value: 1 },
   { label: '履歷 B', value: 2 },
 ];
 
