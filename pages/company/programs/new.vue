@@ -146,7 +146,7 @@ async function handleSubmit() {
         <el-input v-model="form.contact_email" placeholder="請輸入聯絡信箱" />
       </el-form-item>
 
-      <el-form-item label="計畫詳細說明 (計劃說明最多可新增至五個階段)">
+      <el-form-item label="計畫詳細說明">
         <div v-for="(step, index) in form.steps" :key="index" class="w-full mb-4">
           <el-input v-model="step.name" class="mb-2" placeholder="請輸入此階段的標題" />
           <el-input v-model="step.description" type="textarea" :rows="3" placeholder="描述此階段的內容、時間與目標" />
