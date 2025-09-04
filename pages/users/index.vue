@@ -6,25 +6,18 @@ definePageMeta({
 
 import { ref, watch, onMounted } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
-import { useUserAuthStore } from '~/stores/user/useAuthStore';
+import SkeletonLoader from '~/components/shared/SkeletonLoader.vue';
+import ImageWithSkeleton from '~/components/shared/ImageWithSkeleton.vue';
 import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
 import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 import type { Program } from '~/types/users/program';
 
-const authStore = useUserAuthStore();
 const programsStore = useUserProgramsStore();
 const programDetailStore = useUserProgramDetailStore();
 
 // 已移除開發環境用的 fallback programId，改以實際回傳的 Id 為準
 
-// 圖片載入錯誤時回退至預設圖片
-const onProgramImageError = (e: Event) => {
-  const img = e.target as HTMLImageElement;
-  if (img && img.src !== '/img/home/home-worker-bg.webp') {
-    img.src = '/img/home/home-worker-bg.webp';
-    img.onerror = null; // 避免 fallback 再次觸發造成遞迴
-  }
-};
+// 影像載入與骨架交由 ImageWithSkeleton 元件處理
 
 const searchKeyword = ref('');
 const industry = ref('');
@@ -118,18 +111,7 @@ const formatProgramDate = (program: Program) => {
   }
 };
 
-const activeStatus = ref('all');
 
-const setActiveStatus = (status: string) => {
-  activeStatus.value = status;
-};
-
-const getStatusCount = (status: string) => {
-  if (!programsStore.items) return 0;
-  // 由於新版本沒有 Status 欄位，暫時返回 0
-  // 未來可以根據其他欄位來判斷狀態
-  return 0;
-};
 
 // 解析清單項目的 ProgramId（以回傳的 Id 為主，保守兼容 id）
 const resolveProgramId = (program: any) => {
@@ -171,21 +153,28 @@ const handleViewDetail = async (program: any) => {
           <el-carousel v-if="programsStore.popular && programsStore.popular.length > 0" :interval="4000" type="card" height="300px">
             <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
               <el-card :body-style="{ padding: '0px' }" class="h-full">
-                <img 
-                  :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
-                  class="w-full h-2/3 object-cover" 
-                  alt="program image" 
-                  @error="onProgramImageError"
-                />
-                <div class="p-4">
-                  <h3 class="text-lg font-bold">{{ program.Name || '未命名計畫' }}</h3>
-                  <p class="text-sm text-gray-500">{{ program.Industry?.Title || '產業未分類' }}</p>
+                <div class="relative h-full">
+                  <ImageWithSkeleton
+                    :src="program.CoverImage"
+                    alt="program image"
+                    img-class="w-full h-2/3 object-cover"
+                    skeleton-height-class="h-2/3"
+                  />
+                  <div class="p-4">
+                    <h3 class="text-lg font-bold">{{ program.Name || '未命名計畫' }}</h3>
+                    <p class="text-sm text-gray-500">{{ program.Industry?.Title || '產業未分類' }}</p>
+                  </div>
                 </div>
               </el-card>
             </el-carousel-item>
           </el-carousel>
-          <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
-            <p class="text-gray-500">{{ programsStore.loading ? '載入中...' : '暫無熱門計畫' }}</p>
+          <div v-else>
+            <div v-if="programsStore.loading" class="bg-white rounded-lg p-4">
+              <SkeletonLoader :show-title="false" :show-image="true" :show-button="false" image-height-class="h-[300px]" />
+            </div>
+            <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
+              <p class="text-gray-500">暫無熱門計畫</p>
+            </div>
           </div>
         </section>
 
@@ -217,11 +206,11 @@ const handleViewDetail = async (program: any) => {
             <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC] h-[580px] flex flex-col overflow-hidden">
               <!-- Cover Image with Status Tag -->
               <div class="relative flex-shrink-0">
-                <img 
-                  :src="program.CoverImage || '/img/home/home-worker-bg.webp'" 
-                  class="w-full h-48 object-cover" 
-                  alt="program image" 
-                  @error="onProgramImageError"
+                <ImageWithSkeleton
+                  :src="program.CoverImage"
+                  alt="program image"
+                  img-class="w-full h-48 object-cover"
+                  skeleton-height-class="h-48"
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
@@ -259,25 +248,25 @@ const handleViewDetail = async (program: any) => {
                 
                 <!-- Action Button -->
                 <button 
-                  v-if="authStore.isLoggedIn" 
                   @click="handleViewDetail(program)"
                   class="w-full bg-btn-yellow text-black font-medium py-2 px-4 rounded-lg hover:bg-btn-yellow/80 transition-colors text-sm"
-                >
-                  查看詳情
-                </button>
-                <button 
-                  v-else 
-                  class="w-full bg-gray-400 text-white font-medium py-2 px-4 rounded-lg cursor-not-allowed opacity-50 text-sm"
-                  disabled
-                  title="請先登入以查看詳情"
                 >
                   查看詳情
                 </button>
               </div>
             </el-card>
           </div>
-          <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
-            <p class="text-gray-500">{{ programsStore.loading ? '載入中...' : '暫無體驗計畫' }}</p>
+          <div v-else>
+            <div v-if="programsStore.loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <el-card v-for="n in pageSize" :key="'skeleton-'+n" class="shadow-lg border border-[#CCCCCC] h-[580px] flex flex-col overflow-hidden">
+                <div class="p-4 w-full">
+                  <SkeletonLoader :show-title="true" :show-image="true" :show-button="true" :lines="3" image-height-class="h-48" button-height-class="h-10" />
+                </div>
+              </el-card>
+            </div>
+            <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
+              <p class="text-gray-500">暫無體驗計畫</p>
+            </div>
           </div>
 
           <!-- Pagination -->
@@ -313,6 +302,7 @@ const handleViewDetail = async (program: any) => {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  line-clamp: 2;
   overflow: hidden;
 }
 
@@ -320,6 +310,7 @@ const handleViewDetail = async (program: any) => {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  line-clamp: 3;
   overflow: hidden;
 }
 
@@ -327,6 +318,7 @@ const handleViewDetail = async (program: any) => {
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
+  line-clamp: 4;
   overflow: hidden;
 }
 </style>
