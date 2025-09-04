@@ -84,13 +84,11 @@ onMounted(() => {
 
     <el-card>
       <div class="flex flex-wrap items-end gap-x-6 gap-y-4">
-        <div class="flex-grow">
-          <label for="programName" class="block text-sm font-medium text-gray-700 mb-1">計畫名稱</label>
+        <div class="flex-grow" style="min-width: 260px; max-width: 720px; flex-basis: 40%;">
           <el-input id="programName" v-model="filters.programName" placeholder="搜尋計畫名稱..." />
         </div>
         <div>
-          <label for="rating" class="block text-sm font-medium text-gray-700 mb-1">評價分數</label>
-          <el-select id="rating" v-model="filters.rating" placeholder="全部分數" class="w-full min-w-form-control md:max-w-form-select">
+          <el-select id="rating" v-model="filters.rating" placeholder="全部分數" style="width: 160px">
             <el-option label="全部分數" value="all" />
             <el-option label="5 星" value="5" />
             <el-option label="4 星" value="4" />
@@ -100,19 +98,11 @@ onMounted(() => {
           </el-select>
         </div>
         <div>
-          <label for="dateSort" class="block text-sm font-medium text-gray-700 mb-1">日期範圍</label>
           <div class="flex items-center gap-2">
-            <el-select id="dateSort" v-model="filters.dateSort" class="w-full min-w-form-control md:max-w-form-select">
+            <el-select id="dateSort" v-model="filters.dateSort" style="width: 140px">
               <el-option label="日期:新到舊" value="desc" />
               <el-option label="日期:舊到新" value="asc" />
             </el-select>
-            <el-date-picker
-              v-model="filters.dateRange"
-              type="daterange"
-              range-separator="至"
-              start-placeholder="開始日期"
-              end-placeholder="結束日期"
-            />
           </div>
         </div>
         <div>
@@ -156,7 +146,7 @@ onMounted(() => {
       <div class="mt-6 flex justify-between items-center">
         <div>
           <span class="text-sm text-gray-600 mr-2">每頁顯示:</span>
-          <el-select v-model="pagination.pageSize" placeholder="Select" class="w-full min-w-form-control md:max-w-form-select">
+          <el-select v-model="pagination.pageSize" placeholder="Select" style="width: 120px">
             <el-option label="10 筆" :value="10" />
             <el-option label="20 筆" :value="20" />
             <el-option label="50 筆" :value="50" />
