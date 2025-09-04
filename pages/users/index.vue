@@ -195,69 +195,22 @@ const handleViewDetail = async (program: any) => {
           <p class="text-gray-500 mb-8">管理您已申請的體驗計畫，並在這裡快速申請新計畫。</p>
 
           <!-- Filters -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 p-4 bg-white rounded-lg shadow">
-            <el-input v-model="searchKeyword" placeholder="關鍵字搜尋" clearable class="w-full md:max-w-form-search" />
-            <el-select v-model="industry" placeholder="產業類別" clearable class="w-full min-w-form-control md:max-w-form-select">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 p-4 bg-white rounded-lg shadow items-stretch">
+            <el-input v-model="searchKeyword" placeholder="關鍵字搜尋" clearable />
+            <el-select v-model="industry" placeholder="產業類別" clearable>
               <el-option v-for="item in industries" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <el-select v-model="jobType" placeholder="職業類別" clearable class="w-full min-w-form-control md:max-w-form-select">
+            <el-select v-model="jobType" placeholder="職業類別" clearable>
               <el-option v-for="item in jobTypes" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <el-select v-model="location" placeholder="地區" clearable class="w-full min-w-form-control md:max-w-form-select">
+            <el-select v-model="location" placeholder="地區" clearable>
               <el-option v-for="item in locations" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
-            <el-select v-model="sort" placeholder="排序" clearable class="w-full min-w-form-control md:max-w-form-select">
+            <el-select v-model="sort" placeholder="排序" clearable>
               <el-option v-for="item in sortOptions" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </div>
 
-          <!-- Status Tabs -->
-          <div class="mb-8">
-            <div class="flex flex-wrap gap-2">
-              <button 
-                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="activeStatus === 'all' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-                @click="setActiveStatus('all')"
-              >
-                全部計劃({{ programsStore.total || 0 }})
-              </button>
-              <button 
-                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="activeStatus === 'approved' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-                @click="setActiveStatus('approved')"
-              >
-                已通過({{ getStatusCount('已通過') }})
-              </button>
-              <button 
-                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="activeStatus === 'published' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-                @click="setActiveStatus('published')"
-              >
-                已發佈({{ getStatusCount('已發佈') }})
-              </button>
-              <button 
-                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="activeStatus === 'pending' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-                @click="setActiveStatus('pending')"
-              >
-                待發佈({{ getStatusCount('待發佈') }})
-              </button>
-              <button 
-                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="activeStatus === 'rejected' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-                @click="setActiveStatus('rejected')"
-              >
-                已拒絕({{ getStatusCount('已拒絕') }})
-              </button>
-              <button 
-                class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                :class="activeStatus === 'reviewing' ? 'bg-primary-blue-light text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
-                @click="setActiveStatus('reviewing')"
-              >
-                審核中({{ getStatusCount('審核中') }})
-              </button>
-            </div>
-          </div>
 
           <!-- Program Cards -->
           <div v-if="programsStore.items && programsStore.items.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
