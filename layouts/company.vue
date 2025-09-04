@@ -19,8 +19,10 @@ const planStore = useCompanyPlanStore();
 const router = useRouter();
 const isSidebarOpen = ref(false);
 
-// 進入 layout 時觸發一次資料獲取
-// planStore.fetchCurrentPlan(); // This is no longer needed as useFetch is now immediate
+// SSR/CSR 皆預抓關鍵資料（頂層 await 允許服務端等待資料）
+if (import.meta.server) {
+  await planStore.init();
+}
 
 const programsPath = router.resolve(r.landing()).path;  // 計畫列表
 const newProgramPath = router.resolve(r.newProgram()).path; // 新增體驗

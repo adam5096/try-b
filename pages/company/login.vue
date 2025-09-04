@@ -24,13 +24,14 @@ async function handleLogin() {
     await authStore.login(loginData.value);
     
     const redirectPath = useRoute().query.redirect as string;
+    // 為了讓第一次畫面能以 SSR 預先渲染，登入後改為「全頁重新導向」
+    // 僅允許導向到企業端內部頁面，否則回到企業首頁
+    const targetPath = (redirectPath && redirectPath.startsWith('/company/'))
+      ? redirectPath
+      : router.resolve(routes.company.landing()).path;
 
-    // Security enhancement: Only redirect to internal company pages.
-    // Otherwise, default to the company index page.
-    if (redirectPath && redirectPath.startsWith('/company/')) {
-      await router.push(redirectPath);
-    } else {
-      await router.push(routes.company.landing());
+    if (process.client) {
+      window.location.replace(targetPath);
     }
 
   } catch (error: any) {

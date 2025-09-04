@@ -11,7 +11,6 @@ import {
   User,
 } from '@element-plus/icons-vue';
 import { computed } from 'vue';
-import ImageWithSkeleton from '~/components/shared/ImageWithSkeleton.vue';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
 
 const searchForm = {
@@ -24,8 +23,20 @@ const searchForm = {
 const programStore = useCompanyProgramStore();
 const programs = computed(() => programStore.programs);
 
-// The fetching logic is now handled reactively inside the store.
-// No need for onMounted or watch here anymore.
+// SSR 頁面初始化：伺服端先抓列表，加速首屏
+if (import.meta.server) {
+  await programStore.init();
+}
+
+// 依狀態回傳徽章樣式
+const getStatusBadgeClass = (program: any) => {
+  const status = getProgramStatus(program);
+  return status === '未發布'
+    ? 'bg-yellow-300 text-black'
+    : 'bg-primary-blue-light text-white';
+};
+
+// 已移除骨架與圖片預載，避免 SSR/CSR 不一致
 
 const handlePageChange = (page: number) => {
   programStore.setPage(page);
@@ -72,6 +83,15 @@ const formatProgramDate = (program: any) => {
   } catch {
     return '日期格式錯誤';
   }
+};
+
+// 將介紹文字正規化，避免 SSR/C SR 因換行或空白差異造成 hydration mismatch
+const formatIntroText = (raw: any): string => {
+  const text = typeof raw === 'string' ? raw : '';
+  return text
+    .replace(/\r\n|\r|\n/g, ' ') // 移除換行
+    .replace(/\s+/g, ' ')           // 合併多餘空白
+    .trim();
 };
 
 // 查看詳情（與使用者端交互一致，改導到公司端詳情頁）
@@ -129,16 +149,15 @@ const handleViewDetail = async (program: any) => {
         <el-tab-pane label="審核中 (1)" name="reviewing" />
       </el-tabs>
 
-      <!-- Plan Cards -->
-      <div v-if="programStore.isLoading" class="text-center p-8">
-        <p>資料載入中...</p>
-      </div>
-      <div v-else-if="programStore.error" class="text-center p-8 text-red-500">
+      <!-- Error -->
+      <div v-if="programStore.error" class="text-center p-8 text-red-500">
         <p>無法載入計畫列表，請稍後再試。</p>
       </div>
+      <!-- Empty -->
       <div v-else-if="programs.length === 0" class="text-center p-8 text-gray-500">
         <p>目前沒有任何計畫。</p>
       </div>
+      <!-- Real Cards -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
         <el-card
           v-for="program in programs"
@@ -147,13 +166,8 @@ const handleViewDetail = async (program: any) => {
         >
           <!-- 封面與狀態徽章 -->
           <div class="relative flex-shrink-0">
-            <ImageWithSkeleton
-              :src="program.CoverImage"
-              alt="program image"
-              img-class="w-full h-48 object-cover"
-              skeleton-height-class="h-48"
-            />
-            <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
+            <NuxtImg :src="program.CoverImage || '/img/home/home-worker-bg.webp'" alt="program image" class="w-full h-48 object-cover" format="webp" loading="lazy" />
+            <div class="absolute top-2 left-2 px-2 py-1 text-xs rounded z-10" :class="getStatusBadgeClass(program)">
               {{ getProgramStatus(program) }}
             </div>
           </div>
@@ -165,7 +179,7 @@ const handleViewDetail = async (program: any) => {
             </h3>
 
             <p class="text-sm text-gray-600 mb-3 flex-1 overflow-hidden text-ellipsis line-clamp-3">
-              {{ program.Intro || '暫無介紹' }}
+              {{ formatIntroText(program.Intro) || '暫無介紹' }}
             </p>
 
             <div class="space-y-1 mb-6 h-[5.5rem] flex flex-col justify-center">
