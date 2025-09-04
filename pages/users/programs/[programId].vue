@@ -2,7 +2,6 @@
 definePageMeta({
   name: 'user-program-detail',
   layout: 'user',
-  middleware: 'user-auth',
 });
 
 import { ref, onMounted, computed } from 'vue';
