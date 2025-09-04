@@ -3,6 +3,7 @@
 export type ReviewStatus = '審核中' | '系統已通過' | '系統已拒絕' | '人工已通過' | '人工已拒絕' | '待處理' | '已發布' | '全部通過' | '全部拒絕' | '未評價';
 
 export interface ReviewItem {
+  program_id: number;
   status_id: number;
   score: number;
   comment: string | null;

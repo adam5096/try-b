@@ -145,7 +145,12 @@ async function submitEvaluationForItem(item: ReviewItem) {
       comment: evaluationData.comment
     };
 
-    const result = await submitEvaluation(item.serial_num, payload);
+    // 從 auth store 取得 userId，programId 來自列表的 program_id（新欄位）
+    const authStore = useUserAuthStore();
+    const userId = authStore.user?.id as number | undefined;
+    if (!userId) throw new Error('尚未登入或缺少使用者資訊');
+
+    const result = await submitEvaluation(userId, item.program_id, payload);
     
     if (result.error.value) {
       throw result.error.value;
