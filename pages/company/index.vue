@@ -11,9 +11,8 @@ import {
   User,
 } from '@element-plus/icons-vue';
 import { computed } from 'vue';
-import dayjs from 'dayjs';
+import ImageWithSkeleton from '~/components/shared/ImageWithSkeleton.vue';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
-import type { ProgramsListItem } from '~/types/company/program';
 
 const searchForm = {
   name: '',
@@ -46,6 +45,40 @@ const getProgramStatus = (program: any) => {
   if (now > programEnd) return '已結束';
   
   return '未知';
+};
+
+// 與使用者端一致：格式化日期顯示
+const formatProgramDate = (program: any) => {
+  if (!program?.ProgramStartDate || !program?.ProgramEndDate) {
+    return '日期未定';
+  }
+
+  try {
+    const startDate = new Date(program.ProgramStartDate);
+    const endDate = new Date(program.ProgramEndDate);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      return '日期格式錯誤';
+    }
+
+    const formatDate = (date: Date) => {
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      return `${yyyy}/${mm}/${dd}`;
+    };
+
+    return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+  } catch {
+    return '日期格式錯誤';
+  }
+};
+
+// 查看詳情（與使用者端交互一致，改導到公司端詳情頁）
+const handleViewDetail = async (program: any) => {
+  const id = program?.Id;
+  if (id === undefined || id === null || id === '') return;
+  await navigateTo(`/company/programs/${id}`);
 };
 </script>
 
@@ -107,34 +140,59 @@ const getProgramStatus = (program: any) => {
         <p>目前沒有任何計畫。</p>
       </div>
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-        <el-card v-for="program in programs" :key="program.Id">
-          <template #header>
-            <div class="flex justify-between items-center">
-              <span class="font-bold">{{ program.Name }}</span>
-              <el-tag type="info" style="width: 100px;">
-                {{ getProgramStatus(program) }}
-              </el-tag>
-            </div>
-          </template>
-          <!-- Card Body -->
-          <div class="space-y-2 text-sm">
-            <div class="flex items-center gap-2">
-              <el-icon><User /></el-icon>
-              <span>已申請人數：{{ program.AppliedCount }}</span>
-              <span class="ml-auto text-gray-500">瀏覽次數：{{ program.Views?.TotalViews || 0 }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <el-icon><Briefcase /></el-icon>
-              <span>{{ program.PublishStartDate }} - {{ program.ProgramEndDate }}</span>
+        <el-card
+          v-for="program in programs"
+          :key="program.Id"
+          class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC] h-[580px] flex flex-col overflow-hidden"
+        >
+          <!-- 封面與狀態徽章 -->
+          <div class="relative flex-shrink-0">
+            <ImageWithSkeleton
+              :src="program.CoverImage"
+              alt="program image"
+              img-class="w-full h-48 object-cover"
+              skeleton-height-class="h-48"
+            />
+            <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
+              {{ getProgramStatus(program) }}
             </div>
           </div>
-          <!-- Card Footer -->
-          <div class="mt-4 pt-4 border-t flex justify-end items-center">
-            <NuxtLink :to="`/company/programs/${program.Id}`">
-              <el-button type="primary" plain>
-                查看詳情
-              </el-button>
-            </NuxtLink>
+
+          <!-- 內容 -->
+          <div class="p-4 flex flex-col flex-1 min-h-0">
+            <h3 class="text-lg font-bold text-black mb-2 line-clamp-2 leading-tight h-[3rem] flex items-start">
+              {{ program.Name || '未命名計畫' }}
+            </h3>
+
+            <p class="text-sm text-gray-600 mb-3 flex-1 overflow-hidden text-ellipsis line-clamp-3">
+              {{ program.Intro || '暫無介紹' }}
+            </p>
+
+            <div class="space-y-1 mb-6 h-[5.5rem] flex flex-col justify-center">
+              <div class="flex items-center gap-2 h-4">
+                <font-awesome-icon :icon="['fas', 'briefcase']" class="text-gray-500 w-3 flex-shrink-0" />
+                <span class="text-xs text-black truncate">{{ program.Industry?.Title || '產業未分類' }}</span>
+              </div>
+              <div class="flex items-center gap-2 h-4">
+                <font-awesome-icon :icon="['fas', 'calendar']" class="text-gray-500 w-3 flex-shrink-0" />
+                <span class="text-xs text-black truncate">{{ formatProgramDate(program) }}</span>
+              </div>
+              <div class="flex items-center gap-2 h-4">
+                <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="text-gray-500 w-3 flex-shrink-0" />
+                <span class="text-xs text-black truncate">{{ program.Address || '地點未定' }}</span>
+              </div>
+              <div class="flex items-center gap-2 h-4">
+                <font-awesome-icon :icon="['fas', 'users']" class="text-gray-500 w-3 flex-shrink-0" />
+                <span class="text-xs text-black truncate">已申請人數: {{ program.AppliedCount || 0 }}人</span>
+              </div>
+            </div>
+
+            <button
+              @click="handleViewDetail(program)"
+              class="w-full bg-btn-yellow text-black font-medium py-2 px-4 rounded-lg hover:bg-btn-yellow/80 transition-colors text-sm"
+            >
+              查看詳情
+            </button>
           </div>
         </el-card>
       </div>
