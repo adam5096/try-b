@@ -52,11 +52,20 @@ export default defineNuxtConfig({
       '/api-proxy/**': {
         proxy: 'https://trybeta.rocket-coding.com/**'
       }
+    },
+    // 修正 Vercel 產環 SSR 匯入 @popperjs/core 造成的 CJS/ESM 錯誤（placements not found）
+    // 將其內嵌到 Nitro bundle，避免以外部模組形式被 Node 直接解析
+    externals: {
+      inline: ['@popperjs/core']
     }
   },
 
   imports: {
     dirs: ['stores/**', 'composables/**'],
+  },
+  build: {
+    // 確保 SSR 端將以下套件轉譯，避免 CJS/ESM 差異
+    transpile: ['@popperjs/core', 'element-plus'],
   },
   app: {
     head: {
