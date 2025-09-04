@@ -41,6 +41,17 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
   // Expose `execute` as `fetchPrograms` for external use if needed (e.g., manual refresh)
   const fetchPrograms = execute;
 
+  // SSR 初始化：在伺服端渲染前預抓資料
+  async function init() {
+    if (!data.value && authStore.companyId) {
+      try {
+        await execute();
+      } catch {
+        // ignore and let client retry
+      }
+    }
+  }
+
   async function createProgram(payload: CreateProgramPayload) {
     if (!authStore.companyId) {
       return { success: false, error: new Error('User not authenticated') };
@@ -75,5 +86,6 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
     fetchPrograms,
     setPage,
     createProgram,
+    init,
   };
 });

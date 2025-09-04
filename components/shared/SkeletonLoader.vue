@@ -1,5 +1,5 @@
 <template>
-  <div class="animate-pulse">
+  <div>
     <!-- 標題骨架 -->
     <div v-if="showTitle" class="mb-4">
       <div class="h-8 bg-gray-300 rounded-lg w-3/4 mb-2 skeleton"></div>

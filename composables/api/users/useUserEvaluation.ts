@@ -2,9 +2,12 @@ import type { SubmitEvaluationPayload, SubmitEvaluationResponse } from '~/types/
 import { useUserApiFetch } from './useUserApiFetch';
 
 export const useUserEvaluation = () => {
-  const submitEvaluation = async (serialNum: string | number, payload: SubmitEvaluationPayload) => {
-    // 使用硬編碼的 programId (45) 和 userId (2) 作為測試值
-    const url = `/api/v1/users/2/programs/45/evaluations`;
+  const submitEvaluation = async (
+    userId: number,
+    programId: number,
+    payload: SubmitEvaluationPayload,
+  ) => {
+    const url = `/api/v1/users/${userId}/programs/${programId}/evaluations`;
 
     try {
       // 使用 useUserApiFetch 確保 JWT token 被注入
@@ -13,17 +16,9 @@ export const useUserEvaluation = () => {
         body: payload,
       });
       
-      return {
-        data: { value: data },
-        error: { value: null },
-        pending: { value: false }
-      };
+      return { data: { value: data }, error: { value: null }, pending: { value: false } };
     } catch (error) {
-      return {
-        data: { value: null },
-        error: { value: error },
-        pending: { value: false }
-      };
+      return { data: { value: null }, error: { value: error }, pending: { value: false } };
     }
   };
 

@@ -47,6 +47,17 @@ export const useCompanyPlanStore = defineStore('companyPlan', () => {
     return `目前的方案 ${p.plan_name} | 日期：${startDate} - ${endDate} | 體驗人數上限 ${p.max_participants} 人 | 剩餘 ${p.remaining_people} 人`;
   });
 
+  // 在 SSR 階段使用的初始化：確保伺服端渲染前已取得方案
+  async function init() {
+    if (!plan.value && authStore.token) {
+      try {
+        await fetchCurrentPlan();
+      } catch {
+        // 靜默失敗，交由頁面在客戶端再處理
+      }
+    }
+  }
+
   return {
     plan,
     isLoading,
@@ -54,5 +65,6 @@ export const useCompanyPlanStore = defineStore('companyPlan', () => {
     hasPlan,
     planStatusText,
     fetchCurrentPlan,
+    init,
   };
 });
