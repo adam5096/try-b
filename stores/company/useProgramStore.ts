@@ -30,7 +30,13 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
     { immediate: true },
   );
 
-  const programs = computed(() => data.value?.items || []);
+  const programs = computed(() => (data.value?.items || []).map((p: any) => {
+    const normalizeToHttps = (u?: string | null) => (u ? u.replace(/^http:\/\//i, 'https://') : null);
+    return {
+      ...p,
+      CoverImage: normalizeToHttps(p?.CoverImage),
+    };
+  }));
   const total = computed(() => data.value?.total || 0);
 
   function setPage(newPage: number) {

@@ -62,10 +62,12 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
         const normalizedItems = (data.value.items || []).map((raw: any) => {
           // 使用新的 response body 結構，直接使用 Id 欄位
           const programId = raw?.Id ?? null;
+          const normalizeToHttps = (u?: string | null) => (u ? u.replace(/^http:\/\//i, 'https://') : null);
 
           return {
             ...raw,
             Id: programId,
+            CoverImage: normalizeToHttps(raw?.CoverImage),
           } as unknown as Program;
         });
 
