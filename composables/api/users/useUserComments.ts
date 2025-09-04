@@ -13,8 +13,16 @@ export const useUserComments = () => {
     if (params.sort) queryParams.append('sort', params.sort);
 
     const queryString = queryParams.toString();
-    // 修正：使用符合 API 規格書的正確端點
-    const url = `/api/v1/users/2/evaluations${queryString ? '?' + queryString : ''}`;
+    // 動態取得 userId，避免硬編碼
+    const { useUserAuthStore } = await import('~/stores/user/useAuthStore');
+    const authStoreForId = useUserAuthStore();
+    const userId = authStoreForId.user?.id;
+
+    if (!userId) {
+      throw new Error('尚未登入或缺少使用者資訊，無法取得評價列表');
+    }
+
+    const url = `/api/v1/users/${userId}/evaluations${queryString ? '?' + queryString : ''}`;
 
     try {
       // 調試：檢查認證狀態

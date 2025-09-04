@@ -39,8 +39,8 @@ const filterVisible = ref(false);
 const editingEvaluation = ref<{ [key: string]: { score: number; comment: string } }>({});
 
 // 計算屬性
-const totalReviews = computed(() => commentsData.value?.length || 0);
-const visibleReviews = computed(() => commentsData.value || []);
+const totalReviews = computed(() => commentsData.value?.TotalCount || 0);
+const visibleReviews = computed(() => commentsData.value?.Data || []);
 
 // 狀態 ID 對應
 const statusIdToText = (statusId: number): ReviewStatus => {
@@ -145,18 +145,24 @@ async function submitEvaluationForItem(item: ReviewItem) {
       comment: evaluationData.comment
     };
 
-    const result = await submitEvaluation(item.serial_num, payload);
+    // 從 auth store 取得 userId，programId 來自列表的 program_id（新欄位）
+    const authStore = useUserAuthStore();
+    const userId = authStore.user?.id as number | undefined;
+    if (!userId) throw new Error('尚未登入或缺少使用者資訊');
+
+    const result = await submitEvaluation(userId, item.program_id, payload);
     
     if (result.error.value) {
       throw result.error.value;
     }
 
     // 成功後更新本地數據
-    const itemIndex = visibleReviews.value.findIndex((review: ReviewItem) => review.serial_num === item.serial_num);
+    const list = commentsData.value?.Data || [];
+    const itemIndex = list.findIndex((review: ReviewItem) => review.serial_num === item.serial_num);
     if (itemIndex !== -1) {
-      visibleReviews.value[itemIndex].score = evaluationData.score;
-      visibleReviews.value[itemIndex].comment = evaluationData.comment;
-      visibleReviews.value[itemIndex].status_id = 2; // 假設提交後變為已通過狀態
+      list[itemIndex].score = evaluationData.score;
+      list[itemIndex].comment = evaluationData.comment;
+      list[itemIndex].status_id = 2; // 假設提交後變為已通過狀態
     }
 
     // 清除編輯狀態

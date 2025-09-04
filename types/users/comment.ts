@@ -3,6 +3,7 @@
 export type ReviewStatus = '審核中' | '系統已通過' | '系統已拒絕' | '人工已通過' | '人工已拒絕' | '待處理' | '已發布' | '全部通過' | '全部拒絕' | '未評價';
 
 export interface ReviewItem {
+  program_id: number;
   status_id: number;
   score: number;
   comment: string | null;
@@ -23,7 +24,12 @@ export interface CommentsQueryParams {
 }
 
 // 修正：根據 API 規格書，回應直接是 ReviewItem 陣列
-export type CommentsResponse = ReviewItem[];
+export interface CommentsResponse {
+  TotalCount: number;
+  Page: number;
+  Limit: number;
+  Data: ReviewItem[];
+}
 
 // 評價提交相關類型
 export interface SubmitEvaluationPayload {
