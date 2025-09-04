@@ -174,12 +174,24 @@ async function submitEvaluationForItem(item: ReviewItem) {
     
     console.error('提交評價失敗:', error);
     
-    // 錯誤處理
+    // 針對 400 Bad Request：直接以彈窗呈現後端訊息（忠實顯示）
+    const status = error?.status || error?.statusCode || error?.response?.status;
+    const bodyMessage = error?.data?.message || error?.response?._data?.message || error?.message;
+    if (status === 400 && bodyMessage) {
+      await ElMessageBox.alert(bodyMessage, '提交失敗', {
+        type: 'error',
+        confirmButtonText: '我知道了',
+      });
+      return;
+    }
+
+    // 其他錯誤：保留原本處理邏輯
     let errorMessage = '提交失敗，請稍後重試';
     
-    // 處理後端錯誤回應
-    if (error.data?.Message) {
-      errorMessage = error.data.Message;
+    // 處理後端錯誤回應（同時兼容大小寫與 _data 來源）
+    const backendMessage = error?.data?.Message || error?.data?.message || error?.response?._data?.message;
+    if (backendMessage) {
+      errorMessage = backendMessage;
       
       // 特殊處理「體驗尚未結束」錯誤
       if (errorMessage === '體驗尚未結束') {
@@ -188,7 +200,7 @@ async function submitEvaluationForItem(item: ReviewItem) {
         delete editingEvaluation.value[item.serial_num];
         return;
       }
-    } else if (error.message) {
+    } else if (error?.message) {
       if (error.message.includes('網路')) {
         errorMessage = '網路連線異常，請檢查網路後重試';
       } else if (error.message.includes('認證') || error.message.includes('登入')) {
