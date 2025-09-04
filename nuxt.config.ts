@@ -67,6 +67,10 @@ export default defineNuxtConfig({
     // 確保 SSR 端將以下套件轉譯，避免 CJS/ESM 差異
     transpile: ['@popperjs/core', 'element-plus'],
   },
+  image: {
+    // 允許的遠端圖片來源，透過 IPX 代理輸出為 HTTPS，避免 Mixed Content
+    domains: ['trybeta.rocket-coding.com', 'images.unsplash.com', 'i.imgur.com'],
+  },
   app: {
     head: {
       link: [
