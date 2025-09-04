@@ -2,13 +2,13 @@
 definePageMeta({
   name: 'user-program-detail',
   layout: 'user',
-  middleware: 'user-auth',
 });
 
 import { ref, onMounted, computed } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 import { parseIntroContent } from '~/utils/introParser';
+import { useUserAuthStore } from '~/stores/user/useAuthStore';
 
 const router = useRouter();
 const isFavorited = ref(false);
@@ -16,6 +16,8 @@ const showApply = ref(false);
 
 // 使用 store 管理計畫詳情
 const programDetailStore = useUserProgramDetailStore();
+const userAuthStore = useUserAuthStore();
+const isLoggedIn = computed(() => userAuthStore.isLoggedIn);
 
 const toggleFavorite = () => {
   isFavorited.value = !isFavorited.value;
@@ -106,6 +108,7 @@ const onApplySubmitted = async () => {
             v-if="programDetail" 
             type="primary" 
             size="large" 
+            :disabled="!isLoggedIn"
             @click="showApply = true"
           >
             我要申請

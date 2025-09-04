@@ -65,6 +65,13 @@ const statsCards = [
   }
 ];
 
+// 對應統計卡片由左至右的示意圖片
+const statImages = [
+  '/img/home/plan/plan-01.webp',
+  '/img/home/plan/plan-02.webp',
+  '/img/home/plan/plan-03.webp',
+];
+
 </script>
 
 <template>
@@ -105,12 +112,16 @@ const statsCards = [
     <section class="py-section-padding bg-brand-gray">
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div v-for="stat in statsCards" :key="stat.percentage" class="bg-white rounded-lg shadow-lg p-8 text-center flex flex-col items-center">
+          <div v-for="(stat, idx) in statsCards" :key="stat.percentage" class="bg-white rounded-lg shadow-lg p-8 text-center flex flex-col items-center">
             <p class="text-5xl font-bold text-primary-blue-dark mb-4">{{ stat.percentage }}</p>
             <p class="mt-2 text-lg text-gray-700 flex-grow" style="min-height: 4.5rem;">{{ stat.description }}</p>
-            <div class="mt-8 w-40 h-40 bg-gray-300 rounded-md flex items-center justify-center">
-              <span class="text-gray-500 text-2xl">圖片</span>
-            </div>
+            <NuxtImg
+              class="mt-8 w-40 h-40 object-cover rounded-md"
+              :src="statImages[idx]"
+              alt="stat image"
+              format="webp"
+              loading="lazy"
+            />
           </div>
         </div>
       </div>

@@ -38,14 +38,15 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const isLoaded = ref(false);
-const currentSrc = ref<string>(props.src || props.fallbackSrc);
+const toHttps = (u?: string | null) => (u ? u.replace(/^http:\/\//i, 'https://') : u);
+const currentSrc = ref<string>(toHttps(props.src) || props.fallbackSrc);
 
 watch(
   () => props.src,
   (val) => {
     // 當來源改變時，重置為未載入並重新指向新來源
     isLoaded.value = false;
-    currentSrc.value = val || props.fallbackSrc;
+    currentSrc.value = toHttps(val) || props.fallbackSrc;
   },
 );
 
