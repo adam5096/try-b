@@ -249,7 +249,7 @@ const handleViewDetail = async (program: any) => {
                 <!-- Action Button -->
                 <button 
                   @click="handleViewDetail(program)"
-                  class="w-full bg-btn-yellow text-black font-medium py-2 px-4 rounded-lg hover:bg-btn-yellow/80 transition-colors text-sm"
+                  class="w-full bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
                 >
                   查看詳情
                 </button>

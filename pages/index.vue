@@ -23,13 +23,12 @@ useSeoMeta({
 // Header-related logic has been moved to layouts/main.vue
 
 const partners = [
-  { name: 'Scuba Schools International', logo: '/img/home/partners/ssi-logo.webp' },
-  { name: 'Google', logo: '/img/home/partners/google-logo.webp' },
-  { name: 'Hexschool', logo: '/img/home/partners/hexschool-logo.webp' },
-  { name: 'LinkedIn', logo: '/img/home/partners/linkedin-logo.webp' },
-  { name: '104 Job Bank', logo: '/img/home/partners/104-logo.webp' },
-  { name: 'Cathay United Bank', logo: '/img/home/partners/cathaybk-logo.webp' },
-  { name: 'Microsoft', logo: '/img/home/partners/microsoft-logo.webp' },
+  { name: 'Company 1', logo: '/img/home/partners/set_02/comp-001.webp' },
+  { name: 'Company 2', logo: '/img/home/partners/set_02/comp-002.webp' },
+  { name: 'Company 3', logo: '/img/home/partners/set_02/comp-003.webp' },
+  { name: 'Company 4', logo: '/img/home/partners/set_02/comp-004.webp' },
+  { name: 'Company 5', logo: '/img/home/partners/set_02/comp-005.webp' },
+  { name: 'Company 6', logo: '/img/home/partners/set_02/comp-006.webp' },
 ];
 
 // Footer State ---
@@ -463,7 +462,13 @@ const stats = [
             class="flex max-h-partner-logo-height max-w-partner-logo-width items-center justify-center"
           >
             <NuxtImg
-              class="max-h-full max-w-full object-contain"
+              class="max-h-full max-w-full object-cover"
+              width="174"
+              height="44"
+              fit="cover"
+              format="webp"
+              preload
+              loading="lazy"
               :src="partner.logo"
               :alt="partner.name"
             />

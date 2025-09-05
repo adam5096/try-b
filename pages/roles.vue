@@ -64,7 +64,7 @@ const roles = ref([
           <div class="mt-auto w-full pt-4">
             <NuxtLink
               :to="role.loginUrl"
-              class="inline-block w-full rounded-lg border border-gray-300 px-6 py-3 text-center text-gray-700 transition-colors hover:bg-gray-100"
+              class="inline-block w-full rounded-lg bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
             >
               登入/註冊
             </NuxtLink>
