@@ -112,12 +112,12 @@ onBeforeUnmount(() => {
           </h1>
 
           <!-- Desktop Search Bar 搜尋欄 -->
-          <div class="hidden lg:flex flex-1 justify-center px-4">
+          <!-- <div class="hidden lg:flex flex-1 justify-center px-4">
             <div
               class="w-full min-w-[150px] max-w-[1000px] flex items-center justify-center mx-auto border border-gray-200 rounded-lg p-2 transition-colors focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
               <input type="text" placeholder="搜尋職業體驗機會..." class="w-full bg-transparent focus:outline-none">
             </div>
-          </div>
+          </div> -->
 
           <!-- 右側導覽 -->
           <div class="hidden lg:flex items-center gap-6">
