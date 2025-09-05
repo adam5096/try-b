@@ -227,7 +227,7 @@ const handleViewDetail = async (program: any) => {
                 <p class="text-sm text-gray-600 mb-3 flex-1 overflow-hidden text-ellipsis line-clamp-3">{{ program.Intro || '暫無介紹' }}</p>
                 
                 <!-- Program Details - 固定高度區域 -->
-                <div class="space-y-1 mb-6 h-[5.5rem] flex flex-col justify-center">
+                <div class="space-y-2 mb-6 h-[5.5rem] flex flex-col justify-center">
                   <div class="flex items-center gap-2 h-4">
                     <font-awesome-icon :icon="['fas', 'briefcase']" class="text-gray-500 w-3 flex-shrink-0" />
                     <span class="text-xs text-black truncate">{{ program.Industry?.Title || '產業未分類' }}</span>

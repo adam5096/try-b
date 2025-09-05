@@ -182,7 +182,7 @@ const handleViewDetail = async (program: any) => {
               {{ formatIntroText(program.Intro) || '暫無介紹' }}
             </p>
 
-            <div class="space-y-1 mb-6 h-[5.5rem] flex flex-col justify-center">
+            <div class="space-y-2 mb-6 h-[5.5rem] flex flex-col justify-center">
               <div class="flex items-center gap-2 h-4">
                 <font-awesome-icon :icon="['fas', 'briefcase']" class="text-gray-500 w-3 flex-shrink-0" />
                 <span class="text-xs text-black truncate">{{ program.Industry?.Title || '產業未分類' }}</span>
@@ -203,7 +203,7 @@ const handleViewDetail = async (program: any) => {
 
             <button
               @click="handleViewDetail(program)"
-              class="w-full bg-btn-yellow text-black font-medium py-2 px-4 rounded-lg hover:bg-btn-yellow/80 transition-colors text-sm"
+              class="w-full rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
             >
               查看詳情
             </button>
