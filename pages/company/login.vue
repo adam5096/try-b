@@ -128,7 +128,7 @@ async function handleLogin() {
 
           <button
             type="submit"
-            class="w-full rounded-md bg-gray-800 py-3 font-bold text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+            class="w-full rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
             :disabled="isLoading"
           >
             {{ isLoading ? '登入中...' : '登入' }}
