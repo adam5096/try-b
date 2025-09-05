@@ -184,9 +184,9 @@ const refresh = () => {
           <h2 class="text-xl font-bold text-zinc-800">
             計畫詳情
           </h2>
-          <el-button type="primary" plain>
+          <!-- <el-button type="primary" plain>
             編輯計畫
-          </el-button>
+          </el-button> -->
         </div>
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
           <!-- Left Column -->
