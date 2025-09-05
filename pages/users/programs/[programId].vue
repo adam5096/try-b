@@ -95,6 +95,15 @@ const onApplySubmitted = async () => {
   showApply.value = false;
   await navigateTo({ name: 'user-landing' }); // 導到 users/index.vue
 };
+
+// 申請按鈕點擊處理：未登入導向登入頁（附帶返回 redirect），已登入則開啟申請流程
+const handleApplyClick = async () => {
+  if (!isLoggedIn.value) {
+    await navigateTo({ name: 'user-login', query: { redirect: route.fullPath } });
+    return;
+  }
+  showApply.value = true;
+};
 </script>
 
 <template>
@@ -108,8 +117,7 @@ const onApplySubmitted = async () => {
             v-if="programDetail" 
             type="primary" 
             size="large" 
-            :disabled="!isLoggedIn"
-            @click="showApply = true"
+            @click="handleApplyClick"
           >
             我要申請
           </el-button>
