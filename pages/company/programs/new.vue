@@ -4,12 +4,14 @@ definePageMeta({
   name: 'company-programs-new',
 });
 
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
 import { ElNotification } from 'element-plus';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
 import type { CreateProgramPayload } from '~/types/company/program';
 import { useRouter } from 'vue-router';
+import { useIndustries } from '~/composables/api/company/useIndustries';
+import { usePositions } from '~/composables/api/company/usePositions';
 
 const programStore = useCompanyProgramStore();
 const router = useRouter();
@@ -40,6 +42,39 @@ const form = ref<CreateProgramPayload>({
   images: [], // 圖片上傳邏輯待處理
 });
 
+// 下拉清單資料與選取值（依需求使用 title 作為 value）
+const industries = ref<{ id: number; title: string }[]>([]);
+const positions = ref<{ id: number; title: string }[]>([]);
+const selectedIndustryTitle = ref<string>('');
+const selectedPositionTitle = ref<string>('');
+
+const { data: industriesData, pending: industriesPending, error: industriesError } = useIndustries();
+const { data: positionsData, pending: positionsPending, error: positionsError } = usePositions();
+
+watchEffect(() => {
+  if (industriesData?.value) {
+    industries.value = industriesData.value;
+    // 若原本有預設 id，推導預設 title
+    if (!selectedIndustryTitle.value && form.value.industry_id) {
+      const found = industries.value.find(i => i.id === form.value.industry_id);
+      if (found) selectedIndustryTitle.value = found.title;
+    }
+  }
+  if (positionsData?.value) {
+    positions.value = positionsData.value;
+    if (!selectedPositionTitle.value && form.value.job_title_id) {
+      const found = positions.value.find(p => p.id === form.value.job_title_id);
+      if (found) selectedPositionTitle.value = found.title;
+    }
+  }
+  if (industriesError?.value) {
+    ElNotification({ title: '載入產業失敗', message: String(industriesError.value), type: 'error' });
+  }
+  if (positionsError?.value) {
+    ElNotification({ title: '載入職務失敗', message: String(positionsError.value), type: 'error' });
+  }
+});
+
 function addStep() {
   if (form.value.steps.length < 5) {
     form.value.steps.push({ name: '自定義項目', description: '' });
@@ -54,6 +89,18 @@ async function handleSubmit() {
       type: 'warning',
     });
     return;
+  }
+
+  // 送出前：將使用者選到的 title 轉回對應 id
+  const industryId = industries.value.find(i => i.title === selectedIndustryTitle.value)?.id;
+  const positionId = positions.value.find(p => p.title === selectedPositionTitle.value)?.id;
+  if (industryId) form.value.industry_id = industryId;
+  if (positionId) form.value.job_title_id = positionId;
+
+  // 開發模式下輸出選擇結果，便於除錯
+  if (import.meta.dev) {
+    console.log('[Company/Programs/New] industry:', selectedIndustryTitle.value, '=> id:', industryId);
+    console.log('[Company/Programs/New] position:', selectedPositionTitle.value, '=> id:', positionId);
   }
 
   isLoading.value = true;
@@ -109,17 +156,21 @@ async function handleSubmit() {
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="產業類別">
-            <el-select v-model="form.industry_id" placeholder="請選擇產業類別" class="w-full min-w-form-control md:max-w-form-select">
-              <!-- TODO: 之後需串接取得產業類別 API -->
-              <el-option label="資訊科技" :value="10" />
+            <el-select v-model="selectedIndustryTitle" placeholder="請選擇產業類別" class="w-full min-w-form-control md:max-w-form-select" :loading="industriesPending">
+              <template #empty>
+                <div class="py-2 text-gray-500">{{ industriesPending ? '載入中…' : '無可選清單' }}</div>
+              </template>
+              <el-option v-for="i in industries" :key="i.id" :label="i.title" :value="i.title" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="職務類別">
-            <el-select v-model="form.job_title_id" placeholder="請選擇職務類別" class="w-full min-w-form-control md:max-w-form-select">
-              <!-- TODO: 之後需串接取得職務類別 API -->
-              <el-option label="軟體工程師" :value="3" />
+            <el-select v-model="selectedPositionTitle" placeholder="請選擇職務類別" class="w-full min-w-form-control md:max-w-form-select" :loading="positionsPending">
+              <template #empty>
+                <div class="py-2 text-gray-500">{{ positionsPending ? '載入中…' : '無可選清單' }}</div>
+              </template>
+              <el-option v-for="p in positions" :key="p.id" :label="p.title" :value="p.title" />
             </el-select>
           </el-form-item>
         </el-col>
@@ -180,7 +231,7 @@ async function handleSubmit() {
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="體驗照片 (最多四張)">
+            <el-form-item label="體驗照片 (可以留白，最多四張)">
               <el-upload
                 action="#"
                 list-type="picture-card"
