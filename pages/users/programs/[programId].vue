@@ -216,8 +216,8 @@ const handleApplyClick = async () => {
                 <span>申請截止還有{{ programDetail.days_left }}天</span>
               </div>
               <div class="flex items-center justify-between">
-                <span>招募天數：{{ programDetail.program_duration_days }}天</span>
-                <span>招募人數：{{ programDetail.min_people }}-{{ programDetail.max_people }}人</span>
+                <span>體驗天數：{{ programDetail.program_duration_days }}天</span>
+                <span>體驗人數：{{ programDetail.min_people }}-{{ programDetail.max_people }}人</span>
               </div>
               <div class="flex items-center gap-2">
                 <font-awesome-icon :icon="['fas','calendar-alt']" />
