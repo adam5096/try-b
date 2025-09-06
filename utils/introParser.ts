@@ -108,3 +108,22 @@ function extractListItems(text: string): string[] {
 export function isNewFormatIntro(intro: string): boolean {
   return Boolean(intro && (intro.includes('\r\n\r\n') || intro.includes('\n\n')));
 }
+
+/**
+ * 產生卡片摘要字串：
+ * - 先嘗試使用結構化解析的 experienceIntro 或 fallback
+ * - 移除多餘換行與空白
+ * - 依照指定長度截斷並補上省略號
+ */
+export function extractIntroSummaryForCard(intro: string, maxLength = 120): string {
+  const parsed = parseIntroContent(intro || '');
+  const raw = parsed.experienceIntro || parsed.fallback || '';
+
+  const singleLine = String(raw)
+    .replace(/\r\n|\n|\r/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (singleLine.length <= maxLength) return singleLine;
+  return singleLine.slice(0, Math.max(0, maxLength - 1)).trimEnd() + '…';
+}

@@ -2,12 +2,18 @@ import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 
 export default defineNuxtRouteMiddleware(async (to) => {
   // We only care about company routes
-  if (!to.path.startsWith('/company/')) {
+  if (!(to.path === '/company' || to.path.startsWith('/company/'))) {
     return;
   }
 
   const authStore = useCompanyAuthStore();
   const publicPages = ['/company/login', '/company/register'];
+  
+  // Allow pages explicitly marked as public via page meta
+  // Usage on page: definePageMeta({ public: true }) or { auth: false }
+  if (to.meta?.public === true || to.meta?.auth === false) {
+    return;
+  }
   
   // If user is logged in and tries to access a public page (e.g., login),
   // redirect them to the company dashboard.
