@@ -15,6 +15,35 @@ const router = useRouter()
 
 const paymentMethod = ref('creditCard')
 
+// 信用卡欄位（ElInput 為受控元件，需綁定 v-model 才可輸入）
+const cardNumber = ref('')
+const expiryDate = ref('')
+const cvc = ref('')
+const cardName = ref('')
+
+// 輸入 4 位自動加入空白（僅允許數字）
+const MAX_CARD_DIGITS = 16
+function onCardNumberInput(val: string) {
+  const digitsOnly = String(val || '').replace(/\D/g, '').slice(0, MAX_CARD_DIGITS)
+  const grouped = digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ').trim()
+  cardNumber.value = grouped
+}
+
+// 有效期限：每 2 位自動補 " / "，最多 4 位數字 (MMYY)
+function onExpiryInput(val: string) {
+  const digits = String(val || '').replace(/\D/g, '').slice(0, 4)
+  if (digits.length <= 2) {
+    expiryDate.value = digits
+  } else {
+    expiryDate.value = `${digits.slice(0, 2)} / ${digits.slice(2)}`
+  }
+}
+
+// CVC：僅數字，最多 3 位
+function onCvcInput(val: string) {
+  cvc.value = String(val || '').replace(/\D/g, '').slice(0, 3)
+}
+
 const goBack = () => {
   router.back()
 }
@@ -137,19 +166,42 @@ const confirmPayment = () => {
           <div class="grid grid-cols-2 gap-x-4 gap-y-6">
             <div class="col-span-2">
               <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">卡號</label>
-              <el-input id="cardNumber" placeholder="1234 5678 9012 3456" size="large" />
+              <el-input
+                id="cardNumber"
+                v-model="cardNumber"
+                placeholder="1234 5678 9012 3456"
+                size="large"
+                inputmode="numeric"
+                maxlength="19"
+                autocomplete="cc-number"
+                @input="onCardNumberInput"
+              />
             </div>
             <div>
               <label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-1">有效期限</label>
-              <el-input id="expiryDate" placeholder="MM / YY" size="large" />
+              <el-input
+                id="expiryDate"
+                v-model="expiryDate"
+                placeholder="MM / YY"
+                size="large"
+                autocomplete="cc-exp"
+                maxlength="7"
+                inputmode="numeric"
+                @input="onExpiryInput"
+              />
             </div>
             <div>
               <label for="cvc" class="block text-sm font-medium text-gray-700 mb-1">安全碼</label>
-              <el-input id="cvc" placeholder="123" size="large" />
-            </div>
-            <div class="col-span-2">
-              <label for="cardName" class="block text-sm font-medium text-gray-700 mb-1">持卡人姓名</label>
-              <el-input id="cardName" placeholder="請輸入與信用卡上相同的姓名" size="large" />
+              <el-input
+                id="cvc"
+                v-model="cvc"
+                placeholder="123"
+                size="large"
+                inputmode="numeric"
+                maxlength="3"
+                autocomplete="cc-csc"
+                @input="onCvcInput"
+              />
             </div>
           </div>
           <div class="mt-6">
