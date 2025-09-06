@@ -21,8 +21,8 @@ const agreeToTerms = ref(false);
 const form = ref<CreateProgramPayload>({
   name: '',
   intro: '',
-  industry_id: 10, // 暫用預設值
-  job_title_id: 3, // 暫用預設值
+  industry_id: 0, // 初始為未選，載入後預設第一筆
+  job_title_id: 0, // 初始為未選，載入後預設第一筆
   address: '',
   address_map: 'https://maps.example.com', // 暫用預設值
   contact_name: '',
@@ -54,17 +54,37 @@ const { data: positionsData, pending: positionsPending, error: positionsError } 
 watchEffect(() => {
   if (industriesData?.value) {
     industries.value = industriesData.value;
-    // 若原本有預設 id，推導預設 title
-    if (!selectedIndustryTitle.value && form.value.industry_id) {
-      const found = industries.value.find(i => i.id === form.value.industry_id);
-      if (found) selectedIndustryTitle.value = found.title;
+    // 預設從第一筆開始展示；若已有既定 id 則依 id 對應
+    if (!selectedIndustryTitle.value) {
+      if (form.value.industry_id) {
+        const found = industries.value.find(i => i.id === form.value.industry_id);
+        if (found) {
+          selectedIndustryTitle.value = found.title;
+        } else if (industries.value.length > 0) {
+          selectedIndustryTitle.value = industries.value[0].title;
+          form.value.industry_id = industries.value[0].id;
+        }
+      } else if (industries.value.length > 0) {
+        selectedIndustryTitle.value = industries.value[0].title;
+        form.value.industry_id = industries.value[0].id;
+      }
     }
   }
   if (positionsData?.value) {
     positions.value = positionsData.value;
-    if (!selectedPositionTitle.value && form.value.job_title_id) {
-      const found = positions.value.find(p => p.id === form.value.job_title_id);
-      if (found) selectedPositionTitle.value = found.title;
+    if (!selectedPositionTitle.value) {
+      if (form.value.job_title_id) {
+        const found = positions.value.find(p => p.id === form.value.job_title_id);
+        if (found) {
+          selectedPositionTitle.value = found.title;
+        } else if (positions.value.length > 0) {
+          selectedPositionTitle.value = positions.value[0].title;
+          form.value.job_title_id = positions.value[0].id;
+        }
+      } else if (positions.value.length > 0) {
+        selectedPositionTitle.value = positions.value[0].title;
+        form.value.job_title_id = positions.value[0].id;
+      }
     }
   }
   if (industriesError?.value) {

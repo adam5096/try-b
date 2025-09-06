@@ -6,6 +6,7 @@ definePageMeta({
 
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
+import { useHomePopularFetch } from '~/composables/api/home/useHomePopularFetch';
 
 // --- SEO Meta ---
 // 為首頁客製化 SEO 資訊，覆蓋 app.vue 中的全域設定
@@ -24,7 +25,6 @@ useSeoMeta({
 
 const partners = [
   { name: 'Company 1', logo: '/img/home/partners/set_02/comp-001.webp' },
-  { name: 'Company 2', logo: '/img/home/partners/set_02/comp-002.webp' },
   { name: 'Company 3', logo: '/img/home/partners/set_02/comp-003.webp' },
   { name: 'Company 4', logo: '/img/home/partners/set_02/comp-004.webp' },
   { name: 'Company 5', logo: '/img/home/partners/set_02/comp-005.webp' },
@@ -93,6 +93,23 @@ const stats = [
   { value: '500+', label: '合作企業' },
   { value: '2,500+', label: '成功體驗' },
   { value: '98%', label: '滿意度' }
+]
+
+// Home: Popular programs (前 3 筆，少於補空卡)
+const { cards, pending, error } = useHomePopularFetch()
+
+// Image fallback on load error per-card
+const erroredImage = ref<Record<number, boolean>>({})
+function getCardImageSrc(index: number, coverUrl: string | null): string {
+  const fallback = defaultCardImages[index % defaultCardImages.length]
+  if (erroredImage.value[index]) return fallback
+  return coverUrl || fallback
+}
+
+const defaultCardImages = [
+  '/img/home/plan/plan-01.webp',
+  '/img/home/plan/plan-02.webp',
+  '/img/home/plan/plan-03.webp',
 ]
 </script>
 
@@ -257,95 +274,45 @@ const stats = [
       <!-- Cards Container -->
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 mt-12">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Card 1 -->
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1">
+          <div
+            v-for="(card, index) in cards"
+            :key="index"
+            class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1"
+            :class="{ 'animate-pulse': pending }"
+          >
             <div class="relative">
-              <NuxtImg class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1911&auto=format&fit=crop" alt="投資理財顧問體驗" />
+              <NuxtImg
+                class="w-full h-48 object-cover"
+                :src="getCardImageSrc(index, card.coverUrl)"
+                alt="熱門體驗活動"
+                width="768"
+                height="192"
+                fit="cover"
+                quality="90"
+                @error="erroredImage[index] = true"
+                loading="lazy"
+              />
               <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors">
                 <SharedHeartIcon class="w-8 h-8" />
               </button>
             </div>
             <div class="p-6 flex flex-col flex-grow">
-              <p class="text-sm text-gray-500">投資理財顧問體驗</p>
-              <h3 class="text-xl font-bold mt-1">投資理財顧問體驗</h3>
-              <p class="mt-2 text-gray-600 text-sm flex-grow">跟隨資深理財顧問了解金融市場分析、學習投資組合規劃，體驗為客戶制定理財策略的專業服務流程。</p>
+              <p class="text-sm text-gray-500">{{ card.meta || '—' }}</p>
+              <h3 class="text-lg font-bold mt-1">{{ card.title }}</h3>
+              <p class="mt-2 text-gray-600 text-sm flex-grow">{{ card.description }}</p>
               <div class="mt-4 space-y-2 text-sm text-gray-700">
                 <div class="flex items-center gap-2">
                   <SharedLocationPinIcon class="w-5 h-5 flex-shrink-0" />
-                  <span>台北市大安區</span>
+                  <span>{{ card.location }}</span>
                 </div>
                 <div class="flex items-center gap-2">
                   <SharedCalendarIcon class="w-5 h-5 flex-shrink-0" />
-                  <span>2025/09/10 - 2023/11/20</span>
+                  <span>{{ card.dateText }}</span>
                 </div>
               </div>
               <div class="mt-4 flex justify-between text-sm text-gray-500 border-t pt-4">
-                <span>已申請人數：0 人</span>
-                <span>申請截止還有 40 天</span>
-              </div>
-              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
-                查看詳情
-              </button>
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1">
-            <div class="relative">
-              <NuxtImg class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=2070&auto=format&fit=crop" alt="UI/UX設計師工作坊" />
-              <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors">
-                <SharedHeartIcon class="w-8 h-8" />
-              </button>
-            </div>
-            <div class="p-6 flex flex-col flex-grow">
-              <p class="text-sm text-gray-500">設計體驗</p>
-              <h3 class="text-xl font-bold mt-1">UI/UX設計師工作坊</h3>
-              <p class="mt-2 text-gray-600 text-sm flex-grow">深入設計思維流程，從用戶研究到原型製作，體驗數位產品設計的完整過程，了解設計師的創作思路。</p>
-              <div class="mt-4 space-y-2 text-sm text-gray-700">
-                <div class="flex items-center gap-2">
-                  <SharedLocationPinIcon class="w-5 h-5 flex-shrink-0" />
-                  <span>金門縣烈嶼鄉</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <SharedCalendarIcon class="w-5 h-5 flex-shrink-0" />
-                  <span>2025/10/01 - 2023/12/20</span>
-                </div>
-              </div>
-              <div class="mt-4 flex justify-between text-sm text-gray-500 border-t pt-4">
-                <span>已申請人數：0 人</span>
-                <span>申請截止還有 10 天</span>
-              </div>
-              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
-                查看詳情
-              </button>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1">
-            <div class="relative">
-              <NuxtImg class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012&auto=format&fit=crop" alt="新創企業營運體驗" />
-              <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors">
-                <SharedHeartIcon class="w-8 h-8" />
-              </button>
-            </div>
-            <div class="p-6 flex flex-col flex-grow">
-              <p class="text-sm text-gray-500">新創企業體驗</p>
-              <h3 class="text-xl font-bold mt-1">新創企業營運體驗</h3>
-              <p class="mt-2 text-gray-600 text-sm flex-grow">加入新創團隊實際參與產品開發、市場策略制定，體驗創業家的決策焦慮，了解新創生態的運作模式。</p>
-              <div class="mt-4 space-y-2 text-sm text-gray-700">
-                <div class="flex items-center gap-2">
-                  <SharedLocationPinIcon class="w-5 h-5 flex-shrink-0" />
-                  <span>屏東縣恆春鎮</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <SharedCalendarIcon class="w-5 h-5 flex-shrink-0" />
-                  <span>2025/07/01 - 2025/10/31</span>
-                </div>
-              </div>
-              <div class="mt-4 flex justify-between text-sm text-gray-500 border-t pt-4">
-                <span>已申請人數：0 人</span>
-                <span>申請截止還有 10 天</span>
+                <span>已申請人數：{{ card.appliedCount }} 人</span>
+                <span>申請截止還有 {{ card.daysLeft }} 天</span>
               </div>
               <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
                 查看詳情
@@ -463,11 +430,11 @@ const stats = [
           >
             <NuxtImg
               class="max-h-full max-w-full object-cover"
-              width="174"
+              width="176"
               height="44"
               fit="cover"
+              background="transparent"
               format="webp"
-              preload
               loading="lazy"
               :src="partner.logo"
               :alt="partner.name"
