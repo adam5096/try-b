@@ -12,6 +12,7 @@ import type { CreateProgramPayload } from '~/types/company/program';
 import { useRouter } from 'vue-router';
 import { useIndustries } from '~/composables/api/company/useIndustries';
 import { usePositions } from '~/composables/api/company/usePositions';
+import { uploadProgramImages } from '~/composables/api/company/useUploadProgramImages';
 
 const programStore = useCompanyProgramStore();
 const router = useRouter();
@@ -47,6 +48,11 @@ const industries = ref<{ id: number; title: string }[]>([]);
 const positions = ref<{ id: number; title: string }[]>([]);
 const selectedIndustryTitle = ref<string>('');
 const selectedPositionTitle = ref<string>('');
+
+// 檔案上傳暫存與檢核
+const uploadFiles = ref<File[]>([]);
+const ACCEPTED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/webp'];
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 
 const { data: industriesData, pending: industriesPending, error: industriesError } = useIndustries();
 const { data: positionsData, pending: positionsPending, error: positionsError } = usePositions();
@@ -101,6 +107,31 @@ function addStep() {
   }
 }
 
+function onUploadChange(file: any) {
+  const raw: File | undefined = file?.raw;
+  if (!raw) return false;
+  if (!ACCEPTED_MIME_TYPES.includes(raw.type)) {
+    ElNotification({ title: '格式不支援', message: '僅支援 jpg、jpeg、webp', type: 'warning' });
+    return false;
+  }
+  if (raw.size > MAX_FILE_SIZE_BYTES) {
+    ElNotification({ title: '檔案過大', message: '單檔大小不可超過 5MB', type: 'warning' });
+    return false;
+  }
+  if (uploadFiles.value.length >= 4) {
+    ElNotification({ title: '數量超過上限', message: '最多僅可上傳 4 張', type: 'warning' });
+    return false;
+  }
+  uploadFiles.value.push(raw);
+  return false;
+}
+
+function onUploadRemove(file: any) {
+  const raw: File | undefined = file?.raw;
+  if (!raw) return;
+  uploadFiles.value = uploadFiles.value.filter(f => f !== raw);
+}
+
 async function handleSubmit() {
   if (!agreeToTerms.value) {
     ElNotification({
@@ -125,22 +156,30 @@ async function handleSubmit() {
 
   isLoading.value = true;
   try {
-    const { success, error } = await programStore.createProgram(form.value);
-
-    if (success) {
-      ElNotification({
-        title: '成功',
-        message: '體驗計畫已成功建立！',
-        type: 'success',
-      });
-      router.push({ name: 'company-programs' }); 
-    } else {
-      ElNotification({
-        title: '錯誤',
-        message: error?.message || '建立計畫失敗，請稍後再試。',
-        type: 'error',
-      });
+    const createResult: any = await programStore.createProgram(form.value);
+    if (!createResult?.success) {
+      ElNotification({ title: '錯誤', message: createResult?.error?.message || '建立計畫失敗，請稍後再試。', type: 'error' });
+      return;
     }
+
+    const newProgramId: number | undefined = createResult?.data?.id;
+    if (!newProgramId) {
+      ElNotification({ title: '錯誤', message: '建立成功但無法取得新計畫 ID。', type: 'error' });
+      return;
+    }
+
+    if (uploadFiles.value.length > 0) {
+      try {
+        await uploadProgramImages(newProgramId, uploadFiles.value);
+      } catch (e) {
+        console.error(e);
+        ElNotification({ title: '部分失敗', message: '計畫已建立，但圖片上傳失敗。', type: 'warning' });
+        return; // 停留在本頁讓使用者可重試
+      }
+    }
+
+    ElNotification({ title: '成功', message: '體驗計畫與圖片已上傳完成！', type: 'success' });
+    router.push({ name: 'company-programs' });
   } catch (e) {
     console.error(e);
     ElNotification({
@@ -258,6 +297,10 @@ async function handleSubmit() {
                 :auto-upload="false"
                 multiple
                 :limit="4"
+                accept=".jpg,.jpeg,.webp"
+                :before-upload="() => false"
+                :on-change="onUploadChange"
+                :on-remove="onUploadRemove"
               >
                 <el-icon><Plus /></el-icon>
               </el-upload>
