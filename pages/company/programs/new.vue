@@ -179,7 +179,7 @@ async function handleSubmit() {
     }
 
     ElNotification({ title: '成功', message: '體驗計畫與圖片已上傳完成！', type: 'success' });
-    router.push({ name: 'company-programs' });
+    await navigateTo('/company');
   } catch (e) {
     console.error(e);
     ElNotification({
