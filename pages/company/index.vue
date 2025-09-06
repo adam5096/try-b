@@ -141,12 +141,12 @@ const handleViewDetail = async (program: any) => {
 
       <!-- Tabs -->
       <el-tabs model-value="all" class="mt-4">
-        <el-tab-pane label="全部計畫 (6)" name="all" />
-        <el-tab-pane label="已通過 (4)" name="passed" />
-        <el-tab-pane label="已發布 (2)" name="published" />
-        <el-tab-pane label="待發布 (2)" name="pending" />
-        <el-tab-pane label="已拒絕 (1)" name="rejected" />
-        <el-tab-pane label="審核中 (1)" name="reviewing" />
+        <el-tab-pane label="全部計畫" name="all" />
+        <el-tab-pane label="已通過" name="passed" />
+        <el-tab-pane label="已發布" name="published" />
+        <el-tab-pane label="待發布" name="pending" />
+        <el-tab-pane label="已拒絕" name="rejected" />
+        <el-tab-pane label="審核中" name="reviewing" />
       </el-tabs>
 
       <!-- Error -->
