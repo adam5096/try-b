@@ -64,11 +64,19 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
       if (data.value) {
         console.log('Setting programs data:', data.value);
         // 正規化：確保每一筆清單都有可用的 Program Id
-        const normalizeToHttps = (u?: string | null) => (u ? u.replace(/^http:\/\//i, 'https://') : null);
+        const normalizeImageUrl = (u?: string | null) => {
+          if (!u) return null;
+          const httpsUrl = u.trim().replace(/^http:\/\//i, 'https://');
+          try {
+            return encodeURI(httpsUrl);
+          } catch {
+            return httpsUrl.replace(/\s/g, '%20');
+          }
+        };
         const normalizeProgram = (raw: any): Program => ({
           ...raw,
           Id: raw?.Id ?? null,
-          CoverImage: normalizeToHttps(raw?.CoverImage),
+          CoverImage: normalizeImageUrl(raw?.CoverImage),
         } as unknown as Program);
 
         const normalizedItems = (data.value.items || []).map(normalizeProgram);

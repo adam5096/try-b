@@ -9,7 +9,7 @@ import { userRoutes } from '~/utils/userRoutes';
 import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
 import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 import type { Program } from '~/types/users/program';
-import ImageWithSkeleton from '~/components/shared/ImageWithSkeleton.vue';
+// 先以 NuxtImg 直接顯示圖片，暫時移除骨架元件
 
 const programsStore = useUserProgramsStore();
 const programDetailStore = useUserProgramDetailStore();
@@ -173,12 +173,11 @@ const handleViewDetail = async (program: any) => {
                 <div class="h-full flex">
                   <!-- Left: Image -->
                   <div class="w-1/2 h-full">
-                    <ImageWithSkeleton
-                      :src="program.CoverImage"
+                    <NuxtImg
+                      :src="program.CoverImage || '/img/home/home-worker-bg.webp'"
                       alt="program image"
-                      :img-class="'w-full h-full object-cover'"
-                      :skeleton-height-class="'h-full'"
-                      :fit="'cover'"
+                      class="w-full h-full object-cover"
+                      fit="cover"
                     />
                   </div>
                   <!-- Right: Text -->
@@ -232,12 +231,12 @@ const handleViewDetail = async (program: any) => {
             <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC] h-[580px] flex flex-col overflow-hidden">
               <!-- Cover Image with Status Tag -->
               <div class="relative flex-shrink-0">
-                <ImageWithSkeleton
-                  :src="program.CoverImage"
+                <NuxtImg
+                  :src="program.CoverImage || '/img/home/home-worker-bg.webp'"
                   alt="program image"
-                  :img-class="'w-full h-48 object-cover'"
-                  :skeleton-height-class="'h-48'"
-                  :fit="'cover'"
+                  class="w-full h-48 object-cover"
+                  fit="cover"
+                  loading="lazy"
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
