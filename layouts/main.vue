@@ -57,10 +57,9 @@ const socialLinks = ref([
 
 <template>
   <div>
-    <!-- Header (Moved from pages/index.vue) -->
-    <header class="nav-shadow fixed top-0 left-0 w-full bg-white z-40">
-      <div class="h-main-header w-full max-w-screen-full-hd mx-auto p-12">
-        <nav class="flex h-full items-center justify-between gap-8">
+    <!-- Header (Unified with user layout spec) -->
+    <header class="nav-shadow fixed top-0 left-0 w-full bg-white z-40 h-[90px] flex items-center">
+      <nav class="w-full max-w-screen-full-hd mx-auto px-6 lg:px-8 flex h-full items-center justify-between gap-8">
           <!-- 商標 Section -->
           <h1 class="flex flex-none items-center text-2xl">
             <NuxtLink to="/" class="flex items-center gap-2">
@@ -125,11 +124,10 @@ const socialLinks = ref([
           <!-- 遮罩 -->
           <div v-if="isMenuOpen" class="fixed inset-0 z-45 bg-black/30 lg:hidden" @click="toggleMenu"></div>
         </nav>
-      </div>
     </header>
 
     <!-- Page content will be injected here -->
-    <main class="pt-[158px]">
+    <main class="pt-[90px]">
       <slot />
     </main>
 

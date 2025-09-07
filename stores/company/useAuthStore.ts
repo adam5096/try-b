@@ -92,6 +92,20 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         basicUserCookie.value = response.value.user;
 
         console.log('✅ 登入成功:', response.value.user.Account);
+
+        // 登入成功後，重置企業付款狀態持久化並同步到 store
+        const companyPayedCookie = useCookie<boolean>('company_is_payed', {
+          path: '/',
+          sameSite: 'lax',
+        });
+        companyPayedCookie.value = false;
+        try {
+          const { useCompanyPlanStore } = await import('~/stores/company/usePlanStore');
+          const planStore = useCompanyPlanStore();
+          planStore.resetPaid();
+        } catch (e) {
+          // 忽略可能的循環依賴問題，至少 Cookie 已重置
+        }
       } else {
         throw new Error('登入失敗：無效的回應格式');
       }
@@ -123,6 +137,20 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
     companyIdCookie.value = null;
     basicUser.value = null;
     basicUserCookie.value = null;
+
+    // 也一併清除企業付款狀態的持久化 Cookie
+    const companyPayedCookie = useCookie<boolean | null>('company_is_payed', {
+      path: '/',
+      sameSite: 'lax',
+    });
+    companyPayedCookie.value = null;
+
+    // 清除「首次進入方案列表」的旗標 Cookie
+    const firstVisitFlag = useCookie<boolean | null>('company_purchase_first_visit_done', {
+      path: '/',
+      sameSite: 'lax',
+    });
+    firstVisitFlag.value = null;
   }
 
   return {
