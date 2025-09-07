@@ -5,6 +5,7 @@ definePageMeta({
 })
 
 import { reactive, ref, onMounted } from 'vue'
+import { UserFilled } from '@element-plus/icons-vue'
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore'
 import { useCompanyCommentReviews } from '~/composables/api/company/useCompanyCommentReviews'
 
@@ -51,7 +52,7 @@ async function loadData() {
       id: item.Id,
       author: {
         name: item.ParticipantName,
-        avatar: `https://i.pravatar.cc/40?u=${encodeURIComponent(item.ParticipantName)}-${item.Id}`,
+        avatar: item.Headshot || '',
         role: item.ParticipantIdentity?.title || '—',
         age: item.ParticipantAge
       },
@@ -123,7 +124,11 @@ onMounted(() => {
 
       <div class="divide-y divide-gray-200">
         <div v-for="comment in comments" :key="comment.id" class="py-6 flex gap-4">
-          <el-avatar :size="40" :src="comment.author.avatar" />
+          <el-avatar :size="40" :src="comment.author.avatar">
+            <template #default>
+              <el-icon><UserFilled /></el-icon>
+            </template>
+          </el-avatar>
           <div class="flex-1">
             <div class="flex flex-wrap justify-between items-center gap-2">
               <div class="flex items-center gap-2 text-sm">

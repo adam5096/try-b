@@ -14,6 +14,8 @@ import { adminRoutes } from './adminRoutes';
 export const routes = {
   // 首頁/通用路由
   home: () => ({ name: 'index' }),
+  homeFeaturedPrograms: () => ({ path: '/#featured-programs' }),
+  plan: () => ({ name: 'plan' }),
   loginRoles: () => ({ name: 'roles' }),
 
   // 各模組路由

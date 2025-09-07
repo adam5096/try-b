@@ -10,6 +10,7 @@ export interface CompanyEvaluationItem {
   ParticipantName: string;
   ParticipantIdentity: ParticipantIdentity;
   ParticipantAge: number;
+  Headshot?: string;
   ProgramName: string;
   ProgramPlanId: number;
   Score: number;
