@@ -20,6 +20,7 @@ const errorMessage = ref('');
 async function handleLogin() {
   isLoading.value = true;
   errorMessage.value = '';
+  let willRedirect = false;
   try {
     await authStore.login(loginData.value);
     
@@ -31,6 +32,8 @@ async function handleLogin() {
       : router.resolve(routes.company.landing()).path;
 
     if (process.client) {
+      // 進行全頁重新導向，於導向完成前維持按鈕 loading 狀態
+      willRedirect = true;
       window.location.replace(targetPath);
     }
 
@@ -38,7 +41,10 @@ async function handleLogin() {
     errorMessage.value = '登入失敗，請檢查您的帳號和密碼。';
     console.error('Login failed:', error);
   } finally {
-    isLoading.value = false;
+    // 僅在未跳轉的情況下才關閉 loading
+    if (!willRedirect) {
+      isLoading.value = false;
+    }
   }
 }
 </script>
