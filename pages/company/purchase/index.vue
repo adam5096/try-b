@@ -52,13 +52,13 @@ interface CurrentPlan {
 
 const currentPlan = ref<CurrentPlan>({
   orderNumber: 'TXN20231215-78945',
-  paymentDate: '2025年12月15日 14:30',
+  paymentDate: '2025 年 6 月 1 日 00:00',
   paymentMethod: '信用卡 (末四碼: 5678)',
-  amount: 'NT$ 2,700',
+  amount: 'TWD 2,700',
   details: {
     duration: '60天 體驗人數上限 30 人',
     limit: '體驗人數上限 30 人',
-    period: '2025年12月25日 - 2026年3月25日',
+    period: '2025 年 6 月 1 日 - 2025 年 8 月 31 日',
   },
 })
 
@@ -98,6 +98,23 @@ const detailPlanName = computed(() => {
   }
   return '方案詳情';
 });
+
+// 目前方案售價（顯示於「付款金額」）
+const detailPrice = computed(() => {
+  const p = planStore.plan as any;
+  if (p && isActivePlan(p)) {
+    const price = Number(p.plan_price || 0);
+    return `TWD ${price.toLocaleString('zh-TW')}`;
+  }
+  // fallback 舊靜態資料
+  return currentPlan.value.amount;
+});
+
+// 千分位格式化（TWD）
+function formatTwd(value: number | string) {
+  const num = Number(value ?? 0);
+  return `TWD ${num.toLocaleString('zh-TW')}`;
+}
 </script>
 
 <template>
@@ -141,7 +158,7 @@ const detailPlanName = computed(() => {
               付款金額
             </p>
             <p class="font-semibold text-lg">
-              {{ currentPlan.amount }}
+              {{ detailPrice }}
             </p>
           </div>
         </div>
@@ -205,7 +222,7 @@ const detailPlanName = computed(() => {
             </div>
             <div class="flex items-center gap-8">
               <p class="text-lg font-semibold w-32 text-right">
-                TWD {{ plan.price }}
+                {{ formatTwd(plan.price) }}
               </p>
               <el-button type="primary" @click="selectPlan(plan.id)">
                 選擇
