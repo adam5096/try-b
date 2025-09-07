@@ -59,7 +59,7 @@
               付款金額
             </p>
             <p class="font-bold text-xl">
-              NT$ 2,700
+              TWD 3,500
             </p>
           </div>
         </div>
@@ -71,7 +71,7 @@
         </h4>
         <div class="text-center">
           <p class="text-xl font-medium">
-            60天 體驗人數上限 30 人
+            90 天 體驗人數上限 50 人
           </p>
           <p class="mt-2 text-gray-500">
             2025年12月25日 - 2025年3月25日
