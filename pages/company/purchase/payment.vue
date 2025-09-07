@@ -88,7 +88,7 @@ const confirmPayment = () => {
               方案費用
             </p>
             <p class="text-2xl font-semibold text-gray-800">
-              NT$ 2,700
+              TWD 3,500
             </p>
           </div>
         </div>
@@ -102,11 +102,9 @@ const confirmPayment = () => {
         <el-radio-group v-model="paymentMethod" class="space-y-4 w-full">
           <el-radio value="creditCard" size="large" border class="w-full !mr-0 h-auto items-start pt-4 pb-4">
             <div class="flex justify-between items-center w-full">
-              <div>
-                <p>信用卡付款</p>
-                <p class="text-sm text-gray-500">
-                  支援 VISA、MasterCard、JCB
-                </p>
+              <div class="flex items-center gap-2 whitespace-nowrap">
+                <span>信用卡付款</span>
+                <span class="text-sm text-gray-500">- 支援 VISA、MasterCard、JCB</span>
               </div>
               <div class="flex items-center gap-2 text-3xl text-gray-400">
                 <font-awesome-icon :icon="['fab', 'cc-visa']" />
@@ -117,11 +115,9 @@ const confirmPayment = () => {
           </el-radio>
           <el-radio value="cvs" size="large" border class="w-full !mr-0 h-auto items-start pt-4 pb-4">
             <div class="flex justify-between items-center w-full">
-              <div>
-                <p>超商代碼繳費</p>
-                <p class="text-sm text-gray-500">
-                  支援 7-11、全家、萊爾富、OK超商
-                </p>
+              <div class="flex items-center gap-2 whitespace-nowrap">
+                <span>超商代碼繳費</span>
+                <span class="text-sm text-gray-500">- 支援 7-11、全家、萊爾富、OK超商</span>
               </div>
               <div class="text-2xl">
                 🏪
@@ -130,11 +126,9 @@ const confirmPayment = () => {
           </el-radio>
           <el-radio value="atm" size="large" border class="w-full !mr-0 h-auto items-start pt-4 pb-4">
             <div class="flex justify-between items-center w-full">
-              <div>
-                <p>ATM 虛擬帳號轉帳</p>
-                <p class="text-sm text-gray-500">
-                  適合企業匯款或大額交易
-                </p>
+              <div class="flex items-center gap-2 whitespace-nowrap">
+                <span>ATM 虛擬帳號轉帳</span>
+                <span class="text-sm text-gray-500">- 適合企業匯款或大額交易</span>
               </div>
               <div class="text-2xl">
                 🏛️
@@ -143,11 +137,9 @@ const confirmPayment = () => {
           </el-radio>
           <el-radio value="subscription" size="large" border class="w-full !mr-0 h-auto items-start pt-4 pb-4">
             <div class="flex justify-between items-center w-full">
-              <div>
-                <p>訂閱制自動扣款</p>
-                <p class="text-sm text-gray-500">
-                  每月自動扣款 NT$ 380 x 10 期
-                </p>
+              <div class="flex items-center gap-2 whitespace-nowrap">
+                <span>訂閱制自動扣款</span>
+                <span class="text-sm text-gray-500">- 每月自動扣款 NT$ 380 x 10 期</span>
               </div>
               <div class="text-2xl">
                 🔄
@@ -214,16 +206,16 @@ const confirmPayment = () => {
       <div class="bg-gray-50 rounded-lg p-6 mb-8">
         <div class="flex justify-between items-center text-gray-800 mb-2">
           <p>方案費用</p>
-          <p>NT$ 2,700</p>
+          <p>TWD 3,500</p>
         </div>
         <div class="flex justify-between items-center text-sm text-gray-500 mb-4">
           <p>手續費</p>
-          <p>NT$ 0</p>
+          <p>TWD 0</p>
         </div>
         <div class="border-t border-gray-200 my-4" />
         <div class="flex justify-between items-center font-semibold text-lg text-gray-800">
           <p>總計金額</p>
-          <p>NT$ 2,700</p>
+          <p>TWD 3,500</p>
         </div>
       </div>
 

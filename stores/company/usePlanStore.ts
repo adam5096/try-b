@@ -6,6 +6,12 @@ import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch
 
 export const useCompanyPlanStore = defineStore('companyPlan', () => {
   const authStore = useCompanyAuthStore();
+  // 付款狀態持久化：使用 Cookie 保存，避免重整遺失
+  const isPayedCookie = useCookie<boolean>('company_is_payed', {
+    default: () => false,
+    sameSite: 'lax',
+  });
+  const isPayed = ref<boolean>(isPayedCookie.value ?? false);
   const {
     data: plan,
     pending: isLoading,
@@ -24,6 +30,15 @@ export const useCompanyPlanStore = defineStore('companyPlan', () => {
       }
     },
     { immediate: true }, // 立即執行一次，以處理頁面刷新時 token 已存在的情況
+  );
+
+  // 同步 isPayed 與 Cookie
+  watch(
+    isPayed,
+    (val) => {
+      isPayedCookie.value = val;
+    },
+    { immediate: true },
   );
 
   const hasPlan = computed(() => plan.value && isActivePlan(plan.value));
@@ -59,6 +74,14 @@ export const useCompanyPlanStore = defineStore('companyPlan', () => {
     }
   }
 
+  function markPaid() {
+    isPayed.value = true;
+  }
+
+  function resetPaid() {
+    isPayed.value = false;
+  }
+
   return {
     plan,
     isLoading,
@@ -67,5 +90,9 @@ export const useCompanyPlanStore = defineStore('companyPlan', () => {
     planStatusText,
     fetchCurrentPlan,
     init,
+    // 付款狀態對外暴露
+    isPayed,
+    markPaid,
+    resetPaid,
   };
 });
