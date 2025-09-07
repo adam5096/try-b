@@ -1,23 +1,28 @@
 <template>
   <div class="relative overflow-hidden" :class="wrapperClass">
-    <div v-if="!isLoaded" class="w-full overflow-hidden">
-      <SkeletonLoader :show-title="false" :show-image="true" :show-button="false" :image-height-class="skeletonHeightClass" />
-    </div>
-    <img
-      :src="currentSrc"
-      :alt="alt || 'image'"
-      loading="lazy"
-      decoding="async"
-      :class="['transition-opacity duration-500', imgClass, isLoaded ? 'opacity-100' : 'opacity-0']"
-      @load="handleLoad"
-      @error="handleError"
-    />
+    <el-skeleton :loading="!isLoaded" animated :throttle="{ leading: 400, trailing: 300, initVal: true }">
+      <template #template>
+        <el-skeleton-item variant="image" :style="skeletonStyle" />
+      </template>
+      <template #default>
+        <NuxtImg
+          :src="currentSrc"
+          :alt="alt || 'image'"
+          loading="lazy"
+          decoding="async"
+          :class="['transition-opacity duration-500', imgClass, isLoaded ? 'opacity-100' : 'opacity-0']"
+          :fit="fit"
+          @load="handleLoad"
+          @error="handleError"
+        />
+      </template>
+    </el-skeleton>
   </div>
+  
 </template>
 
 <script setup lang="ts">
-import SkeletonLoader from '~/components/shared/SkeletonLoader.vue';
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 
 interface Props {
   src?: string | null;
@@ -26,6 +31,7 @@ interface Props {
   imgClass?: string;            // classes applied to <img>
   wrapperClass?: string;        // classes applied to wrapper
   skeletonHeightClass?: string; // height class for skeleton image area
+  fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside';
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -35,11 +41,21 @@ const props = withDefaults(defineProps<Props>(), {
   imgClass: 'w-full h-48 object-cover',
   wrapperClass: '',
   skeletonHeightClass: 'h-48',
+  fit: 'cover',
 });
 
 const isLoaded = ref(false);
 const toHttps = (u?: string | null) => (u ? u.replace(/^http:\/\//i, 'https://') : u);
 const currentSrc = ref<string>(toHttps(props.src) || props.fallbackSrc);
+
+const skeletonStyle = computed(() => {
+  // 將傳入的高度類別轉為對應的 style（骨架用 inline style 更穩定）
+  // 只處理常見的 h-48 / h-full；其餘交給外層控制
+  if (props.skeletonHeightClass === 'h-full') {
+    return 'width: 100%; height: 100%';
+  }
+  return 'width: 100%; height: 12rem'; // h-48 約 12rem
+});
 
 watch(
   () => props.src,

@@ -9,6 +9,7 @@ import { userRoutes } from '~/utils/userRoutes';
 import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
 import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 import type { Program } from '~/types/users/program';
+import ImageWithSkeleton from '~/components/shared/ImageWithSkeleton.vue';
 
 const programsStore = useUserProgramsStore();
 const programDetailStore = useUserProgramDetailStore();
@@ -164,7 +165,7 @@ const handleViewDetail = async (program: any) => {
             :interval="4000"
             height="300px"
             trigger="hover"
-            :class="['switch-blur', { 'is-switching': isSwitching }]"
+            :class="['switch-blur', 'hot-carousel', { 'is-switching': isSwitching }]"
             @change="onCarouselChange"
           >
             <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
@@ -172,11 +173,12 @@ const handleViewDetail = async (program: any) => {
                 <div class="h-full flex">
                   <!-- Left: Image -->
                   <div class="w-1/2 h-full">
-                    <NuxtImg
+                    <ImageWithSkeleton
                       :src="program.CoverImage"
                       alt="program image"
-                      class="w-full h-full object-cover"
-                      fit="cover"
+                      :img-class="'w-full h-full object-cover'"
+                      :skeleton-height-class="'h-full'"
+                      :fit="'cover'"
                     />
                   </div>
                   <!-- Right: Text -->
@@ -230,11 +232,12 @@ const handleViewDetail = async (program: any) => {
             <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC] h-[580px] flex flex-col overflow-hidden">
               <!-- Cover Image with Status Tag -->
               <div class="relative flex-shrink-0">
-                <NuxtImg
+                <ImageWithSkeleton
                   :src="program.CoverImage"
                   alt="program image"
-                  class="w-full h-48 object-cover"
-                  fit="cover"
+                  :img-class="'w-full h-48 object-cover'"
+                  :skeleton-height-class="'h-48'"
+                  :fit="'cover'"
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
@@ -313,6 +316,17 @@ const handleViewDetail = async (program: any) => {
 }
 .el-carousel__arrow:hover {
   background-color: rgba(31, 41, 55, 0.8);
+}
+
+/* 熱門輪播：強化指示器可視度 */
+.hot-carousel .el-carousel__indicator button {
+  background-color: rgba(0,0,0,0.25);
+}
+.hot-carousel .el-carousel__indicator.is-active button {
+  background-color: rgba(0,0,0,0.6);
+}
+.hot-carousel .el-carousel__indicators:hover .el-carousel__indicator button {
+  background-color: rgba(0,0,0,0.35);
 }
 
 /* 輪播切換時的模糊過場效果 */
