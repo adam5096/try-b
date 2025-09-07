@@ -17,14 +17,25 @@ const planStore = useCompanyPlanStore();
         </template>
       </el-skeleton>
     </template>
-    <p v-else-if="planStore.error" class="text-sm text-red-500">
-      無法載入方案資訊，請稍後再試。
-    </p>
-    <p v-else-if="planStore.hasPlan" class="text-sm text-green-600">
-      {{ planStore.planStatusText }}
-    </p>
-    <p v-else class="text-sm text-orange-500">
-      {{ planStore.planStatusText }}
-    </p>
+    <template v-else>
+      <!-- 未付款：顯示替代文案覆蓋原內容 -->
+      <template v-if="!planStore.isPayed">
+        <p class="text-sm text-orange-500">
+          方案已過期或已達體驗人數上限
+        </p>
+      </template>
+      <!-- 已付款：沿用原本顯示邏輯 -->
+      <template v-else>
+        <p v-if="planStore.error" class="text-sm text-red-500">
+          無法載入方案資訊，請稍後再試。
+        </p>
+        <p v-else-if="planStore.hasPlan" class="text-sm text-green-600">
+          {{ planStore.planStatusText }}
+        </p>
+        <p v-else class="text-sm text-orange-500">
+          {{ planStore.planStatusText }}
+        </p>
+      </template>
+    </template>
   </div>
 </template>

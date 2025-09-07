@@ -38,14 +38,6 @@
               TXN20231215-78945
             </p>
           </div>
-          <div class="md:text-left">
-            <p class="text-sm text-gray-500">
-              付款日期
-            </p>
-            <p class="font-medium text-lg">
-              2025年12月15日 14:30
-            </p>
-          </div>
           <div>
             <p class="text-sm text-gray-500">
               付款方式
@@ -74,7 +66,7 @@
             90 天 體驗人數上限 50 人
           </p>
           <p class="mt-2 text-gray-500">
-            2025年12月25日 - 2025年3月25日
+            2025 年 9 月 10 日 - 2025 年 12 月 9 日
           </p>
         </div>
       </div>
@@ -99,8 +91,21 @@ definePageMeta({
 });
 
 import { companyRoutes as r } from '~/utils/companyRoutes';
+import { useCompanyPlanStore } from '~/stores/company/usePlanStore';
 
 const router = useRouter();
+const planStore = useCompanyPlanStore();
+
+// 進入成功頁：先讓 Header 顯示骨架，取得資料後再標記為已付款
+onMounted(async () => {
+  try {
+    const minDelay = new Promise((resolve) => setTimeout(resolve, 800));
+    // 觸發一次取資料，確保 Header 顯示 loading
+    await Promise.allSettled([planStore.fetchCurrentPlan(), minDelay]);
+  } finally {
+    planStore.markPaid();
+  }
+});
 
 function goToPlans() {
   router.push(r.landing());
