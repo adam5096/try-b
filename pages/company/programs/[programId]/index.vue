@@ -229,6 +229,9 @@ const refresh = () => {
                   </dd>
                 </div>
                 <!-- 體驗地點 google map -->
+                <div>
+                  <GoogleMapEmbed :src="program?.addressMap || ''" empty-text="尚未提供地圖資訊" />
+                </div>
               </dl>
             </div>
             <div>

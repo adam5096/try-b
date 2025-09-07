@@ -290,6 +290,7 @@ const handleApplyClick = async () => {
           <div>
             <h3 class="mb-2 text-lg font-bold">體驗地點</h3>
             <p class="mb-4 text-gray-700">{{ programDetail.address }}</p>
+            <SharedGoogleMapEmbed :src="programDetail.address_map || ''" empty-text="尚未提供地圖資訊" />
           </div>
         </div>
       </section>
