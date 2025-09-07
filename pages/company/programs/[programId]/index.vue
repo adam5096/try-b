@@ -228,6 +228,7 @@ const refresh = () => {
                     {{ program?.address }}
                   </dd>
                 </div>
+                <!-- 體驗地點 google map -->
               </dl>
             </div>
             <div>

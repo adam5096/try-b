@@ -52,6 +52,18 @@ export default defineNuxtConfig({
       '/api-proxy/**': {
         proxy: 'https://trybeta.rocket-coding.com/**'
       }
+      ,
+      // 靜態圖與 IPX 輸出的長時間快取（提升重訪/多頁載入速度）
+      '/img/**': {
+        headers: {
+          'cache-control': 'public, max-age=31536000, immutable'
+        }
+      },
+      '/_ipx/**': {
+        headers: {
+          'cache-control': 'public, max-age=31536000, immutable'
+        }
+      }
     },
     // 修正 Vercel 產環 SSR 匯入 @popperjs/core 造成的 CJS/ESM 錯誤（placements not found）
     // 將其內嵌到 Nitro bundle，避免以外部模組形式被 Node 直接解析
@@ -70,6 +82,9 @@ export default defineNuxtConfig({
   image: {
     // 允許的遠端圖片來源，透過 IPX 代理輸出為 HTTPS，避免 Mixed Content
     domains: ['trybeta.rocket-coding.com', 'images.unsplash.com', 'i.imgur.com'],
+    // 為避免 SSR/CSR 因瀏覽器支援格式差異導致 hydration mismatch，固定輸出單一格式
+    format: ['webp'],
+    quality: 70,
   },
   app: {
     head: {
@@ -77,6 +92,9 @@ export default defineNuxtConfig({
         // 預先連線至圖片 CDN
         { rel: 'preconnect', href: 'https://images.unsplash.com' },
         { rel: 'preconnect', href: 'https://i.imgur.com' },
+        // API 與主站的預解析與預連線，降低 TLS/握手延遲
+        { rel: 'dns-prefetch', href: 'https://trybeta.rocket-coding.com' },
+        { rel: 'preconnect', href: 'https://trybeta.rocket-coding.com', crossorigin: '' },
 
         // Google Fonts 已經由 @nuxt/fonts 模組自動處理，此處備用
         // { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
