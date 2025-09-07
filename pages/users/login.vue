@@ -29,6 +29,7 @@ const errorMessage = ref('');
 async function handleLogin() {
   isLoading.value = true;
   errorMessage.value = '';
+  let willRedirect = false;
   try {
     const loginPayload: UserLoginData = {
       ...loginData.value,
@@ -41,8 +42,10 @@ async function handleLogin() {
     
     // 安全檢查：只允許導向內部使用者頁面
     if (redirectPath && redirectPath.startsWith('/users/')) {
+      willRedirect = true;
       await navigateTo(redirectPath);
     } else {
+      willRedirect = true;
       await navigateTo({ name: 'user-landing' });
     }
     
@@ -50,7 +53,10 @@ async function handleLogin() {
     errorMessage.value = error.message || '登入失敗，請檢查您的帳號和密碼。';
     console.error('Login failed:', error);
   } finally {
-    isLoading.value = false;
+    // 僅在未觸發路由跳轉時才關閉 loading
+    if (!willRedirect) {
+      isLoading.value = false;
+    }
   }
 }
 </script>
@@ -134,9 +140,17 @@ async function handleLogin() {
           <button
             type="submit"
             :disabled="isLoading"
-            class="group relative flex w-full justify-center rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+            class="group relative flex w-full justify-center rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white disabled:opacity-60 disabled:cursor-not-allowed"
+            :aria-busy="isLoading"
+            aria-live="polite"
           >
-            <span v-if="isLoading">登入中...</span>
+            <span v-if="isLoading" class="inline-flex items-center justify-center gap-2">
+              <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+              登入中…
+            </span>
             <span v-else>登入</span>
           </button>
         </div>

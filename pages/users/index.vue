@@ -9,6 +9,7 @@ import { userRoutes } from '~/utils/userRoutes';
 import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
 import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 import type { Program } from '~/types/users/program';
+// 先以 NuxtImg 直接顯示圖片，暫時移除骨架元件
 
 const programsStore = useUserProgramsStore();
 const programDetailStore = useUserProgramDetailStore();
@@ -56,6 +57,17 @@ watch([searchKeyword, industry, jobType, location, sort], () => {
     sort: sort.value
   });
 });
+
+// 輪播切換狀態（用於切換時模糊過場）
+const isSwitching = ref(false);
+let carouselSwitchTimer: ReturnType<typeof setTimeout> | null = null;
+const onCarouselChange = () => {
+  isSwitching.value = true;
+  if (carouselSwitchTimer) clearTimeout(carouselSwitchTimer);
+  carouselSwitchTimer = setTimeout(() => {
+    isSwitching.value = false;
+  }, 200);
+};
 
 const industries = ref([
   { value: 'tech', label: '科技業' },
@@ -148,18 +160,36 @@ const handleViewDetail = async (program: any) => {
         <section class="mb-16">
           <h2 class="text-2xl font-bold mb-2">熱門體驗計畫總覽</h2>
           <p class="text-gray-500 mb-8">在這裡探索最受歡迎的體驗計畫，看看大家都喜歡哪些活動！</p>
-          <el-carousel v-if="programsStore.popular && programsStore.popular.length > 0" :interval="4000" type="card" height="300px">
+          <el-carousel
+            v-if="programsStore.popular && programsStore.popular.length > 0"
+            :interval="4000"
+            height="300px"
+            trigger="hover"
+            :class="['switch-blur', 'hot-carousel', { 'is-switching': isSwitching }]"
+            @change="onCarouselChange"
+          >
             <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
-              <el-card :body-style="{ padding: '0px' }" class="h-full">
-                <div class="relative h-full">
-                  <NuxtImg
-                    :src="program.CoverImage"
-                    alt="program image"
-                    class="w-full h-2/3 object-cover"
-                  />
-                  <div class="p-4">
-                    <h3 class="text-lg font-bold">{{ program.Name || '未命名計畫' }}</h3>
-                    <p class="text-sm text-gray-500">{{ program.Industry?.Title || '產業未分類' }}</p>
+              <el-card :body-style="{ padding: '0px', height: '100%' }" class="h-full">
+                <div class="h-full flex">
+                  <!-- Left: Image -->
+                  <div class="w-1/2 h-full">
+                    <NuxtImg
+                      :src="program.CoverImage || '/img/home/home-worker-bg.webp'"
+                      alt="program image"
+                      class="w-full h-full object-cover"
+                      fit="cover"
+                    />
+                  </div>
+                  <!-- Right: Text -->
+                  <div class="w-1/2 h-full p-6 flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold mb-2">{{ program.Name || '未命名計畫' }}</h3>
+                    <p class="text-gray-600 mb-4">{{ program.Industry?.Title || '產業未分類' }}</p>
+                    <button 
+                      @click="handleViewDetail(program)"
+                      class="w-max rounded-md bg-btn-yellow px-6 py-2 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+                    >
+                      查看詳情
+                    </button>
                   </div>
                 </div>
               </el-card>
@@ -202,9 +232,11 @@ const handleViewDetail = async (program: any) => {
               <!-- Cover Image with Status Tag -->
               <div class="relative flex-shrink-0">
                 <NuxtImg
-                  :src="program.CoverImage"
+                  :src="program.CoverImage || '/img/home/home-worker-bg.webp'"
                   alt="program image"
                   class="w-full h-48 object-cover"
+                  fit="cover"
+                  loading="lazy"
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
@@ -283,6 +315,25 @@ const handleViewDetail = async (program: any) => {
 }
 .el-carousel__arrow:hover {
   background-color: rgba(31, 41, 55, 0.8);
+}
+
+/* 熱門輪播：強化指示器可視度 */
+.hot-carousel .el-carousel__indicator button {
+  background-color: rgba(0,0,0,0.25);
+}
+.hot-carousel .el-carousel__indicator.is-active button {
+  background-color: rgba(0,0,0,0.6);
+}
+.hot-carousel .el-carousel__indicators:hover .el-carousel__indicator button {
+  background-color: rgba(0,0,0,0.35);
+}
+
+/* 輪播切換時的模糊過場效果 */
+.switch-blur .el-carousel__container {
+  transition: filter 200ms ease;
+}
+.switch-blur.is-switching .el-carousel__container {
+  filter: blur(4px);
 }
 
 /* 文字截斷樣式 */

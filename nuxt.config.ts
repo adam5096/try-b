@@ -99,6 +99,12 @@ export default defineNuxtConfig({
         // Google Fonts 已經由 @nuxt/fonts 模組自動處理，此處備用
         // { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         // { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+
+        // Favicon 與多尺寸 PNG（使用 public/ 內的檔案）
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '64x64', href: '/favicon-64.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16.png' },
       ],
     },
   },
