@@ -5,6 +5,7 @@ import { useUserPrograms } from '~/composables/api/users/useUserPrograms';
 
 export const useUserProgramsStore = defineStore('userPrograms', () => {
   const programs = ref<Program[]>([]);
+  const backendPopularPrograms = ref<Program[]>([]);
   const total = ref(0);
   const currentPage = ref(1);
   const currentLimit = ref(6);
@@ -29,7 +30,11 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
 
   // Computed properties
   const items = computed(() => programs.value);
-  const popular = computed(() => computePopularPrograms(programs.value));
+  const popular = computed(() =>
+    backendPopularPrograms.value.length > 0
+      ? backendPopularPrograms.value
+      : computePopularPrograms(programs.value)
+  );
 
   const { fetchPrograms: apiFetchPrograms } = useUserPrograms();
 
@@ -59,31 +64,36 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
       if (data.value) {
         console.log('Setting programs data:', data.value);
         // 正規化：確保每一筆清單都有可用的 Program Id
-        const normalizedItems = (data.value.items || []).map((raw: any) => {
-          // 使用新的 response body 結構，直接使用 Id 欄位
-          const programId = raw?.Id ?? null;
-          const normalizeToHttps = (u?: string | null) => (u ? u.replace(/^http:\/\//i, 'https://') : null);
+        const normalizeToHttps = (u?: string | null) => (u ? u.replace(/^http:\/\//i, 'https://') : null);
+        const normalizeProgram = (raw: any): Program => ({
+          ...raw,
+          Id: raw?.Id ?? null,
+          CoverImage: normalizeToHttps(raw?.CoverImage),
+        } as unknown as Program);
 
-          return {
-            ...raw,
-            Id: programId,
-            CoverImage: normalizeToHttps(raw?.CoverImage),
-          } as unknown as Program;
-        });
+        const normalizedItems = (data.value.items || []).map(normalizeProgram);
 
         programs.value = normalizedItems;
         total.value = data.value.total || 0;
         currentPage.value = data.value.page || 1;
         currentLimit.value = data.value.limit || 6;
+
+        // 熱門清單：優先採用後端傳回的 PopularPrograms
+        const rawPopular = (data.value as any).PopularPrograms || [];
+        backendPopularPrograms.value = Array.isArray(rawPopular)
+          ? rawPopular.map(normalizeProgram)
+          : [];
         
         console.log('Store updated:', {
           programsCount: programs.value.length,
+          popularCount: backendPopularPrograms.value.length,
           total: total.value,
           currentPage: currentPage.value
         });
       } else {
         console.warn('No data received from API');
         programs.value = [];
+        backendPopularPrograms.value = [];
         total.value = 0;
       }
     } catch (err) {
