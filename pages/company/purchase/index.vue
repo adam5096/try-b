@@ -153,23 +153,24 @@ function selectPlan(planId: number) {
         </div>
         <el-card v-for="plan in processedPlans" v-else :key="plan.id" shadow="hover">
           <div class="flex justify-between items-center">
-            <div class="flex items-center gap-8">
-              <div class="w-48">
+            <div class="flex items-center gap-8 flex-1">
+              <div class="min-w-[6rem]">
                 <p class="font-bold">
                   {{ plan.name }}
                 </p>
-                <!-- 方案天數 -->
-                <!-- 體驗人數上限 -->
-                <p class="text-sm text-gray-600">
-                  {{ plan.duration_days }} 天
-                </p>
-                <p class="text-sm text-gray-600">
-                  體驗人數上限 {{ plan.max_participants }} 人
-                </p>
               </div>
-              <p class="text-sm text-gray-800">
-                {{ plan.description }}
-              </p>
+              <!-- 第二列：天數 + 上限 與 描述 同一橫行 -->
+              <div class="flex flex-col gap-1 flex-1">
+                <div class="flex items-center gap-6">
+                  <div class="text-sm text-gray-600 flex items-center gap-6 whitespace-nowrap">
+                    <span>{{ plan.duration_days }} 天</span>
+                    <span>體驗人數上限 {{ plan.max_participants }} 人</span>
+                  </div>
+                  <p class="text-sm text-gray-800 flex-1">
+                    {{ plan.description }}
+                  </p>
+                </div>
+              </div>
             </div>
             <div class="flex items-center gap-8">
               <p class="text-lg font-semibold w-32 text-right">
