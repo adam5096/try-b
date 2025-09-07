@@ -169,7 +169,7 @@ const handleViewDetail = async (program: any) => {
             @change="onCarouselChange"
           >
             <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
-              <el-card :body-style="{ padding: '0px' }" class="h-full">
+              <el-card :body-style="{ padding: '0px', height: '100%' }" class="h-full">
                 <div class="h-full flex">
                   <!-- Left: Image -->
                   <div class="w-1/2 h-full">
