@@ -17,6 +17,22 @@ const commentsData = ref<any>(null);
 const loading = ref(false);
 const error = ref<any>(null);
 
+// 將後端回傳之 company_logo 轉為可用圖片 URL（相對路徑 → 透過本機代理）
+function resolveCompanyLogo(rawLogoPath?: string | null): string | undefined {
+  if (!rawLogoPath) return undefined;
+  const trimmed = String(rawLogoPath).trim();
+  if (!trimmed) return undefined;
+  // 已是完整網址則直接使用
+  if (/^https?:\/\//i.test(trimmed)) {
+    return encodeURI(trimmed);
+  }
+  // 相對路徑：走 Nitro proxy，避免 CORS 與混合內容
+  const normalized = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+  // 合併重複斜線，避免出現 /api-proxy//Images/... 造成 404
+  const proxied = `/api-proxy${normalized}`.replace(/\/{2,}/g, '/');
+  return encodeURI(proxied);
+}
+
 // 篩選器狀態
 const statusOptions = ['審核中', '系統已通過', '系統已拒絕', '人工已通過', '人工已拒絕', '待處理', '已發布', '全部通過', '全部拒絕', '未評價'];
 const selectedStatuses = ref<string[]>([]);
@@ -283,8 +299,8 @@ onMounted(() => {
     <el-divider/>
 
     <!-- Loading State -->
-    <div v-if="loading" class="flex justify-center py-8">
-      <el-loading />
+    <div v-if="loading" class="py-6">
+      <el-skeleton :rows="3" animated />
     </div>
 
     <!-- Error State -->
@@ -304,7 +320,7 @@ onMounted(() => {
         <div class="flex items-center justify-between">
           <!-- Left: Logo + 公司名稱 + 體驗標籤 + 狀態 -->
           <div class="flex items-center gap-4">
-            <el-avatar :size="48" :src="item.company_logo">{{ item.company_name.charAt(0) }}</el-avatar>
+            <el-avatar :size="48" :src="resolveCompanyLogo(item.company_logo)">{{ item.company_name.charAt(0) }}</el-avatar>
             <div class="flex items-center flex-wrap gap-x-3 gap-y-2">
               <div class="text-lg font-semibold text-gray-800">{{ item.company_name }}</div>
               <el-tag effect="plain" round>{{ item.program_name }}</el-tag>
