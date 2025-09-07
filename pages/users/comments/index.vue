@@ -54,6 +54,9 @@ const filterVisible = ref(false);
 // 評價輸入狀態
 const editingEvaluation = ref<{ [key: string]: { score: number; comment: string } }>({});
 
+// 提交 loading 狀態（逐筆）
+const submittingEvaluation = ref<{ [key: string]: boolean }>({});
+
 // 計算屬性
 const totalReviews = computed(() => commentsData.value?.TotalCount || 0);
 const visibleReviews = computed(() => commentsData.value?.Data || []);
@@ -156,6 +159,9 @@ async function submitEvaluationForItem(item: ReviewItem) {
       }
     );
 
+    // 設定逐筆提交 loading
+    submittingEvaluation.value[item.serial_num] = true;
+
     const payload: SubmitEvaluationPayload = {
       score: evaluationData.score,
       comment: evaluationData.comment
@@ -229,6 +235,9 @@ async function submitEvaluationForItem(item: ReviewItem) {
     }
     
     ElMessage.error(errorMessage);
+  } finally {
+    // 無論成功或失敗，關閉 loading
+    submittingEvaluation.value[item.serial_num] = false;
   }
 }
 
@@ -368,8 +377,13 @@ onMounted(() => {
               />
             </div>
             <div class="flex justify-end gap-2">
-              <el-button @click="cancelEditEvaluation(item)">取消</el-button>
-              <el-button type="primary" @click="submitEvaluationForItem(item)">提交評價</el-button>
+              <el-button :disabled="submittingEvaluation[item.serial_num] === true" @click="cancelEditEvaluation(item)">取消</el-button>
+              <el-button
+                type="primary"
+                :loading="submittingEvaluation[item.serial_num] === true"
+                :disabled="submittingEvaluation[item.serial_num] === true"
+                @click="submitEvaluationForItem(item)"
+              >提交評價</el-button>
             </div>
           </div>
         </div>
