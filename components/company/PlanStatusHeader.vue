@@ -6,9 +6,17 @@ const planStore = useCompanyPlanStore();
 
 <template>
   <div class="p-4 bg-white rounded-lg mb-6">
-    <p v-if="planStore.isLoading" class="text-sm text-gray-500">
-      方案資訊載入中...
-    </p>
+    <template v-if="planStore.isLoading">
+      <el-skeleton animated>
+        <template #template>
+          <div class="flex flex-wrap items-center gap-3">
+            <el-skeleton-item variant="text" style="width: 140px; height: 20px; border-radius: 9999px" />
+            <el-skeleton-item variant="text" style="width: 220px; height: 20px; border-radius: 9999px" />
+            <el-skeleton-item variant="text" style="width: 100px; height: 20px; border-radius: 9999px" />
+          </div>
+        </template>
+      </el-skeleton>
+    </template>
     <p v-else-if="planStore.error" class="text-sm text-red-500">
       無法載入方案資訊，請稍後再試。
     </p>

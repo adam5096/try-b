@@ -20,31 +20,31 @@ definePageMeta({
 const pricingOptions = [
   {
     duration: '30天',
-    price: 'TWD1,000',
+    price: 'TWD 1,000',
     limit: '體驗人數最多 10 人',
     audience: '適合小型企業與新創公司'
   },
   {
     duration: '60天',
-    price: 'TWD2,000',
+    price: 'TWD 2,500',
     limit: '體驗人數最多 30 人',
     audience: '適合發展中的企業'
   },
   {
     duration: '90天',
-    price: 'TWD2,700',
+    price: 'TWD 3,500',
     limit: '體驗人數最多 50 人',
     audience: '適合中型企業與快速成長公司'
   },
   {
     duration: '180天',
-    price: 'TWD5,000',
+    price: 'TWD 6,500',
     limit: '體驗人數最多 100 人',
     audience: '適合穩定成長的企業'
   },
   {
     duration: '365天',
-    price: 'TWD9,000',
+    price: 'TWD 10,000',
     limit: '體驗人數最多 200 人',
     audience: '適合大型企業與特殊需求'
   }
@@ -141,7 +141,7 @@ const statImages = [
             <div v-for="option in pricingOptions" :key="option.duration" class="border rounded-lg p-6 flex flex-col text-center transition-shadow hover:shadow-lg">
               <p class="font-semibold text-lg">{{ option.duration }}</p>
               <p class="text-xl font-bold my-4">{{ option.price }}</p>
-              <p class="text-gray-700 font-bold">{{ option.limit }}</p>
+              <p class="text-sm text-gray-700 font-bold">{{ option.limit }}</p>
               <p class="text-sm text-gray-500 mt-4 flex-grow">{{ option.audience }}</p>
             </div>
           </div>

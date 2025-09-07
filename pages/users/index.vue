@@ -6,8 +6,6 @@ definePageMeta({
 
 import { ref, watch, onMounted } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
-import SkeletonLoader from '~/components/shared/SkeletonLoader.vue';
-import ImageWithSkeleton from '~/components/shared/ImageWithSkeleton.vue';
 import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
 import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 import type { Program } from '~/types/users/program';
@@ -154,11 +152,10 @@ const handleViewDetail = async (program: any) => {
             <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
               <el-card :body-style="{ padding: '0px' }" class="h-full">
                 <div class="relative h-full">
-                  <ImageWithSkeleton
+                  <NuxtImg
                     :src="program.CoverImage"
                     alt="program image"
-                    img-class="w-full h-2/3 object-cover"
-                    skeleton-height-class="h-2/3"
+                    class="w-full h-2/3 object-cover"
                   />
                   <div class="p-4">
                     <h3 class="text-lg font-bold">{{ program.Name || '未命名計畫' }}</h3>
@@ -169,9 +166,7 @@ const handleViewDetail = async (program: any) => {
             </el-carousel-item>
           </el-carousel>
           <div v-else>
-            <div v-if="programsStore.loading" class="bg-white rounded-lg p-4">
-              <SkeletonLoader :show-title="false" :show-image="true" :show-button="false" image-height-class="h-[300px]" />
-            </div>
+            <div v-if="programsStore.loading" class="bg-white rounded-lg p-4 h-[300px] flex items-center justify-center text-gray-500">載入中…</div>
             <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
               <p class="text-gray-500">暫無熱門計畫</p>
             </div>
@@ -206,11 +201,10 @@ const handleViewDetail = async (program: any) => {
             <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC] h-[580px] flex flex-col overflow-hidden">
               <!-- Cover Image with Status Tag -->
               <div class="relative flex-shrink-0">
-                <ImageWithSkeleton
+                <NuxtImg
                   :src="program.CoverImage"
                   alt="program image"
-                  img-class="w-full h-48 object-cover"
-                  skeleton-height-class="h-48"
+                  class="w-full h-48 object-cover"
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
@@ -257,13 +251,7 @@ const handleViewDetail = async (program: any) => {
             </el-card>
           </div>
           <div v-else>
-            <div v-if="programsStore.loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <el-card v-for="n in pageSize" :key="'skeleton-'+n" class="shadow-lg border border-[#CCCCCC] h-[580px] flex flex-col overflow-hidden">
-                <div class="p-4 w-full">
-                  <SkeletonLoader :show-title="true" :show-image="true" :show-button="true" :lines="3" image-height-class="h-48" button-height-class="h-10" />
-                </div>
-              </el-card>
-            </div>
+            <div v-if="programsStore.loading" class="flex items-center justify-center h-64 bg-white rounded-lg text-gray-500">載入中…</div>
             <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
               <p class="text-gray-500">暫無體驗計畫</p>
             </div>

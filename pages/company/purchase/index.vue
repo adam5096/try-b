@@ -4,6 +4,8 @@
 import { ref, onMounted, computed } from 'vue'
 import { Check } from '@element-plus/icons-vue'
 import { useAllPlans } from '~/composables/api/company/useAllPlans';
+import { useCompanyPlanStore } from '~/stores/company/usePlanStore';
+import { isActivePlan } from '~/types/company/plan/current';
 
 definePageMeta({
   layout: 'company',
@@ -12,6 +14,7 @@ definePageMeta({
 
 const router = useRouter()
 const { plans, isLoading, error, fetchAllPlans } = useAllPlans();
+const planStore = useCompanyPlanStore();
 
 onMounted(() => {
   fetchAllPlans();
@@ -49,13 +52,13 @@ interface CurrentPlan {
 
 const currentPlan = ref<CurrentPlan>({
   orderNumber: 'TXN20231215-78945',
-  paymentDate: '2025年12月15日 14:30',
+  paymentDate: '2025 年 6 月 1 日 00:00',
   paymentMethod: '信用卡 (末四碼: 5678)',
-  amount: 'NT$ 2,700',
+  amount: 'TWD 2,700',
   details: {
-    duration: '60天',
+    duration: '60天 體驗人數上限 30 人',
     limit: '體驗人數上限 30 人',
-    period: '2025年12月25日 - 2026年3月25日',
+    period: '2025 年 6 月 1 日 - 2025 年 8 月 31 日',
   },
 })
 
@@ -66,6 +69,51 @@ function selectPlan(planId: number) {
     name: 'company-purchase-payment',
     query: { planId },
   })
+}
+
+// 由目前方案（紅框）共享資料到下方「方案詳情」（黃框）
+const detailDurationAndLimit = computed(() => {
+  const p = planStore.plan as any;
+  if (p && isActivePlan(p)) {
+    return `${p.plan_duration_days} 天 體驗人數上限 ${p.max_participants} 人`;
+  }
+  return `${currentPlan.value.details.duration}`; // fallback
+});
+
+const detailPeriod = computed(() => {
+  const p = planStore.plan as any;
+  if (p && isActivePlan(p)) {
+    const start = new Date(p.start_date).toLocaleDateString('zh-TW');
+    const end = new Date(p.end_date).toLocaleDateString('zh-TW');
+    return `${start} - ${end}`;
+  }
+  return currentPlan.value.details.period; // fallback
+});
+
+// 顯示目前方案名稱（例如：方案C）；無資料時沿用「方案詳情」
+const detailPlanName = computed(() => {
+  const p = planStore.plan as any;
+  if (p && isActivePlan(p)) {
+    return p.plan_name || '方案詳情';
+  }
+  return '方案詳情';
+});
+
+// 目前方案售價（顯示於「付款金額」）
+const detailPrice = computed(() => {
+  const p = planStore.plan as any;
+  if (p && isActivePlan(p)) {
+    const price = Number(p.plan_price || 0);
+    return `TWD ${price.toLocaleString('zh-TW')}`;
+  }
+  // fallback 舊靜態資料
+  return currentPlan.value.amount;
+});
+
+// 千分位格式化（TWD）
+function formatTwd(value: number | string) {
+  const num = Number(value ?? 0);
+  return `TWD ${num.toLocaleString('zh-TW')}`;
 }
 </script>
 
@@ -110,19 +158,19 @@ function selectPlan(planId: number) {
               付款金額
             </p>
             <p class="font-semibold text-lg">
-              {{ currentPlan.amount }}
+              {{ detailPrice }}
             </p>
           </div>
         </div>
         <div class="mt-4 p-4 bg-gray-50 rounded-lg text-center">
           <p class="font-bold">
-            方案詳情
+            {{ detailPlanName }}
           </p>
           <p class="text-lg font-semibold mt-2">
-            {{ currentPlan.details.duration }} {{ currentPlan.details.limit }}
+            {{ detailDurationAndLimit }}
           </p>
           <p class="text-sm text-gray-500">
-            {{ currentPlan.details.period }}
+            {{ detailPeriod }}
           </p>
         </div>
       </el-card>
@@ -153,22 +201,28 @@ function selectPlan(planId: number) {
         </div>
         <el-card v-for="plan in processedPlans" v-else :key="plan.id" shadow="hover">
           <div class="flex justify-between items-center">
-            <div class="flex items-center gap-8">
-              <div class="w-48">
+            <div class="flex items-center gap-8 flex-1">
+              <div class="min-w-[6rem]">
                 <p class="font-bold">
                   {{ plan.name }}
                 </p>
-                <p class="text-sm text-gray-600">
-                  體驗人數上限 {{ plan.max_participants }} 人
-                </p>
               </div>
-              <p class="text-sm text-gray-800">
-                {{ plan.description }}
-              </p>
+              <!-- 第二列：天數 + 上限 與 描述 同一橫行 -->
+              <div class="flex flex-col gap-1 flex-1">
+                <div class="flex items-center gap-6">
+                  <div class="text-sm text-gray-600 flex items-center gap-6 whitespace-nowrap">
+                    <span>{{ plan.duration_days }} 天</span>
+                    <span>體驗人數上限 {{ plan.max_participants }} 人</span>
+                  </div>
+                  <p class="text-sm text-gray-800 flex-1">
+                    {{ plan.description }}
+                  </p>
+                </div>
+              </div>
             </div>
             <div class="flex items-center gap-8">
               <p class="text-lg font-semibold w-32 text-right">
-                TWD{{ plan.price }}
+                {{ formatTwd(plan.price) }}
               </p>
               <el-button type="primary" @click="selectPlan(plan.id)">
                 選擇
