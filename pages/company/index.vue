@@ -149,6 +149,35 @@ const handleViewDetail = async (program: any) => {
         <el-tab-pane label="審核中" name="reviewing" />
       </el-tabs>
 
+      <!-- Skeleton: 卡片清單骨架（首次載入或無任何既有資料時） -->
+      <div
+        v-if="programStore.isLoading && programs.length === 0"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4"
+      >
+        <el-card
+          v-for="n in 9"
+          :key="n"
+          class="border border-[#CCCCCC] h-[580px] flex flex-col overflow-hidden"
+        >
+          <el-skeleton animated>
+            <template #template>
+              <!-- 封面骨架 -->
+              <el-skeleton-item variant="image" style="width: 100%; height: 12rem" />
+
+              <!-- 內容骨架 -->
+              <div class="p-4 flex flex-col flex-1 min-h-0 gap-3">
+                <el-skeleton-item variant="h3" style="width: 80%" />
+                <el-skeleton-item variant="text" />
+                <el-skeleton-item variant="text" style="width: 90%" />
+                <div class="mt-auto">
+                  <el-skeleton-item variant="button" style="width: 100%; height: 2.75rem" />
+                </div>
+              </div>
+            </template>
+          </el-skeleton>
+        </el-card>
+      </div>
+
       <!-- Error -->
       <div v-if="programStore.error" class="text-center p-8 text-red-500">
         <p>無法載入計畫列表，請稍後再試。</p>

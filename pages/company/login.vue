@@ -87,6 +87,7 @@ async function handleLogin() {
               placeholder="請輸入您的帳號或電子郵件"
               autocomplete="username"
               class="w-full rounded-md border border-gray-300 p-3 focus:border-primary-blue focus:outline-none focus:ring-1 focus:ring-primary-blue"
+              :disabled="isLoading"
               required
             />
           </div>
@@ -107,6 +108,7 @@ async function handleLogin() {
               placeholder="請輸入您的密碼"
               autocomplete="current-password"
               class="w-full rounded-md border border-gray-300 p-3 focus:border-primary-blue focus:outline-none focus:ring-1 focus:ring-primary-blue"
+              :disabled="isLoading"
               required
             />
           </div>
@@ -128,10 +130,19 @@ async function handleLogin() {
 
           <button
             type="submit"
-            class="w-full rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+            class="w-full rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white disabled:opacity-60 disabled:cursor-not-allowed"
             :disabled="isLoading"
+            :aria-busy="isLoading"
+            aria-live="polite"
           >
-            {{ isLoading ? '登入中...' : '登入' }}
+            <span v-if="isLoading" class="inline-flex items-center justify-center gap-2">
+              <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+              登入中…
+            </span>
+            <span v-else>登入</span>
           </button>
 
           <div class="mt-6 text-center">

@@ -53,7 +53,7 @@ const currentPlan = ref<CurrentPlan>({
   paymentMethod: '信用卡 (末四碼: 5678)',
   amount: 'NT$ 2,700',
   details: {
-    duration: '60天',
+    duration: '60天 體驗人數上限 30 人',
     limit: '體驗人數上限 30 人',
     period: '2025年12月25日 - 2026年3月25日',
   },
@@ -158,6 +158,11 @@ function selectPlan(planId: number) {
                 <p class="font-bold">
                   {{ plan.name }}
                 </p>
+                <!-- 方案天數 -->
+                <!-- 體驗人數上限 -->
+                <p class="text-sm text-gray-600">
+                  {{ plan.duration_days }} 天
+                </p>
                 <p class="text-sm text-gray-600">
                   體驗人數上限 {{ plan.max_participants }} 人
                 </p>
@@ -168,7 +173,7 @@ function selectPlan(planId: number) {
             </div>
             <div class="flex items-center gap-8">
               <p class="text-lg font-semibold w-32 text-right">
-                TWD{{ plan.price }}
+                TWD {{ plan.price }}
               </p>
               <el-button type="primary" @click="selectPlan(plan.id)">
                 選擇
