@@ -4,6 +4,8 @@
 import { ref, onMounted, computed } from 'vue'
 import { Check } from '@element-plus/icons-vue'
 import { useAllPlans } from '~/composables/api/company/useAllPlans';
+import { useCompanyPlanStore } from '~/stores/company/usePlanStore';
+import { isActivePlan } from '~/types/company/plan/current';
 
 definePageMeta({
   layout: 'company',
@@ -12,6 +14,7 @@ definePageMeta({
 
 const router = useRouter()
 const { plans, isLoading, error, fetchAllPlans } = useAllPlans();
+const planStore = useCompanyPlanStore();
 
 onMounted(() => {
   fetchAllPlans();
@@ -67,6 +70,34 @@ function selectPlan(planId: number) {
     query: { planId },
   })
 }
+
+// 由目前方案（紅框）共享資料到下方「方案詳情」（黃框）
+const detailDurationAndLimit = computed(() => {
+  const p = planStore.plan as any;
+  if (p && isActivePlan(p)) {
+    return `${p.plan_duration_days} 天 體驗人數上限 ${p.max_participants} 人`;
+  }
+  return `${currentPlan.value.details.duration}`; // fallback
+});
+
+const detailPeriod = computed(() => {
+  const p = planStore.plan as any;
+  if (p && isActivePlan(p)) {
+    const start = new Date(p.start_date).toLocaleDateString('zh-TW');
+    const end = new Date(p.end_date).toLocaleDateString('zh-TW');
+    return `${start} - ${end}`;
+  }
+  return currentPlan.value.details.period; // fallback
+});
+
+// 顯示目前方案名稱（例如：方案C）；無資料時沿用「方案詳情」
+const detailPlanName = computed(() => {
+  const p = planStore.plan as any;
+  if (p && isActivePlan(p)) {
+    return p.plan_name || '方案詳情';
+  }
+  return '方案詳情';
+});
 </script>
 
 <template>
@@ -116,13 +147,13 @@ function selectPlan(planId: number) {
         </div>
         <div class="mt-4 p-4 bg-gray-50 rounded-lg text-center">
           <p class="font-bold">
-            方案詳情
+            {{ detailPlanName }}
           </p>
           <p class="text-lg font-semibold mt-2">
-            {{ currentPlan.details.duration }} {{ currentPlan.details.limit }}
+            {{ detailDurationAndLimit }}
           </p>
           <p class="text-sm text-gray-500">
-            {{ currentPlan.details.period }}
+            {{ detailPeriod }}
           </p>
         </div>
       </el-card>

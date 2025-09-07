@@ -41,8 +41,9 @@ export const useCompanyPlanStore = defineStore('companyPlan', () => {
     }
 
     // 有效方案的顯示邏輯
-    const startDate = new Date(p.start_date).toLocaleDateString();
-    const endDate = new Date(p.end_date).toLocaleDateString();
+    // 統一顯示為西元年/月/日（與頁面其它處一致）
+    const startDate = new Date(p.start_date).toLocaleDateString('zh-TW');
+    const endDate = new Date(p.end_date).toLocaleDateString('zh-TW');
 
     return `目前的方案 ${p.plan_name} | 日期：${startDate} - ${endDate} | 體驗人數上限 ${p.max_participants} 人 | 剩餘 ${p.remaining_people} 人`;
   });
