@@ -209,25 +209,33 @@ const handleApplyClick = async () => {
         <!-- 計畫內容（與企業封面同區塊） -->
         <div class="mt-6 rounded-lg bg-white p-8 shadow-sm">
           <!-- 內容卡抬頭：左標題／右關鍵資訊 -->
-          <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div class="md:col-span-2">
+          <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div class="md:col-span-1 lg:col-span-2">
               <h3 class="text-xl font-bold">{{ programDetail.name }}</h3>
               <p class="mt-1 text-sm text-gray-500">
                 {{ programDetail.Industry?.Title || '產業未分類' }}／{{ programDetail.JobTitle?.Title || '職位未分類' }}
               </p>
             </div>
-            <div class="flex flex-col gap-2 text-sm text-gray-600">
-              <div class="flex items-center justify-between">
-                <span>已申請人數：{{ programDetail.applied_count }}人</span>
-                <span>申請截止還有{{ programDetail.days_left }}天</span>
+            <div class="grid grid-cols-1 gap-y-2 text-sm text-gray-600 lg:grid-cols-2 lg:gap-x-8">
+              <div class="flex items-center">
+                <span class="md:whitespace-nowrap">已申請人數：<span class="whitespace-nowrap">{{ programDetail.applied_count }}人</span></span>
               </div>
-              <div class="flex items-center justify-between">
-                <span>體驗天數：{{ programDetail.program_duration_days }}天</span>
-                <span>體驗人數：{{ programDetail.min_people }}-{{ programDetail.max_people }}人</span>
+              <div class="flex items-center lg:justify-end">
+                <span class="md:whitespace-nowrap">申請截止還有 <span class="whitespace-nowrap">{{ programDetail.days_left }}天</span></span>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center">
+                <span class="md:whitespace-nowrap">體驗天數：<span class="whitespace-nowrap">{{ programDetail.program_duration_days }}天</span></span>
+              </div>
+              <div class="flex items-center lg:justify-end">
+                <span class="md:whitespace-nowrap">體驗人數：<span class="whitespace-nowrap">{{ programDetail.min_people }}-{{ programDetail.max_people }}人</span></span>
+              </div>
+              <div class="flex items-start gap-2 lg:col-span-2 lg:items-center">
                 <font-awesome-icon :icon="['fas','calendar-alt']" />
-                <span>{{ formatDate(programDetail.program_start_date) }} - {{ formatDate(programDetail.program_end_date) }}</span>
+                <div class="flex flex-col md:flex-row md:items-center md:gap-2 md:whitespace-nowrap">
+                  <span class="whitespace-nowrap">{{ formatDate(programDetail.program_start_date) }}</span>
+                  <span class="hidden md:inline">-</span>
+                  <span class="whitespace-nowrap">{{ formatDate(programDetail.program_end_date) }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -281,8 +289,8 @@ const handleApplyClick = async () => {
             <h3 class="mb-4 text-lg font-bold">體驗流程</h3>
             <dl v-if="programDetail.Steps && programDetail.Steps.length > 0" class="space-y-4">
               <div v-for="(step, idx) in programDetail.Steps" :key="idx" class="grid grid-cols-12 gap-4">
-                <dt class="col-span-12 font-semibold text-gray-700 md:col-span-2">{{ step.Name }}</dt>
-                <dd class="col-span-12 leading-7 text-gray-700 md:col-span-10">
+                <dt class="col-span-12 truncate whitespace-nowrap font-semibold text-gray-700 md:col-span-2">{{ step.Name }}</dt>
+                <dd class="col-span-12 leading-7 text-gray-700 md:col-span-10 break-keep">
                   {{ step.Description }}
                 </dd>
               </div>
