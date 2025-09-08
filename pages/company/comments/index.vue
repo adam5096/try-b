@@ -17,6 +17,8 @@ const filters = reactive({
 })
 
 const comments = ref<any[]>([])
+const loading = ref(false)
+const loadError = ref<string | null>(null)
 
 const pagination = reactive({
   currentPage: 1,
@@ -37,30 +39,45 @@ function formatDate(input: string) {
 }
 
 async function loadData() {
+  loading.value = true
+  loadError.value = null
   // 開發階段若無 companyId，使用 9 做測試
   const companyId = authStore.companyId ?? 9
-  const { data, error } = await fetchEvaluations(companyId, { page: pagination.currentPage, limit: pagination.pageSize })
-  if (error.value) {
-    console.error('取得企業評價資料失敗:', error.value)
-    comments.value = []
-    pagination.total = 0
-    return
-  }
-  if (data.value) {
-    pagination.total = data.value.TotalCount || 0
-    comments.value = (data.value.Data || []).map((item) => ({
-      id: item.Id,
-      author: {
-        name: item.ParticipantName,
-        avatar: item.Headshot || '',
-        role: item.ParticipantIdentity?.title || '—',
-        age: item.ParticipantAge
-      },
-      program: item.ProgramName,
-      rating: item.Score,
-      date: formatDate(item.EvaluationDate),
-      text: item.Comment
-    }))
+  console.info('[Comments] loadData start', {
+    companyId,
+    page: pagination.currentPage,
+    limit: pagination.pageSize
+  })
+  try {
+    const { data, error } = await fetchEvaluations(companyId, { page: pagination.currentPage, limit: pagination.pageSize })
+    if (error.value) {
+      console.error('取得企業評價資料失敗:', error.value)
+      comments.value = []
+      pagination.total = 0
+      loadError.value = (error.value as any)?.message || '取得資料失敗'
+      return
+    }
+    if (data.value) {
+      pagination.total = data.value.TotalCount || 0
+      comments.value = (data.value.Data || []).map((item) => ({
+        id: item.Id,
+        author: {
+          name: item.ParticipantName,
+          avatar: item.Headshot || '',
+          role: item.ParticipantIdentity?.title || '—',
+          age: item.ParticipantAge
+        },
+        program: item.ProgramName,
+        rating: item.Score,
+        date: formatDate(item.EvaluationDate),
+        text: item.Comment
+      }))
+      console.info('[Comments] response', { total: pagination.total, count: comments.value.length })
+    }
+  } catch (e: any) {
+    loadError.value = e?.message || '取得資料失敗'
+  } finally {
+    loading.value = false
   }
 }
 
@@ -70,6 +87,11 @@ function handlePageChange (page: number) {
 }
 
 onMounted(() => {
+  console.info('[Comments] onMounted', {
+    isLoggedIn: authStore.isLoggedIn,
+    companyId: authStore.companyId,
+    hasToken: !!authStore.token
+  })
   loadData()
 })
 </script>

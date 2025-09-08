@@ -14,8 +14,19 @@ export const useCompanyCommentReviews = () => {
     const qs = query.toString();
 
     const url = `/api/v1/company/${companyId}/evaluations${qs ? `?${qs}` : ''}`;
+    console.info('[API] about to fetch', url)
 
-    const { data, error } = await useCompanyApiFetch<CompanyEvaluationListResponse>(url, { method: 'GET' });
+    const { data, error } = await useCompanyApiFetch<CompanyEvaluationListResponse>(url, {
+      method: 'GET',
+      onRequest(ctx) {
+        try {
+          const hdr = ctx.options?.headers instanceof Headers
+            ? Object.fromEntries((ctx.options.headers as Headers).entries())
+            : ctx.options?.headers;
+          console.info('➡️ request', String(ctx.request), hdr)
+        } catch {}
+      }
+    });
 
     return { data, error };
   };
