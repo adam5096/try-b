@@ -19,6 +19,14 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string | null>, opti
   // 將 null URL 轉換為空字串，避免 TypeScript 錯誤
   const safeUrl = computed(() => toValue(url) || '');
 
+  if (process.client) {
+    try {
+      // 非敏感摘要（僅顯示 token 前 8 碼）
+      const tokenPreview = tokenCookie.value ? `${tokenCookie.value.substring(0, 8)}…` : 'null';
+      console.info('[API] baseURL', baseURL, 'token', tokenPreview);
+    } catch {}
+  }
+
   const customOptions: UseFetchOptions<T> = {
     ...options,
     baseURL,
@@ -38,6 +46,15 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string | null>, opti
         context.options.headers = new Headers(context.options.headers as any);
         context.options.headers.set('Authorization', `Bearer ${tokenCookie.value}`);
       }
+
+      if (process.client) {
+        try {
+          const hdr = context.options.headers instanceof Headers
+            ? Object.fromEntries((context.options.headers as Headers).entries())
+            : context.options.headers;
+          console.info('[API] onRequest →', String(context.request), hdr);
+        } catch {}
+      }
       
       // Chain the original onRequest if it exists from the call site
       if (options.onRequest) {
@@ -48,6 +65,30 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string | null>, opti
         }
       }
     },
+    onResponse(context) {
+      if (process.client) {
+        console.info('[API] onResponse ←', String(context.request), context.response?.status);
+      }
+      if (options.onResponse) {
+        if (Array.isArray(options.onResponse)) {
+          options.onResponse.forEach(hook => hook(context));
+        } else if (typeof options.onResponse === 'function') {
+          options.onResponse(context);
+        }
+      }
+    },
+    onResponseError(context) {
+      if (process.client) {
+        console.error('[API] onResponseError ←', String(context.request), context.response?.status, context.response?._data);
+      }
+      if (options.onResponseError) {
+        if (Array.isArray(options.onResponseError)) {
+          options.onResponseError.forEach(hook => hook(context));
+        } else if (typeof options.onResponseError === 'function') {
+          options.onResponseError(context);
+        }
+      }
+    }
   };
   
   return useFetch(safeUrl, customOptions);
