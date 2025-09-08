@@ -128,21 +128,13 @@ function formatTwd(value: number | string) {
         目前方案
       </h2>
       <el-card shadow="never">
-        <div class="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
           <div>
             <p class="text-gray-500">
               訂單編號
             </p>
             <p class="font-semibold">
               {{ currentPlan.orderNumber }}
-            </p>
-          </div>
-          <div>
-            <p class="text-gray-500">
-              付款日期
-            </p>
-            <p class="font-semibold">
-              {{ currentPlan.paymentDate }}
             </p>
           </div>
           <div>
@@ -200,31 +192,33 @@ function formatTwd(value: number | string) {
           <p>讀取方案時發生錯誤: {{ error.message }}</p>
         </div>
         <el-card v-for="plan in processedPlans" v-else :key="plan.id" shadow="hover">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center gap-8 flex-1">
-              <div class="min-w-[6rem]">
-                <p class="font-bold">
-                  {{ plan.name }}
-                </p>
-              </div>
-              <!-- 第二列：天數 + 上限 與 描述 同一橫行 -->
-              <div class="flex flex-col gap-1 flex-1">
-                <div class="flex items-center gap-6">
-                  <div class="text-sm text-gray-600 flex items-center gap-6 whitespace-nowrap">
-                    <span>{{ plan.duration_days }} 天</span>
-                    <span>體驗人數上限 {{ plan.max_participants }} 人</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:flex lg:flex-row lg:items-center lg:justify-between plan-card-stack">
+            <!-- 左側：名稱 + 明細 + 描述 -->
+            <div class="flex-1 flex flex-col gap-2">
+              <div class="flex flex-col sm:flex-row items-start gap-2 sm:gap-4">
+                <div class="min-w-[4.5rem] md:min-w-[6rem]">
+                  <p class="font-bold">{{ plan.name }}</p>
+                </div>
+                <div class="flex-1 flex flex-col gap-2">
+                  <div class="flex flex-col lg:flex-row lg:items-center lg:gap-6">
+                    <div class="text-sm text-gray-600 flex flex-row flex-wrap gap-4 whitespace-normal sm:whitespace-nowrap plan-meta">
+                      <span>{{ plan.duration_days }} 天</span>
+                      <span>體驗人數上限 {{ plan.max_participants }} 人</span>
+                    </div>
+                    <p class="text-sm text-gray-800 lg:flex-1 break-words lg:break-normal leading-6 lg:mt-0 mt-2">
+                      {{ plan.description }}
+                    </p>
                   </div>
-                  <p class="text-sm text-gray-800 flex-1">
-                    {{ plan.description }}
-                  </p>
                 </div>
               </div>
             </div>
-            <div class="flex items-center gap-8">
-              <p class="text-lg font-semibold w-32 text-right">
+
+            <!-- 右側：價格 + 按鈕 -->
+            <div class="flex lg:items-center gap-3 lg:gap-8 lg:w-auto w-full">
+              <p class="text-lg font-semibold lg:w-32 lg:text-right w-full text-left plan-price">
                 {{ formatTwd(plan.price) }}
               </p>
-              <el-button type="primary" @click="selectPlan(plan.id)">
+              <el-button type="primary" class="w-full lg:w-auto" @click="selectPlan(plan.id)">
                 選擇
               </el-button>
             </div>
@@ -249,6 +243,22 @@ function formatTwd(value: number | string) {
 }
 :deep(.el-step__title.is-success) {
   @apply text-green-500;
+}
+/* --- small screen helpers --- */
+@media (max-width: 767.98px) {
+  .break-words { word-break: break-word; overflow-wrap: anywhere; }
+}
+/* --- ultra small (<=370px): force block layout to avoid clipping --- */
+@media (max-width: 369.98px) {
+  .plan-card-stack { display: grid !important; grid-template-columns: 1fr !important; }
+  .plan-card-stack > * { width: 100% !important; }
+  .plan-meta { display: block; width: 100% !important; }
+  .plan-price { text-align: left; width: 100% !important; }
+}
+/* --- sm~md 改善：兩直欄四元素結構（名稱/明細/描述/價+鈕）--- */
+@media (min-width: 640px) and (max-width: 1023.98px) {
+  .plan-card-stack { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+  .plan-price { text-align: right; }
 }
 </style>
 

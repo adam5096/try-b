@@ -55,40 +55,40 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
       </template>
       <el-form :model="companyInfo" label-position="top">
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="企業名稱*">
               <el-input v-model="companyInfo.name" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="統一編號(個人工作室可不填)">
               <el-input v-model="companyInfo.taxId" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="產業類別*">
-              <el-select v-model="companyInfo.industry" class="w-full min-w-form-control md:max-w-form-select">
+              <el-select v-model="companyInfo.industry" class="w-full min-w-form-control">
                 <el-option v-for="item in industryOptions" :key="item" :label="item" :value="item" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="企業規模*">
-              <el-select v-model="companyInfo.scale" class="w-full min-w-form-control md:max-w-form-select">
+              <el-select v-model="companyInfo.scale" class="w-full min-w-form-control">
                 <el-option v-for="item in scaleOptions" :key="item" :label="item" :value="item" />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="企業地址*">
               <el-input v-model="companyInfo.address" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="企業網站">
               <el-input v-model="companyInfo.website" />
             </el-form-item>
@@ -98,7 +98,7 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
           <el-input v-model="companyInfo.description" type="textarea" :rows="5" />
         </el-form-item>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="企業標誌">
               <div class="flex items-center gap-4">
                 <el-avatar :size="80" src="https://via.placeholder.com/80" />
@@ -108,7 +108,7 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="企業封面">
               <div class="flex items-center gap-4">
                 <div class="h-20 w-40 rounded-lg bg-gray-200" />
@@ -120,8 +120,8 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
           </el-col>
         </el-row>
       </el-form>
-      <div class="flex justify-end">
-        <el-button type="primary">
+      <div class="flex justify-end md:justify-end">
+        <el-button type="primary" class="w-full md:w-auto">
           儲存企業資料
         </el-button>
       </div>
@@ -164,24 +164,24 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
       </template>
       <el-form :model="contactInfo" label-position="top">
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="聯絡人姓名*">
               <el-input v-model="contactInfo.name" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="職稱*">
               <el-input v-model="contactInfo.title" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="電子郵件*">
               <el-input v-model="contactInfo.email" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="聯絡電話*">
               <el-input v-model="contactInfo.phone" />
             </el-form-item>

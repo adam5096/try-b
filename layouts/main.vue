@@ -59,7 +59,7 @@ const socialLinks = ref([
   <div>
     <!-- Header (Unified with user layout spec) -->
     <header class="nav-shadow fixed top-0 left-0 w-full bg-white z-40 h-[90px] flex items-center">
-      <nav class="w-full max-w-screen-full-hd mx-auto px-6 lg:px-8 flex h-full items-center justify-between gap-8">
+      <nav class="w-full max-w-screen-full-hd mx-auto px-6 lg:px-8 flex h-full items-center justify-between gap-8 header-compact">
           <!-- 商標 Section -->
           <h1 class="flex flex-none items-center text-2xl">
             <NuxtLink to="/" class="flex items-center gap-2">
@@ -194,5 +194,14 @@ const socialLinks = ref([
 <style scoped>
 .filter-to-white {
   filter: brightness(0) invert(1);
+}
+
+/* 370px 以下壓縮導覽左右 padding 與間距，避免擁擠 */
+@media (max-width: 369.98px) {
+  .header-compact {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    gap: 8px !important;
+  }
 }
 </style> 

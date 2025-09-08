@@ -213,9 +213,9 @@ async function handleSubmit() {
       </el-form-item>
 
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :xs="24" :sm="24" :md="12">
           <el-form-item label="產業類別">
-            <el-select v-model="selectedIndustryTitle" placeholder="請選擇產業類別" class="w-full min-w-form-control md:max-w-form-select" :loading="industriesPending">
+            <el-select v-model="selectedIndustryTitle" placeholder="請選擇產業類別" class="w-full min-w-form-control" :loading="industriesPending">
               <template #empty>
                 <div class="py-2 text-gray-500">{{ industriesPending ? '載入中…' : '無可選清單' }}</div>
               </template>
@@ -223,9 +223,9 @@ async function handleSubmit() {
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :xs="24" :sm="24" :md="12">
           <el-form-item label="職務類別">
-            <el-select v-model="selectedPositionTitle" placeholder="請選擇職務類別" class="w-full min-w-form-control md:max-w-form-select" :loading="positionsPending">
+            <el-select v-model="selectedPositionTitle" placeholder="請選擇職務類別" class="w-full min-w-form-control" :loading="positionsPending">
               <template #empty>
                 <div class="py-2 text-gray-500">{{ positionsPending ? '載入中…' : '無可選清單' }}</div>
               </template>
@@ -240,12 +240,12 @@ async function handleSubmit() {
       </el-form-item>
       
       <el-row :gutter="20">
-        <el-col :span="12">
+        <el-col :xs="24" :sm="24" :md="12">
           <el-form-item label="聯絡人">
             <el-input v-model="form.contact_name" placeholder="請輸入聯絡人姓名" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :xs="24" :sm="24" :md="12">
           <el-form-item label="電話">
             <el-input v-model="form.contact_phone" placeholder="請輸入聯絡電話" />
           </el-form-item>
@@ -269,27 +269,27 @@ async function handleSubmit() {
 
       <el-form-item label="計畫日期與人數">
         <el-row :gutter="20" class="w-full">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="體驗最少人數">
-               <el-input-number v-model="form.min_people" :min="1" />
+               <el-input-number v-model="form.min_people" :min="1" style="width: 100%" />
             </el-form-item>
             <el-form-item label="體驗最多人數">
-               <el-input-number v-model="form.max_people" :min="form.min_people" />
+               <el-input-number v-model="form.max_people" :min="form.min_people" style="width: 100%" />
             </el-form-item>
             <el-form-item label="體驗刊登開始日期">
-              <el-date-picker v-model="form.publish_start_date" type="date" placeholder="請選擇開始日期" class="w-full" value-format="YYYY-MM-DD" />
+              <el-date-picker v-model="form.publish_start_date" type="date" placeholder="請選擇開始日期" class="w-full" value-format="YYYY-MM-DD" style="width: 100%" />
             </el-form-item>
             <el-form-item label="刊登期間(天)">
-              <el-input-number v-model="form.publish_duration_days" :min="1" />
+              <el-input-number v-model="form.publish_duration_days" :min="1" style="width: 100%" />
             </el-form-item>
             <el-form-item label="計畫開始日期">
-              <el-date-picker v-model="form.program_start_date" type="date" placeholder="請選擇計畫開始日期" class="w-full" value-format="YYYY-MM-DD" />
+              <el-date-picker v-model="form.program_start_date" type="date" placeholder="請選擇計畫開始日期" class="w-full" value-format="YYYY-MM-DD" style="width: 100%" />
             </el-form-item>
             <el-form-item label="計畫結束日期">
-              <el-date-picker v-model="form.program_end_date" type="date" placeholder="請選擇計畫結束日期" class="w-full" value-format="YYYY-MM-DD" />
+              <el-date-picker v-model="form.program_end_date" type="date" placeholder="請選擇計畫結束日期" class="w-full" value-format="YYYY-MM-DD" style="width: 100%" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="體驗照片 (可以留白，最多四張)">
               <el-upload
                 action="#"
@@ -301,6 +301,7 @@ async function handleSubmit() {
                 :before-upload="() => false"
                 :on-change="onUploadChange"
                 :on-remove="onUploadRemove"
+                style="width: 100%"
               >
                 <el-icon><Plus /></el-icon>
               </el-upload>

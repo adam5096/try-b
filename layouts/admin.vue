@@ -35,10 +35,11 @@ const handleNav = (item: { key: string; label: string }, idx: number) => {
 <template>
   <div class="min-h-screen w-full bg-white text-gray-900">
     <!-- Top bar -->
-    <header class="flex h-16 w-full items-center justify-between bg-gray-700 px-4 text-white md:px-6 xl:px-8">
+    <header class="flex h-16 w-full items-center justify-between bg-gray-700 px-4 text-white md:px-6 xl:px-8 header-compact">
       <div class="flex items-center gap-3">
         <div class="flex h-8 w-12 items-center justify-center rounded bg-gray-600 text-[10px]">LOGO</div>
-        <span class="text-lg font-semibold md:text-xl">TRYβ管理後台系統</span>
+        <span class="text-lg font-semibold md:text-xl brand-full">TRYβ管理後台系統</span>
+        <span class="text-lg font-semibold md:text-xl brand-compact">TRYβ</span>
       </div>
       <div class="flex items-center gap-3">
         <button class="md:hidden" @click="isSidebarOpen = !isSidebarOpen" aria-label="切換選單">
@@ -85,4 +86,19 @@ const handleNav = (item: { key: string; label: string }, idx: number) => {
       </main>
     </div>
   </div>
+
 </template>
+
+<style scoped>
+/* 預設顯示完整版品牌，精簡版文字僅於極小螢幕顯示 */
+.brand-compact { display: none; }
+/* 370px 以下統一精簡樣式 */
+@media (max-width: 369.98px) {
+  .header-compact {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  .brand-full { display: none; }
+  .brand-compact { display: inline; }
+}
+</style>
