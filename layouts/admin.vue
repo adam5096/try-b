@@ -90,6 +90,8 @@ const handleNav = (item: { key: string; label: string }, idx: number) => {
 </template>
 
 <style scoped>
+/* 預設顯示完整版品牌，精簡版文字僅於極小螢幕顯示 */
+.brand-compact { display: none; }
 /* 370px 以下統一精簡樣式 */
 @media (max-width: 369.98px) {
   .header-compact {

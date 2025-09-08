@@ -134,6 +134,9 @@ async function handleLogout() {
   height: 48px;
 }
 
+/* 預設僅顯示完整版品牌，精簡版在極小螢幕才顯示 */
+.brand-compact { display: none; }
+
 /* 針對超小螢幕（<= 370px）做精簡排版，避免壅擠 */
 @media (max-width: 369.98px) {
   .header-compact {
