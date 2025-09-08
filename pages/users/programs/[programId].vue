@@ -110,24 +110,30 @@ const handleApplyClick = async () => {
   <main class="min-h-screen bg-brand-gray">
     <div class="mx-auto max-w-container-users px-6 py-12 md:px-12">
       <!-- Header -->
-      <div class="mb-8 flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-primary-blue-dark">體驗詳情</h1>
-        <div class="flex items-center gap-4">
-          <el-button 
-            v-if="programDetail" 
-            type="primary" 
-            size="large" 
-            @click="handleApplyClick"
-          >
-            我要申請
-          </el-button>
-          <el-button size="large" @click="goBack">返回列表</el-button>
-          <el-button size="large" @click="toggleFavorite">
-            <div class="flex items-center gap-2">
-              <font-awesome-icon :icon="[isFavorited ? 'fas' : 'far', 'heart']" />
-              <span>{{ isFavorited ? '已收藏' : '收藏' }}</span>
-            </div>
-          </el-button>
+      <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <h1 class="w-full text-2xl font-bold text-primary-blue-dark">體驗詳情</h1>
+        <div class="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center md:gap-4">
+          <div class="w-full md:w-auto">
+            <el-button 
+              v-if="programDetail" 
+              type="primary" 
+              size="large" 
+              @click="handleApplyClick"
+            >
+              我要申請
+            </el-button>
+          </div>
+          <div class="w-full md:w-auto">
+            <el-button size="large" @click="goBack">返回列表</el-button>
+          </div>
+          <div class="w-full md:w-auto">
+            <el-button size="large" @click="toggleFavorite">
+              <div class="flex items-center justify-center gap-2">
+                <font-awesome-icon :icon="[isFavorited ? 'fas' : 'far', 'heart']" />
+                <span>{{ isFavorited ? '已收藏' : '收藏' }}</span>
+              </div>
+            </el-button>
+          </div>
         </div>
       </div>
 
@@ -329,3 +335,12 @@ const handleApplyClick = async () => {
     <UsersApplyExperience :program-id="programId" @submitted="onApplySubmitted" @close="showApply = false" />
   </el-dialog>
 </template>
+
+<style scoped>
+/* 小於 md：讓按鈕在每行佔滿可用寬度 */
+@media (max-width: 767.98px) {
+  .w-full > .el-button {
+    width: 100%;
+  }
+}
+</style>
