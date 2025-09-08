@@ -139,14 +139,6 @@ function formatTwd(value: number | string) {
           </div>
           <div>
             <p class="text-gray-500">
-              付款日期
-            </p>
-            <p class="font-semibold">
-              {{ currentPlan.paymentDate }}
-            </p>
-          </div>
-          <div>
-            <p class="text-gray-500">
               付款方式
             </p>
             <p class="font-semibold">
