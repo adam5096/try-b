@@ -63,7 +63,14 @@ async function loadData() {
         id: item.Id,
         author: {
           name: item.ParticipantName,
-          avatar: item.Headshot || '',
+          // 修正後端回傳的 http 與檔名空白，避免 Mixed Content 與 404
+          avatar: (() => {
+            const raw = item.Headshot || ''
+            if (!raw) return ''
+            // 升級為 https 並處理空白
+            const upgraded = raw.replace(/^http:\/\//i, 'https://')
+            return encodeURI(upgraded)
+          })(),
           role: item.ParticipantIdentity?.title || '—',
           age: item.ParticipantAge
         },
