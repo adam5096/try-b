@@ -71,10 +71,6 @@
         </div>
       </div>
 
-      <p class="mt-8 text-center text-gray-500">
-        我們已將訂單確認信發送至您的電子郵件: zhang.xiaoming@email.com
-      </p>
-
       <div class="mt-8 text-center">
         <el-button @click="goToPlans">
           返回計畫列表
