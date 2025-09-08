@@ -54,21 +54,21 @@ async function handleLogout() {
 <template>
   <el-container class="h-screen">
     <!-- Header -->
-    <el-header class="fixed top-0 left-0 right-0 z-20 flex items-center justify-between bg-white border-b px-6">
-      <div class="flex items-center gap-2">
-        
-        <h1 class="text-xl font-bold">
-          TRY ß 職業體驗平台
+    <el-header class="fixed top-0 left-0 right-0 z-20 flex items-center justify-between bg-white border-b px-6 header-compact">
+      <div class="flex items-center">
+        <h1 class="font-bold">
+          <span class="brand-full text-xl">TRY ß 職業體驗平台</span>
+          <span class="brand-compact text-xl">TRY ß</span>
         </h1>
       </div>
       <div class="flex items-center">
-        <div class=" items-center gap-6 flex">
-          <el-badge :value="1" class="item" type="primary">
+        <div class="items-center gap-6 flex header-actions">
+          <el-badge :value="1" class="item notify" type="primary">
             <el-button :icon="Bell" circle />
           </el-badge>
           <div class="flex items-center gap-2">
             <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-            <div>
+            <div class="user-text">
               <div class="text-sm font-medium">
                 {{ authStore.basicUser?.Role || '企業管理員' }}
               </div>
@@ -132,5 +132,18 @@ async function handleLogout() {
 <style>
 .el-menu-item {
   height: 48px;
+}
+
+/* 針對超小螢幕（<= 370px）做精簡排版，避免壅擠 */
+@media (max-width: 369.98px) {
+  .header-compact {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  .brand-full { display: none; }
+  .brand-compact { display: inline; }
+  .notify { display: none; }
+  .user-text { display: none; }
+  .header-actions { gap: 8px !important; }
 }
 </style>
