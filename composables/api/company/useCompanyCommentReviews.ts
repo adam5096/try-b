@@ -13,22 +13,30 @@ export const useCompanyCommentReviews = () => {
     if (params.limit) query.append('limit', String(params.limit));
     const qs = query.toString();
 
-    const url = `/api/v1/company/${companyId}/evaluations${qs ? `?${qs}` : ''}`;
-    console.info('[API] about to fetch', url)
+    const path = `/api/v1/company/${companyId}/evaluations${qs ? `?${qs}` : ''}`;
+    console.info('[API] about to fetch', path)
 
-    const { data, error } = await useCompanyApiFetch<CompanyEvaluationListResponse>(url, {
-      method: 'GET',
-      onRequest(ctx) {
-        try {
-          const hdr = ctx.options?.headers instanceof Headers
-            ? Object.fromEntries((ctx.options.headers as Headers).entries())
-            : ctx.options?.headers;
-          console.info('➡️ request', String(ctx.request), hdr)
-        } catch {}
+    // 在客戶端改用 $fetch 發送實際 HTTP，避免 SSR 去重導致 Network 無請求
+    if (process.client) {
+      const config = useRuntimeConfig();
+      const baseURL = process.env.NODE_ENV === 'production' ? config.public.apiBase : '/api-proxy';
+      const tokenCookie = useCookie<string | null>('companyAuthToken');
+      const fullUrl = `${baseURL}${path}`;
+      try {
+        const resp = await $fetch<CompanyEvaluationListResponse>(fullUrl, {
+          method: 'GET',
+          headers: tokenCookie.value ? { Authorization: `Bearer ${tokenCookie.value}` } : undefined,
+        });
+        return { data: { value: resp }, error: { value: null } } as const;
+      } catch (e) {
+        console.error('❌ $fetch company evaluations failed:', e);
+        return { data: { value: null }, error: { value: e } } as const;
       }
-    });
+    }
 
-    return { data, error };
+    // 伺服器端維持 useFetch（可利用 SSR 預取）
+    const { data, error } = await useCompanyApiFetch<CompanyEvaluationListResponse>(path, { method: 'GET' });
+    return { data, error } as const;
   };
 
   return { fetchEvaluations };
