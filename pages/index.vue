@@ -42,7 +42,7 @@ const quickLinks = ref([
 
 const testimonials = [
   {
-    avatar: 'https://i.imgur.com/JS4g6z4.png',
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=512&auto=format&fit=crop',
     name: '某某股份有限公司',
     title: '創意總監',
     rating: 5,
@@ -50,7 +50,7 @@ const testimonials = [
     date: '2025年11月'
   },
   {
-    avatar: 'https://i.imgur.com/AhGjW3y.png',
+    avatar: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=512&auto=format&fit=crop',
     name: '某某個人工作室',
     title: '永續教育顧問',
     rating: 4.5,
@@ -277,12 +277,12 @@ const defaultCardImages = [
           <div
             v-for="(card, index) in cards"
             :key="index"
-            class="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1"
+            class="bg-white shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1 rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
             :class="{ 'animate-pulse': pending }"
           >
             <div class="relative">
               <NuxtImg
-                class="w-full h-48 object-cover"
+                class="w-full h-48 object-cover rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
                 :src="getCardImageSrc(index, card.coverUrl)"
                 alt="熱門體驗活動"
                 width="768"

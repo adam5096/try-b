@@ -202,7 +202,7 @@ const handleViewDetail = async (program: any) => {
       </div>
       <!-- Empty -->
       <div v-else-if="programs.length === 0" class="text-center p-8 text-gray-500">
-        <p>目前沒有任何計畫。</p>
+        <p class="tracking-wider">目前沒有任何計畫。</p>
       </div>
       <!-- Real Cards -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
@@ -215,43 +215,47 @@ const handleViewDetail = async (program: any) => {
           <div class="relative flex-shrink-0">
             <NuxtImg :src="program.CoverImage || '/img/home/home-worker-bg.webp'" alt="program image" class="w-full h-48 object-cover" format="webp" loading="lazy" />
             <div class="absolute top-2 left-2 px-2 py-1 text-xs rounded z-10" :class="getStatusBadgeClass(program)">
-              {{ getProgramStatus(program) }}
+              <span class="tracking-widest">{{ getProgramStatus(program) }}</span>
             </div>
           </div>
 
           <!-- 內容 -->
           <div class="p-4 flex flex-col flex-1 min-h-0">
-            <h3 class="text-lg font-bold text-black mb-2 line-clamp-2 leading-tight flex items-start">
+            <h3 class="text-lg font-bold text-black mb-2 line-clamp-2 leading-tight flex items-start tracking-widest">
               {{ program.Name || '未命名計畫' }}
             </h3>
 
-            <p class="text-sm text-gray-600 mb-3 flex-1 overflow-hidden text-ellipsis line-clamp-3">
+            <p class="text-sm text-gray-600 mb-3 flex-1 overflow-hidden text-ellipsis line-clamp-3 tracking-wider">
               {{ formatIntroText(program.Intro) || '暫無介紹' }}
             </p>
 
             <div class="space-y-2 mb-6 flex flex-col justify-center">
               <div class="flex items-center gap-2">
                 <font-awesome-icon :icon="['fas', 'briefcase']" class="text-gray-500 w-3 flex-shrink-0" />
-                <span class="text-xs text-black truncate">{{ program.Industry?.Title || '產業未分類' }}</span>
+                <span class=" text-black truncate tracking-wide">{{ program.Industry?.Title || '產業未分類' }}</span>
               </div>
               <div class="flex items-center gap-2">
                 <font-awesome-icon :icon="['fas', 'calendar']" class="text-gray-500 w-3 flex-shrink-0" />
-                <span class="text-xs text-black truncate">{{ formatProgramDate(program) }}</span>
+                <span class=" text-black truncate tracking-wide">{{ formatProgramDate(program) }}</span>
               </div>
               <div class="flex items-center gap-2">
                 <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="text-gray-500 w-3 flex-shrink-0" />
-                <span class="text-xs text-black truncate">{{ program.Address || '地點未定' }}</span>
+                <span class=" text-black truncate tracking-wide">{{ program.Address || '地點未定' }}</span>
               </div>
               <div class="flex items-center gap-2">
                 <font-awesome-icon :icon="['fas', 'users']" class="text-gray-500 w-3 flex-shrink-0" />
-                <span class="text-xs text-black truncate">已申請人數: {{ program.AppliedCount || 0 }}人</span>
+                <span class=" text-black truncate tracking-wide">已申請人數: {{ program.AppliedCount || 0 }}人</span>
               </div>
             </div>
 
             <button
               @click="handleViewDetail(program)"
-              class="w-full rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+              class="relative w-full rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform tracking-widest hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
             >
+              <span class="absolute -top-1 -right-1 inline-flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+              </span>
               查看詳情
             </button>
           </div>
