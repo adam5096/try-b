@@ -3,33 +3,43 @@
     <div
       class="w-full rounded-md border overflow-hidden bg-white relative"
       :class="heightClass"
-      v-loading="isMapLoading"
-      element-loading-text="地圖載入中…"
-      element-loading-background="rgba(255,255,255,.6)"
     >
-      <template v-if="safeSrc">
-        <iframe
-          :src="safeSrc"
-          width="100%"
-          height="100%"
-          style="border:0; display:block;"
-          loading="lazy"
-          allowfullscreen
-          referrerpolicy="no-referrer-when-downgrade"
-          @load="handleLoad"
-        />
-      </template>
-      <template v-else>
-        <div class="w-full h-full flex items-center justify-center text-zinc-500 text-sm px-4">
-          {{ emptyText }}
-        </div>
-      </template>
+      <el-skeleton
+        :loading="isMapLoading"
+        animated
+        :throttle="{ leading: 300, trailing: 300, initVal: true }"
+        :count="1"
+        style="width: 100%; height: 100%"
+      >
+        <template #template>
+          <el-skeleton-item variant="image" style="width: 100%; height: 100%" />
+        </template>
+        <template #default>
+          <template v-if="safeSrc">
+            <iframe
+              :src="safeSrc"
+              width="100%"
+              height="100%"
+              style="border:0; display:block;"
+              loading="lazy"
+              allowfullscreen
+              referrerpolicy="no-referrer-when-downgrade"
+              @load="handleLoad"
+            />
+          </template>
+          <template v-else>
+            <div class="w-full h-full flex items-center justify-center text-zinc-500 text-sm px-4">
+              {{ emptyText }}
+            </div>
+          </template>
+        </template>
+      </el-skeleton>
     </div>
   </client-only>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 interface Props {
   src?: string | null;
@@ -84,11 +94,36 @@ const handleLoad = () => {
   isMapLoading.value = false;
 };
 
-// 防止某些環境下 iframe @load 不觸發，增加超時備援
+// 根據 safeSrc 控制骨架顯示：無可用來源則不顯示骨架
+watch(
+  safeSrc,
+  (val) => {
+    isMapLoading.value = !!val;
+  },
+  { immediate: true },
+);
+
+// 防止某些環境下 iframe @load 不觸發：僅在仍為 loading 時，延遲關閉骨架
 if (import.meta.client) {
-  setTimeout(() => {
-    isMapLoading.value = false;
-  }, 2000);
+  let fallbackTimer: number | null = null;
+  watch(
+    isMapLoading,
+    (loading) => {
+      if (loading) {
+        if (fallbackTimer !== null) clearTimeout(fallbackTimer);
+        fallbackTimer = window.setTimeout(() => {
+          if (isMapLoading.value) {
+            isMapLoading.value = false;
+          }
+          fallbackTimer = null;
+        }, 5000);
+      } else if (fallbackTimer !== null) {
+        clearTimeout(fallbackTimer);
+        fallbackTimer = null;
+      }
+    },
+    { immediate: true },
+  );
 }
 </script>
 
