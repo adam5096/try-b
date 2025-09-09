@@ -341,9 +341,6 @@ onMounted(() => {
             <div class="flex items-center flex-wrap gap-x-3 gap-y-2">
               <div class="text-lg font-semibold text-gray-800">{{ item.company_name }}</div>
               <el-tag effect="plain" round>{{ item.program_name }}</el-tag>
-              <el-tag :type="tagTypeForStatus(statusIdToText(item.status_id))" size="small" effect="plain">
-                {{ statusIdToText(item.status_id) }}
-              </el-tag>
             </div>
           </div>
 

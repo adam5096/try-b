@@ -123,7 +123,10 @@ async function handleLogout() {
 
       <!-- Page Content -->
       <el-main class="bg-gray-50 overflow-y-auto">
-        <slot />
+        <!-- 統一頁面內距（Mobile 16px / md 24px / lg 32px） -->
+        <div class="px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
+          <slot />
+        </div>
       </el-main>
     </div>
   </el-container>

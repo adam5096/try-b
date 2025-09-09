@@ -49,7 +49,7 @@ const approvedStatus = ref('all')
 </script>
 
 <template>
-  <div class="p-6 lg:p-8">
+  <div>
     <CompanyPlanStatusHeader />
 
     <!-- Page Header -->

@@ -34,7 +34,7 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
 </script>
 
 <template>
-  <div class="space-y-6 p-6">
+  <div class="space-y-6">
     <CompanyPlanStatusHeader />
 
     <div>
@@ -56,7 +56,7 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
       <el-form :model="companyInfo" label-position="top">
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12">
-            <el-form-item label="企業名稱*">
+            <el-form-item label="企業名稱">
               <el-input v-model="companyInfo.name" />
             </el-form-item>
           </el-col>
@@ -68,14 +68,14 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
         </el-row>
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12">
-            <el-form-item label="產業類別*">
+            <el-form-item label="產業類別">
               <el-select v-model="companyInfo.industry" class="w-full min-w-form-control">
                 <el-option v-for="item in industryOptions" :key="item" :label="item" :value="item" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="12">
-            <el-form-item label="企業規模*">
+            <el-form-item label="企業規模">
               <el-select v-model="companyInfo.scale" class="w-full min-w-form-control">
                 <el-option v-for="item in scaleOptions" :key="item" :label="item" :value="item" />
               </el-select>
@@ -84,7 +84,7 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
         </el-row>
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12">
-            <el-form-item label="企業地址*">
+            <el-form-item label="企業地址">
               <el-input v-model="companyInfo.address" />
             </el-form-item>
           </el-col>
@@ -135,16 +135,16 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
         </h3>
       </template>
       <el-form :model="passwordInfo" label-position="top">
-        <el-form-item label="目前密碼*">
+        <el-form-item label="目前密碼">
           <el-input v-model="passwordInfo.current" type="password" show-password />
         </el-form-item>
-        <el-form-item label="新密碼*">
+        <el-form-item label="新密碼">
           <el-input v-model="passwordInfo.new" type="password" show-password />
           <p class="text-xs text-gray-400">
             密碼必須包含至少8個字符,包括大小寫字母、數字和特殊符號
           </p>
         </el-form-item>
-        <el-form-item label="確認新密碼*">
+        <el-form-item label="確認新密碼">
           <el-input v-model="passwordInfo.confirm" type="password" show-password />
         </el-form-item>
       </el-form>
@@ -165,24 +165,24 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
       <el-form :model="contactInfo" label-position="top">
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12">
-            <el-form-item label="聯絡人姓名*">
+            <el-form-item label="聯絡人姓名">
               <el-input v-model="contactInfo.name" />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="12">
-            <el-form-item label="職稱*">
+            <el-form-item label="職稱">
               <el-input v-model="contactInfo.title" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12">
-            <el-form-item label="電子郵件*">
+            <el-form-item label="電子郵件">
               <el-input v-model="contactInfo.email" />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="24" :md="12">
-            <el-form-item label="聯絡電話*">
+            <el-form-item label="聯絡電話">
               <el-input v-model="contactInfo.phone" />
             </el-form-item>
           </el-col>
