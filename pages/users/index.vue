@@ -158,8 +158,8 @@ const handleViewDetail = async (program: any) => {
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <!-- Hot Programs Section -->
         <section class="mb-16">
-          <h2 class="text-2xl font-bold mb-2">熱門體驗計畫總覽</h2>
-          <p class="text-gray-500 mb-8">在這裡探索最受歡迎的體驗計畫，看看大家都喜歡哪些活動！</p>
+          <h2 class="text-2xl font-bold mb-2 tracking-widest">熱門體驗計畫總覽</h2>
+          <p class="text-gray-500 mb-8 tracking-wider">在這裡探索最受歡迎的體驗計畫，看看大家都喜歡哪些活動！</p>
           <el-carousel
             v-if="programsStore.popular && programsStore.popular.length > 0"
             :interval="4000"
@@ -182,11 +182,11 @@ const handleViewDetail = async (program: any) => {
                   </div>
                   <!-- Right: Text -->
                   <div class="w-1/2 h-full p-6 flex flex-col justify-center">
-                    <h3 class="text-2xl font-bold mb-2">{{ program.Name || '未命名計畫' }}</h3>
-                    <p class="text-gray-600 mb-4">{{ program.Industry?.Title || '產業未分類' }}</p>
+                    <h3 class="text-2xl font-bold mb-2 tracking-widest">{{ program.Name || '未命名計畫' }}</h3>
+                    <p class="text-gray-600 mb-4 tracking-wider">{{ program.Industry?.Title || '產業未分類' }}</p>
                     <button 
                       @click="handleViewDetail(program)"
-                      class="w-max rounded-md bg-btn-yellow px-6 py-2 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+                      class="w-max rounded-md bg-btn-yellow px-6 py-2 font-bold text-black transition-transform tracking-widest hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
                     >
                       查看詳情
                     </button>
@@ -205,8 +205,8 @@ const handleViewDetail = async (program: any) => {
 
         <!-- General Programs Section -->
         <section>
-          <h2 class="text-2xl font-bold mb-2">一般體驗計畫總覽</h2>
-          <p class="text-gray-500 mb-8">管理您已申請的體驗計畫，並在這裡快速申請新計畫。</p>
+          <h2 class="text-2xl font-bold mb-2 tracking-widest">一般體驗計畫總覽</h2>
+          <p class="text-gray-500 mb-8 tracking-wider">管理您已申請的體驗計畫，並在這裡快速申請新計畫。</p>
 
           <!-- Filters -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 p-4 bg-white rounded-lg shadow items-stretch">
@@ -228,7 +228,7 @@ const handleViewDetail = async (program: any) => {
 
           <!-- Program Cards -->
           <div v-if="programsStore.items && programsStore.items.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC] h-[580px] flex flex-col overflow-hidden">
+            <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC]  flex flex-col overflow-hidden">
               <!-- Cover Image with Status Tag -->
               <div class="relative flex-shrink-0">
                 <NuxtImg
@@ -240,14 +240,14 @@ const handleViewDetail = async (program: any) => {
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">
-                  已發佈
+                  <span class="tracking-widest">已發佈</span>
                 </div>
               </div>
               
               <!-- Program Content -->
               <div class="p-4 flex flex-col flex-1 min-h-0">
                 <!-- Title -->
-                <h3 class="text-lg font-bold text-black mb-2 line-clamp-2 leading-tight h-[3rem] flex items-start">{{ program.Name || '未命名計畫' }}</h3>
+                <h3 class="tracking-widest text-xl font-bold text-black  line-clamp-2 leading-tight h-[3rem] flex items-start">{{ program.Name || '未命名計畫' }}</h3>
                 
                 <!-- Description - 伸展填滿剩餘空間 -->
                 <p class="text-sm text-gray-600 mb-3 flex-1 overflow-hidden text-ellipsis line-clamp-3">{{ program.Intro || '暫無介紹' }}</p>
@@ -256,27 +256,31 @@ const handleViewDetail = async (program: any) => {
                 <div class="space-y-2 mb-6 h-[5.5rem] flex flex-col justify-center">
                   <div class="flex items-center gap-2 h-4">
                     <font-awesome-icon :icon="['fas', 'briefcase']" class="text-gray-500 w-3 flex-shrink-0" />
-                    <span class="text-xs text-black truncate">{{ program.Industry?.Title || '產業未分類' }}</span>
+                    <span class="tracking-wide text-black truncate">{{ program.Industry?.Title || '產業未分類' }}</span>
                   </div>
                   <div class="flex items-center gap-2 h-4">
                     <font-awesome-icon :icon="['fas', 'calendar']" class="text-gray-500 w-3 flex-shrink-0" />
-                    <span class="text-xs text-black truncate">{{ formatProgramDate(program) }}</span>
+                    <span class="tracking-wide text-black truncate">{{ formatProgramDate(program) }}</span>
                   </div>
                   <div class="flex items-center gap-2 h-4">
                     <font-awesome-icon :icon="['fas', 'map-marker-alt']" class="text-gray-500 w-3 flex-shrink-0" />
-                    <span class="text-xs text-black truncate">{{ program.Address || '地點未定' }}</span>
+                    <span class="tracking-wide text-black truncate">{{ program.Address || '地點未定' }}</span>
                   </div>
                   <div class="flex items-center gap-2 h-4">
                     <font-awesome-icon :icon="['fas', 'users']" class="text-gray-500 w-3 flex-shrink-0" />
-                    <span class="text-xs text-black truncate">已申請人數: {{ program.AppliedCount || 0 }}人</span>
+                    <span class="tracking-wide text-black truncate">已申請人數: {{ program.AppliedCount || 0 }}人</span>
                   </div>
                 </div>
                 
                 <!-- Action Button -->
                 <button 
                   @click="handleViewDetail(program)"
-                  class="w-full rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+                  class="relative w-full rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform  tracking-widest hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
                 >
+                  <span class="absolute -top-1 -right-1 inline-flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                  </span>
                   查看詳情
                 </button>
               </div>
