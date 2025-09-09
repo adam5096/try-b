@@ -17,7 +17,7 @@ const filters = reactive({
 })
 
 const comments = ref<any[]>([])
-const loading = ref(false)
+const loading = ref(true)
 const loadError = ref<string | null>(null)
 
 const pagination = reactive({
