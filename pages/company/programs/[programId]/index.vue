@@ -104,14 +104,14 @@ const refresh = () => {
 </script>
 
 <template>
-  <div v-if="programError" class="p-6 lg:p-8">
+  <div v-if="programError">
     <div class="text-center">
       <h1 class="text-2xl font-bold text-red-600 mb-4">載入失敗</h1>
       <p class="text-gray-600 mb-4">{{ programError.message }}</p>
       <el-button type="primary" @click="refresh()">重新載入</el-button>
     </div>
   </div>
-  <div v-else-if="program" class="p-6 lg:p-8">
+  <div v-else-if="program">
     <!-- Top info bar -->
     <CompanyPlanStatusHeader />
 

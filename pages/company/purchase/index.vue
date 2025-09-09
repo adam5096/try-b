@@ -118,7 +118,7 @@ function formatTwd(value: number | string) {
 </script>
 
 <template>
-  <div class="p-8">
+  <div>
     <!-- Current Plan Static Info -->
     <CompanyPlanStatusHeader />
 

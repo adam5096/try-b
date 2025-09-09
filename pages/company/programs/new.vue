@@ -194,12 +194,13 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="p-6 bg-white rounded-lg shadow-sm">
+  <div>
     <CompanyPlanStatusHeader />
-    <h2 class="text-2xl font-bold mb-6">
-      新增體驗計畫
-    </h2>
-    <el-form :model="form" label-position="top" @submit.prevent="handleSubmit">
+    <el-card class="mt-6">
+      <h2 class="text-2xl font-bold mb-6">
+        新增體驗計畫
+      </h2>
+      <el-form :model="form" label-position="top" @submit.prevent="handleSubmit">
       <el-form-item label="體驗名稱 (最多10個字)">
         <el-input v-model="form.name" placeholder="請輸入體驗計畫的正式名稱" />
       </el-form-item>
@@ -322,6 +323,7 @@ async function handleSubmit() {
           送出
         </el-button>
       </el-form-item>
-    </el-form>
+      </el-form>
+    </el-card>
   </div>
 </template> 
