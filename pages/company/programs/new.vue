@@ -27,7 +27,7 @@ const form = ref<CreateProgramPayload>({
   address: '',
   address_map: 'https://maps.example.com', // 暫用預設值
   contact_name: '',
-  contact_phone: '',
+  contact_phone: '0933-456-789',
   contact_email: '',
   min_people: 1,
   max_people: 5,
@@ -38,7 +38,7 @@ const form = ref<CreateProgramPayload>({
   steps: [
     { name: '報到與簡介', description: '' },
     { name: '程式設計工作坊', description: '' },
-    { name: 'AI 應用挑戰', description: '' },
+    { name: '專案分享與回顧', description: '' },
   ],
   images: [], // 圖片上傳邏輯待處理
 });
