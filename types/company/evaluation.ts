@@ -8,10 +8,10 @@ export interface ParticipantIdentity {
 export interface CompanyEvaluationItem {
   Id: number;
   ParticipantName: string;
-  ParticipantIdentity: ParticipantIdentity;
+  Identity: ParticipantIdentity;
   ParticipantAge: number;
   Headshot?: string;
-  ProgramName: string;
+  ProgramPlanName: string;
   ProgramPlanId: number;
   Score: number;
   Comment: string;

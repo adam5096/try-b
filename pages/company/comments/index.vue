@@ -71,10 +71,10 @@ async function loadData() {
             const upgraded = raw.replace(/^http:\/\//i, 'https://')
             return encodeURI(upgraded)
           })(),
-          role: item.ParticipantIdentity?.title || '—',
+          role: item.Identity?.title || '—',
           age: item.ParticipantAge
         },
-        program: item.ProgramName,
+        program: item.ProgramPlanName,
         rating: item.Score,
         date: formatDate(item.EvaluationDate),
         text: item.Comment
@@ -162,7 +162,8 @@ onMounted(() => {
             <div class="flex flex-wrap justify-between items-center gap-2">
               <div class="flex items-center gap-2 text-sm">
                 <span class="font-bold">{{ comment.author.name }}</span>
-                <span>{{ comment.author.role }} | {{ comment.author.age }}歲</span>
+                <span>{{ comment.author.age }}歲</span>
+                <span class="text-gray-500">{{ comment.author.role }}</span>
                 <span class="text-gray-500">{{ comment.program }}</span>
               </div>
               <div class="flex items-center gap-2">
