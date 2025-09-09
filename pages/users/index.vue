@@ -158,8 +158,8 @@ const handleViewDetail = async (program: any) => {
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <!-- Hot Programs Section -->
         <section class="mb-16">
-          <h2 class="text-2xl font-bold mb-2">熱門體驗計畫總覽</h2>
-          <p class="text-gray-500 mb-8">在這裡探索最受歡迎的體驗計畫，看看大家都喜歡哪些活動！</p>
+          <h2 class="text-2xl font-bold mb-2 tracking-widest">熱門體驗計畫總覽</h2>
+          <p class="text-gray-500 mb-8 tracking-wider">在這裡探索最受歡迎的體驗計畫，看看大家都喜歡哪些活動！</p>
           <el-carousel
             v-if="programsStore.popular && programsStore.popular.length > 0"
             :interval="4000"
@@ -182,11 +182,11 @@ const handleViewDetail = async (program: any) => {
                   </div>
                   <!-- Right: Text -->
                   <div class="w-1/2 h-full p-6 flex flex-col justify-center">
-                    <h3 class="text-2xl font-bold mb-2">{{ program.Name || '未命名計畫' }}</h3>
-                    <p class="text-gray-600 mb-4">{{ program.Industry?.Title || '產業未分類' }}</p>
+                    <h3 class="text-2xl font-bold mb-2 tracking-widest">{{ program.Name || '未命名計畫' }}</h3>
+                    <p class="text-gray-600 mb-4 tracking-wider">{{ program.Industry?.Title || '產業未分類' }}</p>
                     <button 
                       @click="handleViewDetail(program)"
-                      class="w-max rounded-md bg-btn-yellow px-6 py-2 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+                      class="w-max rounded-md bg-btn-yellow px-6 py-2 font-bold text-black transition-transform tracking-widest hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
                     >
                       查看詳情
                     </button>
@@ -205,8 +205,8 @@ const handleViewDetail = async (program: any) => {
 
         <!-- General Programs Section -->
         <section>
-          <h2 class="text-2xl font-bold mb-2">一般體驗計畫總覽</h2>
-          <p class="text-gray-500 mb-8">管理您已申請的體驗計畫，並在這裡快速申請新計畫。</p>
+          <h2 class="text-2xl font-bold mb-2 tracking-widest">一般體驗計畫總覽</h2>
+          <p class="text-gray-500 mb-8 tracking-wider">管理您已申請的體驗計畫，並在這裡快速申請新計畫。</p>
 
           <!-- Filters -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8 p-4 bg-white rounded-lg shadow items-stretch">
@@ -275,8 +275,12 @@ const handleViewDetail = async (program: any) => {
                 <!-- Action Button -->
                 <button 
                   @click="handleViewDetail(program)"
-                  class="animate-bounce w-full rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+                  class="relative w-full rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform  tracking-widest hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
                 >
+                  <span class="absolute -top-1 -right-1 inline-flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                  </span>
                   查看詳情
                 </button>
               </div>
