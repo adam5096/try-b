@@ -49,7 +49,7 @@ module.exports = {
       // 專為頁首設計的版心寬度
       maxWidth: {
         "screen-full-hd": "1920px",
-        "container-main": "1200px",
+        "container-main": "1400px",
         "container-company": "1200px",
         "container-users": "1200px",
         "container-admin": "1200px",
