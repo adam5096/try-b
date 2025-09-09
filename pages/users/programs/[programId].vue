@@ -70,6 +70,8 @@ const handleContact = () => {
   console.log('Contact customer service');
 };
 
+// 體驗照片：移除 Skeleton 載入邏輯，直接渲染圖片
+
 // 日期格式化函數
 const formatDate = (dateString: string) => {
   if (!dateString || dateString === '0001-01-01T00:00:00') {
@@ -314,12 +316,14 @@ const handleApplyClick = async () => {
         <div class="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
           <h3 class="mb-6 text-lg font-bold">體驗照片</h3>
           <div v-if="programDetail.Images && programDetail.Images.length > 0" class="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div v-for="(image, idx) in programDetail.Images" :key="idx" class="rounded bg-gray-300">
-              <img 
-                v-if="image" 
-                :src="image" 
-                :alt="`體驗照片 ${idx + 1}`" 
-                class="h-48 w-full object-cover rounded"
+            <div v-for="(image, idx) in programDetail.Images" :key="idx" class="rounded overflow-hidden">
+              <img
+                v-if="image"
+                :src="image"
+                :alt="`體驗照片 ${idx + 1}`"
+                class="h-48 w-full object-cover"
+                loading="lazy"
+                referrerpolicy="no-referrer"
               />
               <div v-else class="flex h-48 w-full items-center justify-center text-3xl text-gray-700">
                 圖片
