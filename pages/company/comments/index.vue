@@ -63,18 +63,16 @@ async function loadData() {
         id: item.Id,
         author: {
           name: item.ParticipantName,
-          // 修正後端回傳的 http 與檔名空白，避免 Mixed Content 與 404
+          // 直接採用後端 Headshot（只處理空白字元編碼）
           avatar: (() => {
             const raw = item.Headshot || ''
             if (!raw) return ''
-            // 升級為 https 並處理空白
-            const upgraded = raw.replace(/^http:\/\//i, 'https://')
-            return encodeURI(upgraded)
+            return encodeURI(raw)
           })(),
-          role: item.ParticipantIdentity?.title || '—',
+          role: item.Identity?.title || '—',
           age: item.ParticipantAge
         },
-        program: item.ProgramName,
+        program: item.ProgramPlanName,
         rating: item.Score,
         date: formatDate(item.EvaluationDate),
         text: item.Comment
@@ -151,31 +149,56 @@ onMounted(() => {
         </div>
       </template>
 
-      <div class="divide-y divide-gray-200">
-        <div v-for="comment in comments" :key="comment.id" class="py-6 flex gap-4">
-          <el-avatar :size="40" :src="comment.author.avatar">
-            <template #default>
-              <el-icon><UserFilled /></el-icon>
-            </template>
-          </el-avatar>
-          <div class="flex-1">
-            <div class="flex flex-wrap justify-between items-center gap-2">
-              <div class="flex items-center gap-2 text-sm">
-                <span class="font-bold">{{ comment.author.name }}</span>
-                <span>{{ comment.author.role }} | {{ comment.author.age }}歲</span>
-                <span class="text-gray-500">{{ comment.program }}</span>
+      <el-skeleton :loading="loading" animated :throttle="{ leading: 200, trailing: 200, initVal: true }" :count="3">
+        <template #template>
+          <div class="py-6 flex gap-4">
+            <el-skeleton-item variant="circle" style="width:40px;height:40px" />
+            <div class="flex-1">
+              <div class="flex flex-wrap justify-between items-center gap-2">
+                <div class="flex items-center gap-2 text-sm">
+                  <el-skeleton-item variant="text" style="width:120px" />
+                  <el-skeleton-item variant="text" style="width:48px" />
+                  <el-skeleton-item variant="text" style="width:80px" />
+                  <el-skeleton-item variant="text" style="width:160px" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <el-skeleton-item variant="text" style="width:80px" />
+                  <el-skeleton-item variant="text" style="width:80px" />
+                </div>
               </div>
-              <div class="flex items-center gap-2">
-                <el-rate :model-value="comment.rating" disabled show-score text-color="#ff9900" :score-template="`${comment.rating.toFixed(1)}`" />
-                <span class="text-sm text-gray-500">{{ comment.date }}</span>
+              <el-skeleton-item variant="p" style="margin-top:8px" />
+            </div>
+          </div>
+        </template>
+        <template #default>
+          <div class="divide-y divide-gray-200">
+            <div v-for="comment in comments" :key="comment.id" class="py-6 flex gap-4">
+              <el-avatar :size="40" :src="comment.author.avatar">
+                <template #default>
+                  <el-icon><UserFilled /></el-icon>
+                </template>
+              </el-avatar>
+              <div class="flex-1">
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class="font-bold">{{ comment.author.name }}</span>
+                    <span>{{ comment.author.age }}歲</span>
+                    <span class="text-gray-500">{{ comment.author.role }}</span>
+                    <span class="text-gray-500">{{ comment.program }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <el-rate :model-value="comment.rating" disabled show-score text-color="#ff9900" :score-template="`${comment.rating.toFixed(1)}`" />
+                    <span class="text-sm text-gray-500">{{ comment.date }}</span>
+                  </div>
+                </div>
+                <p class="mt-2 text-gray-700">
+                  {{ comment.text }}
+                </p>
               </div>
             </div>
-            <p class="mt-2 text-gray-700">
-              {{ comment.text }}
-            </p>
           </div>
-        </div>
-      </div>
+        </template>
+      </el-skeleton>
 
       <div class="mt-6 flex justify-between items-center">
         <div>

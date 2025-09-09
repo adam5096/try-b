@@ -57,7 +57,7 @@ const confirmPayment = () => {
 </script>
 
 <template>
-  <div class="p-8 bg-white">
+  <div class="bg-white">
     <!-- Current Plan Static Info -->
     <CompanyPlanStatusHeader />
 

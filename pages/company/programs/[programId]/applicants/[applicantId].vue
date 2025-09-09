@@ -103,7 +103,7 @@ const submitReview = async (formEl: FormInstance | undefined) => {
 </script>
 
 <template>
-  <div class="p-6 lg:p-8">
+  <div>
     <!-- Header -->
     <CompanyPlanStatusHeader />
 
