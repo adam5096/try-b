@@ -33,6 +33,14 @@ function resolveCompanyLogo(rawLogoPath?: string | null): string | undefined {
   return encodeURI(proxied);
 }
 
+// 日期格式化
+const { $dayjs } = useNuxtApp();
+function formatEvaluationDate(dateStr?: string | null): string {
+  if (!dateStr) return '';
+  const d = $dayjs(dateStr);
+  return d.isValid() ? d.format('YYYY/MM/DD HH:mm:ss') : '';
+}
+
 // 篩選器狀態
 const statusOptions = ['審核中', '系統已通過', '系統已拒絕', '人工已通過', '人工已拒絕', '待處理', '已發布', '全部通過', '全部拒絕', '未評價'];
 const selectedStatuses = ref<string[]>([]);
@@ -349,7 +357,7 @@ onMounted(() => {
         <div v-if="item.status_id !== 17" class="mt-3 flex items-center gap-4 text-gray-600">
           <el-rate :model-value="item.score || 0" disabled />
           <span class="font-semibold">{{ (item.score || 0).toFixed(1) }}</span>
-          <span class="text-gray-400">{{ new Date(item.evaluation_date).toLocaleDateString() }}</span>
+          <span class="text-gray-400">{{ formatEvaluationDate(item.evaluation_at) || '-' }}</span>
           <el-tag :type="tagTypeForStatus(statusIdToText(item.status_id))" size="small" effect="plain">
             {{ statusIdToText(item.status_id) }}
           </el-tag>

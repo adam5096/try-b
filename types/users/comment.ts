@@ -13,7 +13,7 @@ export interface ReviewItem {
   program_end_date: string;
   company_name: string;
   company_logo: string;
-  evaluation_date: string;
+  evaluation_at: string;
 }
 
 export interface CommentsQueryParams {
