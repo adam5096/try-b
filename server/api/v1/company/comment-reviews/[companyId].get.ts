@@ -9,6 +9,21 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    // 從 cookie 讀取 company token
+    const tokenCookie = getCookie(event, 'companyAuthToken');
+    const forwardHeaders: Record<string, string> = {};
+    
+    // 如果有 token，設定 Authorization header
+    if (tokenCookie) {
+      forwardHeaders.authorization = `Bearer ${tokenCookie}`;
+    }
+    
+    // 轉發其他重要的 headers
+    const incomingHeaders = getHeaders(event);
+    if (incomingHeaders['content-type']) {
+      forwardHeaders['content-type'] = incomingHeaders['content-type'];
+    }
+
     // 取得查詢參數
     const query = getQuery(event);
     const queryString = new URLSearchParams();
@@ -23,7 +38,7 @@ export default defineEventHandler(async (event) => {
     // 規則：必須包含 api 並使用 /api-proxy 進行代理
     const data = await $fetch(endpoint, {
       method: 'GET',
-      headers: getHeaders(event) as HeadersInit,
+      headers: forwardHeaders,
     });
 
     return data;

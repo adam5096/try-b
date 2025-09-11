@@ -20,13 +20,13 @@ export default defineEventHandler(async (event) => {
     const qs = queryString.toString();
     const endpoint = `/api-proxy/api/v1/company/${companyId}/programs${qs ? `?${qs}` : ''}`;
 
-    // 取得前端傳來的 headers
-    const incomingHeaders = getHeaders(event);
+    // 從 cookie 讀取 company token
+    const tokenCookie = getCookie(event, 'companyAuthToken');
     const forwardHeaders: Record<string, string> = {};
     
-    // 轉發重要的 headers（程式列表需要認證）
-    if (incomingHeaders.authorization) {
-      forwardHeaders.authorization = incomingHeaders.authorization;
+    // 如果有 token，設定 Authorization header
+    if (tokenCookie) {
+      forwardHeaders.authorization = `Bearer ${tokenCookie}`;
     }
 
     // 透過 Nitro 的 proxy 設定轉發到真實後端

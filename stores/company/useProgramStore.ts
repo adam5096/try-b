@@ -3,16 +3,16 @@ import { ref, computed, watch } from 'vue';
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 import type { ProgramsResponse, CreateProgramPayload } from '~/types/company/program';
 import type { ProgramCreationResponse } from '~/types/company/programCreation';
-import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 export const useCompanyProgramStore = defineStore('company-program', () => {
   const authStore = useCompanyAuthStore();
-  // 路徑固定使用 /api/...，由 useCompanyApiFetch 注入 baseURL 與 token
+  // 路徑固定使用 /v1/...，透過 BFF 架構處理 baseURL
   const page = ref(1);
   const limit = ref(21);
 
-  const { data, pending: isLoading, error, execute } = useFetch<ProgramsResponse>(() => authStore.companyId ? `/api/v1/company/programs/${authStore.companyId}` : '', {
+  const { data, pending: isLoading, error, execute } = useFetch<ProgramsResponse>(() => authStore.companyId ? `/v1/company/programs/${authStore.companyId}` : '', {
     key: 'company-programs',
+    baseURL: '/api',
     server: true,
     lazy: false,
     immediate: false, // We will trigger this manually
@@ -20,14 +20,6 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
       page,
       limit,
     },
-    headers: computed(() => {
-      const tokenCookie = useCookie<string | null>('companyAuthToken');
-      const headers: Record<string, string> = {};
-      if (tokenCookie.value) {
-        headers.authorization = `Bearer ${tokenCookie.value}`;
-      }
-      return headers;
-    }),
   });
 
   // Watch for companyId to become available and then fetch programs
@@ -76,22 +68,15 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
     }
 
     try {
-      const tokenCookie = useCookie<string | null>('companyAuthToken');
-      const headers: Record<string, string> = {};
-      
-      if (tokenCookie.value) {
-        headers.authorization = `Bearer ${tokenCookie.value}`;
-      }
-
-      const responseData = await $fetch<ProgramCreationResponse>(`/api/v1/company/programs/${authStore.companyId}`, {
+      const { data: responseData } = await useFetch<ProgramCreationResponse>(`/v1/company/programs/${authStore.companyId}`, {
         method: 'POST',
-        headers,
+        baseURL: '/api',
         body: payload,
       });
 
-      if (responseData) {
+      if (responseData.value) {
         await fetchPrograms();
-        return { success: true, data: responseData };
+        return { success: true, data: responseData.value };
       }
 
       return { success: false, error: new Error('No data returned') };

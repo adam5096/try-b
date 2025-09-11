@@ -1,13 +1,16 @@
 export default defineEventHandler(async (event) => {
   try {
-    // 取得前端傳來的 headers，特別是 Authorization
-    const incomingHeaders = getHeaders(event);
+    // 從 cookie 讀取 company token
+    const tokenCookie = getCookie(event, 'companyAuthToken');
     const forwardHeaders: Record<string, string> = {};
     
-    // 轉發重要的 headers
-    if (incomingHeaders.authorization) {
-      forwardHeaders.authorization = incomingHeaders.authorization;
+    // 如果有 token，設定 Authorization header
+    if (tokenCookie) {
+      forwardHeaders.authorization = `Bearer ${tokenCookie}`;
     }
+    
+    // 轉發其他重要的 headers
+    const incomingHeaders = getHeaders(event);
     if (incomingHeaders['content-type']) {
       forwardHeaders['content-type'] = incomingHeaders['content-type'];
     }
