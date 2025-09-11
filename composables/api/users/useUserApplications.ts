@@ -1,14 +1,28 @@
-import { useUserApiFetchRaw } from '~/composables/api/users/useUserApiFetch';
 import type { SubmitApplicationPayload, SubmitApplicationResponse, SubmitApplicationAlreadyAppliedError } from '~/types/users/application';
 
 export const useUserApplications = () => {
 	const submitApplication = async (programId: number | string, payload: SubmitApplicationPayload) => {
-		const url = `/api/v1/programs/${programId}/applications`;
+		const url = `/api/v1/users/applications/${programId}`;
+		
+		// 取得 user auth token 來設定 headers
+		const tokenCookie = useCookie<string | null>('userAuthToken');
+		const headers: Record<string, string> = {};
+		
+		if (tokenCookie.value) {
+			headers.authorization = `Bearer ${tokenCookie.value}`;
+		}
+		
 		try {
-			const { data, status } = await useUserApiFetchRaw<SubmitApplicationResponse>(url, {
+			// 使用 $fetch.raw 來取得完整的回應資訊（包含狀態碼）
+			const response = await $fetch.raw<SubmitApplicationResponse>(url, {
 				method: 'POST',
+				headers,
 				body: payload,
 			});
+			
+			const data = response._data;
+			const status = response.status;
+			
 			if (status === 200 || status === 201) {
 				return { data, status } as { data: SubmitApplicationResponse; status: 200 | 201 };
 			}

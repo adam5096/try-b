@@ -51,7 +51,6 @@ async function handleLogin() {
     
   } catch (error: any) {
     errorMessage.value = error.message || '登入失敗，請檢查您的帳號和密碼。';
-    console.error('Login failed:', error);
   } finally {
     // 僅在未觸發路由跳轉時才關閉 loading
     if (!willRedirect) {

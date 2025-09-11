@@ -49,20 +49,14 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
         ...params
       };
 
-      console.log('Fetching programs with params:', queryParams);
-
       const { data, error: apiError, pending } = await apiFetchPrograms(queryParams);
 
-      console.log('API Response:', { data: data.value, error: apiError.value, pending: pending.value });
-
       if (apiError.value) {
-        console.error('API Error:', apiError.value);
         const err = apiError.value as { data?: { message?: string }; message?: string };
         throw new Error(err?.data?.message ?? err?.message ?? '取得計畫列表失敗');
       }
 
       if (data.value) {
-        console.log('Setting programs data:', data.value);
         // 正規化：確保每一筆清單都有可用的 Program Id
         const normalizeImageUrl = (u?: string | null) => {
           if (!u) return null;
@@ -77,6 +71,7 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
           ...raw,
           Id: raw?.Id ?? null,
           CoverImage: normalizeImageUrl(raw?.CoverImage),
+          imageLoaded: false, // 初始化圖片載入狀態
         } as unknown as Program);
 
         const normalizedItems = (data.value.items || []).map(normalizeProgram);
@@ -92,20 +87,12 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
           ? rawPopular.map(normalizeProgram)
           : [];
         
-        console.log('Store updated:', {
-          programsCount: programs.value.length,
-          popularCount: backendPopularPrograms.value.length,
-          total: total.value,
-          currentPage: currentPage.value
-        });
       } else {
-        console.warn('No data received from API');
         programs.value = [];
         backendPopularPrograms.value = [];
         total.value = 0;
       }
     } catch (err) {
-      console.error('Error in fetchPrograms:', err);
       error.value = err instanceof Error ? err.message : '取得計畫列表時發生未知錯誤';
       programs.value = [];
       total.value = 0;

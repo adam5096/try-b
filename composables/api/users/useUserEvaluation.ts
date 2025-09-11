@@ -1,5 +1,4 @@
 import type { SubmitEvaluationPayload, SubmitEvaluationResponse } from '~/types/users/comment';
-import { useUserApiFetch } from './useUserApiFetch';
 
 export const useUserEvaluation = () => {
   const submitEvaluation = async (
@@ -7,12 +6,21 @@ export const useUserEvaluation = () => {
     programId: number,
     payload: SubmitEvaluationPayload,
   ) => {
-    const url = `/api/v1/users/${userId}/programs/${programId}/evaluations`;
+    const url = `/api/v1/users/evaluation/${userId}/${programId}`;
 
     try {
-      // 使用 useUserApiFetch 確保 JWT token 被注入
-      const data = await useUserApiFetch<SubmitEvaluationResponse>(url, {
+      // 取得 user auth token 來設定 headers
+      const tokenCookie = useCookie<string | null>('userAuthToken');
+      const headers: Record<string, string> = {};
+      
+      if (tokenCookie.value) {
+        headers.authorization = `Bearer ${tokenCookie.value}`;
+      }
+
+      // 使用 $fetch 呼叫本地 BFF 端點
+      const data = await $fetch<SubmitEvaluationResponse>(url, {
         method: 'PUT',
+        headers,
         body: payload,
       });
       

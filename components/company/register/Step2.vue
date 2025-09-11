@@ -38,7 +38,6 @@ const handleNextClick = async () => {
   try {
     await formEl.validate()
   } catch (validationError) {
-    console.log('表單驗證失敗:', validationError)
     ElMessage({ message: '請檢查表單欄位是否都已正確填寫', type: 'warning' })
     return // 如果驗證失敗，則停止執行
   }
@@ -60,12 +59,10 @@ const handleNextClick = async () => {
       throw error.value
     }
 
-    console.log('註冊成功:', response.value)
     ElMessage({ message: '註冊成功！', type: 'success' })
     emit('next')
   } catch (error: any) {
     // 4b. 處理失敗的回應
-    console.error('註冊失敗:', error)
     ElMessage({
       message: `註冊失敗: ${error?.data?.message || error?.message || '請檢查您的資料或稍後再試'}`,
       type: 'error',

@@ -4,7 +4,7 @@ definePageMeta({
   layout: 'user',
 });
 
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, reactive } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 import { parseIntroContent } from '~/utils/introParser';
@@ -13,6 +13,10 @@ import { useUserAuthStore } from '~/stores/user/useAuthStore';
 const router = useRouter();
 const isFavorited = ref(false);
 const showApply = ref(false);
+
+// 圖片載入狀態管理
+const imageLoadingState = reactive<Record<string, boolean>>({});
+const isClient = ref(false);
 
 // 使用 store 管理計畫詳情
 const programDetailStore = useUserProgramDetailStore();
@@ -43,15 +47,62 @@ const parsedIntro = computed(() => {
   return parseIntroContent(programDetail.value.intro);
 });
 
+// 圖片載入處理函數
+const handleImageLoad = (imageUrl: string) => {
+  imageLoadingState[imageUrl] = false;
+};
+
+const handleImageError = (imageUrl: string) => {
+  imageLoadingState[imageUrl] = false;
+};
+
+// 檢查圖片是否正在載入中
+const isImageLoading = (imageUrl: string) => {
+  return imageLoadingState[imageUrl] === true;
+};
+
+// 初始化圖片載入狀態
+const initializeImageStates = (images: string[]) => {
+  images.forEach(imageUrl => {
+    if (imageUrl && imageLoadingState[imageUrl] === undefined) {
+      imageLoadingState[imageUrl] = true;
+    }
+  });
+};
+
 // 頁面載入時取得計畫詳情
 onMounted(async () => {
+  isClient.value = true;
   if (programId.value) {
     try {
       await programDetailStore.fetchDetail(programId.value);
+      // 初始化所有圖片載入狀態
+      const allImages: string[] = [];
+      
+      // 企業封面和 LOGO
+      if (programDetail.value?.company_cover) {
+        allImages.push(programDetail.value.company_cover);
+      }
+      if (programDetail.value?.company_logo) {
+        allImages.push(programDetail.value.company_logo);
+      }
+      
+      // 體驗照片
+      if (programDetail.value?.Images) {
+        allImages.push(...programDetail.value.Images.filter(img => img));
+      }
+      
+      initializeImageStates(allImages);
     } catch (error) {
-      console.error('Failed to fetch program detail:', error);
     }
   }
+});
+
+// 組件卸載時清理
+onUnmounted(() => {
+  Object.keys(imageLoadingState).forEach(key => {
+    delete imageLoadingState[key];
+  });
 });
 
 // 錯誤處理函數
@@ -67,7 +118,6 @@ const handleBack = () => {
 
 const handleContact = () => {
   // 這裡可以實作聯絡客服的邏輯
-  console.log('Contact customer service');
 };
 
 // 體驗照片：移除 Skeleton 載入邏輯，直接渲染圖片
@@ -86,7 +136,6 @@ const formatDate = (dateString: string) => {
     
     return `${date.getFullYear()}年${String(date.getMonth() + 1).padStart(2, '0')}月${String(date.getDate()).padStart(2, '0')}日`;
   } catch (error) {
-    console.error('Error formatting date:', error);
     return '日期格式錯誤';
   }
 };
@@ -166,22 +215,36 @@ const handleApplyClick = async () => {
       <section aria-label="企業封面" class="mb-8">
         <div class="relative h-44 w-full rounded-lg bg-gray-300">
           <!-- 企業封面圖片 -->
-          <img 
-            v-if="programDetail.company_cover" 
-            :src="programDetail.company_cover" 
-            class="w-full h-full object-cover rounded-lg"
-            alt="企業封面"
-          />
+          <div 
+            v-if="programDetail.company_cover"
+            class="w-full h-full"
+            v-loading="isClient && isImageLoading(programDetail.company_cover)"
+            element-loading-text="載入封面中..."
+            element-loading-background="rgba(0, 0, 0, 0.1)"
+          >
+            <img 
+              :src="programDetail.company_cover" 
+              class="w-full h-full object-cover rounded-lg"
+              alt="企業封面"
+              @load="handleImageLoad(programDetail.company_cover)"
+              @error="handleImageError(programDetail.company_cover)"
+            />
+          </div>
           
           <!-- 圓形 LOGO -->
           <div
             v-if="programDetail.company_logo"
             class="absolute left-6 top-6 flex h-16 w-16 items-center justify-center rounded-full border-2 border-gray-600 bg-white overflow-hidden"
+            v-loading="isClient && isImageLoading(programDetail.company_logo)"
+            element-loading-text="載入 LOGO..."
+            element-loading-background="rgba(255, 255, 255, 0.8)"
           >
             <img 
               :src="programDetail.company_logo" 
               class="w-full h-full object-cover"
               alt="企業 LOGO"
+              @load="handleImageLoad(programDetail.company_logo)"
+              @error="handleImageError(programDetail.company_logo)"
             />
           </div>
           <div
@@ -317,14 +380,23 @@ const handleApplyClick = async () => {
           <h3 class="mb-6 text-lg font-bold">體驗照片</h3>
           <div v-if="programDetail.Images && programDetail.Images.length > 0" class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div v-for="(image, idx) in programDetail.Images" :key="idx" class="rounded overflow-hidden">
-              <img
+              <div 
                 v-if="image"
-                :src="image"
-                :alt="`體驗照片 ${idx + 1}`"
-                class="h-48 w-full object-cover"
-                loading="lazy"
-                referrerpolicy="no-referrer"
-              />
+                class="relative h-48 w-full"
+                v-loading="isClient && isImageLoading(image)"
+                element-loading-text="載入圖片中..."
+                element-loading-background="rgba(0, 0, 0, 0.1)"
+              >
+                <img
+                  :src="image"
+                  :alt="`體驗照片 ${idx + 1}`"
+                  class="h-48 w-full object-cover"
+                  loading="lazy"
+                  referrerpolicy="no-referrer"
+                  @load="handleImageLoad(image)"
+                  @error="handleImageError(image)"
+                />
+              </div>
               <div v-else class="flex h-48 w-full items-center justify-center text-3xl text-gray-700">
                 圖片
               </div>

@@ -2,17 +2,21 @@
 definePageMeta({
   name: 'user-landing',
   layout: 'user',
+  ssr: false, // 恢復 CSR 模式，這對 skeleton 很重要
 });
 
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, onUnmounted, reactive } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 import { useUserProgramsStore } from '~/stores/user/useProgramsStore';
 import { useUserProgramDetailStore } from '~/stores/user/useUserProgramDetailStore';
 import type { Program } from '~/types/users/program';
-// 先以 NuxtImg 直接顯示圖片，暫時移除骨架元件
 
 const programsStore = useUserProgramsStore();
 const programDetailStore = useUserProgramDetailStore();
+
+// 管理圖片載入狀態 - 改用 Element Plus Loading
+const imageLoadingState = reactive<Record<number, boolean>>({});
+const isClient = ref(false);
 
 // 已移除開發環境用的 fallback programId，改以實際回傳的 Id 為準
 
@@ -27,10 +31,67 @@ const sort = ref('');
 const currentPage = ref(1);
 const pageSize = 6;
 
+// 儲存超時計時器，用於清理
+const timeoutIds = new Map<number, ReturnType<typeof setTimeout>>();
+
+// 添加超時保護，防止 loading 狀態卡住
+const setImageLoadingTimeout = (programId: number) => {
+  // 清除之前的計時器（如果存在）
+  if (timeoutIds.has(programId)) {
+    clearTimeout(timeoutIds.get(programId)!);
+  }
+  
+  const timeoutId = setTimeout(() => {
+    if (imageLoadingState[programId] === true) {
+      imageLoadingState[programId] = false; // 超時後強制停止 loading
+    }
+    timeoutIds.delete(programId); // 清理計時器記錄
+  }, 10000); // 10 秒超時
+  
+  timeoutIds.set(programId, timeoutId);
+};
+
 // 頁面載入時直接獲取資料，不需要登入驗證
 onMounted(() => {
+  isClient.value = true; // 恢復客戶端標記
   programsStore.fetchPrograms({ page: currentPage.value, limit: pageSize });
 });
+
+// 儲存 watcher 停止函數，用於清理
+const watchStopHandlers: (() => void)[] = [];
+
+// 監聽程式資料變化，初始化 loading 狀態
+const stopItemsWatch = watch(() => programsStore.items, (newItems) => {
+  if (newItems && newItems.length > 0) {
+    newItems.forEach(program => {
+      if (program.Id && imageLoadingState[program.Id] === undefined) {
+        // 如果沒有 CoverImage，直接設為不載入（使用 fallback）
+        imageLoadingState[program.Id] = program.CoverImage ? true : false;
+        // 如果有 CoverImage，啟動超時保護
+        if (program.CoverImage) {
+          setImageLoadingTimeout(program.Id);
+        }
+      }
+    });
+  }
+}, { immediate: true });
+
+const stopPopularWatch = watch(() => programsStore.popular, (newPopular) => {
+  if (newPopular && newPopular.length > 0) {
+    newPopular.forEach(program => {
+      if (program.Id && imageLoadingState[program.Id] === undefined) {
+        // 如果沒有 CoverImage，直接設為不載入（使用 fallback）
+        imageLoadingState[program.Id] = program.CoverImage ? true : false;
+        // 如果有 CoverImage，啟動超時保護
+        if (program.CoverImage) {
+          setImageLoadingTimeout(program.Id);
+        }
+      }
+    });
+  }
+}, { immediate: true });
+
+watchStopHandlers.push(stopItemsWatch, stopPopularWatch);
 
 watch(currentPage, (p) => {
   programsStore.fetchPrograms({ 
@@ -116,7 +177,7 @@ const formatProgramDate = (program: Program) => {
     
     return `${formatDate(startDate)} - ${formatDate(endDate)}`;
   } catch (error) {
-    console.error('Error formatting program date:', error);
+    // 日期格式化錯誤（靜默處理）
     return '日期格式錯誤';
   }
 };
@@ -128,12 +189,27 @@ const resolveProgramId = (program: any) => {
   return program?.Id ?? program?.id ?? null;
 };
 
+// 圖片載入處理函數 - 改用 Loading 狀態
+const handleImageLoad = (programId: number) => {
+  imageLoadingState[programId] = false; // 載入完成，停止 loading
+};
+
+const handleImageError = (programId: number) => {
+  imageLoadingState[programId] = false; // 即使錯誤也要停止 loading
+};
+
+// 檢查圖片是否正在載入中
+const isImageLoading = (programId: number) => {
+  // 只有明確設為 true 時才顯示 loading
+  return imageLoadingState[programId] === true;
+};
+
 // 處理查看詳情按鈕點擊
 const handleViewDetail = async (program: any) => {
   try {
     const programId = resolveProgramId(program);
     if (programId === undefined || programId === null || programId === '') {
-      console.warn('此體驗卡片缺少有效的 programId，暫時無法查看詳情');
+      // 此體驗卡片缺少有效的 programId，暫時無法查看詳情
       return;
     }
     // 先取得計畫詳情
@@ -142,14 +218,37 @@ const handleViewDetail = async (program: any) => {
     // 導航到計畫詳情頁
     await navigateTo(userRoutes.programDetail(programId));
   } catch (error) {
-    console.error('Error handling view detail:', error);
+    // 處理查看詳情錯誤（靜默處理）
     // 如果取得詳情失敗，仍然導航到詳情頁，讓詳情頁處理錯誤狀態
     const programId = resolveProgramId(program);
     if (programId !== undefined && programId !== null && programId !== '') {
       await navigateTo(userRoutes.programDetail(programId));
     }
   }
-};  
+};
+
+// 組件卸載時清理資源
+onUnmounted(() => {
+  // 停止所有 watchers
+  watchStopHandlers.forEach(stopFn => {
+    try {
+      stopFn();
+    } catch (error) {
+      // 靜默處理 watcher 停止錯誤
+    }
+  });
+  
+  // 清理所有超時計時器
+  timeoutIds.forEach((timeoutId) => {
+    clearTimeout(timeoutId);
+  });
+  timeoutIds.clear();
+  
+  // 清理圖片載入狀態
+  Object.keys(imageLoadingState).forEach(key => {
+    delete imageLoadingState[key as any];
+  });
+});
 </script>
 
 <template>
@@ -172,12 +271,18 @@ const handleViewDetail = async (program: any) => {
               <el-card :body-style="{ padding: '0px', height: '100%' }" class="h-full">
                 <div class="h-full flex">
                   <!-- Left: Image -->
-                  <div class="w-1/2 h-full">
-                    <NuxtImg
+                  <div 
+                    class="w-1/2 h-full"
+                    v-loading="isClient && isImageLoading(program.Id)"
+                    element-loading-text="載入中..."
+                    element-loading-background="rgba(0, 0, 0, 0.1)"
+                  >
+                    <img
                       :src="program.CoverImage || '/img/home/home-worker-bg.webp'"
                       alt="program image"
                       class="w-full h-full object-cover"
-                      fit="cover"
+                      @load="handleImageLoad(program.Id)"
+                      @error="handleImageError(program.Id)"
                     />
                   </div>
                   <!-- Right: Text -->
@@ -230,13 +335,19 @@ const handleViewDetail = async (program: any) => {
           <div v-if="programsStore.items && programsStore.items.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <el-card v-for="program in programsStore.items" :key="program.Id" class="shadow-lg hover:shadow-xl transition-shadow border border-[#CCCCCC]  flex flex-col overflow-hidden">
               <!-- Cover Image with Status Tag -->
-              <div class="relative flex-shrink-0">
-                <NuxtImg
+              <div 
+                class="relative flex-shrink-0"
+                v-loading="isClient && isImageLoading(program.Id)"
+                element-loading-text="載入圖片中..."
+                element-loading-background="rgba(0, 0, 0, 0.1)"
+              >
+                <img
                   :src="program.CoverImage || '/img/home/home-worker-bg.webp'"
                   alt="program image"
                   class="w-full h-48 object-cover"
-                  fit="cover"
                   loading="lazy"
+                  @load="handleImageLoad(program.Id)"
+                  @error="handleImageError(program.Id)"
                 />
                 <!-- Status Tag (左上角) -->
                 <div class="absolute top-2 left-2 bg-primary-blue-light text-white px-2 py-1 text-xs rounded z-10">

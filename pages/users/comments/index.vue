@@ -103,7 +103,6 @@ const loadComments = async () => {
     commentsData.value = result.data.value;
   } catch (err) {
     error.value = err;
-    console.error('載入評價列表失敗:', err);
   } finally {
     loading.value = false;
   }
@@ -202,7 +201,6 @@ async function submitEvaluationForItem(item: ReviewItem) {
   } catch (error: any) {
     if (error === 'cancel') return;
     
-    console.error('提交評價失敗:', error);
     
     // 針對 400 Bad Request：直接以彈窗呈現後端訊息（忠實顯示）
     const status = error?.status || error?.statusCode || error?.response?.status;

@@ -28,6 +28,7 @@ export interface Program {
   ViewsCount?: number;
   FavoritesCount?: number;
   Score?: number;
+  imageLoaded?: boolean; // 圖片載入狀態
 }
 
 export interface ProgramsResponse {

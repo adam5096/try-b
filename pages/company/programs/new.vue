@@ -149,10 +149,6 @@ async function handleSubmit() {
   if (positionId) form.value.job_title_id = positionId;
 
   // 開發模式下輸出選擇結果，便於除錯
-  if (import.meta.dev) {
-    console.log('[Company/Programs/New] industry:', selectedIndustryTitle.value, '=> id:', industryId);
-    console.log('[Company/Programs/New] position:', selectedPositionTitle.value, '=> id:', positionId);
-  }
 
   isLoading.value = true;
   try {
@@ -170,9 +166,11 @@ async function handleSubmit() {
 
     if (uploadFiles.value.length > 0) {
       try {
-        await uploadProgramImages(newProgramId, uploadFiles.value);
+        const uploadResult = await uploadProgramImages(newProgramId, uploadFiles.value);
+        
+        // 圖片上傳後，重新抓取程式列表以確保 CoverImage 更新
+        await programStore.fetchPrograms();
       } catch (e) {
-        console.error(e);
         ElNotification({ title: '部分失敗', message: '計畫已建立，但圖片上傳失敗。', type: 'warning' });
         return; // 停留在本頁讓使用者可重試
       }
@@ -181,7 +179,6 @@ async function handleSubmit() {
     ElNotification({ title: '成功', message: '體驗計畫與圖片已上傳完成！', type: 'success' });
     await navigateTo('/company');
   } catch (e) {
-    console.error(e);
     ElNotification({
       title: '系統錯誤',
       message: '發生未知錯誤，請聯繫管理員。',

@@ -80,11 +80,13 @@ export default defineNuxtConfig({
     transpile: ['@popperjs/core', 'element-plus'],
   },
   image: {
-    // 允許的遠端圖片來源，透過 IPX 代理輸出為 HTTPS，避免 Mixed Content
-    domains: ['trybeta.rocket-coding.com', 'images.unsplash.com', 'i.imgur.com'],
-    // 為避免 SSR/CSR 因瀏覽器支援格式差異導致 hydration mismatch，固定輸出單一格式
+    // 圖片格式和品質設定
     format: ['webp'],
-    quality: 70,
+    quality: 80,
+    // 使用 IPX 提供者（預設）
+    provider: 'ipx',
+    // 允許優化的外部域名 - 根據官方文件這是關鍵配置
+    domains: ['trybeta.rocket-coding.com', 'images.unsplash.com', 'i.imgur.com']
   },
   app: {
     head: {
