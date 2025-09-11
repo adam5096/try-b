@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "server/index.mjs": {
-      "maxDuration": 30
-    }
-  },
   "routes": [
     {
       "src": "/img/(.*)",
