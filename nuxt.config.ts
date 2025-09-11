@@ -51,8 +51,7 @@ export default defineNuxtConfig({
     routeRules: {
       '/api-proxy/**': {
         proxy: 'https://trybeta.rocket-coding.com/**'
-      }
-      ,
+      },
       // 靜態圖與 IPX 輸出的長時間快取（提升重訪/多頁載入速度）
       '/img/**': {
         headers: {
@@ -69,7 +68,11 @@ export default defineNuxtConfig({
     // 將其內嵌到 Nitro bundle，避免以外部模組形式被 Node 直接解析
     externals: {
       inline: ['@popperjs/core']
-    }
+    },
+    // Vercel 部署優化
+    ...(process.env.VERCEL && {
+      preset: 'vercel'
+    })
   },
 
   imports: {
@@ -83,24 +86,27 @@ export default defineNuxtConfig({
     // 圖片格式和品質設定
     format: ['webp'],
     quality: 80,
-    // 使用 IPX 提供者（預設）
-    provider: 'ipx',
-    // 允許優化的外部域名 - 根據官方文件這是關鍵配置
-    domains: ['trybeta.rocket-coding.com', 'images.unsplash.com', 'i.imgur.com']
+    // 根據環境選擇提供者
+    provider: process.env.VERCEL ? 'vercel' : 'ipx',
+    // 允許優化的外部域名
+    domains: ['trybeta.rocket-coding.com', 'images.unsplash.com', 'i.imgur.com'],
+    // 定義所有可能的螢幕尺寸（Vercel 需要）
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+      '2xl': 1536
+    }
   },
   app: {
     head: {
       link: [
-        // 預先連線至圖片 CDN
-        { rel: 'preconnect', href: 'https://images.unsplash.com' },
-        { rel: 'preconnect', href: 'https://i.imgur.com' },
         // API 與主站的預解析與預連線，降低 TLS/握手延遲
         { rel: 'dns-prefetch', href: 'https://trybeta.rocket-coding.com' },
         { rel: 'preconnect', href: 'https://trybeta.rocket-coding.com', crossorigin: '' },
-
-        // Google Fonts 已經由 @nuxt/fonts 模組自動處理，此處備用
-        // { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        // { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
 
         // Favicon 與多尺寸 PNG（使用 public/ 內的檔案）
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },

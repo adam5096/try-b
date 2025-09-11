@@ -267,8 +267,8 @@ onMounted(() => {
   <section class="mx-auto max-w-container-users px-6 md:px-12 py-8 md:py-10">
     <!-- Header: 標題與總數 -->
     <div class="flex items-end justify-between">
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-800">評價列表</h2>
-      <div class="text-gray-500 text-base md:text-lg">共 {{ totalReviews }} 則評價</div>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-800 tracking-widest">評價列表</h2>
+      <div class="text-gray-500 text-base md:text-lg tracking-wider">共 {{ totalReviews }} 則評價</div>
     </div>
 
     <!-- Controls: 篩選按鈕 -->
@@ -337,7 +337,7 @@ onMounted(() => {
           <div class="flex items-center gap-4">
             <el-avatar :size="48" :src="resolveCompanyLogo(item.company_logo)">{{ item.company_name.charAt(0) }}</el-avatar>
             <div class="flex items-center flex-wrap gap-x-3 gap-y-2">
-              <div class="text-lg font-semibold text-gray-800">{{ item.company_name }}</div>
+              <div class="text-lg font-semibold text-gray-800 tracking-widest">{{ item.company_name }}</div>
               <el-tag effect="plain" round>{{ item.program_name }}</el-tag>
             </div>
           </div>
@@ -359,7 +359,7 @@ onMounted(() => {
         </div>
 
         <!-- 內文 -->
-        <p v-if="item.comment" class="mt-2 text-gray-700 leading-relaxed">{{ item.comment }}</p>
+        <p v-if="item.comment" class="mt-2 text-gray-700 leading-relaxed tracking-wider">{{ item.comment }}</p>
 
         <!-- 評價輸入區域（未評價狀態） -->
         <div v-if="item.status_id === 17 && editingEvaluation[item.serial_num]" class="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
@@ -400,7 +400,7 @@ onMounted(() => {
     <div v-if="!loading && !error" class="mt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <!-- 每頁顯示 -->
       <div class="flex items-center gap-3 whitespace-nowrap">
-        <span class="text-gray-600">每頁顯示：</span>
+        <span class="text-gray-600 tracking-widest">每頁顯示：</span>
         <el-select v-model="pageSize" placeholder="選擇" style="width: 120px;">
           <el-option 
             v-for="size in pageSizeOptions" 
