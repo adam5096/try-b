@@ -1,4 +1,4 @@
-import { library, config } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
   faFacebook,
@@ -27,9 +27,6 @@ import {
   faUsers
 } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons'
-
-// 這很重要，我們會讓 Nuxt 來處理 CSS，而不是 Font Awesome 自己
-config.autoAddCss = false
 
 // 在這裡加入您想使用的圖示
 library.add(
@@ -60,5 +57,7 @@ library.add(
 )
 
 export default defineNuxtPlugin((nuxtApp) => {
+  // 確保在服務端也註冊元件
   nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon)
+  nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon)
 })

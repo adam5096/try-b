@@ -172,8 +172,6 @@ function getStatusText(status: ApplicationStatus): string {
 
 function onCancel(appId: number): void {
   // 預留事件掛鉤（僅 UI 任務）
-  // eslint-disable-next-line no-console
-  console.log('cancel application', appId);
 }
 </script>
 

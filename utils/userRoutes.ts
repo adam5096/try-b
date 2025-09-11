@@ -20,7 +20,7 @@ export const userRoutes = {
   programDetail: (programId: string | number) => {
     // 參數驗證
     if (!programId) {
-      console.warn('programId is required for programDetail route');
+      // programId is required for programDetail route
       return '/users/programs/404'; // 或拋出錯誤
     }
     

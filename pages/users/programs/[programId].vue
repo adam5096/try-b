@@ -49,7 +49,6 @@ onMounted(async () => {
     try {
       await programDetailStore.fetchDetail(programId.value);
     } catch (error) {
-      console.error('Failed to fetch program detail:', error);
     }
   }
 });
@@ -67,7 +66,6 @@ const handleBack = () => {
 
 const handleContact = () => {
   // 這裡可以實作聯絡客服的邏輯
-  console.log('Contact customer service');
 };
 
 // 體驗照片：移除 Skeleton 載入邏輯，直接渲染圖片
@@ -86,7 +84,6 @@ const formatDate = (dateString: string) => {
     
     return `${date.getFullYear()}年${String(date.getMonth() + 1).padStart(2, '0')}月${String(date.getDate()).padStart(2, '0')}日`;
   } catch (error) {
-    console.error('Error formatting date:', error);
     return '日期格式錯誤';
   }
 };

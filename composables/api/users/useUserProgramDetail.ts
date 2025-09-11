@@ -14,7 +14,6 @@ export const useUserProgramDetail = () => {
       // 使用本地 BFF 端點
       const url = `/api/v1/users/program-detail/${programId}`;
       
-      console.log('Fetching program detail:', { programId, url });
       
       // 取得 user auth token 來設定 headers（如果需要認證）
       const tokenCookie = useCookie<string | null>('userAuthToken');
@@ -29,11 +28,9 @@ export const useUserProgramDetail = () => {
         headers,
       });
       
-      console.log('Program detail response:', response);
       
       return response;
     } catch (error) {
-      console.error('Error fetching program detail:', error);
       throw error;
     }
   };

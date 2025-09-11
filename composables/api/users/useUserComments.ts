@@ -24,14 +24,6 @@ export const useUserComments = () => {
     const url = `/api/v1/users/comments/${userId}${queryString ? '?' + queryString : ''}`;
 
     try {
-      // 調試：檢查認證狀態
-      const { useUserAuthStore } = await import('~/stores/user/useAuthStore');
-      const authStore = useUserAuthStore();
-      console.log('🔐 Auth status:', {
-        isLoggedIn: authStore.isLoggedIn,
-        hasToken: !!authStore.token,
-        token: authStore.token ? `${authStore.token.substring(0, 20)}...` : 'null'
-      });
 
       // 取得 user auth token 來設定 headers
       const tokenCookie = useCookie<string | null>('userAuthToken');
@@ -53,7 +45,6 @@ export const useUserComments = () => {
         pending: { value: false }
       };
     } catch (error) {
-      console.error('❌ Error fetching comments:', error);
       return {
         data: { value: null },
         error: { value: error },

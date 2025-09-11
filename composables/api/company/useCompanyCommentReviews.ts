@@ -13,7 +13,6 @@ export const useCompanyCommentReviews = () => {
     const qs = query.toString();
 
     const path = `/api/v1/company/comment-reviews/${companyId}${qs ? `?${qs}` : ''}`;
-    console.info('[API] about to fetch', path)
 
     // 在客戶端和伺服器端都使用本地 BFF 端點
     try {
@@ -22,7 +21,6 @@ export const useCompanyCommentReviews = () => {
       });
       return { data: { value: resp }, error: { value: null } } as const;
     } catch (e) {
-      console.error('❌ $fetch company evaluations failed:', e);
       return { data: { value: null }, error: { value: e } } as const;
     }
   };

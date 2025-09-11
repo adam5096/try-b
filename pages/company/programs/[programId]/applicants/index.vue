@@ -16,24 +16,17 @@ const { data: applicantsData, pending, error: applicantsError, refresh: refreshA
 );
 
 onMounted(() => {
-  console.log('🔍 申請者列表頁面載入');
-  console.log('Company ID:', authStore.companyId);
-  console.log('Program ID:', route.params.programId);
-  console.log('Auth Store:', authStore);
   refreshApplicants();
 });
 
 // 監聽錯誤
 watch(applicantsError, (error) => {
   if (error) {
-    console.error('❌ 申請者 API 請求失敗:', error);
+    // 申請者 API 請求失敗
   }
 }, { immediate: true });
 
 // 監聽資料變化
-watch(applicantsData, (data) => {
-  console.log('📊 申請者資料更新:', data);
-}, { immediate: true });
 
 const pendingApplicants = computed(() => applicantsData.value?.PendingApplications || []);
 const reviewedApplicants = computed(() => applicantsData.value?.ReviewedApplications || []);
