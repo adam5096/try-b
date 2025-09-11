@@ -1,4 +1,3 @@
-import { useUserApiFetch } from '~/composables/api/users/useUserApiFetch';
 import type { UserRegisterData } from '~/types/users/user';
 
 interface RegisterResponse {
@@ -14,7 +13,8 @@ interface RegisterResponse {
 
 export const useUserRegister = () => {
   async function register(registerData: UserRegisterData) {
-    return await useUserApiFetch<RegisterResponse>('/api/v1/users/register', {
+    // 使用 $fetch 直接呼叫本地 BFF 端點
+    return await $fetch<RegisterResponse>('/api/v1/users/register', {
       method: 'POST',
       body: registerData,
     });
