@@ -1,15 +1,12 @@
-export interface BasicOptionItem {
-  id: number;
-  title: string;
-}
+import type { BasicOptionItem } from './useCompanyIndustries';
 
-// 取得產業清單
-export const useIndustries = () => {
+// 取得職務清單
+export const useCompanyPositions = () => {
   // 取得 company auth token 來設定 headers
   const tokenCookie = useCookie<string | null>('companyAuthToken');
   
-  return useFetch<BasicOptionItem[]>('/api/v1/company/industries', {
-    key: 'company-industries',
+  return useFetch<BasicOptionItem[]>('/api/v1/company/positions', {
+    key: 'company-positions',
     server: true,
     lazy: false,
     headers: computed(() => {

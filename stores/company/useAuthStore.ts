@@ -61,35 +61,22 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
    *              3. 接著呼叫 fetchUser() 取得完整的企業使用者資料
    */
   async function login(loginData: LoginData) {
+    const { login: performLogin } = useCompanyLogin();
     try {
-      // 使用統一的 API 調用方式，與其他端點保持一致
-      const { data: response, error } = await useFetch<CompanyLoginResponse>('/v1/company/login', {
-        method: 'POST',
-        baseURL: '/api',
-        headers: {
-          'Accept': 'application/json',
-        },
-        body: {
-          identifier: loginData.account,
-          password: loginData.psd,
-        },
-      });
+      // 使用 composable 統一 API 調用方式，與 user 端保持一致
+      const response = await performLogin(loginData);
 
-      if (error.value) {
-        throw error.value;
-      }
-
-      if (response.value && response.value.token) {
-        token.value = response.value.token;
-        tokenCookie.value = response.value.token;
+      if (response && response.token) {
+        token.value = response.token;
+        tokenCookie.value = response.token;
 
         // 從登入回應中取得並儲存 CompanyId
-        companyId.value = response.value.user.companyId;
-        companyIdCookie.value = response.value.user.companyId;
+        companyId.value = response.user.companyId;
+        companyIdCookie.value = response.user.companyId;
 
         // 保存登入回應中的基本使用者資訊（Account/Role）
-        basicUser.value = response.value.user;
-        basicUserCookie.value = response.value.user;
+        basicUser.value = response.user;
+        basicUserCookie.value = response.user;
 
 
         // 登入成功後，重置企業付款狀態持久化並同步到 store

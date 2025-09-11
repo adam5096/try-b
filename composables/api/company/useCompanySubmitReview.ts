@@ -12,7 +12,7 @@ export interface SubmitReviewResponse {
   comment: string;
 }
 
-export const useSubmitReview = () => {
+export const useCompanySubmitReview = () => {
   const loading = ref(false);
   const error = ref<FetchError | null>(null);
   const data = ref<SubmitReviewResponse | null>(null);

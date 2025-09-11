@@ -1,6 +1,6 @@
 import type { AllPlan } from '~/types/company/plan/list';
 
-export function useAllPlans() {
+export function useCompanyAllPlans() {
   // 取得 company auth token 來設定 headers
   const tokenCookie = useCookie<string | null>('companyAuthToken');
   

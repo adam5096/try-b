@@ -1,6 +1,6 @@
 import type { ApplicantDetail } from '~/types/company/applicant';
 
-export const useApplicant = (
+export const useCompanyApplicant = (
   companyId: MaybeRefOrGetter<number | null>,
   programId: MaybeRefOrGetter<string | number>,
   applicantId: MaybeRefOrGetter<string | number>
@@ -16,7 +16,7 @@ export const useApplicant = (
     return `/api/v1/company/applicant/${resolvedCompanyId}/${resolvedProgramId}/${resolvedApplicantId}`;
   });
 
-  return useFetch<ApplicantDetail>(url, {
+  return useFetch<ApplicantDetail>(() => url.value || '', {
     key: computed(() => {
       const resolvedApplicantId = toValue(applicantId);
       return `company-applicant-${resolvedApplicantId}`;
