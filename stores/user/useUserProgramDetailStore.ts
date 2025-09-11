@@ -25,7 +25,6 @@ export const useUserProgramDetailStore = defineStore('userProgramDetail', () => 
     try {
       // 如果已經載入過相同 ID 的資料，直接返回
       if (currentProgramId.value === programId && programDetail.value) {
-        console.log('Program detail already loaded, returning cached data');
         return programDetail.value;
       }
 
@@ -33,14 +32,11 @@ export const useUserProgramDetailStore = defineStore('userProgramDetail', () => 
       error.value = null;
       currentProgramId.value = programId;
 
-      console.log('Fetching program detail for ID:', programId);
 
       const detail = await fetchProgramDetail(programId);
       if (!detail) throw new Error('無效的 API 回應格式');
       programDetail.value = detail;
-      console.log('Program detail loaded successfully:', detail);
     } catch (err) {
-      console.error('Error in fetchDetail:', err);
       
       // 根據錯誤類型設定不同的錯誤訊息
       if (err instanceof Error) {

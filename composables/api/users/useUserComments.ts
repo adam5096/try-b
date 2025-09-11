@@ -1,5 +1,4 @@
 import type { CommentsQueryParams, CommentsResponse } from '~/types/users/comment';
-import { useUserApiFetch } from './useUserApiFetch';
 
 export const useUserComments = () => {
   const fetchComments = async (params: CommentsQueryParams = {}) => {
@@ -22,20 +21,23 @@ export const useUserComments = () => {
       throw new Error('尚未登入或缺少使用者資訊，無法取得評價列表');
     }
 
-    const url = `/api/v1/users/${userId}/evaluations${queryString ? '?' + queryString : ''}`;
+    const url = `/api/v1/users/comments/${userId}${queryString ? '?' + queryString : ''}`;
 
     try {
-      // 調試：檢查認證狀態
-      const { useUserAuthStore } = await import('~/stores/user/useAuthStore');
-      const authStore = useUserAuthStore();
-      console.log('🔐 Auth status:', {
-        isLoggedIn: authStore.isLoggedIn,
-        hasToken: !!authStore.token,
-        token: authStore.token ? `${authStore.token.substring(0, 20)}...` : 'null'
-      });
 
-      // 修正：使用 useUserApiFetch 來確保 JWT token 被注入
-      const data = await useUserApiFetch<CommentsResponse>(url, { method: 'GET' });
+      // 取得 user auth token 來設定 headers
+      const tokenCookie = useCookie<string | null>('userAuthToken');
+      const headers: Record<string, string> = {};
+      
+      if (tokenCookie.value) {
+        headers.authorization = `Bearer ${tokenCookie.value}`;
+      }
+
+      // 使用 $fetch 呼叫本地 BFF 端點
+      const data = await $fetch<CommentsResponse>(url, { 
+        method: 'GET',
+        headers 
+      });
       
       return {
         data: { value: data },
@@ -43,7 +45,6 @@ export const useUserComments = () => {
         pending: { value: false }
       };
     } catch (error) {
-      console.error('❌ Error fetching comments:', error);
       return {
         data: { value: null },
         error: { value: error },

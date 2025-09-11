@@ -51,7 +51,6 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
     } catch (error) {
       // 如果 token 失效或驗證失敗，則清除所有登入狀態
       await logout();
-      console.error('取得使用者資料失敗:', error);
     }
   }
 
@@ -91,7 +90,6 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
         basicUser.value = response.value.user;
         basicUserCookie.value = response.value.user;
 
-        console.log('✅ 登入成功:', response.value.user.Account);
 
         // 登入成功後，重置企業付款狀態持久化並同步到 store
         const companyPayedCookie = useCookie<boolean>('company_is_payed', {
@@ -111,7 +109,6 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
       }
     } catch (error) {
       await logout();
-      console.error('登入時發生錯誤:', error);
       throw error;
     }
   }
@@ -126,7 +123,6 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
           method: 'POST',
         });
       } catch (error) {
-        console.error('登出時 API 呼叫失敗:', error);
       }
     }
     user.value = null;

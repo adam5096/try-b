@@ -374,8 +374,6 @@ const parsedIntro = computed(() => {
 
 const onSubmitReview = () => {
   // 僅示意 UI 提交行為；之後可串接 API
-  // eslint-disable-next-line no-console
-  console.log('submit review =>', reviewResult.value, reviewNote.value)
 }
 </script>
 

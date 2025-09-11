@@ -63,7 +63,7 @@ export function parseIntroContent(intro: string): ParsedIntro {
     return result;
   } catch (error) {
     // 解析失敗時回退到原始內容
-    console.warn('Intro 解析失敗，使用原始內容:', error);
+    // Intro 解析失敗，使用原始內容
     return { fallback: intro };
   }
 }

@@ -64,7 +64,6 @@ const handleNextClick = async () => {
     await formEl.validate()
     emit('next')
   } catch (fields) {
-    console.log('Validation failed on fields:', fields)
     // 驗證失敗後，Element Plus 會更新其內部狀態以顯示錯誤。
     // 這個更新不是同步的。我們必須使用 nextTick 等待下一個 DOM 更新週期，
     // 以確保當 Playwright 進行下一步斷言時，錯誤訊息的 DOM 元素已經被渲染出來。

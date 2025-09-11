@@ -1,14 +1,26 @@
 import type { AllPlan } from '~/types/company/plan/list';
-import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 export function useAllPlans() {
+  // 取得 company auth token 來設定 headers
+  const tokenCookie = useCookie<string | null>('companyAuthToken');
+  
   const {
     data: plans,
     pending: isLoading,
     error,
     execute: fetchAllPlans,
-  } = useCompanyApiFetch<AllPlan[]>('/api/v1/plans', {
+  } = useFetch<AllPlan[]>('/api/v1/company/plans', {
+    key: 'company-plans',
+    server: true, 
+    lazy: false,
     immediate: false,
+    headers: computed(() => {
+      const headers: Record<string, string> = {};
+      if (tokenCookie.value) {
+        headers.authorization = `Bearer ${tokenCookie.value}`;
+      }
+      return headers;
+    }),
   });
 
   return {

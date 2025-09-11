@@ -20,7 +20,6 @@ export const useUserAuthStore = defineStore('userAuth', () => {
       const response = await performLogin(loginData);
 
       // 調試資訊
-      console.log('Login response:', response);
 
       if (response && response.token && response.user) {
         token.value = response.token;
@@ -39,7 +38,6 @@ export const useUserAuthStore = defineStore('userAuth', () => {
         userCookie.value = mappedUser;
       } else {
         await logout();
-        console.error('Invalid response format:', response);
         throw new Error('登入失敗：回應格式無效或缺少必要資訊');
       }
     } catch (err: any) {

@@ -73,7 +73,6 @@ async function handleLogout() {
   } catch (error) {
     // Suppress error when user clicks "cancel"
     if (error !== 'cancel') {
-      console.error('Logout failed:', error);
     }
   }
 }

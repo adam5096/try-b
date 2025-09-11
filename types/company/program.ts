@@ -74,6 +74,7 @@ export interface Program {
   applied_count: number;
   AppliedCount: number; // 新版本 API 回應欄位
   CoverImage: string | null; // 新版本 API 回應欄位 - 封面圖片
+  imageLoaded?: boolean; // 圖片載入狀態
   Images: ProgramImage[];
   Steps: ProgramStep[];
   Statistics: ProgramStatistics;

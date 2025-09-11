@@ -23,7 +23,6 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string | null>, opti
     try {
       // 非敏感摘要（僅顯示 token 前 8 碼）
       const tokenPreview = tokenCookie.value ? `${tokenCookie.value.substring(0, 8)}…` : 'null';
-      console.info('[API] baseURL', baseURL, 'token', tokenPreview);
     } catch {}
   }
 
@@ -52,7 +51,6 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string | null>, opti
           const hdr = context.options.headers instanceof Headers
             ? Object.fromEntries((context.options.headers as Headers).entries())
             : context.options.headers;
-          console.info('[API] onRequest →', String(context.request), hdr);
         } catch {}
       }
       
@@ -66,9 +64,6 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string | null>, opti
       }
     },
     onResponse(context) {
-      if (process.client) {
-        console.info('[API] onResponse ←', String(context.request), context.response?.status);
-      }
       if (options.onResponse) {
         if (Array.isArray(options.onResponse)) {
           options.onResponse.forEach(hook => hook(context));
@@ -78,9 +73,6 @@ export const useCompanyApiFetch = <T>(url: MaybeRefOrGetter<string | null>, opti
       }
     },
     onResponseError(context) {
-      if (process.client) {
-        console.error('[API] onResponseError ←', String(context.request), context.response?.status, context.response?._data);
-      }
       if (options.onResponseError) {
         if (Array.isArray(options.onResponseError)) {
           options.onResponseError.forEach(hook => hook(context));

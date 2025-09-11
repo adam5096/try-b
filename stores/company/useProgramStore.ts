@@ -11,12 +11,23 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
   const page = ref(1);
   const limit = ref(21);
 
-  const { data, pending: isLoading, error, execute } = useCompanyApiFetch<ProgramsResponse>(() => `/api/v1/company/${authStore.companyId}/programs`, {
+  const { data, pending: isLoading, error, execute } = useFetch<ProgramsResponse>(() => authStore.companyId ? `/api/v1/company/programs/${authStore.companyId}` : '', {
+    key: 'company-programs',
+    server: true,
+    lazy: false,
     immediate: false, // We will trigger this manually
     params: {
       page,
       limit,
     },
+    headers: computed(() => {
+      const tokenCookie = useCookie<string | null>('companyAuthToken');
+      const headers: Record<string, string> = {};
+      if (tokenCookie.value) {
+        headers.authorization = `Bearer ${tokenCookie.value}`;
+      }
+      return headers;
+    }),
   });
 
   // Watch for companyId to become available and then fetch programs
@@ -35,6 +46,7 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
     return {
       ...p,
       CoverImage: normalizeToHttps(p?.CoverImage),
+      imageLoaded: false, // 初始化圖片載入狀態
     };
   }));
   const total = computed(() => data.value?.total || 0);
@@ -63,23 +75,29 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
       return { success: false, error: new Error('User not authenticated') };
     }
 
-    const basePath = `/api/v1/company/${authStore.companyId}/programs`;
-    const { data: responseData, error: fetchError } = await useCompanyApiFetch<ProgramCreationResponse>(basePath, {
-      method: 'POST',
-      body: payload,
-    });
+    try {
+      const tokenCookie = useCookie<string | null>('companyAuthToken');
+      const headers: Record<string, string> = {};
+      
+      if (tokenCookie.value) {
+        headers.authorization = `Bearer ${tokenCookie.value}`;
+      }
 
-    if (fetchError.value) {
-      console.error('Failed to create program:', fetchError.value);
-      return { success: false, error: fetchError.value };
+      const responseData = await $fetch<ProgramCreationResponse>(`/api/v1/company/programs/${authStore.companyId}`, {
+        method: 'POST',
+        headers,
+        body: payload,
+      });
+
+      if (responseData) {
+        await fetchPrograms();
+        return { success: true, data: responseData };
+      }
+
+      return { success: false, error: new Error('No data returned') };
+    } catch (fetchError: any) {
+      return { success: false, error: fetchError };
     }
-
-    if (responseData.value) {
-      await fetchPrograms();
-      return { success: true, data: responseData.value };
-    }
-
-    return { success: false, error: new Error('Unknown error occurred') };
   }
 
   return {

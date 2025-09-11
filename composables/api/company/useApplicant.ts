@@ -1,5 +1,4 @@
 import type { ApplicantDetail } from '~/types/company/applicant';
-import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 export const useApplicant = (
   companyId: MaybeRefOrGetter<number | null>,
@@ -14,12 +13,16 @@ export const useApplicant = (
     // 當 companyId 為空時，返回 null，不發送請求
     if (!resolvedCompanyId || !resolvedProgramId || !resolvedApplicantId) return null;
     
-    // 根據 e comp 8 的 API 規範，單一申請者詳情使用 company 端點
-    return `/api/v1/company/${resolvedCompanyId}/programs/${resolvedProgramId}/applications/${resolvedApplicantId}`;
+    return `/api/v1/company/applicant/${resolvedCompanyId}/${resolvedProgramId}/${resolvedApplicantId}`;
   });
 
-  return useCompanyApiFetch<ApplicantDetail>(url, {
-    key: `applicant-${toValue(applicantId)}`,
+  return useFetch<ApplicantDetail>(url, {
+    key: computed(() => {
+      const resolvedApplicantId = toValue(applicantId);
+      return `company-applicant-${resolvedApplicantId}`;
+    }),
+    server: true,
+    lazy: false,
     immediate: !!toValue(companyId) && !!toValue(programId) && !!toValue(applicantId),
   });
 };

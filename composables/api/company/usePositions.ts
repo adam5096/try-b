@@ -1,10 +1,21 @@
-import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 import type { BasicOptionItem } from './useIndustries';
 
 // 取得職務清單
 export const usePositions = () => {
-  return useCompanyApiFetch<BasicOptionItem[]>('/api/v1/positions', {
-    method: 'GET',
+  // 取得 company auth token 來設定 headers
+  const tokenCookie = useCookie<string | null>('companyAuthToken');
+  
+  return useFetch<BasicOptionItem[]>('/api/v1/company/positions', {
+    key: 'company-positions',
+    server: true,
+    lazy: false,
+    headers: computed(() => {
+      const headers: Record<string, string> = {};
+      if (tokenCookie.value) {
+        headers.authorization = `Bearer ${tokenCookie.value}`;
+      }
+      return headers;
+    }),
   });
 };
 
