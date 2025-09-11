@@ -5,12 +5,12 @@ definePageMeta({
 });
 
 import { ref, computed, onMounted } from 'vue'
-import { useApplicants } from '~/composables/api/company/useApplicants';
+import { useCompanyApplicants } from '~/composables/api/company/useCompanyApplicants';
 
 const route = useRoute()
 const authStore = useCompanyAuthStore();
 
-const { data: applicantsData, pending, error: applicantsError, refresh: refreshApplicants } = useApplicants(
+const { data: applicantsData, pending, error: applicantsError, refresh: refreshApplicants } = useCompanyApplicants(
   computed(() => authStore.companyId),
   computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId),
 );

@@ -20,7 +20,7 @@ export interface ApplicantsListResponse {
   }>;
 }
 
-export const useApplicants = (companyId: MaybeRefOrGetter<number | null>, programId: MaybeRefOrGetter<string | number>) => {
+export const useCompanyApplicants = (companyId: MaybeRefOrGetter<number | null>, programId: MaybeRefOrGetter<string | number>) => {
   const url = computed(() => {
     const resolvedCompanyId = toValue(companyId);
     const resolvedProgramId = toValue(programId);
