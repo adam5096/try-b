@@ -93,7 +93,7 @@ pnpm preview
 ## API 架構與開發約定
 
 ### 呼叫策略
-- 統一使用 `$fetch`/`useFetch` 進行 HTTP 請求（封裝於 `composables/api/shared/useApiFetch.ts`）。
+- 統一使用 `useFetch` 進行 HTTP 請求，透過 BFF 架構處理 API 調用。
 - 開發環境（`NODE_ENV=development`）：`baseURL = /api-proxy`，由 Nitro 代理轉發至真實後端。
 - 生產環境（`NODE_ENV=production`）：`baseURL = NUXT_PUBLIC_API_BASE_URL`。
 - 後端實際路徑需包含 `api`（例如：`/api/v1/...`），並透過代理形如：`/api-proxy/api/v1/...`。

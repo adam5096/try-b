@@ -16,21 +16,14 @@ export async function uploadProgramImages(programId: number, files: File[]) {
     formData.append('file', file);
   }
 
-  // 取得 company auth token 來設定 headers
-  const tokenCookie = useCookie<string | null>('companyAuthToken');
-  const headers: Record<string, string> = {};
-  
-  if (tokenCookie.value) {
-    headers.authorization = `Bearer ${tokenCookie.value}`;
-  }
-
-  const data = await $fetch<UploadProgramImagesResponse>(`/api/v1/company/upload-program-images/${programId}`, {
+  // 使用統一的 useFetch，token 處理由 Server API 層負責
+  const { data } = await useFetch<UploadProgramImagesResponse>(`/v1/company/upload-program-images/${programId}`, {
     method: 'POST',
-    headers,
+    baseURL: '/api',
     body: formData,
   });
 
-  return data;
+  return data.value;
 }
 
 
