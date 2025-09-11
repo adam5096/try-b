@@ -62,7 +62,7 @@ const articles = ref([
 
       <!-- Layer 2: 藍色漸層圖形 -->
       <div class="absolute inset-0 z-20 mask-gradient-to-right">
-        <NuxtImg src="/img/home/hero-bg.webp" alt="Decorative shape" class="h-full w-full object-cover lg:object-fill" />
+        <img src="/img/home/hero-bg.webp" alt="Decorative shape" class="h-full w-full object-cover lg:object-fill" loading="lazy" />
       </div>
 
       <!-- Layer 3: 前景內容 -->

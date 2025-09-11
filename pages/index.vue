@@ -134,7 +134,7 @@ const defaultCardImages = [
 
       <!-- Layer 2: Blue Shape with Gradient Mask -->
       <div class="absolute inset-0 z-20 mask-gradient-to-right">
-        <NuxtImg src="/img/home/hero-bg.webp" alt="Blue decorative shape"
+        <img src="/img/home/hero-bg.webp" alt="Blue decorative shape"
           class="h-full w-full  object-cover lg:object-fill" />
       </div>
 
@@ -178,7 +178,7 @@ const defaultCardImages = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <NuxtImg src="/img/home/who_is_the_user/who-is-the-user-01.webp" alt="學生與新鮮人" />
+                <img src="/img/home/who_is_the_user/who-is-the-user-01.webp" alt="學生與新鮮人" loading="lazy" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">學生與新鮮人</h3>
@@ -207,7 +207,7 @@ const defaultCardImages = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <NuxtImg src="/img/home/who_is_the_user/who-is-the-user-02.webp" alt="兼職與轉職者" />
+                <img src="/img/home/who_is_the_user/who-is-the-user-02.webp" alt="兼職與轉職者" loading="lazy" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
@@ -236,7 +236,7 @@ const defaultCardImages = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <NuxtImg src="/img/home/who_is_the_user/who-is-the-user-03.webp" alt="創意工作者、中小企業" />
+                <img src="/img/home/who_is_the_user/who-is-the-user-03.webp" alt="創意工作者、中小企業" loading="lazy" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">
@@ -421,7 +421,7 @@ const defaultCardImages = [
         >
           <!-- Background Text -->
           <div class="absolute inset-0 z-0">
-            <NuxtImg src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
+            <img src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" loading="lazy" />
           </div>
           <div
             v-for="partner in partners"
@@ -558,7 +558,7 @@ const defaultCardImages = [
      <section class="relative overflow-hidden py-section-padding bg-brand-gray">
       <!-- Background Text -->
       <div class="absolute inset-0 z-0">
-            <NuxtImg src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" />
+            <img src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" loading="lazy" />
           </div>
       <!-- Foreground Content -->
       <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 text-center md:px-12">
