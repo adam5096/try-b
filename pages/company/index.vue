@@ -213,7 +213,7 @@ const handleViewDetail = async (program: any) => {
         >
           <!-- 封面與狀態徽章 -->
           <div class="relative flex-shrink-0">
-            <NuxtImg :src="program.CoverImage || '/img/home/home-worker-bg.webp'" alt="program image" class="w-full h-48 object-cover" format="webp" loading="lazy" />
+            <img :src="program.CoverImage || '/img/home/home-worker-bg.webp'" alt="program image" class="w-full h-48 object-cover" loading="lazy" />
             <div class="absolute top-2 left-2 px-2 py-1 text-xs rounded z-10" :class="getStatusBadgeClass(program)">
               <span class="tracking-widest">{{ getProgramStatus(program) }}</span>
             </div>

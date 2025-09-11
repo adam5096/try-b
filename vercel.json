@@ -1,0 +1,20 @@
+{
+  "functions": {
+    "server/index.mjs": {
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    {
+      "src": "/img/(.*)",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    }
+  ],
+  "build": {
+    "env": {
+      "NUXT_IMAGE_PROVIDER": "vercel"
+    }
+  }
+}

@@ -277,8 +277,20 @@ onUnmounted(() => {
                     element-loading-text="載入中..."
                     element-loading-background="rgba(0, 0, 0, 0.1)"
                   >
+                    <NuxtImg
+                      v-if="program.CoverImage"
+                      :src="program.CoverImage"
+                      alt="program image"
+                      class="w-full h-full object-cover"
+                      fit="cover"
+                      quality="80"
+                      format="webp"
+                      @load="handleImageLoad(program.Id)"
+                      @error="handleImageError(program.Id)"
+                    />
                     <img
-                      :src="program.CoverImage || '/img/home/home-worker-bg.webp'"
+                      v-else
+                      src="/img/home/home-worker-bg.webp"
                       alt="program image"
                       class="w-full h-full object-cover"
                       @load="handleImageLoad(program.Id)"
@@ -341,8 +353,21 @@ onUnmounted(() => {
                 element-loading-text="載入圖片中..."
                 element-loading-background="rgba(0, 0, 0, 0.1)"
               >
+                <NuxtImg
+                  v-if="program.CoverImage"
+                  :src="program.CoverImage"
+                  alt="program image"
+                  class="w-full h-48 object-cover"
+                  fit="cover"
+                  quality="80"
+                  format="webp"
+                  loading="lazy"
+                  @load="handleImageLoad(program.Id)"
+                  @error="handleImageError(program.Id)"
+                />
                 <img
-                  :src="program.CoverImage || '/img/home/home-worker-bg.webp'"
+                  v-else
+                  src="/img/home/home-worker-bg.webp"
                   alt="program image"
                   class="w-full h-48 object-cover"
                   loading="lazy"
