@@ -21,7 +21,7 @@ const planStore = useCompanyPlanStore();
       <template v-else>
         <!-- 未付款：顯示替代文案覆蓋原內容 -->
         <template v-if="!planStore.isPayed">
-          <p class="text-sm text-orange-500">
+          <p class="text-xl text-orange-500 tracking-widest">
             方案已過期或已達體驗人數上限
           </p>
         </template>

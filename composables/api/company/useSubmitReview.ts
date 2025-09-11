@@ -1,5 +1,4 @@
 import type { FetchError } from 'ofetch';
-import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 
 interface SubmitReviewPayload {
   status_id: 2 | 3; // 2 for approved, 3 for rejected
@@ -34,17 +33,19 @@ export const useSubmitReview = () => {
     error.value = null;
     data.value = null;
 
-    const url = `/api/v1/company/${companyId}/programs/${programId}/applications/${participantId}/review`;
+    const url = `/api/v1/company/submit-review/${companyId}/${programId}/${participantId}`;
 
-    const { data: result, error: fetchError } = await useCompanyApiFetch<SubmitReviewResponse>(url, {
-      method: 'PUT',
-      body: payload,
-    });
-
-    if (fetchError.value) {
-      error.value = fetchError.value;
-    } else {
-      data.value = result.value;
+    try {
+      const result = await $fetch<SubmitReviewResponse>(url, {
+        method: 'PUT',
+        body: payload,
+      });
+      
+      data.value = result;
+      error.value = null;
+    } catch (fetchError: any) {
+      error.value = fetchError;
+      data.value = null;
     }
 
     loading.value = false;

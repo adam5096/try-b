@@ -111,10 +111,10 @@ const handleViewDetail = async (program: any) => {
     <div class="mt-6">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold">
+          <h1 class="text-2xl font-bold tracking-widest">
             所有計畫列表
           </h1>
-          <p class="text-gray-500">
+          <p class="text-gray-500 tracking-wider">
             管理您的所有體驗計畫，查看各計畫狀態及詳情
           </p>
         </div>
