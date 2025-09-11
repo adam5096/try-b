@@ -1,5 +1,3 @@
-import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
-
 export interface BasicOptionItem {
   id: number;
   title: string;
@@ -7,8 +5,20 @@ export interface BasicOptionItem {
 
 // 取得產業清單
 export const useIndustries = () => {
-  return useCompanyApiFetch<BasicOptionItem[]>('/api/v1/industries', {
-    method: 'GET',
+  // 取得 company auth token 來設定 headers
+  const tokenCookie = useCookie<string | null>('companyAuthToken');
+  
+  return useFetch<BasicOptionItem[]>('/api/v1/company/industries', {
+    key: 'company-industries',
+    server: true,
+    lazy: false,
+    headers: computed(() => {
+      const headers: Record<string, string> = {};
+      if (tokenCookie.value) {
+        headers.authorization = `Bearer ${tokenCookie.value}`;
+      }
+      return headers;
+    }),
   });
 };
 
