@@ -14,15 +14,13 @@ export const useCompanyCommentReviews = () => {
 
     const path = `/api/v1/company/comment-reviews/${companyId}${qs ? `?${qs}` : ''}`;
 
-    // 在客戶端和伺服器端都使用本地 BFF 端點
-    try {
-      const resp = await $fetch<CompanyEvaluationListResponse>(path, {
-        method: 'GET',
-      });
-      return { data: { value: resp }, error: { value: null } } as const;
-    } catch (e) {
-      return { data: { value: null }, error: { value: e } } as const;
-    }
+    // 使用統一的 useFetch，token 處理由 Server API 層負責
+    const { data, error } = await useFetch<CompanyEvaluationListResponse>(path, {
+      method: 'GET',
+      baseURL: '/api',
+    });
+
+    return { data, error } as const;
   };
 
   return { fetchEvaluations };

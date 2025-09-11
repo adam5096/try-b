@@ -59,7 +59,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
   
   async function logout() {
     // 這裡可以選擇性地呼叫後端的登出 API
-    // await useApiFetch('/api/v1/user/logout', { method: 'POST' });
+    // await useFetch('/v1/user/logout', { method: 'POST', baseURL: '/api' });
     
     user.value = null;
     userCookie.value = null;

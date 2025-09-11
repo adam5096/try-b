@@ -12,16 +12,17 @@ export default defineEventHandler(async (event) => {
     // 讀取原始請求體，而不是解析後的 FormData
     const body = await readRawBody(event);
     
-    // 取得前端傳來的 headers
-    const incomingHeaders = getHeaders(event);
+    // 從 cookie 讀取 company token
+    const tokenCookie = getCookie(event, 'companyAuthToken');
     const forwardHeaders: Record<string, string> = {};
     
-    // 轉發重要的 headers
-    if (incomingHeaders.authorization) {
-      forwardHeaders.authorization = incomingHeaders.authorization;
+    // 如果有 token，設定 Authorization header
+    if (tokenCookie) {
+      forwardHeaders.authorization = `Bearer ${tokenCookie}`;
     }
     
     // 對於 FormData 上傳，需要保持原始的 content-type（包含 boundary）
+    const incomingHeaders = getHeaders(event);
     if (incomingHeaders['content-type']) {
       forwardHeaders['content-type'] = incomingHeaders['content-type'];
     }

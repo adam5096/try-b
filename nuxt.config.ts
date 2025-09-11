@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE_URL || 'https://trybeta.rocket-coding.com',
+      apiBase: '/api', // 統一使用 /api 前綴，透過 BFF 架構處理
     },
   },
   fonts: {

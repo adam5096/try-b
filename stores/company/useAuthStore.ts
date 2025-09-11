@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { useApiFetch } from '~/composables/api/shared/useApiFetch';
-import { useCompanyApiFetch } from '~/composables/api/company/useCompanyApiFetch';
 import type {
   LoginData,
   CompanyLoginResponse,
@@ -41,7 +39,9 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
     if (!token.value) return;
 
     try {
-      const { data: userData } = await useCompanyApiFetch<CompanyProfile>('/api/v1/company');
+      const { data: userData } = await useFetch<CompanyProfile>('/v1/company', {
+        baseURL: '/api'
+      });
       if (userData.value) {
         user.value = userData.value;
         userCookie.value = userData.value;
@@ -63,8 +63,9 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
   async function login(loginData: LoginData) {
     try {
       // 使用統一的 API 調用方式，與其他端點保持一致
-      const { data: response, error } = await useCompanyApiFetch<CompanyLoginResponse>('/api/v1/company/login', {
+      const { data: response, error } = await useFetch<CompanyLoginResponse>('/v1/company/login', {
         method: 'POST',
+        baseURL: '/api',
         headers: {
           'Accept': 'application/json',
         },
@@ -119,8 +120,9 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
   async function logout() {
     if (token.value) {
       try {
-        await useCompanyApiFetch('/api/v1/company/logout', {
+        await useFetch('/v1/company/logout', {
           method: 'POST',
+          baseURL: '/api',
         });
       } catch (error) {
       }
