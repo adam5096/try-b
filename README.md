@@ -75,9 +75,7 @@ pnpm preview
 - Swiper（`nuxt-swiper`）
 - 日期處理：`dayjs`（插件擴充 `updateLocale`、`relativeTime`、`utc`）
 
-### 測試與工具
-- Cucumber-JS（BDD：`features/**`、`cucumber-js` 指令）
-- Playwright（`@playwright/test`）
+### 開發工具
 - ESLint 9（整合 `@nuxt/eslint`，專案使用 Tab 縮排、尾逗號等 stylistic 設定）
 
 ### 伺服器端（Nuxt Nitro）BFF - Backend for Frontend
@@ -115,7 +113,6 @@ pnpm preview
 - `pnpm build`：建置
 - `pnpm preview`：本機預覽產出
 - `pnpm generate`：靜態化（如需）
-- `pnpm test:bdd`：執行 Cucumber BDD 測試
 - `pnpm lint` / `pnpm lint:fix`：程式碼風格與修復
 
 ---
@@ -127,7 +124,6 @@ try-b/
 ├── assets/            # 靜態資源（CSS、圖片）
 ├── components/        # Vue 元件（company/shared/users）
 ├── composables/       # 組合式函數（含 api 封裝）
-├── features/          # BDD 測試
 ├── layouts/           # 頁面佈局
 ├── middleware/        # 路由中介軟體（company-auth、user-auth 等）
 ├── pages/             # 頁面（admin/company/users...）
