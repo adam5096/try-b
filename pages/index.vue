@@ -14,10 +14,11 @@ useSeoMeta({
   title: '害怕入錯行？來 TRY β 先體驗再決定！',
   description: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
   ogTitle: '害怕入錯行？來 TRY β 先體驗再決定！',
-  // 注意：og:image 理想上需要一個完整的 URL (例如 https://www.yourdomain.com/img/home/home-worker-bg.webp)
-  // 這裡暫時使用相對路徑，但建議您提供網站的 base URL 或使用圖片 CDN
-  ogImage: '/img/home/home-worker-bg.webp',
+  ogImage: 'https://try-b.vercel.app/img/home/home-worker-bg.webp', // 使用絕對路徑
+  ogImageAlt: 'TRY β 職業體驗平台首頁 - 辦公室工作環境',
   ogDescription: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
+  twitterImage: 'https://try-b.vercel.app/img/home/home-worker-bg.webp',
+  twitterImageAlt: 'TRY β 職業體驗平台首頁',
 });
 // --- End SEO Meta ---
 
@@ -129,13 +130,22 @@ const defaultCardImages = [
           width="1920"
           height="1280"
           preload
+          priority
+          fetchpriority="high"
         />
       </div>
 
       <!-- Layer 2: Blue Shape with Gradient Mask -->
       <div class="absolute inset-0 z-20 mask-gradient-to-right">
-        <img src="/img/home/hero-bg.webp" alt="Blue decorative shape"
-          class="h-full w-full  object-cover lg:object-fill" />
+        <NuxtImg 
+          src="/img/home/hero-bg.webp" 
+          alt="Blue decorative shape"
+          class="h-full w-full object-cover lg:object-fill"
+          width="1920"
+          height="1280"
+          priority
+          fetchpriority="high"
+        />
       </div>
 
       <!-- Layer 3: Foreground Content Layer -->

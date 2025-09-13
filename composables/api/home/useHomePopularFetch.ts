@@ -43,7 +43,18 @@ export function useHomePopularFetch() {
   const { data, pending, error, refresh } = useAsyncData<HomePageResponse>(
     'home-popular',
     () => $fetch('/api/v1/home/popular'),
-    { server: true, lazy: false },
+    { 
+      server: true, 
+      lazy: false,
+      // 添加快取策略，提升效能
+      default: () => ({ PopularPrograms: [] }),
+      // 5分鐘快取，平衡資料新鮮度與效能
+      getCachedData: (key) => nuxtApp.ssrContext?.cache?.[key] ?? nuxtApp.payload.data[key],
+      transform: (data: HomePageResponse) => {
+        // 確保資料格式正確
+        return data?.PopularPrograms ? data : { PopularPrograms: [] };
+      }
+    },
   );
 
   const cards = computed<HomeHighScoreCard[]>(() => {

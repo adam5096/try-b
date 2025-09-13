@@ -47,18 +47,26 @@ export default defineNuxtConfig({
     url: 'https://try-b.vercel.app',
   },
 
-  // 路由渲染模式配置
+  // 路由渲染模式配置 - 優化效能策略
   routeRules: {
-    // 指定4個頁面使用 SSR 模式（預設就是SSR）
-    '/': { prerender: true },        // index.vue
-    '/404': { prerender: true },     // 404.vue  
-    '/plan': { prerender: true },    // plan.vue
-    '/roles': { prerender: true },   // roles.vue
+    // 靜態頁面：預渲染，提升載入速度
+    '/': { prerender: true },        // 首頁 - 靜態內容
+    '/404': { prerender: true },     // 404頁面
+    '/plan': { prerender: true },    // 方案頁面 - 靜態內容
+    '/roles': { prerender: true },   // 角色頁面 - 靜態內容
     
-    // 其他所有頁面使用 CSR 模式（SPA模式）
+    // 企業後台：SWR 快取策略，平衡效能與動態性
+    '/company/login': { prerender: true },     // 登入頁面 - 靜態
+    '/company/register': { prerender: true },   // 註冊頁面 - 靜態
+    '/company/**': { swr: 3600 },               // 其他企業頁面 - 1小時快取
+    
+    // 用戶頁面：CSR 模式，保持互動性
+    '/users/login': { prerender: true },        // 登入頁面 - 靜態
+    '/users/register': { prerender: true },     // 註冊頁面 - 靜態
+    '/users/**': { prerender: false },          // 其他用戶頁面 - CSR
+    
+    // 管理後台：CSR 模式，確保即時性
     '/admin/**': { prerender: false },
-    '/company/**': { prerender: false },
-    '/users/**': { prerender: false },
   },
 
   nitro: {
@@ -121,6 +129,10 @@ export default defineNuxtConfig({
         // API 與主站的預解析與預連線，降低 TLS/握手延遲
         { rel: 'dns-prefetch', href: 'https://trybeta.rocket-coding.com' },
         { rel: 'preconnect', href: 'https://trybeta.rocket-coding.com', crossorigin: '' },
+
+        // 關鍵圖片預載入，提升 LCP 效能
+        { rel: 'preload', href: '/img/home/home-worker-bg.webp', as: 'image', type: 'image/webp' },
+        { rel: 'preload', href: '/img/home/hero-bg.webp', as: 'image', type: 'image/webp' },
 
         // Favicon 與多尺寸 PNG（使用 public/ 內的檔案）
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
