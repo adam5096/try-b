@@ -2,6 +2,7 @@
 definePageMeta({
   layout: 'company',
   name: 'company-programs-new',
+  ssr: false, // CSR 模式
 });
 
 import { ref, watchEffect } from 'vue';

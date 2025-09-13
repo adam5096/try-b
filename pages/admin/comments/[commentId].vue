@@ -2,6 +2,7 @@
 definePageMeta({
   name: 'admin-comment-review',
   layout: 'admin',
+  ssr: false, // CSR 模式
 })
 
 import { ref, computed } from 'vue'

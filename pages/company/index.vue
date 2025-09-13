@@ -2,6 +2,7 @@
 definePageMeta({
   layout: 'company',
   name: 'company-index',
+  ssr: false, // CSR 模式
 });
 
 import {

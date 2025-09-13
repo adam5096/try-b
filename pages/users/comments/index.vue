@@ -3,6 +3,7 @@ definePageMeta({
   name: 'user-comments',
   layout: 'user',
   middleware: 'user-auth',
+  ssr: false, // CSR 模式
 });
 
 import { ref, computed, onMounted, watch } from 'vue';

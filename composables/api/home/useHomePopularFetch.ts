@@ -43,7 +43,28 @@ export function useHomePopularFetch() {
   const { data, pending, error, refresh } = useAsyncData<HomePageResponse>(
     'home-popular',
     () => $fetch('/api/v1/home/popular'),
-    { server: true, lazy: false },
+    { 
+      server: true, 
+      lazy: false,
+      // 添加快取策略，提升效能
+      default: () => ({ PopularPrograms: [] }),
+      // 確保 SSR 和客戶端一致性
+      getCachedData: (key) => {
+        const nuxtApp = useNuxtApp();
+        return (nuxtApp.ssrContext?.cache as any)?.[key] ?? (nuxtApp.payload.data as any)[key];
+      },
+      transform: (data: HomePageResponse) => {
+        // 確保資料格式正確，防止 hydration mismatch
+        if (!data || typeof data !== 'object') {
+          return { PopularPrograms: [] };
+        }
+        return {
+          PopularPrograms: Array.isArray(data.PopularPrograms) 
+            ? data.PopularPrograms 
+            : []
+        };
+      }
+    },
   );
 
   const cards = computed<HomeHighScoreCard[]>(() => {

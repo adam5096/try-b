@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   name: 'company-program-applicant-detail',
-  layout: 'company',
+  layout: 'company'
 });
 
 import { computed, ref, reactive } from 'vue';

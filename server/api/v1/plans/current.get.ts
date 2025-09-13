@@ -1,41 +1,23 @@
-export default defineEventHandler(async (event) => {
-  try {
-    // 從 cookie 讀取 company token
-    const tokenCookie = getCookie(event, 'companyAuthToken');
-    
-    if (!tokenCookie) {
-      throw createError({
-        statusCode: 401,
-        statusMessage: '請登入',
-      });
-    }
+import { createApiHandler } from '~/server/utils/apiHandler'
+import { createAuthHeaders } from '~/server/utils/headers'
 
-    // 轉發請求到真實後端
-    const data = await $fetch('/api-proxy/api/v1/plans/current', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${tokenCookie}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    return data;
-  } catch (error: any) {
-    console.error('Plans current API error:', error);
-    
-    // 如果是後端的錯誤，直接轉拋
-    if (error.statusCode) {
-      throw createError({
-        statusCode: error.statusCode,
-        statusMessage: error.statusMessage || 'Failed to fetch current plan',
-        data: error.data,
-      });
-    }
-    
-    // 其他錯誤
+export default createApiHandler(async (event) => {
+  // 使用統一的認證 headers 處理
+  const headers = createAuthHeaders(event, 'companyAuthToken')
+  
+  // 檢查是否有認證 token
+  if (!headers.authorization) {
     throw createError({
-      statusCode: 500,
-      statusMessage: 'Internal server error',
-    });
+      statusCode: 401,
+      statusMessage: '請登入',
+    })
   }
-});
+
+  // 轉發請求到真實後端
+  const data = await event.$fetch('/api-proxy/api/v1/plans/current', {
+    method: 'GET',
+    headers,
+  })
+
+  return data
+})

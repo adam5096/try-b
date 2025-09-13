@@ -3,6 +3,7 @@ definePageMeta({
   name: 'user-settings',
   layout: 'user',
   middleware: 'user-auth',
+  ssr: false, // CSR 模式
 });
 
 import { reactive } from 'vue';

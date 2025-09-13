@@ -8,6 +8,7 @@ import { useCompanyPlanStore } from '~/stores/company/usePlanStore';
 import { isActivePlan } from '~/types/company/plan/current';
 
 definePageMeta({
+  ssr: false, // CSR 模式
   layout: 'company',
   name: 'company-purchase-index',
 })

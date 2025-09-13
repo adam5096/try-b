@@ -2,9 +2,11 @@
 definePageMeta({
   name: 'company-program-applicants-list',
   layout: 'company',
+  ssr: false, // CSR 模式
 });
 
 import { ref, computed, onMounted } from 'vue'
+import { User } from '@element-plus/icons-vue';
 import { useCompanyApplicants } from '~/composables/api/company/useCompanyApplicants';
 
 const route = useRoute()
@@ -15,9 +17,16 @@ const { data: applicantsData, pending, error: applicantsError, refresh: refreshA
   computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId),
 );
 
-onMounted(() => {
-  refreshApplicants();
-});
+// 監聽 companyId 和 programId 的變化，確保兩者都準備好後才發起請求
+watch(
+  [computed(() => authStore.companyId), computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId)],
+  ([companyId, programId]) => {
+    if (companyId && programId) {
+      refreshApplicants();
+    }
+  },
+  { immediate: true }
+);
 
 // 監聽錯誤
 watch(applicantsError, (error) => {
@@ -79,7 +88,9 @@ const approvedStatus = ref('all')
         <el-table-column label="申請者" min-width="150">
           <template #default="{ row }">
             <div class="flex items-center gap-2">
-              <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+              <el-avatar :size="32">
+                <el-icon><User /></el-icon>
+              </el-avatar>
               <div>
                 <p class="font-bold">
                   {{ row.applicant_name }}
@@ -148,7 +159,9 @@ const approvedStatus = ref('all')
         <el-table-column label="申請者" min-width="150">
           <template #default="{ row }">
             <div class="flex items-center gap-2">
-              <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+              <el-avatar :size="32">
+                <el-icon><User /></el-icon>
+              </el-avatar>
               <div>
                 <p class="font-bold">
                   {{ row.applicant_name }}
