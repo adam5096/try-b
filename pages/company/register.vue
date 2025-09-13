@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'main',
+  ssr: false, // CSR 模式
 });
 
 import { ref, reactive } from 'vue';

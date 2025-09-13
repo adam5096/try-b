@@ -2,6 +2,7 @@
 definePageMeta({
   name: 'company-program-applicants-list',
   layout: 'company',
+  ssr: false, // CSR 模式
 });
 
 import { ref, computed, onMounted } from 'vue'

@@ -47,6 +47,20 @@ export default defineNuxtConfig({
     url: 'https://try-b.vercel.app',
   },
 
+  // 路由渲染模式配置
+  routeRules: {
+    // 指定4個頁面使用 SSR 模式（預設就是SSR）
+    '/': { prerender: true },        // index.vue
+    '/404': { prerender: true },     // 404.vue  
+    '/plan': { prerender: true },    // plan.vue
+    '/roles': { prerender: true },   // roles.vue
+    
+    // 其他所有頁面使用 CSR 模式（SPA模式）
+    '/admin/**': { prerender: false },
+    '/company/**': { prerender: false },
+    '/users/**': { prerender: false },
+  },
+
   nitro: {
     routeRules: {
       '/api-proxy/**': {

@@ -2,6 +2,7 @@
 definePageMeta({
   name: 'company-program-detail',
   layout: 'company',
+  ssr: false, // CSR 模式
 });
 
 import { ref, computed } from 'vue';

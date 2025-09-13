@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 definePageMeta({
   layout: 'company',
-  name: 'company-settings'
+  name: 'company-settings',
+  ssr: false, // CSR 模式
 })
 
 const companyInfo = ref({

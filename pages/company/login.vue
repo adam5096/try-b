@@ -2,6 +2,7 @@
 definePageMeta({
   name: 'companyLogin',
   layout: 'blank',
+  ssr: false, // CSR 模式
 });
 
 import { ref } from 'vue';
