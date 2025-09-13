@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { OfficeBuilding } from '@element-plus/icons-vue';
+
 definePageMeta({
   layout: 'company',
   name: 'company-settings',
@@ -102,7 +104,9 @@ const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500�
           <el-col :xs="24" :sm="24" :md="12">
             <el-form-item label="企業標誌">
               <div class="flex items-center gap-4">
-                <el-avatar :size="80" src="https://via.placeholder.com/80" />
+                <el-avatar :size="80" :src="companyInfo.logo">
+                  <el-icon><OfficeBuilding /></el-icon>
+                </el-avatar>
                 <el-button>
                   更換標誌
                 </el-button>

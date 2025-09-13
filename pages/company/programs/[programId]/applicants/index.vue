@@ -6,6 +6,7 @@ definePageMeta({
 });
 
 import { ref, computed, onMounted } from 'vue'
+import { User } from '@element-plus/icons-vue';
 import { useCompanyApplicants } from '~/composables/api/company/useCompanyApplicants';
 
 const route = useRoute()
@@ -87,7 +88,9 @@ const approvedStatus = ref('all')
         <el-table-column label="申請者" min-width="150">
           <template #default="{ row }">
             <div class="flex items-center gap-2">
-              <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+              <el-avatar :size="32">
+                <el-icon><User /></el-icon>
+              </el-avatar>
               <div>
                 <p class="font-bold">
                   {{ row.applicant_name }}
@@ -156,7 +159,9 @@ const approvedStatus = ref('all')
         <el-table-column label="申請者" min-width="150">
           <template #default="{ row }">
             <div class="flex items-center gap-2">
-              <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+              <el-avatar :size="32">
+                <el-icon><User /></el-icon>
+              </el-avatar>
               <div>
                 <p class="font-bold">
                   {{ row.applicant_name }}

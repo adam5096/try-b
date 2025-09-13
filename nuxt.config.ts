@@ -18,6 +18,9 @@ export default defineNuxtConfig({
       apiBase: '/api', // 統一使用 /api 前綴，透過 BFF 架構處理
       // 效能監控配置
       enableWebVitals: true,
+      enablePerformanceBudget: true,
+      // Google Analytics 配置
+      googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || '', // 請設置環境變數
     },
   },
   fonts: {
@@ -47,7 +50,11 @@ export default defineNuxtConfig({
   site: {
     // 請記得在網站上線後，將 yourdomain.com 替換成您的真實網域
     url: 'https://try-b.vercel.app',
+    name: 'TRY β 職業體驗平台',
+    description: 'TRY β 是一個連結人才與企業的職業體驗平台，提供多元的短期體驗計畫，幫助求職者在投入職場前探索興趣，找到真正適合自己的道路。',
   },
+
+  // Sitemap 會自動根據路由生成，無需額外配置
 
   // 路由渲染模式配置 - 優化效能策略
   routeRules: {
@@ -132,9 +139,8 @@ export default defineNuxtConfig({
         { rel: 'dns-prefetch', href: 'https://trybeta.rocket-coding.com' },
         { rel: 'preconnect', href: 'https://trybeta.rocket-coding.com', crossorigin: '' },
 
-        // 關鍵圖片預載入，提升 LCP 效能
-        { rel: 'preload', href: '/img/home/home-worker-bg.webp', as: 'image', type: 'image/webp' },
-        { rel: 'preload', href: '/img/home/hero-bg.webp', as: 'image', type: 'image/webp' },
+        // 關鍵圖片預載入，提升 LCP 效能（僅在首頁）
+        // 注意：這些圖片只在首頁使用，其他頁面會出現 preload 警告是正常的
 
         // Favicon 與多尺寸 PNG（使用 public/ 內的檔案）
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },

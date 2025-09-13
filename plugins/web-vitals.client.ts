@@ -8,21 +8,28 @@ export default defineNuxtPlugin(() => {
     return;
   }
 
-  // 簡單的 Web Vitals 監控實現
+  // Web Vitals 監控實現
   const reportWebVitals = (metric: any) => {
     console.log('Web Vital:', metric);
     
-    // 可以在這裡發送資料到分析服務
-    // 例如：Google Analytics, Mixpanel, 或自建的監控系統
-    
-    // 範例：發送到 Google Analytics 4
-    if (typeof gtag !== 'undefined') {
-      gtag('event', metric.name, {
+    // 發送到 Google Analytics 4
+    if (typeof (window as any).gtag !== 'undefined') {
+      (window as any).gtag('event', metric.name, {
         value: Math.round(metric.value),
         event_category: 'Web Vitals',
         event_label: metric.id,
         non_interaction: true,
       });
+    }
+
+    // 發送到自建監控系統（如果有的話）
+    if (process.env.NODE_ENV === 'production') {
+      // 可以在這裡添加自建的監控端點
+      // fetch('/api/analytics/web-vitals', {
+      //   method: 'POST',
+      //   body: JSON.stringify(metric),
+      //   headers: { 'Content-Type': 'application/json' }
+      // }).catch(console.error);
     }
   };
 
@@ -33,11 +40,11 @@ export default defineNuxtPlugin(() => {
       try {
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          const lastEntry = entries[entries.length - 1];
+          const lastEntry = entries[entries.length - 1] as any;
           reportWebVitals({
             name: 'LCP',
             value: lastEntry.startTime,
-            id: lastEntry.id,
+            id: lastEntry.id || '',
           });
         });
         lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
@@ -49,11 +56,11 @@ export default defineNuxtPlugin(() => {
       try {
         const fidObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          entries.forEach((entry) => {
+          entries.forEach((entry: any) => {
             reportWebVitals({
               name: 'FID',
               value: entry.processingStart - entry.startTime,
-              id: entry.id,
+              id: entry.id || '',
             });
           });
         });
@@ -96,25 +103,37 @@ export default defineNuxtPlugin(() => {
         const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
         
         if (navigation) {
-          reportWebVitals({
-            name: 'TTFB',
-            value: navigation.responseStart - navigation.requestStart,
-            id: 'ttfb',
-          });
+          // TTFB
+          const ttfb = navigation.responseStart - navigation.requestStart;
+          if (ttfb > 0) {
+            reportWebVitals({
+              name: 'TTFB',
+              value: ttfb,
+              id: 'ttfb',
+            });
+          }
           
-          reportWebVitals({
-            name: 'DOM_LOAD',
-            value: navigation.domContentLoadedEventEnd - navigation.navigationStart,
-            id: 'dom-load',
-          });
+          // DOM Load
+          const domLoad = navigation.domContentLoadedEventEnd - (navigation as any).navigationStart;
+          if (domLoad > 0 && !isNaN(domLoad)) {
+            reportWebVitals({
+              name: 'DOM_LOAD',
+              value: domLoad,
+              id: 'dom-load',
+            });
+          }
           
-          reportWebVitals({
-            name: 'PAGE_LOAD',
-            value: navigation.loadEventEnd - navigation.navigationStart,
-            id: 'page-load',
-          });
+          // Page Load
+          const pageLoad = navigation.loadEventEnd - (navigation as any).navigationStart;
+          if (pageLoad > 0 && !isNaN(pageLoad)) {
+            reportWebVitals({
+              name: 'PAGE_LOAD',
+              value: pageLoad,
+              id: 'page-load',
+            });
+          }
         }
-      }, 0);
+      }, 100); // 增加延遲確保所有指標都已計算
     });
   };
 

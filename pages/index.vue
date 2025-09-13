@@ -20,7 +20,64 @@ useSeoMeta({
   twitterImage: 'https://try-b.vercel.app/img/home/home-worker-bg.webp',
   twitterImageAlt: 'TRY β 職業體驗平台首頁',
 });
-// --- End SEO Meta ---
+
+// --- 關鍵資源預載入 ---
+useHead({
+  link: [
+    // 關鍵圖片預載入，提升 LCP 效能
+    { rel: 'preload', href: '/img/home/home-worker-bg.webp', as: 'image', type: 'image/webp' },
+    { rel: 'preload', href: '/img/home/hero-bg.webp', as: 'image', type: 'image/webp' },
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'TRY β',
+        description: 'TRY β 是一個連結人才與企業的職業體驗平台，提供多元的短期體驗計畫，幫助求職者在投入職場前探索興趣，找到真正適合自己的道路。',
+        url: 'https://try-b.vercel.app',
+        logo: 'https://try-b.vercel.app/img/home/try-beta-logo.webp',
+        image: 'https://try-b.vercel.app/img/home/home-worker-bg.webp',
+        sameAs: [
+          // 可以在這裡添加社群媒體連結
+        ],
+        contactPoint: {
+          '@type': 'ContactPoint',
+          contactType: 'customer service',
+          email: 'contact@try-b.com', // 請替換為實際聯絡信箱
+        },
+        address: {
+          '@type': 'PostalAddress',
+          addressCountry: 'TW',
+          addressRegion: 'Taiwan',
+        },
+        offers: {
+          '@type': 'Offer',
+          name: '職業體驗服務',
+          description: '提供短期職業體驗計畫，讓求職者深入了解產業與職務內容',
+          category: '職業服務',
+        }
+      })
+    },
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'TRY β',
+        url: 'https://try-b.vercel.app',
+        description: 'TRY β 職業體驗平台 - 讓轉職從博弈變成科學',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://try-b.vercel.app/search?q={search_term_string}',
+          'query-input': 'required name=search_term_string'
+        }
+      })
+    }
+  ]
+});
+// --- End 結構化資料 ---
 
 // Header-related logic has been moved to layouts/main.vue
 
