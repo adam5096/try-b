@@ -10,11 +10,12 @@ export const useUserEvaluation = () => {
 
     try {
       // 取得 user auth token 來設定 headers
-      const tokenCookie = useCookie<string | null>('userAuthToken');
+      const { useUserAuthStore } = await import('~/stores/user/useAuthStore');
+      const authStore = useUserAuthStore();
       const headers: Record<string, string> = {};
       
-      if (tokenCookie.value) {
-        headers.authorization = `Bearer ${tokenCookie.value}`;
+      if (authStore.token) {
+        headers.authorization = `Bearer ${authStore.token}`;
       }
 
       // 使用 $fetch 呼叫本地 BFF 端點
