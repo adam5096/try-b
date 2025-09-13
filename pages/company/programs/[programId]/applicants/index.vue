@@ -16,9 +16,16 @@ const { data: applicantsData, pending, error: applicantsError, refresh: refreshA
   computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId),
 );
 
-onMounted(() => {
-  refreshApplicants();
-});
+// 監聽 companyId 和 programId 的變化，確保兩者都準備好後才發起請求
+watch(
+  [computed(() => authStore.companyId), computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId)],
+  ([companyId, programId]) => {
+    if (companyId && programId) {
+      refreshApplicants();
+    }
+  },
+  { immediate: true }
+);
 
 // 監聽錯誤
 watch(applicantsError, (error) => {

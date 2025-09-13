@@ -36,7 +36,7 @@ export const useCompanyApplicants = (companyId: MaybeRefOrGetter<number | null>,
       return `company-applicants-${resolvedCompanyId}-${resolvedProgramId}`;
     }),
     server: true,
-    lazy: false,
-    immediate: !!toValue(companyId) && !!toValue(programId),
+    lazy: true, // 改為 lazy: true，避免立即執行
+    immediate: false, // 改為 false，由頁面控制何時執行
   });
 };
