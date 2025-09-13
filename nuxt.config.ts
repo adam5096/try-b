@@ -16,6 +16,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: '/api', // 統一使用 /api 前綴，透過 BFF 架構處理
+      // 效能監控配置
+      enableWebVitals: true,
     },
   },
   fonts: {

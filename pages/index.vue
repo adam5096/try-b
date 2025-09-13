@@ -60,13 +60,17 @@ const testimonials = [
   }
 ]
 
+// 使用 ClientOnly 來避免 hydration mismatch
+const isClient = ref(false);
+
 const handleResize = () => {
-  if (window.innerWidth >= 1024) {
+  if (isClient.value && window.innerWidth >= 1024) {
     // isMenuOpen.value = false; // This state is now managed by layouts/main.vue
   }
 };
 
 onMounted(() => {
+  isClient.value = true;
   window.addEventListener('resize', handleResize);
 });
 
@@ -97,7 +101,7 @@ const stats = [
 ]
 
 // Home: Popular programs (前 3 筆，少於補空卡)
-const { cards, pending, error } = useHomePopularFetch()
+const { cards, pending, error, refresh } = useHomePopularFetch()
 
 // Image fallback on load error per-card
 const erroredImage = ref<Record<number, boolean>>({})
@@ -283,12 +287,44 @@ const defaultCardImages = [
 
       <!-- Cards Container -->
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 mt-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Loading State -->
+        <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            v-for="i in 3"
+            :key="`skeleton-${i}`"
+            class="bg-white shadow-lg overflow-hidden flex flex-col rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
+          >
+            <div class="skeleton h-48 bg-gray-200 rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"></div>
+            <div class="p-6 flex flex-col flex-grow">
+              <div class="skeleton h-4 bg-gray-200 mb-2"></div>
+              <div class="skeleton h-6 bg-gray-200 mb-2"></div>
+              <div class="skeleton h-16 bg-gray-200 mb-4"></div>
+              <div class="space-y-2 mb-4">
+                <div class="skeleton h-4 bg-gray-200"></div>
+                <div class="skeleton h-4 bg-gray-200"></div>
+              </div>
+              <div class="skeleton h-4 bg-gray-200 mb-4"></div>
+              <div class="skeleton h-10 bg-gray-200"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div v-else-if="error" class="text-center py-12">
+          <SharedErrorMessage 
+            title="載入熱門活動失敗"
+            :message="error.message || '無法載入熱門體驗活動，請稍後再試'"
+            :show-refresh="true"
+            @refresh="refresh"
+          />
+        </div>
+
+        <!-- Content State -->
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div
             v-for="(card, index) in cards"
             :key="index"
             class="bg-white shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1 rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
-            :class="{ 'animate-pulse': pending }"
           >
             <div class="relative">
               <NuxtImg
