@@ -78,10 +78,10 @@
 }
 
 /* Element Plus Message / MessageBox / Notification 全域字級放大（統一 2 倍） */
-:root {
-  /* 可依需求調整為 1.5 ~ 2 之間，這裡統一為 2 倍 */
+/* 可依需求調整為 1.5 ~ 2 之間，這裡統一為 2 倍 */
+/* :root {
   --app-ep-message-scale: 2;
-}
+} */
 
 /* Message */
 .el-message,
