@@ -1,7 +1,8 @@
 <script setup lang="ts">
 definePageMeta({
   name: 'user-login',
-  layout: 'user'
+  layout: 'user',
+  ssr: false, // CSR 模式
 })
 
 import { ref, watchEffect } from 'vue';

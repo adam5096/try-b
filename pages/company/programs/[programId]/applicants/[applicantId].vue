@@ -1,12 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
   name: 'company-program-applicant-detail',
-  layout: 'company',
+  layout: 'company'
 });
 
 import { computed, ref, reactive } from 'vue';
-import { useApplicant } from '~/composables/api/company/useApplicant';
-import { useSubmitReview } from '~/composables/api/company/useSubmitReview';
+import { useCompanyApplicant } from '~/composables/api/company/useCompanyApplicant';
+import { useCompanySubmitReview } from '~/composables/api/company/useCompanySubmitReview';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
 import {
@@ -27,13 +27,13 @@ const {
   loading: isSubmitting,
   error: submitError,
   data: submitResult,
-} = useSubmitReview();
+} = useCompanySubmitReview();
 
 const formRef = ref<FormInstance>();
 
 const authStore = useCompanyAuthStore();
 
-const { data: applicantData, pending } = useApplicant(
+const { data: applicantData, pending } = useCompanyApplicant(
   computed(() => authStore.companyId),
   computed(() => String(route.params.programId)),
   computed(() => String(route.params.applicantId)),

@@ -8,7 +8,24 @@ export default defineNuxtPlugin((nuxtApp) => {
   const api = ofetch.create({
     // baseURL: config.public.apiBase,
 
+    onRequest({ request, options }) {
+      // 添加請求 ID 用於追蹤
+      if (process.client) {
+        options.headers = {
+          ...options.headers,
+          'X-Request-ID': crypto.randomUUID()
+        } as any;
+      }
+    },
+
     onResponseError({ request, response }) {
+      // 記錄錯誤詳情
+      console.error(`API Error [${response.status}]:`, {
+        url: request,
+        status: response.status,
+        statusText: response.statusText
+      });
+
       // We only want to handle 401 errors on the client side.
       if (process.server || response.status !== 401) {
         return;
@@ -35,6 +52,21 @@ export default defineNuxtPlugin((nuxtApp) => {
         }
       }
     },
+
+    onRequestError({ request, error }) {
+      // 處理網路錯誤
+      console.error('Network Error:', {
+        url: request,
+        error: error.message
+      });
+
+      if (process.client) {
+        // 檢查是否為網路連線問題
+        if (!navigator.onLine) {
+          console.warn('User is offline');
+        }
+      }
+    }
   });
 
   // Provide the typed api client to the nuxt app

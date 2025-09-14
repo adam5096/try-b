@@ -20,7 +20,7 @@ export interface ApplicantsListResponse {
   }>;
 }
 
-export const useApplicants = (companyId: MaybeRefOrGetter<number | null>, programId: MaybeRefOrGetter<string | number>) => {
+export const useCompanyApplicants = (companyId: MaybeRefOrGetter<number | null>, programId: MaybeRefOrGetter<string | number>) => {
   const url = computed(() => {
     const resolvedCompanyId = toValue(companyId);
     const resolvedProgramId = toValue(programId);
@@ -36,7 +36,7 @@ export const useApplicants = (companyId: MaybeRefOrGetter<number | null>, progra
       return `company-applicants-${resolvedCompanyId}-${resolvedProgramId}`;
     }),
     server: true,
-    lazy: false,
-    immediate: !!toValue(companyId) && !!toValue(programId),
+    lazy: true, // 改為 lazy: true，避免立即執行
+    immediate: false, // 改為 false，由頁面控制何時執行
   });
 };

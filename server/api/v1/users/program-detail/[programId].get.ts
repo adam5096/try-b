@@ -1,36 +1,25 @@
-export default defineEventHandler(async (event) => {
-  try {
-    const programId = getRouterParam(event, 'programId');
-    
-    if (!programId) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Missing programId parameter',
-      });
-    }
+import { createApiHandler } from '~/server/utils/apiHandler'
+import { getForwardHeaders } from '~/server/utils/headers'
 
-    // 取得前端傳來的 headers
-    const incomingHeaders = getHeaders(event);
-    const forwardHeaders: Record<string, string> = {};
-    
-    // 轉發重要的 headers（程式詳情可能需要認證）
-    if (incomingHeaders.authorization) {
-      forwardHeaders.authorization = incomingHeaders.authorization;
-    }
-
-    // 透過 Nitro 的 proxy 設定轉發到真實後端
-    // 規則：必須包含 api 並使用 /api-proxy 進行代理
-    const data = await $fetch(`/api-proxy/api/v1/programs/${programId}`, {
-      method: 'GET',
-      headers: forwardHeaders,
-    });
-
-    return data;
-  } catch (error: any) {
-    // 簡單錯誤轉拋，維持 KISS
+export default createApiHandler(async (event) => {
+  const programId = getRouterParam(event, 'programId')
+  
+  if (!programId) {
     throw createError({
-      statusCode: error?.statusCode || 500,
-      statusMessage: error?.message || 'Failed to fetch program detail',
-    });
+      statusCode: 400,
+      statusMessage: 'Missing programId parameter',
+    })
   }
-});
+
+  // 使用統一的 headers 處理（程式詳情可能需要認證）
+  const headers = getForwardHeaders(event)
+
+  // 透過 Nitro 的 proxy 設定轉發到真實後端
+  // 規則：必須包含 api 並使用 /api-proxy 進行代理
+  const data = await event.$fetch(`/api-proxy/api/v1/programs/${programId}`, {
+    method: 'GET',
+    headers,
+  })
+
+  return data
+})

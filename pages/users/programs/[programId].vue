@@ -2,6 +2,7 @@
 definePageMeta({
   name: 'user-program-detail',
   layout: 'user',
+  ssr: false, // CSR 模式
 });
 
 import { ref, onMounted, onUnmounted, computed, reactive } from 'vue';

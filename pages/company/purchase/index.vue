@@ -3,17 +3,18 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { Check } from '@element-plus/icons-vue'
-import { useAllPlans } from '~/composables/api/company/useAllPlans';
+import { useCompanyAllPlans } from '~/composables/api/company/useCompanyAllPlans';
 import { useCompanyPlanStore } from '~/stores/company/usePlanStore';
 import { isActivePlan } from '~/types/company/plan/current';
 
 definePageMeta({
+  ssr: false, // CSR 模式
   layout: 'company',
   name: 'company-purchase-index',
 })
 
 const router = useRouter()
-const { plans, isLoading, error, fetchAllPlans } = useAllPlans();
+const { plans, isLoading, error, fetchAllPlans } = useCompanyAllPlans();
 const planStore = useCompanyPlanStore();
 
 onMounted(() => {

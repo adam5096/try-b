@@ -1,46 +1,29 @@
-export default defineEventHandler(async (event) => {
-  try {
-    const companyId = getRouterParam(event, 'companyId');
-    
-    if (!companyId) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Missing companyId parameter',
-      });
-    }
+import { createApiHandler } from '~/server/utils/apiHandler'
+import { createAuthHeaders } from '~/server/utils/headers'
 
-    // 讀取請求體
-    const body = await readBody(event);
-
-    // 從 cookie 讀取 company token
-    const tokenCookie = getCookie(event, 'companyAuthToken');
-    const forwardHeaders: Record<string, string> = {};
-    
-    // 如果有 token，設定 Authorization header
-    if (tokenCookie) {
-      forwardHeaders.authorization = `Bearer ${tokenCookie}`;
-    }
-    
-    // 轉發其他重要的 headers
-    const incomingHeaders = getHeaders(event);
-    if (incomingHeaders['content-type']) {
-      forwardHeaders['content-type'] = incomingHeaders['content-type'];
-    }
-
-    // 透過 Nitro 的 proxy 設定轉發到真實後端
-    // 規則：必須包含 api 並使用 /api-proxy 進行代理
-    const data = await $fetch(`/api-proxy/api/v1/company/${companyId}/programs`, {
-      method: 'POST',
-      headers: forwardHeaders,
-      body,
-    });
-
-    return data;
-  } catch (error: any) {
-    // 簡單錯誤轉拋，維持 KISS
+export default createApiHandler(async (event) => {
+  const companyId = getRouterParam(event, 'companyId')
+  
+  if (!companyId) {
     throw createError({
-      statusCode: error?.statusCode || 500,
-      statusMessage: error?.message || 'Failed to create program',
-    });
+      statusCode: 400,
+      statusMessage: 'Missing companyId parameter',
+    })
   }
-});
+
+  // 讀取請求體
+  const body = await readBody(event)
+
+  // 使用統一的認證 headers 處理
+  const headers = createAuthHeaders(event, 'companyAuthToken')
+
+  // 透過 Nitro 的 proxy 設定轉發到真實後端
+  // 規則：必須包含 api 並使用 /api-proxy 進行代理
+  const data = await event.$fetch(`/api-proxy/api/v1/company/${companyId}/programs`, {
+    method: 'POST',
+    headers,
+    body,
+  })
+
+  return data
+})

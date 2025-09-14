@@ -1,6 +1,6 @@
 import type { ProgramDetailResponse } from '~/types/company/program';
 
-export const useProgramDetail = (
+export const useCompanyProgramDetail = (
   companyId: MaybeRefOrGetter<number | null>,
   programId: MaybeRefOrGetter<string | number>
 ) => {

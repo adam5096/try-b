@@ -1,7 +1,29 @@
-# Allow all crawlers to access all content
-User-agent: *
-Disallow:
+# TRY β 職業體驗平台 - Robots.txt
+# 允許所有搜尋引擎爬取公開內容
 
-# Point crawlers to the sitemap
-# 請記得在網站上線後，將 yourdomain.com 替換成您的真實網域
+User-agent: *
+# 允許爬取所有公開頁面
+Allow: /
+
+# 禁止爬取後台管理頁面
+Disallow: /admin/
+Disallow: /company/
+Disallow: /users/
+
+# 禁止爬取 API 端點和內部資源
+Disallow: /api/
+Disallow: /_nuxt/
+Disallow: /_ipx/
+
+# 禁止爬取敏感檔案
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /server/
+
+# 允許爬取靜態資源
+Allow: /img/
+Allow: /favicon.ico
+Allow: /favicon-*.png
+
+# 指向網站地圖
 Sitemap: https://try-b.vercel.app/sitemap.xml

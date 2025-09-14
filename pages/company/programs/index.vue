@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'company',
+  ssr: false, // CSR 模式
 });
 
 // 與公司端主列表 UI 完全一致，/company/programs 直接導向 /company

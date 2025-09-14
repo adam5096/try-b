@@ -16,6 +16,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: '/api', // 統一使用 /api 前綴，透過 BFF 架構處理
+      // 效能監控配置
+      enableWebVitals: true,
+      enablePerformanceBudget: true,
+      // Google Analytics 配置
+      googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || '', // 請設置環境變數
     },
   },
   fonts: {
@@ -45,6 +50,32 @@ export default defineNuxtConfig({
   site: {
     // 請記得在網站上線後，將 yourdomain.com 替換成您的真實網域
     url: 'https://try-b.vercel.app',
+    name: 'TRY β 職業體驗平台',
+    description: 'TRY β 是一個連結人才與企業的職業體驗平台，提供多元的短期體驗計畫，幫助求職者在投入職場前探索興趣，找到真正適合自己的道路。',
+  },
+
+  // Sitemap 會自動根據路由生成，無需額外配置
+
+  // 路由渲染模式配置 - 優化效能策略
+  routeRules: {
+    // 靜態頁面：預渲染，提升載入速度
+    '/': { prerender: true },        // 首頁 - 靜態內容
+    '/404': { prerender: true },     // 404頁面
+    '/plan': { prerender: true },    // 方案頁面 - 靜態內容
+    '/roles': { prerender: true },   // 角色頁面 - 靜態內容
+    
+    // 企業後台：SWR 快取策略，平衡效能與動態性
+    '/company/login': { prerender: true },     // 登入頁面 - 靜態
+    '/company/register': { prerender: true },   // 註冊頁面 - 靜態
+    '/company/**': { swr: 3600 },               // 其他企業頁面 - 1小時快取
+    
+    // 用戶頁面：CSR 模式，保持互動性
+    '/users/login': { prerender: true },        // 登入頁面 - 靜態
+    '/users/register': { prerender: true },     // 註冊頁面 - 靜態
+    '/users/**': { prerender: false },          // 其他用戶頁面 - CSR
+    
+    // 管理後台：CSR 模式，確保即時性
+    '/admin/**': { prerender: false },
   },
 
   nitro: {
@@ -107,6 +138,9 @@ export default defineNuxtConfig({
         // API 與主站的預解析與預連線，降低 TLS/握手延遲
         { rel: 'dns-prefetch', href: 'https://trybeta.rocket-coding.com' },
         { rel: 'preconnect', href: 'https://trybeta.rocket-coding.com', crossorigin: '' },
+
+        // 關鍵圖片預載入，提升 LCP 效能（僅在首頁）
+        // 注意：這些圖片只在首頁使用，其他頁面會出現 preload 警告是正常的
 
         // Favicon 與多尺寸 PNG（使用 public/ 內的檔案）
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },

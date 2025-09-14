@@ -1,17 +1,12 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "target": "ES2022",
-    "esModuleInterop": true,
+    "target": "ES2020",
+    "module": "commonjs",
     "strict": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "types": [
-      "node",
-      "@playwright/test"
-    ]
+    "forceConsistentCasingInFileNames": true
   },
-  "include": [
-    "./**/*.ts"
-  ]
+  "include": [],
+  "exclude": ["*"]
 }

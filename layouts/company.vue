@@ -11,6 +11,7 @@ import {
   Setting,
   Star,
   SwitchButton,
+  User,
 } from '@element-plus/icons-vue';
 import { companyRoutes as r } from '~/utils/companyRoutes';
 
@@ -67,7 +68,9 @@ async function handleLogout() {
             <el-button :icon="Bell" circle />
           </el-badge>
           <div class="flex items-center gap-2">
-            <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
+            <el-avatar :size="32">
+              <el-icon><User /></el-icon>
+            </el-avatar>
             <div class="user-text">
               <div class="text-sm font-medium">
                 {{ authStore.basicUser?.Role || '企業管理員' }}

@@ -2,6 +2,7 @@
 definePageMeta({
   layout: 'company',
   name: 'company-programs-new',
+  ssr: false, // CSR 模式
 });
 
 import { ref, watchEffect } from 'vue';
@@ -10,9 +11,9 @@ import { ElNotification } from 'element-plus';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
 import type { CreateProgramPayload } from '~/types/company/program';
 import { useRouter } from 'vue-router';
-import { useIndustries } from '~/composables/api/company/useIndustries';
-import { usePositions } from '~/composables/api/company/usePositions';
-import { uploadProgramImages } from '~/composables/api/company/useUploadProgramImages';
+import { useCompanyIndustries } from '~/composables/api/company/useCompanyIndustries';
+import { useCompanyPositions } from '~/composables/api/company/useCompanyPositions';
+import { uploadProgramImages } from '~/composables/api/company/useCompanyUploadProgramImages';
 
 const programStore = useCompanyProgramStore();
 const router = useRouter();
@@ -54,8 +55,8 @@ const uploadFiles = ref<File[]>([]);
 const ACCEPTED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/webp'];
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 
-const { data: industriesData, pending: industriesPending, error: industriesError } = useIndustries();
-const { data: positionsData, pending: positionsPending, error: positionsError } = usePositions();
+const { data: industriesData, pending: industriesPending, error: industriesError } = useCompanyIndustries();
+const { data: positionsData, pending: positionsPending, error: positionsError } = useCompanyPositions();
 
 watchEffect(() => {
   if (industriesData?.value) {

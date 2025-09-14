@@ -14,12 +14,70 @@ useSeoMeta({
   title: '害怕入錯行？來 TRY β 先體驗再決定！',
   description: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
   ogTitle: '害怕入錯行？來 TRY β 先體驗再決定！',
-  // 注意：og:image 理想上需要一個完整的 URL (例如 https://www.yourdomain.com/img/home/home-worker-bg.webp)
-  // 這裡暫時使用相對路徑，但建議您提供網站的 base URL 或使用圖片 CDN
-  ogImage: '/img/home/home-worker-bg.webp',
+  ogImage: 'https://try-b.vercel.app/img/home/home-worker-bg.webp', // 使用絕對路徑
+  ogImageAlt: 'TRY β 職業體驗平台首頁 - 辦公室工作環境',
   ogDescription: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
+  twitterImage: 'https://try-b.vercel.app/img/home/home-worker-bg.webp',
+  twitterImageAlt: 'TRY β 職業體驗平台首頁',
 });
-// --- End SEO Meta ---
+
+// --- 關鍵資源預載入 ---
+useHead({
+  link: [
+    // 關鍵圖片預載入，提升 LCP 效能
+    { rel: 'preload', href: '/img/home/home-worker-bg.webp', as: 'image', type: 'image/webp' },
+    { rel: 'preload', href: '/img/home/hero-bg.webp', as: 'image', type: 'image/webp' },
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'TRY β',
+        description: 'TRY β 是一個連結人才與企業的職業體驗平台，提供多元的短期體驗計畫，幫助求職者在投入職場前探索興趣，找到真正適合自己的道路。',
+        url: 'https://try-b.vercel.app',
+        logo: 'https://try-b.vercel.app/img/home/try-beta-logo.webp',
+        image: 'https://try-b.vercel.app/img/home/home-worker-bg.webp',
+        sameAs: [
+          // 可以在這裡添加社群媒體連結
+        ],
+        contactPoint: {
+          '@type': 'ContactPoint',
+          contactType: 'customer service',
+          email: 'contact@try-b.com', // 請替換為實際聯絡信箱
+        },
+        address: {
+          '@type': 'PostalAddress',
+          addressCountry: 'TW',
+          addressRegion: 'Taiwan',
+        },
+        offers: {
+          '@type': 'Offer',
+          name: '職業體驗服務',
+          description: '提供短期職業體驗計畫，讓求職者深入了解產業與職務內容',
+          category: '職業服務',
+        }
+      })
+    },
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'TRY β',
+        url: 'https://try-b.vercel.app',
+        description: 'TRY β 職業體驗平台 - 讓轉職從博弈變成科學',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://try-b.vercel.app/search?q={search_term_string}',
+          'query-input': 'required name=search_term_string'
+        }
+      })
+    }
+  ]
+});
+// --- End 結構化資料 ---
 
 // Header-related logic has been moved to layouts/main.vue
 
@@ -59,13 +117,17 @@ const testimonials = [
   }
 ]
 
+// 使用 ClientOnly 來避免 hydration mismatch
+const isClient = ref(false);
+
 const handleResize = () => {
-  if (window.innerWidth >= 1024) {
+  if (isClient.value && window.innerWidth >= 1024) {
     // isMenuOpen.value = false; // This state is now managed by layouts/main.vue
   }
 };
 
 onMounted(() => {
+  isClient.value = true;
   window.addEventListener('resize', handleResize);
 });
 
@@ -96,7 +158,7 @@ const stats = [
 ]
 
 // Home: Popular programs (前 3 筆，少於補空卡)
-const { cards, pending, error } = useHomePopularFetch()
+const { cards, pending, error, refresh } = useHomePopularFetch()
 
 // Image fallback on load error per-card
 const erroredImage = ref<Record<number, boolean>>({})
@@ -129,13 +191,22 @@ const defaultCardImages = [
           width="1920"
           height="1280"
           preload
+          priority
+          fetchpriority="high"
         />
       </div>
 
       <!-- Layer 2: Blue Shape with Gradient Mask -->
       <div class="absolute inset-0 z-20 mask-gradient-to-right">
-        <img src="/img/home/hero-bg.webp" alt="Blue decorative shape"
-          class="h-full w-full  object-cover lg:object-fill" />
+        <NuxtImg 
+          src="/img/home/hero-bg.webp" 
+          alt="Blue decorative shape"
+          class="h-full w-full object-cover lg:object-fill"
+          width="1920"
+          height="1280"
+          priority
+          fetchpriority="high"
+        />
       </div>
 
       <!-- Layer 3: Foreground Content Layer -->
@@ -273,12 +344,44 @@ const defaultCardImages = [
 
       <!-- Cards Container -->
       <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 mt-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Loading State -->
+        <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            v-for="i in 3"
+            :key="`skeleton-${i}`"
+            class="bg-white shadow-lg overflow-hidden flex flex-col rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
+          >
+            <div class="skeleton h-48 bg-gray-200 rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"></div>
+            <div class="p-6 flex flex-col flex-grow">
+              <div class="skeleton h-4 bg-gray-200 mb-2"></div>
+              <div class="skeleton h-6 bg-gray-200 mb-2"></div>
+              <div class="skeleton h-16 bg-gray-200 mb-4"></div>
+              <div class="space-y-2 mb-4">
+                <div class="skeleton h-4 bg-gray-200"></div>
+                <div class="skeleton h-4 bg-gray-200"></div>
+              </div>
+              <div class="skeleton h-4 bg-gray-200 mb-4"></div>
+              <div class="skeleton h-10 bg-gray-200"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div v-else-if="error" class="text-center py-12">
+          <SharedErrorMessage 
+            title="載入熱門活動失敗"
+            :message="error.message || '無法載入熱門體驗活動，請稍後再試'"
+            :show-refresh="true"
+            @refresh="refresh"
+          />
+        </div>
+
+        <!-- Content State -->
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div
             v-for="(card, index) in cards"
             :key="index"
             class="bg-white shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1 rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
-            :class="{ 'animate-pulse': pending }"
           >
             <div class="relative">
               <NuxtImg

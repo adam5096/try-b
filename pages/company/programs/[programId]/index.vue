@@ -2,6 +2,7 @@
 definePageMeta({
   name: 'company-program-detail',
   layout: 'company',
+  ssr: false, // CSR 模式
 });
 
 import { ref, computed } from 'vue';
@@ -18,7 +19,7 @@ import {
   View,
 } from '@element-plus/icons-vue';
 import type { ProgramDetailResponse } from '~/types/company/program';
-import { useProgramDetail } from '~/composables/api/company/useProgramDetail';
+import { useCompanyProgramDetail } from '~/composables/api/company/useCompanyProgramDetail';
 import { useCompanyProgramDetailStore } from '~/stores/company/useProgramDetailStore';
 import { parseIntroContent } from '~/utils/introParser';
 
@@ -36,7 +37,7 @@ if (!authStore.isLoggedIn) {
 
 // --- Data Fetching ---
 // 使用 e comp 7 API 取得計畫詳情
-const { data: programDetail, error: programError, pending: isLoading } = useProgramDetail(
+const { data: programDetail, error: programError, pending: isLoading } = useCompanyProgramDetail(
   computed(() => authStore.companyId),
   computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId)
 );

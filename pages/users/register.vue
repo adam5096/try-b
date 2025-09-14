@@ -2,6 +2,7 @@
 definePageMeta({
   name: 'user-register',
   layout: 'user',
+  ssr: false, // CSR 模式
 });
 
 import { ref } from 'vue';

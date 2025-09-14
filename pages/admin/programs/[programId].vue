@@ -204,7 +204,11 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ name: 'admin-single-program-info', layout: 'admin' as any })
+definePageMeta({ 
+  name: 'admin-single-program-info', 
+  layout: 'admin' as any,
+  ssr: false, // CSR 模式
+})
 
 import LocationPinIcon from '~/components/shared/LocationPinIcon.vue'
 import { ref, computed } from 'vue'

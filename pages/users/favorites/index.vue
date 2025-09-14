@@ -3,6 +3,7 @@ definePageMeta({
   name: 'user-favorites',
   layout: 'user',
   middleware: 'user-auth',
+  ssr: false, // CSR 模式
 });
 
 import { ref, computed } from 'vue';

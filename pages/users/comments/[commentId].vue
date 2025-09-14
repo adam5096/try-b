@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   name: 'user-comments-detail',
-  layout: 'user',
+  layout: 'user'
 });
 
 import { ref, computed } from 'vue';
