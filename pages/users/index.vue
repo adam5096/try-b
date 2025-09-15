@@ -274,15 +274,22 @@ onUnmounted(() => {
         <section class="mb-16">
           <h2 class="text-2xl font-bold mb-2 tracking-widest">熱門體驗計畫總覽</h2>
           <p class="text-gray-500 mb-8 tracking-wider">在這裡探索最受歡迎的體驗計畫，看看大家都喜歡哪些活動！</p>
-          <el-carousel
-            v-if="programsStore.popular && programsStore.popular.length > 0"
-            :interval="4000"
-            :height="isMobile ? '400px' : '300px'"
-            trigger="hover"
-            indicator-position="outside"
-            :class="['switch-blur', 'hot-carousel', { 'is-switching': isSwitching }]"
-            @change="onCarouselChange"
+          <div 
+            v-loading="programsStore.loading"
+            element-loading-text="載入熱門計畫中..."
+            element-loading-background="rgba(248, 249, 251, 0.8)"
+            :style="{ height: isMobile ? '400px' : '300px' }"
+            class="relative"
           >
+            <el-carousel
+              v-if="programsStore.popular && programsStore.popular.length > 0"
+              :interval="4000"
+              :height="isMobile ? '400px' : '300px'"
+              trigger="hover"
+              indicator-position="outside"
+              :class="['switch-blur', 'hot-carousel', { 'is-switching': isSwitching }]"
+              @change="onCarouselChange"
+            >
             <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
               <el-card :body-style="{ padding: '0px', height: '100%' }" class="h-full">
                 <div class="h-full flex flex-col sm:flex-row">
@@ -332,10 +339,16 @@ onUnmounted(() => {
               </el-card>
             </el-carousel-item>
           </el-carousel>
-          <div v-else>
-            <div v-if="programsStore.loading" class="bg-white rounded-lg p-4 h-[300px] flex items-center justify-center text-gray-500">載入中…</div>
-            <div v-else class="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
-              <p class="text-gray-500">暫無熱門計畫</p>
+            <div v-else class="w-full h-full">
+              <div v-if="programsStore.loading" 
+                v-loading="true"
+                element-loading-text="載入熱門計畫中..."
+                element-loading-background="rgba(248, 249, 251, 0.8)"
+                class="w-full h-full"
+              ></div>
+              <div v-else class="flex items-center justify-center h-full bg-gray-50 rounded-lg">
+                <p class="text-gray-500">暫無熱門計畫</p>
+              </div>
             </div>
           </div>
         </section>
