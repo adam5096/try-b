@@ -24,9 +24,8 @@ useSeoMeta({
 // --- 關鍵資源預載入 ---
 useHead({
   link: [
-    // 關鍵圖片預載入，提升 LCP 效能
-    { rel: 'preload', href: '/img/home/home-worker-bg.webp', as: 'image', type: 'image/webp' },
-    { rel: 'preload', href: '/img/home/hero-bg.webp', as: 'image', type: 'image/webp' },
+    // 僅預載入 LCP 關鍵圖片，避免不必要的預載入
+    { rel: 'preload', href: '/img/home/home-worker-bg.webp', as: 'image', type: 'image/webp', fetchpriority: 'high' },
   ],
   script: [
     {
@@ -193,6 +192,7 @@ const defaultCardImages = [
           preload
           priority
           fetchpriority="high"
+          loading="eager"
         />
       </div>
 
@@ -206,6 +206,7 @@ const defaultCardImages = [
           height="1280"
           priority
           fetchpriority="high"
+          loading="eager"
         />
       </div>
 
@@ -249,7 +250,7 @@ const defaultCardImages = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <img src="/img/home/who_is_the_user/who-is-the-user-01.webp" alt="學生與新鮮人" loading="lazy" />
+                <img src="/img/home/who_is_the_user/who-is-the-user-01.webp" alt="學生與新鮮人" width="200" height="200" loading="eager" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">學生與新鮮人</h3>
@@ -278,7 +279,7 @@ const defaultCardImages = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <img src="/img/home/who_is_the_user/who-is-the-user-02.webp" alt="兼職與轉職者" loading="lazy" />
+                <img src="/img/home/who_is_the_user/who-is-the-user-02.webp" alt="兼職與轉職者" width="200" height="200" loading="eager" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
@@ -307,7 +308,7 @@ const defaultCardImages = [
           >
             <div class="flex justify-center mb-4">
               <div>
-                <img src="/img/home/who_is_the_user/who-is-the-user-03.webp" alt="創意工作者、中小企業" loading="lazy" />
+                <img src="/img/home/who_is_the_user/who-is-the-user-03.webp" alt="創意工作者、中小企業" width="200" height="200" loading="eager" />
               </div>
             </div>
             <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">
@@ -395,7 +396,7 @@ const defaultCardImages = [
                 @error="erroredImage[index] = true"
                 loading="lazy"
               />
-              <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors">
+              <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors" aria-label="收藏此體驗活動">
                 <SharedHeartIcon class="w-8 h-8" />
               </button>
             </div>
@@ -440,7 +441,7 @@ const defaultCardImages = [
           <!-- Card 1 -->
           <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
             <div class="flex items-center mb-4">
-              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 周O萱" />
+              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 周O萱" width="64" height="64" />
               <div>
                 <p class="font-bold text-lg">周O萱</p>
                 <p class="text-sm text-gray-500">大學生 | 23歲</p>
@@ -463,7 +464,7 @@ const defaultCardImages = [
           <!-- Card 2 -->
           <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
             <div class="flex items-center mb-4">
-              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 林O偉" />
+              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 林O偉" width="64" height="64" />
               <div>
                 <p class="font-bold text-lg">林O偉</p>
                 <p class="text-sm text-gray-500">上班族 | 35歲</p>
@@ -486,7 +487,7 @@ const defaultCardImages = [
           <!-- Card 3 -->
           <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
             <div class="flex items-center mb-4">
-              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 張O伯" />
+              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 張O伯" width="64" height="64" />
               <div>
                 <p class="font-bold text-lg">張O伯</p>
                 <p class="text-sm text-gray-500">退休人士 | 68歲</p>
@@ -524,7 +525,7 @@ const defaultCardImages = [
         >
           <!-- Background Text -->
           <div class="absolute inset-0 z-0">
-            <img src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" loading="lazy" />
+            <img src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" width="800" height="247" loading="lazy" />
           </div>
           <div
             v-for="partner in partners"
@@ -561,10 +562,10 @@ const defaultCardImages = [
                 探索我們企業客戶的真實體驗和反饋，了解 TRY β 如何幫助企業和探索者創造價值
               </p>
               <div class="mt-8 flex items-center gap-4">
-                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors" aria-label="上一頁">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
                 </button>
-                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors" aria-label="下一頁">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </button>
               </div>
@@ -579,7 +580,7 @@ const defaultCardImages = [
                 <SharedBetaIcon class="w-full h-full object-contain" />
               </div>
               <div class="relative z-10 flex items-center gap-4">
-                <NuxtImg :src="testimonial.avatar" alt="Client Avatar" class="w-16 h-16 rounded-full object-cover" />
+                <NuxtImg :src="testimonial.avatar" alt="Client Avatar" class="w-16 h-16 rounded-full object-cover" width="64" height="64" />
                 <div>
                   <h3 class="font-bold text-lg">{{ testimonial.name }}</h3>
                   <p class="text-gray-500">{{ testimonial.title }}</p>
@@ -625,7 +626,7 @@ const defaultCardImages = [
                   <span class="font-bold text-primary-blue-light">結果：</span>
                   <span class="font-bold text-primary-blue-light">{{ story.result }}</span>
                 </p>
-                <a :href="story.link" class="mt-6 inline-flex items-center justify-center rounded-md bg-btn-yellow px-6 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white self-start">
+                <a :href="story.link" class="mt-6 inline-flex items-center justify-center rounded-md bg-btn-yellow px-6 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white self-start" aria-label="查看詳細案例 - {{ story.title }}">
                   <span>查看詳細案例</span>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -643,10 +644,10 @@ const defaultCardImages = [
                 探索我們如何幫助企業實現目標
               </p>
               <div class="mt-8 flex items-center gap-4">
-                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors" aria-label="上一頁">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
                 </button>
-                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors">
+                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors" aria-label="下一頁">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </button>
               </div>
@@ -661,7 +662,7 @@ const defaultCardImages = [
      <section class="relative overflow-hidden py-section-padding bg-brand-gray">
       <!-- Background Text -->
       <div class="absolute inset-0 z-0">
-            <img src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" loading="lazy" />
+            <img src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" width="800" height="247" loading="lazy" />
           </div>
       <!-- Foreground Content -->
       <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 text-center md:px-12">
