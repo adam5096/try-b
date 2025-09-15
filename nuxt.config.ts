@@ -64,10 +64,10 @@ export default defineNuxtConfig({
     '/plan': { prerender: true },    // 方案頁面 - 靜態內容
     '/roles': { prerender: true },   // 角色頁面 - 靜態內容
     
-    // 企業後台：SWR 快取策略，平衡效能與動態性
+    // 企業後台：CSR 模式，確保高互動性和即時性
     '/company/login': { prerender: true },     // 登入頁面 - 靜態
     '/company/register': { prerender: true },   // 註冊頁面 - 靜態
-    '/company/**': { swr: 3600 },               // 其他企業頁面 - 1小時快取
+    '/company/**': { prerender: false },         // 其他企業頁面 - CSR
     
     // 用戶頁面：CSR 模式，保持互動性
     '/users/login': { prerender: true },        // 登入頁面 - 靜態
