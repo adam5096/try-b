@@ -17,6 +17,7 @@ const programDetailStore = useUserProgramDetailStore();
 // 管理圖片載入狀態 - 改用 Element Plus Loading
 const imageLoadingState = reactive<Record<number, boolean>>({});
 const isClient = ref(false);
+const isMobile = ref(false);
 
 // 已移除開發環境用的 fallback programId，改以實際回傳的 Id 為準
 
@@ -51,9 +52,20 @@ const setImageLoadingTimeout = (programId: number) => {
   timeoutIds.set(programId, timeoutId);
 };
 
+// 響應式檢測函數
+const checkIsMobile = () => {
+  isMobile.value = window.innerWidth < 640; // sm breakpoint
+};
+
 // 頁面載入時直接獲取資料，不需要登入驗證
 onMounted(() => {
   isClient.value = true; // 恢復客戶端標記
+  
+  // 初始化響應式檢測
+  checkIsMobile();
+  
+  // 監聽視窗大小變化
+  window.addEventListener('resize', checkIsMobile);
   programsStore.fetchPrograms({ page: currentPage.value, limit: pageSize });
 });
 
@@ -244,6 +256,9 @@ onUnmounted(() => {
   });
   timeoutIds.clear();
   
+  // 移除視窗大小變化監聽器
+  window.removeEventListener('resize', checkIsMobile);
+  
   // 清理圖片載入狀態
   Object.keys(imageLoadingState).forEach(key => {
     delete imageLoadingState[key as any];
@@ -262,17 +277,18 @@ onUnmounted(() => {
           <el-carousel
             v-if="programsStore.popular && programsStore.popular.length > 0"
             :interval="4000"
-            height="300px"
+            :height="isMobile ? '400px' : '300px'"
             trigger="hover"
+            indicator-position="outside"
             :class="['switch-blur', 'hot-carousel', { 'is-switching': isSwitching }]"
             @change="onCarouselChange"
           >
             <el-carousel-item v-for="program in programsStore.popular" :key="program.Id">
               <el-card :body-style="{ padding: '0px', height: '100%' }" class="h-full">
-                <div class="h-full flex">
-                  <!-- Left: Image -->
+                <div class="h-full flex flex-col sm:flex-row">
+                  <!-- Image Section -->
                   <div 
-                    class="w-1/2 h-full"
+                    class="w-full sm:w-1/2 h-1/2 sm:h-full flex-shrink-0"
                     v-loading="isClient && isImageLoading(program.Id)"
                     element-loading-text="載入中..."
                     element-loading-background="rgba(0, 0, 0, 0.1)"
@@ -297,13 +313,17 @@ onUnmounted(() => {
                       @error="handleImageError(program.Id)"
                     />
                   </div>
-                  <!-- Right: Text -->
-                  <div class="w-1/2 h-full p-6 flex flex-col justify-center">
-                    <h3 class="text-2xl font-bold mb-2 tracking-widest">{{ program.Name || '未命名計畫' }}</h3>
-                    <p class="text-gray-600 mb-4 tracking-wider">{{ program.Industry?.Title || '產業未分類' }}</p>
+                  <!-- Text Section -->
+                  <div class="w-full sm:w-1/2 h-1/2 sm:h-full p-4 sm:p-6 flex flex-col justify-center bg-white">
+                    <h3 class="text-lg sm:text-2xl font-bold mb-2 tracking-widest line-clamp-2">
+                      {{ program.Name || '未命名計畫' }}
+                    </h3>
+                    <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 tracking-wider">
+                      {{ program.Industry?.Title || '產業未分類' }}
+                    </p>
                     <button 
                       @click="handleViewDetail(program)"
-                      class="w-max rounded-md bg-btn-yellow px-6 py-2 font-bold text-black transition-transform tracking-widest hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+                      class="w-full sm:w-max rounded-md bg-btn-yellow px-4 sm:px-6 py-2 font-bold text-black transition-transform tracking-widest hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
                     >
                       查看詳情
                     </button>
@@ -458,14 +478,58 @@ onUnmounted(() => {
 }
 
 /* 熱門輪播：強化指示器可視度 */
+.hot-carousel .el-carousel__indicator {
+  width: auto !important;
+  height: auto !important;
+}
+
 .hot-carousel .el-carousel__indicator button {
-  background-color: rgba(0,0,0,0.25);
+  background-color: rgba(0,0,0,0.25) !important;
+  border-radius: 50% !important;
+  width: 8px !important;
+  height: 8px !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-width: 8px !important;
+  min-height: 8px !important;
 }
+
 .hot-carousel .el-carousel__indicator.is-active button {
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(0,0,0,0.8) !important;
+  width: 10px !important;
+  height: 10px !important;
+  min-width: 10px !important;
+  min-height: 10px !important;
 }
+
 .hot-carousel .el-carousel__indicators:hover .el-carousel__indicator button {
-  background-color: rgba(0,0,0,0.35);
+  background-color: rgba(0,0,0,0.4) !important;
+}
+
+/* 小螢幕下的指示器優化 */
+@media (max-width: 639px) {
+  .hot-carousel .el-carousel__indicator button {
+    width: 6px !important;
+    height: 6px !important;
+    min-width: 6px !important;
+    min-height: 6px !important;
+    background-color: rgba(0,0,0,0.3) !important;
+  }
+  
+  .hot-carousel .el-carousel__indicator.is-active button {
+    width: 8px !important;
+    height: 8px !important;
+    min-width: 8px !important;
+    min-height: 8px !important;
+    background-color: rgba(0,0,0,0.7) !important;
+  }
+  
+  /* 調整指示器容器的間距 */
+  .hot-carousel .el-carousel__indicators {
+    gap: 6px !important;
+  }
 }
 
 /* 輪播切換時的模糊過場效果 */
@@ -499,5 +563,26 @@ onUnmounted(() => {
   -webkit-box-orient: vertical;
   line-clamp: 4;
   overflow: hidden;
+}
+
+/* 小螢幕下的輪播圖優化 */
+@media (max-width: 639px) {
+  .hot-carousel .el-card {
+    @apply shadow-lg;
+  }
+  
+  .hot-carousel .el-card .flex {
+    @apply gap-0;
+  }
+  
+  /* 確保文字區域有足夠的內邊距 */
+  .hot-carousel .p-4 {
+    @apply p-3;
+  }
+  
+  /* 確保按鈕在小螢幕下的可點擊性 */
+  .hot-carousel button {
+    @apply min-h-[44px] text-sm;
+  }
 }
 </style>
