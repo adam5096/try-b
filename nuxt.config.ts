@@ -100,6 +100,23 @@ export default defineNuxtConfig({
     externals: {
       inline: ['@popperjs/core']
     },
+    // Server imports 優化 - 自動導入 server utils
+    imports: {
+      dirs: ['server/utils/**']
+    },
+    // Prerender 優化 - 明確指定需要預渲染的路由
+    prerender: {
+      routes: [
+        '/',
+        '/404',
+        '/plan',
+        '/roles',
+        '/company/login',
+        '/company/register',
+        '/users/login',
+        '/users/register'
+      ]
+    },
     // Vercel 部署優化
     ...(process.env.VERCEL && {
       preset: 'vercel'
