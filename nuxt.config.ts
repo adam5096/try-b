@@ -2,6 +2,12 @@
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  // 開發環境禁用 HMR WebSocket，避免 bf-cache 問題
+  vite: {
+    server: {
+      hmr: process.env.NODE_ENV === 'development' ? false : true
+    }
+  },
   compatibilityDate: '2025-07-16',
   modules: [
     '@nuxtjs/tailwindcss',
@@ -93,6 +99,12 @@ export default defineNuxtConfig({
         headers: {
           'cache-control': 'public, max-age=31536000, immutable'
         }
+      },
+      // 字體檔案快取策略
+      '/_fonts/**': {
+        headers: {
+          'cache-control': 'public, max-age=31536000, immutable'
+        }
       }
     },
     // 修正 Vercel 產環 SSR 匯入 @popperjs/core 造成的 CJS/ESM 錯誤（placements not found）
@@ -156,8 +168,7 @@ export default defineNuxtConfig({
         { rel: 'dns-prefetch', href: 'https://trybeta.rocket-coding.com' },
         { rel: 'preconnect', href: 'https://trybeta.rocket-coding.com', crossorigin: '' },
 
-        // 關鍵圖片預載入，提升 LCP 效能（僅在首頁）
-        // 注意：這些圖片只在首頁使用，其他頁面會出現 preload 警告是正常的
+        // 關鍵圖片預載入已移至 pages/index.vue 中設定，避免全域預載入警告
 
         // Favicon 與多尺寸 PNG（使用 public/ 內的檔案）
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
