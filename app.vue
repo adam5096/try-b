@@ -19,6 +19,13 @@ useSeoMeta({
 
 <template>
   <div class="h-screen">
+    <!-- 路由導航進度條 -->
+    <NuxtLoadingIndicator 
+      color="#3B82F6"
+      error-color="#EF4444"
+      :height="6"
+    />
+    
     <div id="viewport-guard">
       <div class="guard-card">
         <div class="guard-title">視窗寬度過小</div>
