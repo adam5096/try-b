@@ -64,10 +64,10 @@ export default defineNuxtConfig({
     '/plan': { prerender: true },    // 方案頁面 - 靜態內容
     '/roles': { prerender: true },   // 角色頁面 - 靜態內容
     
-    // 企業後台：SWR 快取策略，平衡效能與動態性
+    // 企業後台：CSR 模式，確保高互動性和即時性
     '/company/login': { prerender: true },     // 登入頁面 - 靜態
     '/company/register': { prerender: true },   // 註冊頁面 - 靜態
-    '/company/**': { swr: 3600 },               // 其他企業頁面 - 1小時快取
+    '/company/**': { prerender: false },         // 其他企業頁面 - CSR
     
     // 用戶頁面：CSR 模式，保持互動性
     '/users/login': { prerender: true },        // 登入頁面 - 靜態
@@ -99,6 +99,23 @@ export default defineNuxtConfig({
     // 將其內嵌到 Nitro bundle，避免以外部模組形式被 Node 直接解析
     externals: {
       inline: ['@popperjs/core']
+    },
+    // Server imports 優化 - 自動導入 server utils
+    imports: {
+      dirs: ['server/utils/**']
+    },
+    // Prerender 優化 - 明確指定需要預渲染的路由
+    prerender: {
+      routes: [
+        '/',
+        '/404',
+        '/plan',
+        '/roles',
+        '/company/login',
+        '/company/register',
+        '/users/login',
+        '/users/register'
+      ]
     },
     // Vercel 部署優化
     ...(process.env.VERCEL && {
