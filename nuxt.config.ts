@@ -2,12 +2,6 @@
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  // 開發環境禁用 HMR WebSocket，避免 bf-cache 問題
-  vite: {
-    server: {
-      hmr: process.env.NODE_ENV === 'development' ? false : true
-    }
-  },
   compatibilityDate: '2025-07-16',
   modules: [
     '@nuxtjs/tailwindcss',
