@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
-import { useHomePopularFetch } from '~/composables/api/home/useHomePopularFetch'
+import { useHomePopularFetch } from '~/composables/api/home/useHomePopularFetch';
 
 definePageMeta({
 	name: 'index',
 	layout: 'main',
-})
+});
 
 // --- SEO Meta ---
 // 為首頁客製化 SEO 資訊，覆蓋 app.vue 中的全域設定
@@ -95,7 +95,7 @@ const quickLinks = ref([
 	{ name: '隱私權政策', link: '#' },
 	{ name: '服務條款', link: '#' },
 	{ name: '聯絡我們', link: '#' },
-])
+]);
 
 const testimonials = [
 	{
@@ -127,12 +127,12 @@ const handleResize = () => {
 
 onMounted(() => {
 	isClient.value = true;
-  window.addEventListener('resize', handleResize);
-})
+	window.addEventListener('resize', handleResize);
+});
 
 onBeforeUnmount(() => {
 	window.removeEventListener('resize', handleResize);
-})
+});
 
 const successStories = [
 	{
@@ -157,21 +157,21 @@ const stats = [
 ];
 
 // Home: Popular programs (前 3 筆，少於補空卡)
-const { cards, pending, error, refresh } = useHomePopularFetch()
+const { cards, pending, error, refresh } = useHomePopularFetch();
 
 // Image fallback on load error per-card
-const erroredImage = ref<Record<number, boolean>>({})
+const erroredImage = ref<Record<number, boolean>>({});
 function getCardImageSrc(index: number, coverUrl: string | null): string {
-	const fallback = defaultCardImages[index % defaultCardImages.length]
-  if (erroredImage.value[index]) return fallback
-  return coverUrl || fallback
+	const fallback = defaultCardImages[index % defaultCardImages.length];
+	if (erroredImage.value[index]) { return fallback; }
+	return coverUrl || fallback;
 }
 
 const defaultCardImages = [
 	'/img/home/plan/plan-01.webp',
 	'/img/home/plan/plan-02.webp',
 	'/img/home/plan/plan-03.webp',
-]
+];
 </script>
 
 <template>

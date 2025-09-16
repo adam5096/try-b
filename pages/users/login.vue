@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
-import { useUserAuthStore } from '~/stores/user/useAuthStore'
-import type { UserLoginData } from '~/types/users/user'
+import { ref, watchEffect } from 'vue';
+import { useUserAuthStore } from '~/stores/user/useAuthStore';
+import type { UserLoginData } from '~/types/users/user';
 
 definePageMeta({
 	name: 'user-login',
@@ -17,7 +17,7 @@ const router = useRouter();
 watchEffect(() => {
 	if (authStore.isLoggedIn) {
 		router.push({ name: 'user-landing' });
-  }
+	}
 });
 
 const loginData = ref<Omit<UserLoginData, 'password'>>({
@@ -29,36 +29,36 @@ const errorMessage = ref('');
 
 async function handleLogin() {
 	isLoading.value = true;
-  errorMessage.value = '';
-  let willRedirect = false;
-  try {
+	errorMessage.value = '';
+	let willRedirect = false;
+	try {
 		const loginPayload: UserLoginData = {
 			...loginData.value,
 			password: password.value,
 		};
 		await authStore.login(loginPayload);
 
-    // 登入成功後，立即導航到使用者首頁
-    const redirectPath = route.query.redirect as string;
+		// 登入成功後，立即導航到使用者首頁
+		const redirectPath = route.query.redirect as string;
 
-    // 安全檢查：只允許導向內部使用者頁面
-    if (redirectPath && redirectPath.startsWith('/users/')) {
+		// 安全檢查：只允許導向內部使用者頁面
+		if (redirectPath && redirectPath.startsWith('/users/')) {
 			willRedirect = true;
-      await navigateTo(redirectPath);
-    }
+			await navigateTo(redirectPath);
+		}
 		else {
 			willRedirect = true;
-      await navigateTo({ name: 'user-landing' });
-    }
+			await navigateTo({ name: 'user-landing' });
+		}
 	}
 	catch (error: any) {
 		errorMessage.value = error.message || '登入失敗，請檢查您的帳號和密碼。';
-  }
+	}
 	finally {
 		// 僅在未觸發路由跳轉時才關閉 loading
 		if (!willRedirect) {
 			isLoading.value = false;
-    }
+		}
 	}
 }
 </script>

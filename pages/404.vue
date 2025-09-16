@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { routes } from '~/utils/routes'
+import { routes } from '~/utils/routes';
 
 definePageMeta({
 	name: 'not-found',

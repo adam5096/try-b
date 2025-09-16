@@ -25,5 +25,5 @@ export type CompanyPlan = ActivePlan | NoPlan;
 
 // 型別守衛函數：檢查是否為有效方案
 export function isActivePlan(plan: CompanyPlan): plan is ActivePlan {
-	return 'plan_id' in plan
+	return 'plan_id' in plan;
 }

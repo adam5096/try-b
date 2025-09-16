@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { User } from '@element-plus/icons-vue'
+import { ref, computed, onMounted } from 'vue';
+import { User } from '@element-plus/icons-vue';
 import { useCompanyApplicants } from '~/composables/api/company/useCompanyApplicants';
 
 definePageMeta({
@@ -10,20 +10,20 @@ definePageMeta({
 });
 
 const route = useRoute();
-const authStore = useCompanyAuthStore()
+const authStore = useCompanyAuthStore();
 
 const { data: applicantsData, pending, error: applicantsError, refresh: refreshApplicants } = useCompanyApplicants(
 	computed(() => authStore.companyId),
 	computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId),
-)
+);
 
 // 監聽 companyId 和 programId 的變化，確保兩者都準備好後才發起請求
 watch(
 	[computed(() => authStore.companyId), computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId)],
 	([companyId, programId]) => {
 		if (companyId && programId) {
-			refreshApplicants()
-    }
+			refreshApplicants();
+		}
 	},
 	{ immediate: true },
 );
@@ -33,17 +33,17 @@ watch(applicantsError, (error) => {
 	if (error) {
 		// 申請者 API 請求失敗
 	}
-}, { immediate: true })
+}, { immediate: true });
 
 // 監聽資料變化
 
-const pendingApplicants = computed(() => applicantsData.value?.PendingApplications || [])
-const reviewedApplicants = computed(() => applicantsData.value?.ReviewedApplications || [])
-const totalApplicants = computed(() => applicantsData.value?.Statistics?.TotalApplicants || 0)
+const pendingApplicants = computed(() => applicantsData.value?.PendingApplications || []);
+const reviewedApplicants = computed(() => applicantsData.value?.ReviewedApplications || []);
+const totalApplicants = computed(() => applicantsData.value?.Statistics?.TotalApplicants || 0);
 const allApplicants = computed(() => [
 	...(applicantsData.value?.PendingApplications || []),
 	...(applicantsData.value?.ReviewedApplications || []),
-])
+]);
 
 const pendingSort = ref('date-desc');
 const approvedSort = ref('date-desc');

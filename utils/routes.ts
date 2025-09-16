@@ -1,6 +1,6 @@
-import { userRoutes } from './userRoutes'
-import { companyRoutes } from './companyRoutes'
-import { adminRoutes } from './adminRoutes'
+import { userRoutes } from './userRoutes';
+import { companyRoutes } from './companyRoutes';
+import { adminRoutes } from './adminRoutes';
 
 /**
  * 集中管理應用程式的路由。
@@ -22,4 +22,4 @@ export const routes = {
 	user: userRoutes,
 	company: companyRoutes,
 	admin: adminRoutes,
-} 
+};

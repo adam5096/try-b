@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { navigateTo } from '#app'
-import { adminRoutes } from '~/utils/adminRoutes'
+import { ref } from 'vue';
+import { navigateTo } from '#app';
+import { adminRoutes } from '~/utils/adminRoutes';
 
-const isSidebarOpen = ref(false)
-const activeIndex = ref(0)
+const isSidebarOpen = ref(false);
+const activeIndex = ref(0);
 const navItems = [
 	{ key: 'dashboard', label: '儀表板' },
 	{ key: 'programs', label: '體驗計畫' },
 	{ key: 'popular', label: '熱門體驗' },
 	{ key: 'comments', label: '評價管理' },
 	{ key: 'logout', label: '登出' },
-]
+];
 
 const handleNav = (item: { key: string; label: string }, idx: number) => {
-	activeIndex.value = idx
-  if (item.key === 'programs') {
-		navigateTo(adminRoutes.programs())
-  }
+	activeIndex.value = idx;
+	if (item.key === 'programs') {
+		navigateTo(adminRoutes.programs());
+	}
 	if (item.key === 'popular') {
-		navigateTo(adminRoutes.trends())
-  }
+		navigateTo(adminRoutes.trends());
+	}
 	if (item.key === 'comments') {
-		navigateTo(adminRoutes.comments())
-  }
+		navigateTo(adminRoutes.comments());
+	}
 	if (item.key === 'dashboard') {
-		navigateTo(adminRoutes.dashboard())
-  }
-}
+		navigateTo(adminRoutes.dashboard());
+	}
+};
 </script>
 
 <template>

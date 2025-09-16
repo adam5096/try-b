@@ -1,10 +1,10 @@
 export default defineNuxtPlugin(() => {
-	if (!import.meta.client) return;
+	if (!import.meta.client) { return; }
 
-  const config = useRuntimeConfig();
+	const config = useRuntimeConfig();
 
-  // 檢查是否啟用效能預算監控
-  if (!config.public.enablePerformanceBudget) {
+	// 檢查是否啟用效能預算監控
+	if (!config.public.enablePerformanceBudget) {
 		return;
 	}
 
@@ -28,48 +28,48 @@ export default defineNuxtPlugin(() => {
 						// LCP
 						const lcpObserver = new PerformanceObserver((list) => {
 							const entries = list.getEntries();
-              const lastEntry = entries[entries.length - 1];
-              vitals.LCP = lastEntry.startTime;
-            })
-            lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+							const lastEntry = entries[entries.length - 1];
+							vitals.LCP = lastEntry.startTime;
+						});
+						lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
-            // FCP
-            const fcpObserver = new PerformanceObserver((list) => {
+						// FCP
+						const fcpObserver = new PerformanceObserver((list) => {
 							const entries = list.getEntries();
-              vitals.FCP = entries[0].startTime;
-            })
-            fcpObserver.observe({ entryTypes: ['paint'] });
+							vitals.FCP = entries[0].startTime;
+						});
+						fcpObserver.observe({ entryTypes: ['paint'] });
 
-            // TTFB
-            const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-            if (navigation) {
+						// TTFB
+						const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+						if (navigation) {
 							vitals.TTFB = navigation.responseStart - navigation.requestStart;
-            }
+						}
 					}
 					catch (error) {
 						console.warn('Performance Observer not supported:', error);
-          }
+					}
 				}
 
 				// 檢查效能預算
 				const webVitalsReport = performanceMonitor.checkWebVitals(vitals);
-        const resourceReport = performanceMonitor.checkResourceSizes();
+				const resourceReport = performanceMonitor.checkResourceSizes();
 
-        // 生成完整報告
-        const report = performanceMonitor.generateReport();
+				// 生成完整報告
+				const report = performanceMonitor.generateReport();
 
-        // 發送報告
-        performanceMonitor.sendReport(report);
+				// 發送報告
+				performanceMonitor.sendReport(report);
 
-        // 在開發環境中顯示報告
-        if (process.env.NODE_ENV === 'development') {
+				// 在開發環境中顯示報告
+				if (process.env.NODE_ENV === 'development') {
 					console.group('🚀 Performance Budget Report');
-          console.table(report.webVitals);
-          console.table(report.resources);
-          console.log('📊 Summary:', report.summary);
-          console.groupEnd();
-        }
+					console.table(report.webVitals);
+					console.table(report.resources);
+					console.log('📊 Summary:', report.summary);
+					console.groupEnd();
+				}
 			}, 2000); // 等待 2 秒確保所有資源載入完成
-    })
-  });
-})
+		});
+	});
+});

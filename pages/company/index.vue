@@ -5,8 +5,9 @@ import {
 	Location,
 	User,
 } from '@element-plus/icons-vue';
-import { computed } from 'vue'
-import { useCompanyProgramStore } from '~/stores/company/useProgramStore'
+import { computed } from 'vue';
+import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
+import type { Program } from '~/types/company/program';
 
 definePageMeta({
 	layout: 'company',
@@ -30,9 +31,9 @@ if (import.meta.server) {
 }
 
 // 依狀態回傳徽章樣式
-const getStatusBadgeClass = (program: any) => {
+const getStatusBadgeClass = (program: Program) => {
 	const status = getProgramStatus(program);
-  return status === '未發布'
+	return status === '未發布'
 		? 'bg-yellow-300 text-black'
 		: 'bg-primary-blue-light text-white';
 };
@@ -43,54 +44,54 @@ const handlePageChange = (page: number) => {
 	programStore.setPage(page);
 };
 
-const getProgramStatus = (program: any) => {
+const getProgramStatus = (program: Program) => {
 	const now = new Date();
-  const publishStart = new Date(program.PublishStartDate);
-  const publishEnd = new Date(program.PublishEndDate);
-  const programStart = new Date(program.ProgramStartDate);
-  const programEnd = new Date(program.ProgramEndDate);
+	const publishStart = new Date(program.PublishStartDate);
+	const publishEnd = new Date(program.PublishEndDate);
+	const programStart = new Date(program.ProgramStartDate);
+	const programEnd = new Date(program.ProgramEndDate);
 
-  if (now < publishStart) return '未發布';
-  if (now >= publishStart && now <= publishEnd) return '已發佈';
-  if (now > publishEnd && now < programStart) return '已截止';
-  if (now >= programStart && now <= programEnd) return '進行中';
-  if (now > programEnd) return '已結束';
+	if (now < publishStart) { return '未發布'; }
+	if (now >= publishStart && now <= publishEnd) { return '已發佈'; }
+	if (now > publishEnd && now < programStart) { return '已截止'; }
+	if (now >= programStart && now <= programEnd) { return '進行中'; }
+	if (now > programEnd) { return '已結束'; }
 
-  return '未知';
+	return '未知';
 };
 
 // 與使用者端一致：格式化日期顯示
 const formatProgramDate = (program: any) => {
 	if (!program?.ProgramStartDate || !program?.ProgramEndDate) {
 		return '日期未定';
-  }
+	}
 
 	try {
 		const startDate = new Date(program.ProgramStartDate);
-    const endDate = new Date(program.ProgramEndDate);
+		const endDate = new Date(program.ProgramEndDate);
 
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+		if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
 			return '日期格式錯誤';
-    }
+		}
 
 		const formatDate = (date: Date) => {
 			const yyyy = date.getFullYear();
-      const mm = String(date.getMonth() + 1).padStart(2, '0');
-      const dd = String(date.getDate()).padStart(2, '0');
-      return `${yyyy}/${mm}/${dd}`;
-    };
+			const mm = String(date.getMonth() + 1).padStart(2, '0');
+			const dd = String(date.getDate()).padStart(2, '0');
+			return `${yyyy}/${mm}/${dd}`;
+		};
 
 		return `${formatDate(startDate)} - ${formatDate(endDate)}`;
-  }
+	}
 	catch {
 		return '日期格式錯誤';
-  }
+	}
 };
 
 // 將介紹文字正規化，避免 SSR/C SR 因換行或空白差異造成 hydration mismatch
 const formatIntroText = (raw: any): string => {
 	const text = typeof raw === 'string' ? raw : '';
-  return text
+	return text
 		.replace(/\r\n|\r|\n/g, ' ') // 移除換行
 		.replace(/\s+/g, ' ') // 合併多餘空白
 		.trim();
@@ -99,8 +100,8 @@ const formatIntroText = (raw: any): string => {
 // 查看詳情（與使用者端交互一致，改導到公司端詳情頁）
 const handleViewDetail = async (program: any) => {
 	const id = program?.Id;
-  if (id === undefined || id === null || id === '') return;
-  await navigateTo(`/company/programs/${id}`);
+	if (id === undefined || id === null || id === '') { return; }
+	await navigateTo(`/company/programs/${id}`);
 };
 </script>
 

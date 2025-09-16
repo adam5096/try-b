@@ -286,7 +286,7 @@
 </template>
 
 <script setup lang="ts">
-import { Calendar, User, StarFilled, TrendCharts, ArrowRight } from '@element-plus/icons-vue'
+import { Calendar, User, StarFilled, TrendCharts, ArrowRight } from '@element-plus/icons-vue';
 import { navigateTo } from '#app';
 import { adminRoutes } from '~/utils/adminRoutes';
 
@@ -300,7 +300,7 @@ const metrics = [
 	{ key: 'activeUsers', label: '活躍用戶', value: '1,842', icon: 'users', delta: '8% 增長', note: '相比上個月' },
 	{ key: 'newReviews', label: '新增評價', value: '356', icon: 'star', delta: '15% 增長', note: '相比上個月' },
 	{ key: 'avgRating', label: '平均評分', value: '4.7', icon: 'chart', delta: '0.2 增長', note: '相比上個月' },
-]
+];
 
 const popularPrograms = [
 	{ id: 1, title: '企業參訪體驗計畫', views: 42, favorites: 42, applicants: 42 },
@@ -309,9 +309,9 @@ const popularPrograms = [
 	{ id: 4, title: '數位行銷實戰', views: 42, favorites: 42, applicants: 42 },
 	{ id: 5, title: '創業工作坊', views: 42, favorites: 42, applicants: 42 },
 	{ id: 6, title: '數位行銷實戰', views: 42, favorites: 42, applicants: 42 },
-]
+];
 
 const goToAllPopular = () => {
-	navigateTo(adminRoutes.trends())
-}
+	navigateTo(adminRoutes.trends());
+};
 </script>

@@ -7,11 +7,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
 	}
 
 	const authStore = useCompanyAuthStore();
-  const publicPages = ['/company/login', '/company/register'];
+	const publicPages = ['/company/login', '/company/register'];
 
-  // Allow pages explicitly marked as public via page meta
-  // Usage on page: definePageMeta({ public: true }) or { auth: false }
-  if (to.meta?.public === true || to.meta?.auth === false) {
+	// Allow pages explicitly marked as public via page meta
+	// Usage on page: definePageMeta({ public: true }) or { auth: false }
+	if (to.meta?.public === true || to.meta?.auth === false) {
 		return;
 	}
 
@@ -19,7 +19,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 	// redirect them to the company dashboard.
 	if (authStore.isLoggedIn && publicPages.includes(to.path)) {
 		return navigateTo('/company');
-  }
+	}
 
 	// If the user is navigating to a public page and is not logged in, do nothing.
 	if (publicPages.includes(to.path)) {
@@ -31,9 +31,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
 	// For subsequent client-side navigations, it performs a fresh check.
 	await authStore.fetchUser();
 
-  // If, after attempting to fetch the user, they are not logged in,
-  // redirect them to the login page.
-  if (!authStore.isLoggedIn) {
+	// If, after attempting to fetch the user, they are not logged in,
+	// redirect them to the login page.
+	if (!authStore.isLoggedIn) {
 		// Using `return navigateTo(...)` is the correct way to redirect in Nuxt middleware.
 		return navigateTo({
 			path: '/company/login',
@@ -42,5 +42,5 @@ export default defineNuxtRouteMiddleware(async (to) => {
 				redirect: to.fullPath,
 			},
 		});
-  }
+	}
 });

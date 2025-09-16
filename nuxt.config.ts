@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+// eslint-disable-next-line no-undef
 export default defineNuxtConfig({
 
 	modules: [
@@ -134,10 +135,10 @@ export default defineNuxtConfig({
 	eslint: {
 		config: {
 			stylistic: {
-				semi: true,
-				// quotes: "single",
+				semi: true, // 使用分號
+				quotes: 'single', // 使用單引號
 				commaDangle: 'always-multiline',
-				indent: 'tab',
+				indent: 'tab', // 使用 Tab 縮排
 			},
 		},
 	},

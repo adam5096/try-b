@@ -1,4 +1,4 @@
-import type { CompanyUser } from './company'
+// import type { CompanyUser } from './company';
 
 // Based on the API spec for user registration and login
 export interface User {

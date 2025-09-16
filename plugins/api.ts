@@ -5,7 +5,7 @@ import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 export default defineNuxtPlugin((nuxtApp) => {
 	const config = useRuntimeConfig();
 
-  const api = ofetch.create({
+	const api = ofetch.create({
 		// baseURL: config.public.apiBase,
 
 		onRequest({ request, options }) {
@@ -15,7 +15,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 					...options.headers,
 					'X-Request-ID': crypto.randomUUID(),
 				} as any;
-      }
+			}
 		},
 
 		onResponseError({ request, response }) {
@@ -24,33 +24,33 @@ export default defineNuxtPlugin((nuxtApp) => {
 				url: request,
 				status: response.status,
 				statusText: response.statusText,
-			})
+			});
 
-      // We only want to handle 401 errors on the client side.
-      if (import.meta.server || response.status !== 401) {
+			// We only want to handle 401 errors on the client side.
+			if (import.meta.server || response.status !== 401) {
 				return;
 			}
 
 			const router = useRouter();
-      const currentPath = router.currentRoute.value.path;
+			const currentPath = router.currentRoute.value.path;
 
-      // Determine which store and login route to use based on the API request path
-      if (String(request).startsWith('/api/user')) {
+			// Determine which store and login route to use based on the API request path
+			if (String(request).startsWith('/api/user')) {
 				const userAuthStore = useUserAuthStore();
-        userAuthStore.user = null; // Clear user state
-        const loginRoute = '/users/login';
-        if (currentPath !== loginRoute) {
+				userAuthStore.user = null; // Clear user state
+				const loginRoute = '/users/login';
+				if (currentPath !== loginRoute) {
 					// Add a redirect query to send the user back after login
 					navigateTo({ path: loginRoute, query: { redirect: currentPath } });
-        }
+				}
 			}
 			else if (String(request).startsWith('/api/company')) {
 				const companyAuthStore = useCompanyAuthStore();
-        companyAuthStore.user = null; // Clear company user state
-        const loginRoute = '/company/login';
-        if (currentPath !== loginRoute) {
+				companyAuthStore.user = null; // Clear company user state
+				const loginRoute = '/company/login';
+				if (currentPath !== loginRoute) {
 					navigateTo({ path: loginRoute, query: { redirect: currentPath } });
-        }
+				}
 			}
 		},
 
@@ -59,17 +59,17 @@ export default defineNuxtPlugin((nuxtApp) => {
 			console.error('Network Error:', {
 				url: request,
 				error: error.message,
-			})
+			});
 
-      if (import.meta.client) {
+			if (import.meta.client) {
 				// 檢查是否為網路連線問題
 				if (!navigator.onLine) {
 					console.warn('User is offline');
-        }
+				}
 			}
 		},
 	});
 
-  // Provide the typed api client to the nuxt app
-  nuxtApp.provide('api', api);
-})
+	// Provide the typed api client to the nuxt app
+	nuxtApp.provide('api', api);
+});

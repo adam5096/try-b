@@ -67,7 +67,7 @@
 							體驗計畫進行時間
 						</dt>
 						<dd class="mt-0.5 text-gray-900">
-							{{ program.runFrom }} 至 {{ program.runTo }}　{{ program.durationNote }}
+							{{ program.runFrom }} 至 {{ program.runTo }} {{ program.durationNote }}
 						</dd>
 					</div>
 				</dl>
@@ -498,20 +498,20 @@ const program: ProgramDetails = {
 			note: '確認內容為系統誤判，無不雅、辱罵、攻擊、猥褻等字眼，標記為已通過。',
 		},
 	],
-}
+};
 
-const reviewResult = ref<'approved' | 'rejected'>('approved')
-const reviewNote = ref('')
+const reviewResult = ref<'approved' | 'rejected'>('approved');
+const reviewNote = ref('');
 
 // 解析 intro 內容
 const parsedIntro = computed(() => {
-	if (!program.intro) return null;
-  return parseIntroContent(program.intro);
-})
+	if (!program.intro) { return null; }
+	return parseIntroContent(program.intro);
+});
 
 const onSubmitReview = () => {
 	// 僅示意 UI 提交行為；之後可串接 API
-}
+};
 </script>
 
 <style scoped>

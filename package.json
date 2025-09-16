@@ -9,7 +9,13 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "lint:dev": "eslint . --config eslint.config.dev.mjs",
+    "lint:prod": "eslint . --config eslint.config.prod.mjs",
+    "lint:check": "eslint . --max-warnings 0",
+    "lint:errors-only": "eslint . --quiet",
+    "lint:warnings": "eslint . --max-warnings 50",
+    "type-check": "nuxt typecheck"
   },
   "dependencies": {
     "@element-plus/icons-vue": ">=0.2.6",

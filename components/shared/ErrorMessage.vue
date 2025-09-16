@@ -78,9 +78,7 @@ interface Props {
 }
 
 interface Emits {
-	(e: 'refresh'): void; // 重新整理事件
-	(e: 'back'): void; // 返回事件
-	(e: 'contact'): void; // 聯絡客服事件
+	(e: 'refresh' | 'back' | 'contact'): void; // 事件類型
 }
 
 const props = withDefaults(defineProps<Props>(), {

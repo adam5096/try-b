@@ -8,7 +8,7 @@ definePageMeta({
 });
 
 // 假資料：公司資訊（待串 API）
-const companyName = ref('某某某科技資訊公司')
+const companyName = ref('某某某科技資訊公司');
 const companyIntro = ref(
 	'我們是一家專注於數位產品設計與平台研發的公司，致力於以使用者為中心打造穩定、友善且可擴展的產品。團隊成員來自各領域，包含前端、後端與資料工程，鼓勵跨域合作與持續學習。',
 );
@@ -17,7 +17,7 @@ const lifeBenefits = ref([
 	'每年教育訓練與技術分享',
 	'彈性工時與遠端工作制度',
 	'員工旅遊與定期團建活動',
-])
+]);
 
 // 右欄公司資訊 / 聯繫資訊（佔位資料）
 const companyInfo = ref([
@@ -25,12 +25,12 @@ const companyInfo = ref([
 	{ label: '產業別', value: '軟體／SaaS' },
 	{ label: '員工人數', value: '80-120 人' },
 	{ label: '公司地址', value: '台北市信義區' },
-])
+]);
 const contactInfo = ref([
 	{ label: '網站', value: 'https://example.com' },
 	{ label: 'Email', value: 'hr@example.com' },
 	{ label: '電話', value: '(02) 1234-5678' },
-])
+]);
 
 // 環境照片（水平滑動的佔位版）
 const envPhotos = ref(

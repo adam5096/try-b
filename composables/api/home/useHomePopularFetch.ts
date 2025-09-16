@@ -1,6 +1,6 @@
-import { computed } from 'vue'
-import dayjs from 'dayjs'
-import { extractIntroSummaryForCard } from '~/utils/introParser'
+import { computed } from 'vue';
+import dayjs from 'dayjs';
+import { extractIntroSummaryForCard } from '~/utils/introParser';
 
 type PopularProgram = {
 	id: number;
@@ -34,10 +34,10 @@ export type HomeHighScoreCard = {
 function formatDateToYmd(dateStr: string): string {
 	// 使用全域擴充後的 dayjs；若失敗回退簡易格式
 	try {
-		return dayjs(dateStr).utc().format('YYYY/MM/DD')
-  }
+		return dayjs(dateStr).utc().format('YYYY/MM/DD');
+	}
 	catch {}
-	return (dateStr || '').slice(0, 10).replaceAll('-', '/')
+	return (dateStr || '').slice(0, 10).replaceAll('-', '/');
 }
 
 export function useHomePopularFetch() {
@@ -51,14 +51,14 @@ export function useHomePopularFetch() {
 			default: () => ({ PopularPrograms: [] }),
 			// 確保 SSR 和客戶端一致性
 			getCachedData: (key) => {
-				const nuxtApp = useNuxtApp()
-        return (nuxtApp.ssrContext?.cache as any)?.[key] ?? (nuxtApp.payload.data as any)[key]
-      },
+				const nuxtApp = useNuxtApp();
+				return (nuxtApp.ssrContext?.cache as any)?.[key] ?? (nuxtApp.payload.data as any)[key];
+			},
 			transform: (data: HomePageResponse) => {
 				// 確保資料格式正確，防止 hydration mismatch
 				if (!data || typeof data !== 'object') {
-					return { PopularPrograms: [] }
-        }
+					return { PopularPrograms: [] };
+				}
 				return {
 					PopularPrograms: Array.isArray(data.PopularPrograms)
 						? data.PopularPrograms
@@ -69,8 +69,8 @@ export function useHomePopularFetch() {
 	);
 
 	const cards = computed<HomeHighScoreCard[]>(() => {
-		const source = data.value?.PopularPrograms ?? []
-    const mapped = source.slice(0, 3).map<HomeHighScoreCard>(x => ({
+		const source = data.value?.PopularPrograms ?? [];
+		const mapped = source.slice(0, 3).map<HomeHighScoreCard>(x => ({
 			id: x.id ?? null,
 			title: x.name ?? '—',
 			description: extractIntroSummaryForCard(x.intro || ''),
@@ -83,16 +83,16 @@ export function useHomePopularFetch() {
 			appliedCount: typeof x.applied_count === 'number' ? String(x.applied_count) : '—',
 			daysLeft: typeof x.days_left === 'number' ? String(x.days_left) : '—',
 			coverUrl: (() => {
-				const raw = (x.img_path || '').toString().trim()
-        if (!raw) return null // 空值→用預設圖
-        const isHttp = /^https?:\/\//i.test(raw)
-        const isLocal = raw.startsWith('/')
-        return (isHttp || isLocal) ? raw : null // 非 http/本地路徑（如 "~/Images"）→ 視為無效
-      })(),
-		}))
+				const raw = (x.img_path || '').toString().trim();
+				if (!raw) { return null; } // 空值→用預設圖
+				const isHttp = /^https?:\/\//i.test(raw);
+				const isLocal = raw.startsWith('/');
+				return (isHttp || isLocal) ? raw : null; // 非 http/本地路徑（如 "~/Images"）→ 視為無效
+			})(),
+		}));
 
-    // 少於 3 筆時補空卡
-    const placeholders: HomeHighScoreCard[] = Array.from({ length: Math.max(0, 3 - mapped.length) }).map(() => ({
+		// 少於 3 筆時補空卡
+		const placeholders: HomeHighScoreCard[] = Array.from({ length: Math.max(0, 3 - mapped.length) }).map(() => ({
 			id: null,
 			title: '—',
 			description: '—',
@@ -102,12 +102,12 @@ export function useHomePopularFetch() {
 			appliedCount: '—',
 			daysLeft: '—',
 			coverUrl: null,
-		}))
+		}));
 
-    return [...mapped, ...placeholders].slice(0, 3)
-  });
+		return [...mapped, ...placeholders].slice(0, 3);
+	});
 
-  return {
+	return {
 		data,
 		cards,
 		pending,

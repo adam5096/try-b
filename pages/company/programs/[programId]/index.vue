@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed } from 'vue';
 import {
 	User,
 	Briefcase,
@@ -12,16 +12,16 @@ import {
 	DataLine,
 	View,
 } from '@element-plus/icons-vue';
-import type { ProgramDetailResponse } from '~/types/company/program'
-import { useCompanyProgramDetail } from '~/composables/api/company/useCompanyProgramDetail'
-import { useCompanyProgramDetailStore } from '~/stores/company/useProgramDetailStore'
-import { parseIntroContent } from '~/utils/introParser'
+import type { ProgramDetailResponse } from '~/types/company/program';
+import { useCompanyProgramDetail } from '~/composables/api/company/useCompanyProgramDetail';
+import { useCompanyProgramDetailStore } from '~/stores/company/useProgramDetailStore';
+import { parseIntroContent } from '~/utils/introParser';
 
 definePageMeta({
 	name: 'company-program-detail',
 	layout: 'company',
 	ssr: false, // CSR 模式
-})
+});
 
 const route = useRoute();
 const authStore = useCompanyAuthStore();
@@ -32,7 +32,7 @@ if (!authStore.isLoggedIn) {
 	throw createError({
 		statusCode: 401,
 		statusMessage: '請先登入企業帳號',
-	})
+	});
 }
 
 // --- Data Fetching ---
@@ -40,19 +40,19 @@ if (!authStore.isLoggedIn) {
 const { data: programDetail, error: programError, pending: isLoading } = useCompanyProgramDetail(
 	computed(() => authStore.companyId),
 	computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId),
-)
+);
 
 // 監聽 API 回應並更新 Store
 watch(programDetail, (newData) => {
 	if (newData) {
 		programDetailStore.setProgramDetail(newData);
-  }
+	}
 }, { immediate: true });
 
 watch(programError, (newError) => {
 	if (newError) {
 		programDetailStore.setError(newError.message || '載入計畫詳情失敗');
-  }
+	}
 }, { immediate: true });
 
 watch(isLoading, (loading) => {
@@ -65,9 +65,9 @@ const programStats = computed(() => programDetailStore.programStats);
 
 // 解析 intro 內容
 const parsedIntro = computed(() => {
-	if (!program.value?.intro) return null;
-  return parseIntroContent(program.value.intro);
-})
+	if (!program.value?.intro) { return null; }
+	return parseIntroContent(program.value.intro);
+});
 
 // 申請統計資料 (從 e comp 7 API 回應中的 Statistics 物件取得)
 const totalApplicants = computed(() => programStats.value?.totalApplicants ?? 0);

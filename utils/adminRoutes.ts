@@ -22,4 +22,4 @@ export const adminRoutes = {
 		params: { commentId },
 	}),
 	dashboard: () => ({ name: 'admin-dashboard' }),
-}
+};

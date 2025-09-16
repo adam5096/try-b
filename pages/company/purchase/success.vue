@@ -94,23 +94,23 @@ definePageMeta({
 	name: 'company-purchase-success',
 });
 
-const router = useRouter()
-const planStore = useCompanyPlanStore()
+const router = useRouter();
+const planStore = useCompanyPlanStore();
 
 // 進入成功頁：先讓 Header 顯示骨架，取得資料後再標記為已付款
 onMounted(async () => {
 	try {
-		const minDelay = new Promise(resolve => setTimeout(resolve, 800))
-    // 觸發一次取資料，確保 Header 顯示 loading
-    await Promise.allSettled([planStore.fetchCurrentPlan(), minDelay])
-  }
+		const minDelay = new Promise(resolve => setTimeout(resolve, 800));
+		// 觸發一次取資料，確保 Header 顯示 loading
+		await Promise.allSettled([planStore.fetchCurrentPlan(), minDelay]);
+	}
 	finally {
-		planStore.markPaid()
-  }
-})
+		planStore.markPaid();
+	}
+});
 
 function goToPlans() {
-	router.push(r.landing())
+	router.push(r.landing());
 }
 </script>
 

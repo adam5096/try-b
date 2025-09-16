@@ -1,8 +1,8 @@
 <script setup lang="ts">
-const router = useRouter()
+const router = useRouter();
 
 function goToLogin() {
-	router.push({ name: 'companyLogin' })
+	router.push({ name: 'companyLogin' });
 }
 </script>
 

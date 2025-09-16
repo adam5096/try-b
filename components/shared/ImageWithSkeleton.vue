@@ -55,14 +55,16 @@ const props = withDefaults(defineProps<Props>(), {
 
 const isLoaded = ref(false);
 const normalizeUrl = (u?: string | null) => {
-	if (!u) return u as any;
-  const httpsUrl = u.trim().replace(/^http:\/\//i, 'https://');
-  try {
+	if (!u) {
+		return u as any;
+	}
+	const httpsUrl = u.trim().replace(/^http:\/\//i, 'https://');
+	try {
 		return encodeURI(httpsUrl);
-  }
+	}
 	catch {
 		return httpsUrl.replace(/\s/g, '%20');
-  }
+	}
 };
 const currentSrc = ref<string>(normalizeUrl(props.src) || props.fallbackSrc);
 const imgEl = ref<HTMLImageElement | null>(null);
@@ -72,17 +74,17 @@ const skeletonStyle = computed(() => {
 	// 只處理常見的 h-48 / h-full；其餘交給外層控制
 	if (props.skeletonHeightClass === 'h-full') {
 		return 'width: 100%; height: 100%';
-  }
+	}
 	return 'width: 100%; height: 12rem'; // h-48 約 12rem
-})
+});
 
 watch(
 	() => props.src,
 	(val) => {
 		// 當來源改變時，重置為未載入並重新指向新來源
 		isLoaded.value = false;
-    currentSrc.value = normalizeUrl(val) || props.fallbackSrc;
-  },
+		currentSrc.value = normalizeUrl(val) || props.fallbackSrc;
+	},
 );
 
 const handleLoad = () => {
@@ -93,19 +95,19 @@ const handleError = () => {
 	// 若原圖失敗，嘗試切換到 fallback，再等待 onload 觸發
 	if (currentSrc.value !== props.fallbackSrc) {
 		currentSrc.value = props.fallbackSrc;
-  }
+	}
 	else {
 		// fallback 也失敗時，直接顯示占位並結束 loading
 		isLoaded.value = true;
-  }
+	}
 };
 
 // 若圖片已在快取中（complete=true 且 naturalWidth>0），掛載後立即隱藏骨架
 onMounted(async () => {
 	await nextTick();
-  const el = imgEl.value as HTMLImageElement | null;
-  if (el && el.complete && el.naturalWidth > 0) {
+	const el = imgEl.value as HTMLImageElement | null;
+	if (el && el.complete && el.naturalWidth > 0) {
 		isLoaded.value = true;
-  }
+	}
 });
 </script>

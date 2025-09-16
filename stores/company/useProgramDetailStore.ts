@@ -5,16 +5,16 @@ import type { ProgramDetailResponse } from '~/types/company/program';
 export const useCompanyProgramDetailStore = defineStore('company-program-detail', () => {
 	// State
 	const programDetail = ref<ProgramDetailResponse | null>(null);
-  const isLoading = ref(false);
-  const error = ref<string | null>(null);
+	const isLoading = ref(false);
+	const error = ref<string | null>(null);
 
-  // Getters
-  const hasProgramDetail = computed(() => !!programDetail.value);
+	// Getters
+	const hasProgramDetail = computed(() => !!programDetail.value);
 
-  const programStats = computed(() => {
-		if (!programDetail.value) return null;
+	const programStats = computed(() => {
+		if (!programDetail.value) { return null; }
 
-    return {
+		return {
 			totalViews: programDetail.value.Views?.TotalViews ?? 0,
 			weeklyViews: programDetail.value.Views?.WeeklyViews ?? 0,
 			dailyViews: programDetail.value.Views?.DailyViews ?? 0,
@@ -29,10 +29,10 @@ export const useCompanyProgramDetailStore = defineStore('company-program-detail'
 		};
 	});
 
-  const programInfo = computed(() => {
-		if (!programDetail.value) return null;
+	const programInfo = computed(() => {
+		if (!programDetail.value) { return null; }
 
-    return {
+		return {
 			id: programDetail.value.Id,
 			name: programDetail.value.Name,
 			intro: programDetail.value.Intro,
@@ -63,26 +63,26 @@ export const useCompanyProgramDetailStore = defineStore('company-program-detail'
 		};
 	});
 
-  // Actions
-  const setProgramDetail = (data: ProgramDetailResponse | null) => {
+	// Actions
+	const setProgramDetail = (data: ProgramDetailResponse | null) => {
 		programDetail.value = data;
-    error.value = null;
-  };
+		error.value = null;
+	};
 
 	const setLoading = (loading: boolean) => {
 		isLoading.value = loading;
-  };
+	};
 
 	const setError = (err: string | null) => {
 		error.value = err;
-    programDetail.value = null;
-  };
+		programDetail.value = null;
+	};
 
 	const clearProgramDetail = () => {
 		programDetail.value = null;
-    error.value = null;
-    isLoading.value = false;
-  };
+		error.value = null;
+		isLoading.value = false;
+	};
 
 	return {
 		// State

@@ -21,8 +21,8 @@ export const setAuthCookie = (
 		sameSite: 'lax' as const,
 	};
 
-	setCookie(event, cookieName, token, { ...defaultOptions, ...options })
-}
+	setCookie(event, cookieName, token, { ...defaultOptions, ...options });
+};
 
 /**
  * 清除認證 cookie
@@ -34,33 +34,33 @@ export const clearAuthCookie = (event: any, cookieName: string) => {
 		maxAge: 0, // 立即過期
 		path: '/',
 		sameSite: 'lax',
-	})
-}
+	});
+};
 
 /**
  * 設定公司認證 cookie
  */
 export const setCompanyAuthCookie = (event: any, token: string) => {
-	setAuthCookie(event, token, 'companyAuthToken')
-}
+	setAuthCookie(event, token, 'companyAuthToken');
+};
 
 /**
  * 設定使用者認證 cookie
  */
 export const setUserAuthCookie = (event: any, token: string) => {
-	setAuthCookie(event, token, 'userAuthToken')
-}
+	setAuthCookie(event, token, 'userAuthToken');
+};
 
 /**
  * 清除公司認證 cookie
  */
 export const clearCompanyAuthCookie = (event: any) => {
-	clearAuthCookie(event, 'companyAuthToken')
-}
+	clearAuthCookie(event, 'companyAuthToken');
+};
 
 /**
  * 清除使用者認證 cookie
  */
 export const clearUserAuthCookie = (event: any) => {
-	clearAuthCookie(event, 'userAuthToken')
-}
+	clearAuthCookie(event, 'userAuthToken');
+};

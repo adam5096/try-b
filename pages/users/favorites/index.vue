@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed } from 'vue';
 
 definePageMeta({
 	name: 'user-favorites',
 	layout: 'user',
 	middleware: 'user-auth',
 	ssr: false, // CSR 模式
-})
+});
 
 type FavoriteItem = {
 	id: number;
@@ -124,18 +124,18 @@ const pageSize = ref(6);
 const total = computed(() => items.value.length);
 const visibleItems = computed(() => {
 	const start = (currentPage.value - 1) * pageSize.value;
-  return items.value.slice(start, start + pageSize.value);
-})
+	return items.value.slice(start, start + pageSize.value);
+});
 
 const pageStartDisplay = computed<number>(() => {
-	if (total.value === 0) return 0;
-  return (currentPage.value - 1) * pageSize.value + 1;
-})
+	if (total.value === 0) { return 0; }
+	return (currentPage.value - 1) * pageSize.value + 1;
+});
 
 const pageEndDisplay = computed<number>(() => {
-	if (total.value === 0) return 0;
-  return Math.min(currentPage.value * pageSize.value, total.value);
-})
+	if (total.value === 0) { return 0; }
+	return Math.min(currentPage.value * pageSize.value, total.value);
+});
 
 function handleClearAll() {
 	items.value = [];
@@ -143,7 +143,7 @@ function handleClearAll() {
 
 function handleToggleFavorite(id: number) {
 	const target = items.value.find(x => x.id === id);
-  if (target) target.isFavorited = !target.isFavorited;
+	if (target) { target.isFavorited = !target.isFavorited; }
 }
 
 function handleViewDetail(item: FavoriteItem) {
