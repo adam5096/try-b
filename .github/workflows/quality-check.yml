@@ -1,0 +1,37 @@
+name: 程式碼品質檢查
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 檢出程式碼
+      uses: actions/checkout@v4
+      
+    - name: 設定 Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: 安裝 pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9.9.0
+        
+    - name: 安裝依賴
+      run: pnpm install --frozen-lockfile
+      
+    - name: ESLint 檢查
+      run: pnpm lint
+      
+    - name: TypeScript 型別檢查
+      run: pnpm type-check
+      
+    - name: 建置檢查
+      run: pnpm build

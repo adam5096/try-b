@@ -1,160 +1,160 @@
 <script setup lang="ts">
-definePageMeta({
-  name: 'index',
-  layout: 'main',
-});
-
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { userRoutes } from '~/utils/userRoutes';
-import { useHomePopularFetch } from '~/composables/api/home/useHomePopularFetch';
+import { useHomePopularFetch } from '~/composables/api/home/useHomePopularFetch'
+
+definePageMeta({
+	name: 'index',
+	layout: 'main',
+})
 
 // --- SEO Meta ---
 // 為首頁客製化 SEO 資訊，覆蓋 app.vue 中的全域設定
 useSeoMeta({
-  title: '害怕入錯行？來 TRY β 先體驗再決定！',
-  description: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
-  ogTitle: '害怕入錯行？來 TRY β 先體驗再決定！',
-  ogImage: 'https://try-b.vercel.app/img/home/home-worker-bg.webp', // 使用絕對路徑
-  ogImageAlt: 'TRY β 職業體驗平台首頁 - 辦公室工作環境',
-  ogDescription: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
-  twitterImage: 'https://try-b.vercel.app/img/home/home-worker-bg.webp',
-  twitterImageAlt: 'TRY β 職業體驗平台首頁',
+	title: '害怕入錯行？來 TRY β 先體驗再決定！',
+	description: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
+	ogTitle: '害怕入錯行？來 TRY β 先體驗再決定！',
+	ogImage: 'https://try-b.vercel.app/img/home/home-worker-bg.webp', // 使用絕對路徑
+	ogImageAlt: 'TRY β 職業體驗平台首頁 - 辦公室工作環境',
+	ogDescription: '擔心下一份工作不適合自己？TRY β 讓你低成本試錯。透過短期職業體驗，深入了解產業與職務內容，自信地邁出職涯的下一步。',
+	twitterImage: 'https://try-b.vercel.app/img/home/home-worker-bg.webp',
+	twitterImageAlt: 'TRY β 職業體驗平台首頁',
 });
 
 // --- 關鍵資源預載入 ---
 useHead({
-  link: [
-    // 僅預載入 LCP 關鍵圖片，避免不必要的預載入
-    { rel: 'preload', href: '/img/home/home-worker-bg.webp', as: 'image', type: 'image/webp', fetchpriority: 'high' },
-  ],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        name: 'TRY β',
-        description: 'TRY β 是一個連結人才與企業的職業體驗平台，提供多元的短期體驗計畫，幫助求職者在投入職場前探索興趣，找到真正適合自己的道路。',
-        url: 'https://try-b.vercel.app',
-        logo: 'https://try-b.vercel.app/img/home/try-beta-logo.webp',
-        image: 'https://try-b.vercel.app/img/home/home-worker-bg.webp',
-        sameAs: [
-          // 可以在這裡添加社群媒體連結
-        ],
-        contactPoint: {
-          '@type': 'ContactPoint',
-          contactType: 'customer service',
-          email: 'contact@try-b.com', // 請替換為實際聯絡信箱
-        },
-        address: {
-          '@type': 'PostalAddress',
-          addressCountry: 'TW',
-          addressRegion: 'Taiwan',
-        },
-        offers: {
-          '@type': 'Offer',
-          name: '職業體驗服務',
-          description: '提供短期職業體驗計畫，讓求職者深入了解產業與職務內容',
-          category: '職業服務',
-        }
-      })
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        name: 'TRY β',
-        url: 'https://try-b.vercel.app',
-        description: 'TRY β 職業體驗平台 - 讓轉職從博弈變成科學',
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: 'https://try-b.vercel.app/search?q={search_term_string}',
-          'query-input': 'required name=search_term_string'
-        }
-      })
-    }
-  ]
+	link: [
+		// 僅預載入 LCP 關鍵圖片，避免不必要的預載入
+		{ rel: 'preload', href: '/img/home/home-worker-bg.webp', as: 'image', type: 'image/webp', fetchpriority: 'high' },
+	],
+	script: [
+		{
+			type: 'application/ld+json',
+			innerHTML: JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'Organization',
+				'name': 'TRY β',
+				'description': 'TRY β 是一個連結人才與企業的職業體驗平台，提供多元的短期體驗計畫，幫助求職者在投入職場前探索興趣，找到真正適合自己的道路。',
+				'url': 'https://try-b.vercel.app',
+				'logo': 'https://try-b.vercel.app/img/home/try-beta-logo.webp',
+				'image': 'https://try-b.vercel.app/img/home/home-worker-bg.webp',
+				'sameAs': [
+					// 可以在這裡添加社群媒體連結
+				],
+				'contactPoint': {
+					'@type': 'ContactPoint',
+					'contactType': 'customer service',
+					'email': 'contact@try-b.com', // 請替換為實際聯絡信箱
+				},
+				'address': {
+					'@type': 'PostalAddress',
+					'addressCountry': 'TW',
+					'addressRegion': 'Taiwan',
+				},
+				'offers': {
+					'@type': 'Offer',
+					'name': '職業體驗服務',
+					'description': '提供短期職業體驗計畫，讓求職者深入了解產業與職務內容',
+					'category': '職業服務',
+				},
+			}),
+		},
+		{
+			type: 'application/ld+json',
+			innerHTML: JSON.stringify({
+				'@context': 'https://schema.org',
+				'@type': 'WebSite',
+				'name': 'TRY β',
+				'url': 'https://try-b.vercel.app',
+				'description': 'TRY β 職業體驗平台 - 讓轉職從博弈變成科學',
+				'potentialAction': {
+					'@type': 'SearchAction',
+					'target': 'https://try-b.vercel.app/search?q={search_term_string}',
+					'query-input': 'required name=search_term_string',
+				},
+			}),
+		},
+	],
 });
 // --- End 結構化資料 ---
 
 // Header-related logic has been moved to layouts/main.vue
 
 const partners = [
-  { name: 'Company 1', logo: '/img/home/partners/set_02/comp-001.webp' },
-  { name: 'Company 3', logo: '/img/home/partners/set_02/comp-003.webp' },
-  { name: 'Company 4', logo: '/img/home/partners/set_02/comp-004.webp' },
-  { name: 'Company 5', logo: '/img/home/partners/set_02/comp-005.webp' },
-  { name: 'Company 6', logo: '/img/home/partners/set_02/comp-006.webp' },
+	{ name: 'Company 1', logo: '/img/home/partners/set_02/comp-001.webp' },
+	{ name: 'Company 3', logo: '/img/home/partners/set_02/comp-003.webp' },
+	{ name: 'Company 4', logo: '/img/home/partners/set_02/comp-004.webp' },
+	{ name: 'Company 5', logo: '/img/home/partners/set_02/comp-005.webp' },
+	{ name: 'Company 6', logo: '/img/home/partners/set_02/comp-006.webp' },
 ];
 
 // Footer State ---
 const quickLinks = ref([
-  { name: '關於 TRY B', link: '#' },
-  { name: '合作夥伴', link: '#' },
-  { name: '隱私權政策', link: '#' },
-  { name: '服務條款', link: '#' },
-  { name: '聯絡我們', link: '#' }
-]);
+	{ name: '關於 TRY B', link: '#' },
+	{ name: '合作夥伴', link: '#' },
+	{ name: '隱私權政策', link: '#' },
+	{ name: '服務條款', link: '#' },
+	{ name: '聯絡我們', link: '#' },
+])
 
 const testimonials = [
-  {
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=512&auto=format&fit=crop',
-    name: '某某股份有限公司',
-    title: '創意總監',
-    rating: 5,
-    quote: '「TRY B 幫助我們找到了對品牌設計有幫助的靈感資料，中間還促成了兩個提案出現時的對齊標準，最終我們客戶的 GIG 曝光率提升了 40%。現在她已經成為我們的幕後設計師。」',
-    date: '2025年11月'
-  },
-  {
-    avatar: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=512&auto=format&fit=crop',
-    name: '某某個人工作室',
-    title: '永續教育顧問',
-    rating: 4.5,
-    quote: '「TRY B 的形象平台讓我覺得是很靈活體驗，不僅僅是加速準備素材圖像，協助我們設計了更適合年輕群體的課程教案流程。名目負責後來對於簡參與我們的志工培訓計畫。」',
-    date: '2025年11月'
-  }
-]
+	{
+		avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=512&auto=format&fit=crop',
+		name: '某某股份有限公司',
+		title: '創意總監',
+		rating: 5,
+		quote: '「TRY B 幫助我們找到了對品牌設計有幫助的靈感資料，中間還促成了兩個提案出現時的對齊標準，最終我們客戶的 GIG 曝光率提升了 40%。現在她已經成為我們的幕後設計師。」',
+		date: '2025年11月',
+	},
+	{
+		avatar: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=512&auto=format&fit=crop',
+		name: '某某個人工作室',
+		title: '永續教育顧問',
+		rating: 4.5,
+		quote: '「TRY B 的形象平台讓我覺得是很靈活體驗，不僅僅是加速準備素材圖像，協助我們設計了更適合年輕群體的課程教案流程。名目負責後來對於簡參與我們的志工培訓計畫。」',
+		date: '2025年11月',
+	},
+];
 
 // 使用 ClientOnly 來避免 hydration mismatch
 const isClient = ref(false);
 
 const handleResize = () => {
-  if (isClient.value && window.innerWidth >= 1024) {
-    // isMenuOpen.value = false; // This state is now managed by layouts/main.vue
-  }
+	if (isClient.value && window.innerWidth >= 1024) {
+		// isMenuOpen.value = false; // This state is now managed by layouts/main.vue
+	}
 };
 
 onMounted(() => {
-  isClient.value = true;
-  window.addEventListener('resize', handleResize);
-});
+	isClient.value = true;
+	window.addEventListener('resize', handleResize);
+})
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', handleResize);
-});
+	window.removeEventListener('resize', handleResize);
+})
 
 const successStories = [
-  {
-    title: '新創企業營運助理體驗計畫',
-    description: '一間快速成長的新創企業，為尋找具潛力的營運助理，透過本平台招募體驗者參與短期體驗計畫。企業在體驗過程中即時評估體驗者能力與適配度，減少錯誤錄用風險。',
-    result: '體驗者轉正率達50%，用人決策時間縮短30%。',
-    link: '#'
-  },
-  {
-    title: 'ESG顧問公司招募兼職專案助理',
-    description: '一家ESG顧問公司需要快速招募短期專案助理，利用平台發布職業體驗計畫，吸引有志轉職者參加。企業在體驗過程中發現其中單位體驗者具備高潛力，後續直接延攬為長期合作人選。',
-    result: '人才媒合成功率提升60%，專案執行進度提前完成。',
-    link: '#'
-  }
-]
+	{
+		title: '新創企業營運助理體驗計畫',
+		description: '一間快速成長的新創企業，為尋找具潛力的營運助理，透過本平台招募體驗者參與短期體驗計畫。企業在體驗過程中即時評估體驗者能力與適配度，減少錯誤錄用風險。',
+		result: '體驗者轉正率達50%，用人決策時間縮短30%。',
+		link: '#',
+	},
+	{
+		title: 'ESG顧問公司招募兼職專案助理',
+		description: '一家ESG顧問公司需要快速招募短期專案助理，利用平台發布職業體驗計畫，吸引有志轉職者參加。企業在體驗過程中發現其中單位體驗者具備高潛力，後續直接延攬為長期合作人選。',
+		result: '人才媒合成功率提升60%，專案執行進度提前完成。',
+		link: '#',
+	},
+];
 
 const stats = [
-  { value: '10,000+', label: '活躍體驗者' },
-  { value: '500+', label: '合作企業' },
-  { value: '2,500+', label: '成功體驗' },
-  { value: '98%', label: '滿意度' }
-]
+	{ value: '10,000+', label: '活躍體驗者' },
+	{ value: '500+', label: '合作企業' },
+	{ value: '2,500+', label: '成功體驗' },
+	{ value: '98%', label: '滿意度' },
+];
 
 // Home: Popular programs (前 3 筆，少於補空卡)
 const { cards, pending, error, refresh } = useHomePopularFetch()
@@ -162,533 +162,752 @@ const { cards, pending, error, refresh } = useHomePopularFetch()
 // Image fallback on load error per-card
 const erroredImage = ref<Record<number, boolean>>({})
 function getCardImageSrc(index: number, coverUrl: string | null): string {
-  const fallback = defaultCardImages[index % defaultCardImages.length]
-  if (erroredImage.value[index]) return fallback
-  return coverUrl || fallback
+	const fallback = defaultCardImages[index % defaultCardImages.length]
+	if (erroredImage.value[index]) return fallback
+	return coverUrl || fallback
 }
 
 const defaultCardImages = [
-  '/img/home/plan/plan-01.webp',
-  '/img/home/plan/plan-02.webp',
-  '/img/home/plan/plan-03.webp',
+	'/img/home/plan/plan-01.webp',
+	'/img/home/plan/plan-02.webp',
+	'/img/home/plan/plan-03.webp',
 ]
 </script>
 
 <template>
-  <!-- The <header> has been moved to layouts/main.vue -->
+	<!-- The <header> has been moved to layouts/main.vue -->
 
-  <!-- main -->
-  <main>
-    <!-- Hero Section -->
-    <section class="relative h-hero-section text-white ">
-      <!-- Layer 1: Background Image -->
-      <div class="absolute inset-0 z-10 mask-fade-from-center-to-left">
-        <NuxtImg
-          src="/img/home/home-worker-bg.webp"
-          alt="Office working environment"
-          class="h-full w-full object-cover"
-          width="1920"
-          height="1280"
-          preload
-          priority
-          fetchpriority="high"
-          loading="eager"
-        />
-      </div>
+	<!-- main -->
+	<main>
+		<!-- Hero Section -->
+		<section class="relative h-hero-section text-white ">
+			<!-- Layer 1: Background Image -->
+			<div class="absolute inset-0 z-10 mask-fade-from-center-to-left">
+				<NuxtImg
+					src="/img/home/home-worker-bg.webp"
+					alt="Office working environment"
+					class="h-full w-full object-cover"
+					width="1920"
+					height="1280"
+					preload
+					priority
+					fetchpriority="high"
+					loading="eager"
+				/>
+			</div>
 
-      <!-- Layer 2: Blue Shape with Gradient Mask -->
-      <div class="absolute inset-0 z-20 mask-gradient-to-right">
-        <NuxtImg 
-          src="/img/home/hero-bg.webp" 
-          alt="Blue decorative shape"
-          class="h-full w-full object-cover lg:object-fill"
-          width="1920"
-          height="1280"
-          priority
-          fetchpriority="high"
-          loading="eager"
-        />
-      </div>
+			<!-- Layer 2: Blue Shape with Gradient Mask -->
+			<div class="absolute inset-0 z-20 mask-gradient-to-right">
+				<NuxtImg
+					src="/img/home/hero-bg.webp"
+					alt="Blue decorative shape"
+					class="h-full w-full object-cover lg:object-fill"
+					width="1920"
+					height="1280"
+					priority
+					fetchpriority="high"
+					loading="eager"
+				/>
+			</div>
 
-      <!-- Layer 3: Foreground Content Layer -->
-      <div class="absolute inset-0 z-30">
-        <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12">
-          <div class="flex h-full flex-col  justify-center items-center 2xl:items-start">
-            <h1 class="text-2xl font-bold sm:text-3xl lg:text-4xl xl:text-5xl">
-              Try Before You Dive
-            </h1>
-            <p class="mt-4 max-w-xl text-sm sm:text-base lg:text-lg">
-              「每個正式版的前身，都是測試版」，在投入正式職缺前，大量且動態地嘗試，讓您零風險職場探索，找到真正適合的路。
-            </p>
-            <p class="mt-2 text-sm sm:text-base lg:text-lg">
-              讓轉職從博弈變成科學
-            </p>
-            <h2 class="mt-16 text-xl font-bold sm:text-2xl lg:text-3xl xl:text-4xl">
-              開啟職場任意門，體驗你的無限可能。
-            </h2>
-            <NuxtLink :to="userRoutes.landing()" class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white">
-              開始體驗
-            </NuxtLink>
-          </div>
-        </div>
-      </div>
-    </section>
+			<!-- Layer 3: Foreground Content Layer -->
+			<div class="absolute inset-0 z-30">
+				<div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12">
+					<div class="flex h-full flex-col  justify-center items-center 2xl:items-start">
+						<h1 class="text-2xl font-bold sm:text-3xl lg:text-4xl xl:text-5xl">
+							Try Before You Dive
+						</h1>
+						<p class="mt-4 max-w-xl text-sm sm:text-base lg:text-lg">
+							「每個正式版的前身，都是測試版」，在投入正式職缺前，大量且動態地嘗試，讓您零風險職場探索，找到真正適合的路。
+						</p>
+						<p class="mt-2 text-sm sm:text-base lg:text-lg">
+							讓轉職從博弈變成科學
+						</p>
+						<h2 class="mt-16 text-xl font-bold sm:text-2xl lg:text-3xl xl:text-4xl">
+							開啟職場任意門，體驗你的無限可能。
+						</h2>
+						<NuxtLink
+							:to="userRoutes.landing()"
+							class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+						>
+							開始體驗
+						</NuxtLink>
+					</div>
+				</div>
+			</div>
+		</section>
 
-    <!-- User Personas Section -->
-    <section class="py-section-padding bg-brand-gray">
-      <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">誰適合使用 TRY β</h2>
-        <p class="relative z-10 text-lg sm:text-xl md:text-2xl">TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會</p>
-      </div>
+		<!-- User Personas Section -->
+		<section class="py-section-padding bg-brand-gray">
+			<div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
+				<h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+					誰適合使用 TRY β
+				</h2>
+				<p class="relative z-10 text-lg sm:text-xl md:text-2xl">
+					TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會
+				</p>
+			</div>
 
-      <!-- Cards Container -->
-      <div class="mx-auto mt-12 h-full w-full max-w-container-main px-6 md:px-12">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Card 1: 學生與新鮮人 -->
-          <div
-            class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
-          >
-            <div class="flex justify-center mb-4">
-              <div>
-                <img src="/img/home/who_is_the_user/who-is-the-user-01.webp" alt="學生與新鮮人" width="200" height="200" loading="eager" />
-              </div>
-            </div>
-            <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">學生與新鮮人</h3>
-            <p class="text-center text-gray-600 mb-4">先大量體驗，快速累積品</p>
-            <div class="flex justify-center mt-auto">
-              <ul class="space-y-2 text-left">
-                <li class="flex items-start min-h-[2rem]">
-                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>實習與專案合作機會</span>
-                </li>
-                <li class="flex items-start min-h-[2rem]">
-                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>職涯探索工作坊</span>
-                </li>
-                <li class="flex items-start min-h-[2rem]">
-                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>業界導師一對一指導與深度對談</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+			<!-- Cards Container -->
+			<div class="mx-auto mt-12 h-full w-full max-w-container-main px-6 md:px-12">
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+					<!-- Card 1: 學生與新鮮人 -->
+					<div
+						class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
+					>
+						<div class="flex justify-center mb-4">
+							<div>
+								<img
+									src="/img/home/who_is_the_user/who-is-the-user-01.webp"
+									alt="學生與新鮮人"
+									width="200"
+									height="200"
+									loading="eager"
+								>
+							</div>
+						</div>
+						<h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">
+							學生與新鮮人
+						</h3>
+						<p class="text-center text-gray-600 mb-4">
+							先大量體驗，快速累積品
+						</p>
+						<div class="flex justify-center mt-auto">
+							<ul class="space-y-2 text-left">
+								<li class="flex items-start min-h-[2rem]">
+									<SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
+									<span>實習與專案合作機會</span>
+								</li>
+								<li class="flex items-start min-h-[2rem]">
+									<SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
+									<span>職涯探索工作坊</span>
+								</li>
+								<li class="flex items-start min-h-[2rem]">
+									<SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
+									<span>業界導師一對一指導與深度對談</span>
+								</li>
+							</ul>
+						</div>
+					</div>
 
-          <!-- Card 2: 兼職與轉職者 -->
-          <div
-            class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
-          >
-            <div class="flex justify-center mb-4">
-              <div>
-                <img src="/img/home/who_is_the_user/who-is-the-user-02.webp" alt="兼職與轉職者" width="200" height="200" loading="eager" />
-              </div>
-            </div>
-            <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">兼職與轉職者</h3>
-            <p class="text-center text-gray-600 mb-4">低成本試錯，高效率轉職</p>
-            <div class="flex justify-center mt-auto">
-              <ul class="space-y-2 text-left">
-                <li class="flex items-start min-h-[2rem]">
-                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>彈性時段職業體驗專案</span>
-                </li>
-                <li class="flex items-start min-h-[2rem]">
-                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>多元職務角色體驗計畫</span>
-                </li>
-                <li class="flex items-start min-h-[2rem]">
-                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>快速找尋就職方向</span>
-                </li>
-              </ul>
-            </div>
-          </div>
+					<!-- Card 2: 兼職與轉職者 -->
+					<div
+						class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
+					>
+						<div class="flex justify-center mb-4">
+							<div>
+								<img
+									src="/img/home/who_is_the_user/who-is-the-user-02.webp"
+									alt="兼職與轉職者"
+									width="200"
+									height="200"
+									loading="eager"
+								>
+							</div>
+						</div>
+						<h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">
+							兼職與轉職者
+						</h3>
+						<p class="text-center text-gray-600 mb-4">
+							低成本試錯，高效率轉職
+						</p>
+						<div class="flex justify-center mt-auto">
+							<ul class="space-y-2 text-left">
+								<li class="flex items-start min-h-[2rem]">
+									<SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
+									<span>彈性時段職業體驗專案</span>
+								</li>
+								<li class="flex items-start min-h-[2rem]">
+									<SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
+									<span>多元職務角色體驗計畫</span>
+								</li>
+								<li class="flex items-start min-h-[2rem]">
+									<SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
+									<span>快速找尋就職方向</span>
+								</li>
+							</ul>
+						</div>
+					</div>
 
-          <!-- Card 3: 創意工作者、中小企業 -->
-          <div
-            class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
-          >
-            <div class="flex justify-center mb-4">
-              <div>
-                <img src="/img/home/who_is_the_user/who-is-the-user-03.webp" alt="創意工作者、中小企業" width="200" height="200" loading="eager" />
-              </div>
-            </div>
-            <h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">
-              創意工作者、中小企業
-            </h3>
-            <p class="text-center text-gray-600 mb-4">錯聘成本太高？先 β 再正聘</p>
-            <div class="flex justify-center mt-auto">
-              <ul class="space-y-2 text-left">
-                <li class="flex items-start min-h-[2rem]">
-                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>先體驗，後合作</span>
-                </li>
-                <li class="flex items-start min-h-[2rem]">
-                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>展現企業魅力，不再浪費培訓預算</span>
-                </li>
-                <li class="flex items-start min-h-[2rem]">
-                  <SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
-                  <span>零長期成本，高回報人才管道</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+					<!-- Card 3: 創意工作者、中小企業 -->
+					<div
+						class="bg-white text-black rounded-lg p-6 pt-10 text-center flex flex-col shadow-lg transition-transform duration-300 hover:-translate-y-2"
+					>
+						<div class="flex justify-center mb-4">
+							<div>
+								<img
+									src="/img/home/who_is_the_user/who-is-the-user-03.webp"
+									alt="創意工作者、中小企業"
+									width="200"
+									height="200"
+									loading="eager"
+								>
+							</div>
+						</div>
+						<h3 class="text-xl font-bold text-center mb-2 min-h-[3.5rem]">
+							創意工作者、中小企業
+						</h3>
+						<p class="text-center text-gray-600 mb-4">
+							錯聘成本太高？先 β 再正聘
+						</p>
+						<div class="flex justify-center mt-auto">
+							<ul class="space-y-2 text-left">
+								<li class="flex items-start min-h-[2rem]">
+									<SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
+									<span>先體驗，後合作</span>
+								</li>
+								<li class="flex items-start min-h-[2rem]">
+									<SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
+									<span>展現企業魅力，不再浪費培訓預算</span>
+								</li>
+								<li class="flex items-start min-h-[2rem]">
+									<SharedHomeCheckIcon class="mr-2 flex-shrink-0" />
+									<span>零長期成本，高回報人才管道</span>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-    <!-- Featured Programs Section -->
-    <section class="py-section-padding bg-brand-gray">
-      <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">熱門體驗活動</h2>
-        <p class="text-lg sm:text-xl md:text-2xl">TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會</p>
-      </div>
+		<!-- Featured Programs Section -->
+		<section class="py-section-padding bg-brand-gray">
+			<div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
+				<h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+					熱門體驗活動
+				</h2>
+				<p class="text-lg sm:text-xl md:text-2xl">
+					TRY β 致力於滿足各種角色和行業的特殊需求，讓每個人都能在探索中找到成長與機會
+				</p>
+			</div>
 
-      <!-- Cards Container -->
-      <div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 mt-12">
-        <!-- Loading State -->
-        <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div
-            v-for="i in 3"
-            :key="`skeleton-${i}`"
-            class="bg-white shadow-lg overflow-hidden flex flex-col rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
-          >
-            <div class="skeleton h-48 bg-gray-200 rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"></div>
-            <div class="p-6 flex flex-col flex-grow">
-              <div class="skeleton h-4 bg-gray-200 mb-2"></div>
-              <div class="skeleton h-6 bg-gray-200 mb-2"></div>
-              <div class="skeleton h-16 bg-gray-200 mb-4"></div>
-              <div class="space-y-2 mb-4">
-                <div class="skeleton h-4 bg-gray-200"></div>
-                <div class="skeleton h-4 bg-gray-200"></div>
-              </div>
-              <div class="skeleton h-4 bg-gray-200 mb-4"></div>
-              <div class="skeleton h-10 bg-gray-200"></div>
-            </div>
-          </div>
-        </div>
+			<!-- Cards Container -->
+			<div class="mx-auto h-full w-full max-w-container-main px-6 md:px-12 mt-12">
+				<!-- Loading State -->
+				<div
+					v-if="pending"
+					class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+				>
+					<div
+						v-for="i in 3"
+						:key="`skeleton-${i}`"
+						class="bg-white shadow-lg overflow-hidden flex flex-col rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
+					>
+						<div class="skeleton h-48 bg-gray-200 rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none" />
+						<div class="p-6 flex flex-col flex-grow">
+							<div class="skeleton h-4 bg-gray-200 mb-2" />
+							<div class="skeleton h-6 bg-gray-200 mb-2" />
+							<div class="skeleton h-16 bg-gray-200 mb-4" />
+							<div class="space-y-2 mb-4">
+								<div class="skeleton h-4 bg-gray-200" />
+								<div class="skeleton h-4 bg-gray-200" />
+							</div>
+							<div class="skeleton h-4 bg-gray-200 mb-4" />
+							<div class="skeleton h-10 bg-gray-200" />
+						</div>
+					</div>
+				</div>
 
-        <!-- Error State -->
-        <div v-else-if="error" class="text-center py-12">
-          <SharedErrorMessage 
-            title="載入熱門活動失敗"
-            :message="error.message || '無法載入熱門體驗活動，請稍後再試'"
-            :show-refresh="true"
-            @refresh="refresh"
-          />
-        </div>
+				<!-- Error State -->
+				<div
+					v-else-if="error"
+					class="text-center py-12"
+				>
+					<SharedErrorMessage
+						title="載入熱門活動失敗"
+						:message="error.message || '無法載入熱門體驗活動，請稍後再試'"
+						:show-refresh="true"
+						@refresh="refresh"
+					/>
+				</div>
 
-        <!-- Content State -->
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div
-            v-for="(card, index) in cards"
-            :key="index"
-            class="bg-white shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1 rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
-          >
-            <div class="relative">
-              <NuxtImg
-                class="w-full h-48 object-cover rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
-                :src="getCardImageSrc(index, card.coverUrl)"
-                alt="熱門體驗活動"
-                width="768"
-                height="192"
-                fit="cover"
-                quality="90"
-                @error="erroredImage[index] = true"
-                loading="lazy"
-              />
-              <button class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors" aria-label="收藏此體驗活動">
-                <SharedHeartIcon class="w-8 h-8" />
-              </button>
-            </div>
-            <div class="p-6 flex flex-col flex-grow">
-              <p class="text-sm text-gray-500">{{ card.meta || '—' }}</p>
-              <h3 class="text-lg font-bold mt-1">{{ card.title }}</h3>
-              <p class="mt-2 text-gray-600 text-sm flex-grow">{{ card.description }}</p>
-              <div class="mt-4 space-y-2 text-sm text-gray-700">
-                <div class="flex items-center gap-2">
-                  <SharedLocationPinIcon class="w-5 h-5 flex-shrink-0" />
-                  <span>{{ card.location }}</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <SharedCalendarIcon class="w-5 h-5 flex-shrink-0" />
-                  <span>{{ card.dateText }}</span>
-                </div>
-              </div>
-              <div class="mt-4 flex justify-between text-sm text-gray-500 border-t pt-4">
-                <span>已申請人數：{{ card.appliedCount }} 人</span>
-                <span>申請截止還有 {{ card.daysLeft }} 天</span>
-              </div>
-              <button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
-                查看詳情
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+				<!-- Content State -->
+				<div
+					v-else
+					class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+				>
+					<div
+						v-for="(card, index) in cards"
+						:key="index"
+						class="bg-white shadow-lg overflow-hidden flex flex-col transition-transform hover:-translate-y-1 rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
+					>
+						<div class="relative">
+							<NuxtImg
+								class="w-full h-48 object-cover rounded-tl-[100px] rounded-tr-none rounded-br-none rounded-bl-none"
+								:src="getCardImageSrc(index, card.coverUrl)"
+								alt="熱門體驗活動"
+								width="768"
+								height="192"
+								fit="cover"
+								quality="90"
+								loading="lazy"
+								@error="erroredImage[index] = true"
+							/>
+							<button
+								class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors"
+								aria-label="收藏此體驗活動"
+							>
+								<SharedHeartIcon class="w-8 h-8" />
+							</button>
+						</div>
+						<div class="p-6 flex flex-col flex-grow">
+							<p class="text-sm text-gray-500">
+								{{ card.meta || '—' }}
+							</p>
+							<h3 class="text-lg font-bold mt-1">
+								{{ card.title }}
+							</h3>
+							<p class="mt-2 text-gray-600 text-sm flex-grow">
+								{{ card.description }}
+							</p>
+							<div class="mt-4 space-y-2 text-sm text-gray-700">
+								<div class="flex items-center gap-2">
+									<SharedLocationPinIcon class="w-5 h-5 flex-shrink-0" />
+									<span>{{ card.location }}</span>
+								</div>
+								<div class="flex items-center gap-2">
+									<SharedCalendarIcon class="w-5 h-5 flex-shrink-0" />
+									<span>{{ card.dateText }}</span>
+								</div>
+							</div>
+							<div class="mt-4 flex justify-between text-sm text-gray-500 border-t pt-4">
+								<span>已申請人數：{{ card.appliedCount }} 人</span>
+								<span>申請截止還有 {{ card.daysLeft }} 天</span>
+							</div>
+							<button class="mt-6 w-full rounded-md bg-btn-yellow py-2 font-bold text-black transition-colors hover:bg-primary-blue-dark hover:text-white">
+								查看詳情
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-    <!-- User Testimonials Section -->
-    <section 
-        class="relative py-section-padding overflow-hidden bg-cover bg-center bg-testimonial-pattern"
-    >
-      <!-- Content -->
-      <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
-        <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">體驗者的聲音</h2>
-        <p class="text-lg sm:text-xl md:text-2xl text-gray-700">聽聽其他人怎麼說</p>
-      
-        <!-- Testimonial Cards Container -->
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-          <!-- Card 1 -->
-          <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
-            <div class="flex items-center mb-4">
-              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 周O萱" width="64" height="64" />
-              <div>
-                <p class="font-bold text-lg">周O萱</p>
-                <p class="text-sm text-gray-500">大學生 | 23歲</p>
-              </div>
-            </div>
-            <p class="text-gray-600 flex-grow">「參與 TRYβ 的產品測試讓我不僅能接觸到最新的科技產品，還能賺取額外的收入。平台使用非常方便，任務說明清晰，是學生兼職的好選擇！」</p>
-            <div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
-              <div class="flex items-center gap-1 text-yellow-500">
-                <SharedStarIcon class="w-5 h-5" />
-                <SharedStarIcon class="w-5 h-5" />
-                <SharedStarIcon class="w-5 h-5" />
-              </div>
-              <div class="flex items-center gap-2 text-gray-500">
-                <SharedCalendarIcon class="w-5 h-5" />
-                <span>2023/11/20</span>
-              </div>
-            </div>
-          </div>
+		<!-- User Testimonials Section -->
+		<section
+			class="relative py-section-padding overflow-hidden bg-cover bg-center bg-testimonial-pattern"
+		>
+			<!-- Content -->
+			<div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 md:px-12 text-center">
+				<h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+					體驗者的聲音
+				</h2>
+				<p class="text-lg sm:text-xl md:text-2xl text-gray-700">
+					聽聽其他人怎麼說
+				</p>
 
-          <!-- Card 2 -->
-          <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
-            <div class="flex items-center mb-4">
-              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 林O偉" width="64" height="64" />
-              <div>
-                <p class="font-bold text-lg">林O偉</p>
-                <p class="text-sm text-gray-500">上班族 | 35歲</p>
-              </div>
-            </div>
-            <p class="text-gray-600 flex-grow">「TRY β 讓我有夠分享我的消費經驗和見解，同時感覺自己的聲音有被聽見的。每次完成任務後收到的反饋讓我覺得自己的意見被重視。」</p>
-            <div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
-              <div class="flex items-center gap-1 text-yellow-500">
-                <SharedStarIcon class="w-5 h-5" />
-                <SharedStarIcon class="w-5 h-5" />
-                <SharedStarIcon class="w-5 h-5" />
-              </div>
-              <div class="flex items-center gap-2 text-gray-500">
-                <SharedCalendarIcon class="w-5 h-5" />
-                <span>2023/09/28</span>
-              </div>
-            </div>
-          </div>
+				<!-- Testimonial Cards Container -->
+				<div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+					<!-- Card 1 -->
+					<div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
+						<div class="flex items-center mb-4">
+							<NuxtImg
+								class="w-16 h-16 rounded-full mr-4 object-cover"
+								src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1974&auto=format&fit=crop"
+								alt="Avatar of 周O萱"
+								width="64"
+								height="64"
+							/>
+							<div>
+								<p class="font-bold text-lg">
+									周O萱
+								</p>
+								<p class="text-sm text-gray-500">
+									大學生 | 23歲
+								</p>
+							</div>
+						</div>
+						<p class="text-gray-600 flex-grow">
+							「參與 TRYβ 的產品測試讓我不僅能接觸到最新的科技產品，還能賺取額外的收入。平台使用非常方便，任務說明清晰，是學生兼職的好選擇！」
+						</p>
+						<div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
+							<div class="flex items-center gap-1 text-yellow-500">
+								<SharedStarIcon class="w-5 h-5" />
+								<SharedStarIcon class="w-5 h-5" />
+								<SharedStarIcon class="w-5 h-5" />
+							</div>
+							<div class="flex items-center gap-2 text-gray-500">
+								<SharedCalendarIcon class="w-5 h-5" />
+								<span>2023/11/20</span>
+							</div>
+						</div>
+					</div>
 
-          <!-- Card 3 -->
-          <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
-            <div class="flex items-center mb-4">
-              <NuxtImg class="w-16 h-16 rounded-full mr-4 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop" alt="Avatar of 張O伯" width="64" height="64" />
-              <div>
-                <p class="font-bold text-lg">張O伯</p>
-                <p class="text-sm text-gray-500">退休人士 | 68歲</p>
-              </div>
-            </div>
-            <p class="text-gray-600 flex-grow">「即使是我這樣的銀髮族，也能在 TRY  找到適合的測試任務。這讓我保持對科技的關連性，也讓我感覺自己的經驗和觀點仍然有價值。」</p>
-            <div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
-              <div class="flex items-center gap-1 text-yellow-500">
-                <SharedStarIcon class="w-5 h-5" />
-                <SharedStarIcon class="w-5 h-5" />
-                <SharedStarIcon class="w-5 h-5" />
-              </div>
-              <div class="flex items-center gap-2 text-gray-500">
-                <SharedCalendarIcon class="w-5 h-5" />
-                <span>2023/09/28</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+					<!-- Card 2 -->
+					<div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
+						<div class="flex items-center mb-4">
+							<NuxtImg
+								class="w-16 h-16 rounded-full mr-4 object-cover"
+								src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1974&auto=format&fit=crop"
+								alt="Avatar of 林O偉"
+								width="64"
+								height="64"
+							/>
+							<div>
+								<p class="font-bold text-lg">
+									林O偉
+								</p>
+								<p class="text-sm text-gray-500">
+									上班族 | 35歲
+								</p>
+							</div>
+						</div>
+						<p class="text-gray-600 flex-grow">
+							「TRY β 讓我有夠分享我的消費經驗和見解，同時感覺自己的聲音有被聽見的。每次完成任務後收到的反饋讓我覺得自己的意見被重視。」
+						</p>
+						<div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
+							<div class="flex items-center gap-1 text-yellow-500">
+								<SharedStarIcon class="w-5 h-5" />
+								<SharedStarIcon class="w-5 h-5" />
+								<SharedStarIcon class="w-5 h-5" />
+							</div>
+							<div class="flex items-center gap-2 text-gray-500">
+								<SharedCalendarIcon class="w-5 h-5" />
+								<span>2023/09/28</span>
+							</div>
+						</div>
+					</div>
 
+					<!-- Card 3 -->
+					<div class="bg-white p-6 rounded-lg shadow-lg flex flex-col">
+						<div class="flex items-center mb-4">
+							<NuxtImg
+								class="w-16 h-16 rounded-full mr-4 object-cover"
+								src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop"
+								alt="Avatar of 張O伯"
+								width="64"
+								height="64"
+							/>
+							<div>
+								<p class="font-bold text-lg">
+									張O伯
+								</p>
+								<p class="text-sm text-gray-500">
+									退休人士 | 68歲
+								</p>
+							</div>
+						</div>
+						<p class="text-gray-600 flex-grow">
+							「即使是我這樣的銀髮族，也能在 TRY  找到適合的測試任務。這讓我保持對科技的關連性，也讓我感覺自己的經驗和觀點仍然有價值。」
+						</p>
+						<div class="mt-4 pt-4 border-t flex justify-between items-center text-sm">
+							<div class="flex items-center gap-1 text-yellow-500">
+								<SharedStarIcon class="w-5 h-5" />
+								<SharedStarIcon class="w-5 h-5" />
+								<SharedStarIcon class="w-5 h-5" />
+							</div>
+							<div class="flex items-center gap-2 text-gray-500">
+								<SharedCalendarIcon class="w-5 h-5" />
+								<span>2023/09/28</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-    <!-- Partners Section -->
-    <section class="relative overflow-hidden py-section-padding bg-brand-gray">
-      <!-- Foreground Content -->
-      <div class="relative z-10 mx-auto h-full w-full px-6 text-center md:px-12">
-       
+		<!-- Partners Section -->
+		<section class="relative overflow-hidden py-section-padding bg-brand-gray">
+			<!-- Foreground Content -->
+			<div class="relative z-10 mx-auto h-full w-full px-6 text-center md:px-12">
+				<h2 class="text-primary-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+					我們的合作夥伴
+				</h2>
+				<div
+					class="relative h-[247px] mx-auto mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-10 sm:gap-x-12 lg:gap-x-16"
+				>
+					<!-- Background Text -->
+					<div class="absolute inset-0 z-0">
+						<img
+							src="/img/home/try-before-you-dive.webp"
+							alt="Try Before You Dive"
+							class="w-full h-full object-contain"
+							width="800"
+							height="247"
+							loading="lazy"
+						>
+					</div>
+					<div
+						v-for="partner in partners"
+						:key="partner.name"
+						class="flex max-h-partner-logo-height max-w-partner-logo-width items-center justify-center"
+					>
+						<NuxtImg
+							class="max-h-full max-w-full object-cover"
+							width="176"
+							height="44"
+							fit="cover"
+							background="transparent"
+							format="webp"
+							loading="lazy"
+							:src="partner.logo"
+							:alt="partner.name"
+						/>
+					</div>
+				</div>
+			</div>
+		</section>
 
-        <h2 class="text-primary-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
-          我們的合作夥伴
-        </h2>
-        <div
-            class="relative h-[247px] mx-auto mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-10 sm:gap-x-12 lg:gap-x-16"
-        >
-          <!-- Background Text -->
-          <div class="absolute inset-0 z-0">
-            <img src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" width="800" height="247" loading="lazy" />
-          </div>
-          <div
-            v-for="partner in partners"
-            :key="partner.name"
-            class="flex max-h-partner-logo-height max-w-partner-logo-width items-center justify-center"
-          >
-            <NuxtImg
-              class="max-h-full max-w-full object-cover"
-              width="176"
-              height="44"
-              fit="cover"
-              background="transparent"
-              format="webp"
-              loading="lazy"
-              :src="partner.logo"
-              :alt="partner.name"
-            />
-          </div>
-        </div>
-      </div>
-    </section>
+		<!-- Client Testimonials Section -->
+		<section class="relative py-section-padding bg-brand-gray overflow-hidden">
+			<!-- Giant Beta Icon - REMOVED -->
 
-    <!-- Client Testimonials Section -->
-    <section class="relative py-section-padding bg-brand-gray overflow-hidden">
-      <!-- Giant Beta Icon - REMOVED -->
+			<div class="relative z-20 mx-auto h-full w-full max-w-container-main px-6 md:px-12">
+				<div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
+					<!-- Left Column: Title and Navigation -->
+					<div class="lg:col-span-1 text-left flex flex-col justify-center">
+						<div>
+							<h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+								企業客戶評價
+							</h2>
+							<p class="text-lg sm:text-xl md:text-2xl max-w-3xl">
+								探索我們企業客戶的真實體驗和反饋，了解 TRY β 如何幫助企業和探索者創造價值
+							</p>
+							<div class="mt-8 flex items-center gap-4">
+								<button
+									class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors"
+									aria-label="上一頁"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-6 w-6"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									><path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M7 16l-4-4m0 0l4-4m-4 4h18"
+									/></svg>
+								</button>
+								<button
+									class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors"
+									aria-label="下一頁"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-6 w-6"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									><path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M17 8l4 4m0 0l-4 4m4-4H3"
+									/></svg>
+								</button>
+							</div>
+						</div>
+					</div>
 
-      <div class="relative z-20 mx-auto h-full w-full max-w-container-main px-6 md:px-12">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
-          <!-- Left Column: Title and Navigation -->
-          <div class="lg:col-span-1 text-left flex flex-col justify-center">
-            <div>
-              <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">企業客戶評價</h2>
-              <p class="text-lg sm:text-xl md:text-2xl max-w-3xl">
-                探索我們企業客戶的真實體驗和反饋，了解 TRY β 如何幫助企業和探索者創造價值
-              </p>
-              <div class="mt-8 flex items-center gap-4">
-                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors" aria-label="上一頁">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
-                </button>
-                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors" aria-label="下一頁">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </button>
-              </div>
-            </div>
-          </div>
+					<!-- Right Column: Testimonial Cards -->
+					<div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+						<!-- Testimonial Card -->
+						<div
+							v-for="(testimonial, index) in testimonials"
+							:key="index"
+							class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden"
+						>
+							<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
+								<SharedBetaIcon class="w-full h-full object-contain" />
+							</div>
+							<div class="relative z-10 flex items-center gap-4">
+								<NuxtImg
+									:src="testimonial.avatar"
+									alt="Client Avatar"
+									class="w-16 h-16 rounded-full object-cover"
+									width="64"
+									height="64"
+								/>
+								<div>
+									<h3 class="font-bold text-lg">
+										{{ testimonial.name }}
+									</h3>
+									<p class="text-gray-500">
+										{{ testimonial.title }}
+									</p>
+								</div>
+							</div>
+							<div class="relative z-10 flex items-center">
+								<template
+									v-for="i in 5"
+									:key="i"
+								>
+									<SharedStarIcon
+										v-if="testimonial.rating >= i"
+										class="w-5 h-5 text-yellow-400"
+									/>
+									<SharedStarIcon
+										v-else-if="testimonial.rating > i - 1"
+										class="w-5 h-5 text-yellow-400"
+										:style="{ clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)' }"
+									/>
+									<SharedStarIcon
+										v-else
+										class="w-5 h-5 text-gray-300"
+									/>
+								</template>
+							</div>
+							<p class="relative z-10 text-gray-700 leading-relaxed flex-grow">
+								{{ testimonial.quote }}
+							</p>
+							<div class="relative z-10 flex items-center gap-2 text-gray-500 mt-auto pt-4">
+								<SharedCalendarIcon class="w-5 h-5" />
+								<span>{{ testimonial.date }}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-          <!-- Right Column: Testimonial Cards -->
-          <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-            <!-- Testimonial Card -->
-            <div v-for="(testimonial, index) in testimonials" :key="index" class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden">
-              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
-                <SharedBetaIcon class="w-full h-full object-contain" />
-              </div>
-              <div class="relative z-10 flex items-center gap-4">
-                <NuxtImg :src="testimonial.avatar" alt="Client Avatar" class="w-16 h-16 rounded-full object-cover" width="64" height="64" />
-                <div>
-                  <h3 class="font-bold text-lg">{{ testimonial.name }}</h3>
-                  <p class="text-gray-500">{{ testimonial.title }}</p>
-                </div>
-              </div>
-              <div class="relative z-10 flex items-center">
-                <template v-for="i in 5" :key="i">
-                  <SharedStarIcon v-if="testimonial.rating >= i" class="w-5 h-5 text-yellow-400" />
-                  <SharedStarIcon v-else-if="testimonial.rating > i - 1" class="w-5 h-5 text-yellow-400" :style="{ clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)' }" />
-                  <SharedStarIcon v-else class="w-5 h-5 text-gray-300" />
-                </template>
-              </div>
-              <p class="relative z-10 text-gray-700 leading-relaxed flex-grow">{{ testimonial.quote }}</p>
-              <div class="relative z-10 flex items-center gap-2 text-gray-500 mt-auto pt-4">
-                <SharedCalendarIcon class="w-5 h-5" />
-                <span>{{ testimonial.date }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+		<!-- Success Stories Section -->
+		<section class="py-section-padding bg-brand-gray overflow-hidden">
+			<div class="relative z-20 mx-auto h-full w-full max-w-container-main px-6 md:px-12">
+				<div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
+					<!-- Left Column: Success Story Cards -->
+					<div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch order-2 lg:order-1">
+						<div
+							v-for="(story, index) in successStories"
+							:key="index"
+							class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden min-h-[400px]"
+						>
+							<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
+								<SharedBetaIcon class="w-full h-full object-contain" />
+							</div>
 
+							<div class="relative z-10 flex flex-col flex-grow">
+								<h3 class="font-bold text-lg mb-4 min-h-[3.5rem]">
+									{{ story.title }}
+								</h3>
+								<p class="text-gray-700 leading-relaxed flex-grow">
+									{{ story.description }}
+								</p>
+								<p class="mt-4 text-gray-700">
+									<span class="font-bold text-primary-blue-light">結果：</span>
+									<span class="font-bold text-primary-blue-light">{{ story.result }}</span>
+								</p>
+								<a
+									:href="story.link"
+									class="mt-6 inline-flex items-center justify-center rounded-md bg-btn-yellow px-6 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white self-start"
+									aria-label="查看詳細案例 - {{ story.title }}"
+								>
+									<span>查看詳細案例</span>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 w-5 ml-2"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+									>
+										<path
+											fill-rule="evenodd"
+											d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+											clip-rule="evenodd"
+										/>
+									</svg>
+								</a>
+							</div>
+						</div>
+					</div>
 
+					<!-- Right Column: Title and Navigation -->
+					<div class="lg:col-span-1 text-left flex flex-col justify-center order-1 lg:order-2">
+						<div>
+							<h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+								成功案例
+							</h2>
+							<p class="text-lg sm:text-xl md:text-2xl max-w-3xl">
+								探索我們如何幫助企業實現目標
+							</p>
+							<div class="mt-8 flex items-center gap-4">
+								<button
+									class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors"
+									aria-label="上一頁"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-6 w-6"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									><path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M7 16l-4-4m0 0l4-4m-4 4h18"
+									/></svg>
+								</button>
+								<button
+									class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors"
+									aria-label="下一頁"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-6 w-6"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									><path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M17 8l4 4m0 0l-4 4m4-4H3"
+									/></svg>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-    <!-- Success Stories Section -->
-     <section class="py-section-padding bg-brand-gray overflow-hidden">
-       <div class="relative z-20 mx-auto h-full w-full max-w-container-main px-6 md:px-12">
-         <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
-         
+		<!-- Stats Section -->
+		<section class="relative overflow-hidden py-section-padding bg-brand-gray">
+			<!-- Background Text -->
+			<div class="absolute inset-0 z-0">
+				<img
+					src="/img/home/try-before-you-dive.webp"
+					alt="Try Before You Dive"
+					class="w-full h-full object-contain"
+					width="800"
+					height="247"
+					loading="lazy"
+				>
+			</div>
+			<!-- Foreground Content -->
+			<div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 text-center md:px-12">
+				<h2 class="text-primary-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+					已有萬人在使用TRY β
+				</h2>
+				<p class="mx-auto max-w-2xl text-lg text-gray-700 sm:text-xl">
+					探索我們如何幫助企業實現目標
+				</p>
 
-          <!-- Left Column: Success Story Cards -->
-          <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch order-2 lg:order-1">
-            <div v-for="(story, index) in successStories" :key="index" class="relative bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4 overflow-hidden min-h-[400px]">
-              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
-                <SharedBetaIcon class="w-full h-full object-contain" />
-              </div>
+				<!-- Stats -->
+				<div class="relative h-[247px] mt-12 grid grid-cols-2 gap-y-10 gap-x-6 text-center md:grid-cols-4">
+					<div
+						v-for="stat in stats"
+						:key="stat.label"
+					>
+						<p class="text-4xl font-bold text-gray-900 lg:text-5xl">
+							{{ stat.value }}
+						</p>
+						<p class="mt-2 text-base text-gray-600">
+							{{ stat.label }}
+						</p>
+					</div>
+				</div>
 
-              <div class="relative z-10 flex flex-col flex-grow">
-                <h3 class="font-bold text-lg mb-4 min-h-[3.5rem]">{{ story.title }}</h3>
-                <p class="text-gray-700 leading-relaxed flex-grow">{{ story.description }}</p>
-                <p class="mt-4 text-gray-700">
-                  <span class="font-bold text-primary-blue-light">結果：</span>
-                  <span class="font-bold text-primary-blue-light">{{ story.result }}</span>
-                </p>
-                <a :href="story.link" class="mt-6 inline-flex items-center justify-center rounded-md bg-btn-yellow px-6 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white self-start" aria-label="查看詳細案例 - {{ story.title }}">
-                  <span>查看詳細案例</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-           <!-- Right Column: Title and Navigation -->
-           <div class="lg:col-span-1 text-left flex flex-col justify-center order-1 lg:order-2">
-            <div>
-              <h2 class="text-primary-blue-light text-3xl sm:text-4xl md:text-5xl font-bold mb-4">成功案例</h2>
-              <p class="text-lg sm:text-xl md:text-2xl max-w-3xl">
-                探索我們如何幫助企業實現目標
-              </p>
-              <div class="mt-8 flex items-center gap-4">
-                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors" aria-label="上一頁">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
-                </button>
-                <button class="p-2 rounded-full text-primary-blue-light hover:bg-gray-200 transition-colors" aria-label="下一頁">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <!-- Stats Section -->
-     <section class="relative overflow-hidden py-section-padding bg-brand-gray">
-      <!-- Background Text -->
-      <div class="absolute inset-0 z-0">
-            <img src="/img/home/try-before-you-dive.webp" alt="Try Before You Dive" class="w-full h-full object-contain" width="800" height="247" loading="lazy" />
-          </div>
-      <!-- Foreground Content -->
-      <div class="relative z-10 mx-auto h-full w-full max-w-container-main px-6 text-center md:px-12">
-        <h2 class="text-primary-blue-light mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
-          已有萬人在使用TRY β
-        </h2>
-        <p class="mx-auto max-w-2xl text-lg text-gray-700 sm:text-xl">
-          探索我們如何幫助企業實現目標
-        </p>
-
-        <!-- Stats -->
-        <div class="relative h-[247px] mt-12 grid grid-cols-2 gap-y-10 gap-x-6 text-center md:grid-cols-4">
-          
-          <div v-for="stat in stats" :key="stat.label">
-            <p class="text-4xl font-bold text-gray-900 lg:text-5xl">{{ stat.value }}</p>
-            <p class="mt-2 text-base text-gray-600">{{ stat.label }}</p>
-          </div>
-        </div>
-        
-        <NuxtLink
-          to="/plan"
-          class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
-        >
-          企業開始體驗
-        </NuxtLink>
-      </div>
-    </section>
-  </main>
+				<NuxtLink
+					to="/plan"
+					class="mt-12 inline-block rounded-md bg-btn-yellow px-8 py-3 font-bold text-black transition-transform hover:scale-105 hover:bg-primary-blue-dark hover:text-white"
+				>
+					企業開始體驗
+				</NuxtLink>
+			</div>
+		</section>
+	</main>
 </template>
