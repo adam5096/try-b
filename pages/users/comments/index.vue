@@ -20,9 +20,9 @@ const error = ref<any>(null);
 
 // 將後端回傳之 company_logo 轉為可用圖片 URL（相對路徑 → 透過本機代理）
 function resolveCompanyLogo(rawLogoPath?: string | null): string | undefined {
-	if (!rawLogoPath) return undefined;
+	if (!rawLogoPath) { return undefined; }
 	const trimmed = String(rawLogoPath).trim();
-	if (!trimmed) return undefined;
+	if (!trimmed) { return undefined; }
 	// 已是完整網址則直接使用
 	if (/^https?:\/\//i.test(trimmed)) {
 		return encodeURI(trimmed);
@@ -37,7 +37,7 @@ function resolveCompanyLogo(rawLogoPath?: string | null): string | undefined {
 // 日期格式化
 const { $dayjs } = useNuxtApp();
 function formatEvaluationDate(dateStr?: string | null): string {
-	if (!dateStr) return '';
+	if (!dateStr) { return ''; }
 	const d = $dayjs(dateStr);
 	return d.isValid() ? d.format('YYYY/MM/DD HH:mm:ss') : '';
 }
@@ -155,7 +155,7 @@ function startEditEvaluation(item: ReviewItem) {
 // 提交評價
 async function submitEvaluationForItem(item: ReviewItem) {
 	const evaluationData = editingEvaluation.value[item.serial_num];
-	if (!evaluationData) return;
+	if (!evaluationData) { return; }
 
 	try {
 		// 顯示確認訊息
@@ -180,7 +180,7 @@ async function submitEvaluationForItem(item: ReviewItem) {
 		// 從 auth store 取得 userId，programId 來自列表的 program_id（新欄位）
 		const authStore = useUserAuthStore();
 		const userId = authStore.user?.id as number | undefined;
-		if (!userId) throw new Error('尚未登入或缺少使用者資訊');
+		if (!userId) { throw new Error('尚未登入或缺少使用者資訊'); }
 
 		const result = await submitEvaluation(userId, item.program_id, payload);
 
@@ -203,7 +203,7 @@ async function submitEvaluationForItem(item: ReviewItem) {
 		ElMessage.success('評價提交成功！');
 	}
 	catch (error: any) {
-		if (error === 'cancel') return;
+		if (error === 'cancel') { return; }
 
 		// 針對 400 Bad Request：直接以彈窗呈現後端訊息（忠實顯示）
 		const status = error?.status || error?.statusCode || error?.response?.status;

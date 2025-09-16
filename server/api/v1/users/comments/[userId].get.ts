@@ -16,15 +16,15 @@ export default createApiHandler(async (event) => {
 	const queryString = new URLSearchParams();
 
 	// 轉發查詢參數
-	if (query.page) queryString.append('page', String(query.page));
-	if (query.limit) queryString.append('limit', String(query.limit));
+	if (query.page) { queryString.append('page', String(query.page)); }
+	if (query.limit) { queryString.append('limit', String(query.limit)); }
 	if (query.status && Array.isArray(query.status)) {
 		query.status.forEach(status => queryString.append('status', String(status)));
 	}
 	else if (query.status) {
 		queryString.append('status', String(query.status));
 	}
-	if (query.sort) queryString.append('sort', String(query.sort));
+	if (query.sort) { queryString.append('sort', String(query.sort)); }
 
 	const qs = queryString.toString();
 	const endpoint = `/api-proxy/api/v1/users/${userId}/evaluations${qs ? `?${qs}` : ''}`;

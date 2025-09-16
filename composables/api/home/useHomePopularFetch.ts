@@ -84,7 +84,7 @@ export function useHomePopularFetch() {
 			daysLeft: typeof x.days_left === 'number' ? String(x.days_left) : '—',
 			coverUrl: (() => {
 				const raw = (x.img_path || '').toString().trim();
-				if (!raw) return null; // 空值→用預設圖
+				if (!raw) { return null; } // 空值→用預設圖
 				const isHttp = /^https?:\/\//i.test(raw);
 				const isLocal = raw.startsWith('/');
 				return (isHttp || isLocal) ? raw : null; // 非 http/本地路徑（如 "~/Images"）→ 視為無效

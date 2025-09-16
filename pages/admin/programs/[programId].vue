@@ -505,7 +505,7 @@ const reviewNote = ref('');
 
 // 解析 intro 內容
 const parsedIntro = computed(() => {
-	if (!program.intro) return null;
+	if (!program.intro) { return null; }
 	return parseIntroContent(program.intro);
 });
 

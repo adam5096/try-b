@@ -128,12 +128,12 @@ const visibleItems = computed(() => {
 });
 
 const pageStartDisplay = computed<number>(() => {
-	if (total.value === 0) return 0;
+	if (total.value === 0) { return 0; }
 	return (currentPage.value - 1) * pageSize.value + 1;
 });
 
 const pageEndDisplay = computed<number>(() => {
-	if (total.value === 0) return 0;
+	if (total.value === 0) { return 0; }
 	return Math.min(currentPage.value * pageSize.value, total.value);
 });
 
@@ -143,7 +143,7 @@ function handleClearAll() {
 
 function handleToggleFavorite(id: number) {
 	const target = items.value.find(x => x.id === id);
-	if (target) target.isFavorited = !target.isFavorited;
+	if (target) { target.isFavorited = !target.isFavorited; }
 }
 
 function handleViewDetail(item: FavoriteItem) {

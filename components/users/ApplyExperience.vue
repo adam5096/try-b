@@ -47,8 +47,8 @@ const rules: FormRules<ApplyForm> = {
 	agree: [
 		{
 			validator: (_rule, value: boolean, callback) => {
-				if (value) callback();
-				else callback(new Error('請勾選同意條款'));
+				if (value) { callback(); }
+				else { callback(new Error('請勾選同意條款')); }
 			},
 			trigger: 'change',
 		},
@@ -62,9 +62,9 @@ const resumeOptions = [
 const emit = defineEmits<{ (e: 'submitted'): void; (e: 'close'): void }>();
 
 const handleSubmit = async () => {
-	if (!formRef.value) return;
+	if (!formRef.value) { return; }
 	await formRef.value.validate(async (valid) => {
-		if (!valid) return;
+		if (!valid) { return; }
 		try {
 			submitting.value = true;
 			const authStore = useUserAuthStore();

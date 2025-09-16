@@ -105,10 +105,10 @@ const visibleComments = computed(() => {
 			? c.programTitle.toLowerCase().includes(q) || c.reviewer.toLowerCase().includes(q) || c.programId.toLowerCase().includes(q)
 			: true;
 		const matchRating = (() => {
-			if (filterRating.value === 'all') return true;
-			if (filterRating.value === '5') return c.rating === 5;
-			if (filterRating.value === '4plus') return c.rating >= 4;
-			if (filterRating.value === '3plus') return c.rating >= 3;
+			if (filterRating.value === 'all') { return true; }
+			if (filterRating.value === '5') { return c.rating === 5; }
+			if (filterRating.value === '4plus') { return c.rating >= 4; }
+			if (filterRating.value === '3plus') { return c.rating >= 3; }
 			return true;
 		})();
 		const matchStatus = filterStatus.value === 'all' ? true : c.status === filterStatus.value;
@@ -116,7 +116,7 @@ const visibleComments = computed(() => {
 	});
 
 	const sorted = filtered.sort((a, b) => {
-		if (sortBy.value === 'recent') return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+		if (sortBy.value === 'recent') { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; }
 		return a.date > b.date ? 1 : a.date < b.date ? -1 : 0;
 	});
 	return sorted;

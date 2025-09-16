@@ -35,7 +35,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
    *              此函式會使用儲存的 token 發送請求至 GET /api/v1/company
    */
 	async function fetchUser() {
-		if (!token.value) return;
+		if (!token.value) { return; }
 
 		try {
 			const { data: userData } = await useFetch<CompanyProfile>('/v1/company', {

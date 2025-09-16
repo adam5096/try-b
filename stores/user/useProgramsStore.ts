@@ -59,7 +59,7 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
 			if (data.value) {
 				// 正規化：確保每一筆清單都有可用的 Program Id
 				const normalizeImageUrl = (u?: string | null) => {
-					if (!u) return null;
+					if (!u) { return null; }
 					const httpsUrl = u.trim().replace(/^http:\/\//i, 'https://');
 					try {
 						return encodeURI(httpsUrl);

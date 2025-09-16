@@ -33,7 +33,7 @@ export const useUserProgramDetailStore = defineStore('userProgramDetail', () => 
 			currentProgramId.value = programId;
 
 			const detail = await fetchProgramDetail(programId);
-			if (!detail) throw new Error('無效的 API 回應格式');
+			if (!detail) { throw new Error('無效的 API 回應格式'); }
 			programDetail.value = detail;
 		}
 		catch (err) {

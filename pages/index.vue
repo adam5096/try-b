@@ -163,7 +163,7 @@ const { cards, pending, error, refresh } = useHomePopularFetch();
 const erroredImage = ref<Record<number, boolean>>({});
 function getCardImageSrc(index: number, coverUrl: string | null): string {
 	const fallback = defaultCardImages[index % defaultCardImages.length];
-	if (erroredImage.value[index]) return fallback;
+	if (erroredImage.value[index]) { return fallback; }
 	return coverUrl || fallback;
 }
 

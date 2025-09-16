@@ -125,6 +125,6 @@ export function extractIntroSummaryForCard(intro: string, maxLength = 120): stri
 		.replace(/\s+/g, ' ')
 		.trim();
 
-	if (singleLine.length <= maxLength) return singleLine;
+	if (singleLine.length <= maxLength) { return singleLine; }
 	return singleLine.slice(0, Math.max(0, maxLength - 1)).trimEnd() + '…';
 }

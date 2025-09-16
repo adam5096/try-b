@@ -114,7 +114,7 @@ function addStep() {
 
 function onUploadChange(file: any) {
 	const raw: File | undefined = file?.raw;
-	if (!raw) return false;
+	if (!raw) { return false; }
 	if (!ACCEPTED_MIME_TYPES.includes(raw.type)) {
 		ElNotification({ title: '格式不支援', message: '僅支援 jpg、jpeg、webp', type: 'warning' });
 		return false;
@@ -133,7 +133,7 @@ function onUploadChange(file: any) {
 
 function onUploadRemove(file: any) {
 	const raw: File | undefined = file?.raw;
-	if (!raw) return;
+	if (!raw) { return; }
 	uploadFiles.value = uploadFiles.value.filter(f => f !== raw);
 }
 
@@ -150,8 +150,8 @@ async function handleSubmit() {
 	// 送出前：將使用者選到的 title 轉回對應 id
 	const industryId = industries.value.find(i => i.title === selectedIndustryTitle.value)?.id;
 	const positionId = positions.value.find(p => p.title === selectedPositionTitle.value)?.id;
-	if (industryId) form.value.industry_id = industryId;
-	if (positionId) form.value.job_title_id = positionId;
+	if (industryId) { form.value.industry_id = industryId; }
+	if (positionId) { form.value.job_title_id = positionId; }
 
 	// 開發模式下輸出選擇結果，便於除錯
 

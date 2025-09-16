@@ -11,7 +11,7 @@ export const useCompanyApplicant = (
 		const resolvedApplicantId = toValue(applicantId);
 
 		// 當 companyId 為空時，返回 null，不發送請求
-		if (!resolvedCompanyId || !resolvedProgramId || !resolvedApplicantId) return null;
+		if (!resolvedCompanyId || !resolvedProgramId || !resolvedApplicantId) { return null; }
 
 		return `/api/v1/company/applicant/${resolvedCompanyId}/${resolvedProgramId}/${resolvedApplicantId}`;
 	});

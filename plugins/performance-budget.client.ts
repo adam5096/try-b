@@ -1,5 +1,5 @@
 export default defineNuxtPlugin(() => {
-	if (!import.meta.client) return;
+	if (!import.meta.client) { return; }
 
 	const config = useRuntimeConfig();
 

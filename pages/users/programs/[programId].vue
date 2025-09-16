@@ -44,7 +44,7 @@ const errorMessage = computed(() => programDetailStore.error);
 
 // 解析 intro 內容
 const parsedIntro = computed(() => {
-	if (!programDetail.value?.intro) return null;
+	if (!programDetail.value?.intro) { return null; }
 	return parseIntroContent(programDetail.value.intro);
 });
 

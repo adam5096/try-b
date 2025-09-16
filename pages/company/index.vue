@@ -50,11 +50,11 @@ const getProgramStatus = (program: any) => {
 	const programStart = new Date(program.ProgramStartDate);
 	const programEnd = new Date(program.ProgramEndDate);
 
-	if (now < publishStart) return '未發布';
-	if (now >= publishStart && now <= publishEnd) return '已發佈';
-	if (now > publishEnd && now < programStart) return '已截止';
-	if (now >= programStart && now <= programEnd) return '進行中';
-	if (now > programEnd) return '已結束';
+	if (now < publishStart) { return '未發布'; }
+	if (now >= publishStart && now <= publishEnd) { return '已發佈'; }
+	if (now > publishEnd && now < programStart) { return '已截止'; }
+	if (now >= programStart && now <= programEnd) { return '進行中'; }
+	if (now > programEnd) { return '已結束'; }
 
 	return '未知';
 };
@@ -99,7 +99,7 @@ const formatIntroText = (raw: any): string => {
 // 查看詳情（與使用者端交互一致，改導到公司端詳情頁）
 const handleViewDetail = async (program: any) => {
 	const id = program?.Id;
-	if (id === undefined || id === null || id === '') return;
+	if (id === undefined || id === null || id === '') { return; }
 	await navigateTo(`/company/programs/${id}`);
 };
 </script>

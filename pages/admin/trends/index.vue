@@ -136,7 +136,7 @@ const currentPage = ref<number>(1);
 const totalCandidates = ref<number>(24);
 
 const displayedFrom = computed(() => {
-	if (totalCandidates.value === 0) return 0;
+	if (totalCandidates.value === 0) { return 0; }
 	return (currentPage.value - 1) * pageSize.value + 1;
 });
 

@@ -136,7 +136,7 @@ const isSwitching = ref(false);
 let carouselSwitchTimer: ReturnType<typeof setTimeout> | null = null;
 const onCarouselChange = () => {
 	isSwitching.value = true;
-	if (carouselSwitchTimer) clearTimeout(carouselSwitchTimer);
+	if (carouselSwitchTimer) { clearTimeout(carouselSwitchTimer); }
 	carouselSwitchTimer = setTimeout(() => {
 		isSwitching.value = false;
 	}, 200);

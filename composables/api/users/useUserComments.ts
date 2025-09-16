@@ -4,12 +4,12 @@ export const useUserComments = () => {
 	const fetchComments = async (params: CommentsQueryParams = {}) => {
 		const queryParams = new URLSearchParams();
 
-		if (params.page) queryParams.append('page', params.page.toString());
-		if (params.limit) queryParams.append('limit', params.limit.toString());
+		if (params.page) { queryParams.append('page', params.page.toString()); }
+		if (params.limit) { queryParams.append('limit', params.limit.toString()); }
 		if (params.status && params.status.length > 0) {
 			params.status.forEach(status => queryParams.append('status', status));
 		}
-		if (params.sort) queryParams.append('sort', params.sort);
+		if (params.sort) { queryParams.append('sort', params.sort); }
 
 		const queryString = queryParams.toString();
 		// 動態取得 userId，避免硬編碼

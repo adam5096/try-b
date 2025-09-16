@@ -82,12 +82,12 @@ const buildKeylessUrl = (sourceUrl: string): string => {
 
 const safeSrc = computed(() => {
 	const val = props.src?.toString() ?? '';
-	if (!val) return '';
+	if (!val) { return ''; }
 
 	// 若是需要 key 的 v1 形式，優先改為 keyless 形式（避免本機/未授權網域報錯）
 	if (val.includes('/maps/embed/v1/')) {
 		const keyless = buildKeylessUrl(val);
-		if (keyless) return keyless;
+		if (keyless) { return keyless; }
 	}
 
 	// 允許的 Google Maps 網域
@@ -114,7 +114,7 @@ if (import.meta.client) {
 		isMapLoading,
 		(loading) => {
 			if (loading) {
-				if (fallbackTimer !== null) clearTimeout(fallbackTimer);
+				if (fallbackTimer !== null) { clearTimeout(fallbackTimer); }
 				fallbackTimer = window.setTimeout(() => {
 					if (isMapLoading.value) {
 						isMapLoading.value = false;

@@ -9,7 +9,7 @@ export const useCompanyProgramDetail = (
 		const resolvedProgramId = toValue(programId);
 
 		// 當 companyId 或 programId 為空時，返回 null，不發送請求
-		if (!resolvedCompanyId || !resolvedProgramId) return null;
+		if (!resolvedCompanyId || !resolvedProgramId) { return null; }
 
 		return `/api/v1/company/program-detail/${resolvedCompanyId}/${resolvedProgramId}`;
 	});

@@ -24,7 +24,7 @@ export const useCompanyApplicants = (companyId: MaybeRefOrGetter<number | null>,
 	const url = computed(() => {
 		const resolvedCompanyId = toValue(companyId);
 		const resolvedProgramId = toValue(programId);
-		if (!resolvedCompanyId || !resolvedProgramId) return null;
+		if (!resolvedCompanyId || !resolvedProgramId) { return null; }
 
 		return `/api/v1/company/applicants/${resolvedCompanyId}/${resolvedProgramId}`;
 	});

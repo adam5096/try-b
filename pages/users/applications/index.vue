@@ -85,7 +85,7 @@ const applicationList = ref<ApplicationItem[]>([
 const visibleApplications = computed(() => {
 	// 狀態過濾
 	const filtered = applicationList.value.filter((item) => {
-		if (selectedStatuses.value.length === 0) return true;
+		if (selectedStatuses.value.length === 0) { return true; }
 		return selectedStatuses.value.includes(item.status);
 	});
 	// 日期排序（appliedAt）
@@ -104,11 +104,11 @@ const currentPage = ref<number>(1);
 // Derived pagination info
 const totalItems = computed<number>(() => visibleApplications.value.length);
 const pageStartDisplay = computed<number>(() => {
-	if (totalItems.value === 0) return 0;
+	if (totalItems.value === 0) { return 0; }
 	return (currentPage.value - 1) * pageSize.value + 1;
 });
 const pageEndDisplay = computed<number>(() => {
-	if (totalItems.value === 0) return 0;
+	if (totalItems.value === 0) { return 0; }
 	return Math.min(currentPage.value * pageSize.value, totalItems.value);
 });
 

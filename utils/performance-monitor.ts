@@ -71,7 +71,7 @@ export class PerformanceMonitor {
    * 獲取特定類型資源的大小
    */
 	private getResourceSize(resourceType: string): number {
-		if (!import.meta.client) return 0;
+		if (!import.meta.client) { return 0; }
 
 		const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
 		let totalSize = 0;

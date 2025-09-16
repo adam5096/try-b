@@ -12,7 +12,7 @@ export const useCompanyProgramDetailStore = defineStore('company-program-detail'
 	const hasProgramDetail = computed(() => !!programDetail.value);
 
 	const programStats = computed(() => {
-		if (!programDetail.value) return null;
+		if (!programDetail.value) { return null; }
 
 		return {
 			totalViews: programDetail.value.Views?.TotalViews ?? 0,
@@ -30,7 +30,7 @@ export const useCompanyProgramDetailStore = defineStore('company-program-detail'
 	});
 
 	const programInfo = computed(() => {
-		if (!programDetail.value) return null;
+		if (!programDetail.value) { return null; }
 
 		return {
 			id: programDetail.value.Id,

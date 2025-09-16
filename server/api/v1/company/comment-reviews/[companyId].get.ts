@@ -18,8 +18,8 @@ export default createApiHandler(async (event) => {
 	const query = getQuery(event);
 	const queryString = new URLSearchParams();
 
-	if (query.page) queryString.append('page', String(query.page));
-	if (query.limit) queryString.append('limit', String(query.limit));
+	if (query.page) { queryString.append('page', String(query.page)); }
+	if (query.limit) { queryString.append('limit', String(query.limit)); }
 
 	const qs = queryString.toString();
 	const endpoint = `/api-proxy/api/v1/company/${companyId}/evaluations${qs ? `?${qs}` : ''}`;

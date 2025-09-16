@@ -7,13 +7,13 @@ export default createApiHandler(async (event) => {
 	const queryString = new URLSearchParams();
 
 	// 轉發所有查詢參數
-	if (query.page) queryString.append('page', String(query.page));
-	if (query.limit) queryString.append('limit', String(query.limit));
-	if (query.keyword) queryString.append('keyword', String(query.keyword));
-	if (query.industry) queryString.append('industry', String(query.industry));
-	if (query.jobType) queryString.append('jobType', String(query.jobType));
-	if (query.location) queryString.append('location', String(query.location));
-	if (query.sort) queryString.append('sort', String(query.sort));
+	if (query.page) { queryString.append('page', String(query.page)); }
+	if (query.limit) { queryString.append('limit', String(query.limit)); }
+	if (query.keyword) { queryString.append('keyword', String(query.keyword)); }
+	if (query.industry) { queryString.append('industry', String(query.industry)); }
+	if (query.jobType) { queryString.append('jobType', String(query.jobType)); }
+	if (query.location) { queryString.append('location', String(query.location)); }
+	if (query.sort) { queryString.append('sort', String(query.sort)); }
 
 	const qs = queryString.toString();
 	const endpoint = `/api-proxy/api/v1/programs${qs ? `?${qs}` : ''}`;

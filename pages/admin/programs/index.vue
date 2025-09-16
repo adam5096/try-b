@@ -138,11 +138,11 @@ const visiblePrograms = computed(() => {
 			: true;
 		const matchProgramStatus = (() => {
 			const f = appliedProgramStatus.value;
-			if (f === 'all') return true;
-			if (f === 'upcoming') return p.status === 'draft' || p.status === 'recruiting';
-			if (f === 'ongoing') return p.status === 'ongoing';
+			if (f === 'all') { return true; }
+			if (f === 'upcoming') { return p.status === 'draft' || p.status === 'recruiting'; }
+			if (f === 'ongoing') { return p.status === 'ongoing'; }
 			// 將取消視為已完成的一種結束狀態，與設計的「已完成」同一分組
-			if (f === 'finished') return p.status === 'finished' || p.status === 'canceled';
+			if (f === 'finished') { return p.status === 'finished' || p.status === 'canceled'; }
 			return true;
 		})();
 		const matchReviewStatus = appliedReviewStatus.value === 'all'

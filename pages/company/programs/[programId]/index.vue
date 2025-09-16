@@ -65,7 +65,7 @@ const programStats = computed(() => programDetailStore.programStats);
 
 // 解析 intro 內容
 const parsedIntro = computed(() => {
-	if (!program.value?.intro) return null;
+	if (!program.value?.intro) { return null; }
 	return parseIntroContent(program.value.intro);
 });
 

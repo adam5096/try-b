@@ -31,7 +31,7 @@ const { fetchEvaluations } = useCompanyCommentReviews();
 
 function formatDate(input: string) {
 	const d = new Date(input);
-	if (isNaN(d.getTime())) return input;
+	if (isNaN(d.getTime())) { return input; }
 	const y = d.getFullYear();
 	const m = String(d.getMonth() + 1).padStart(2, '0');
 	const day = String(d.getDate()).padStart(2, '0');
@@ -60,7 +60,7 @@ async function loadData() {
 					// 直接採用後端 Headshot（只處理空白字元編碼）
 					avatar: (() => {
 						const raw = item.Headshot || '';
-						if (!raw) return '';
+						if (!raw) { return ''; }
 						return encodeURI(raw);
 					})(),
 					role: item.Identity?.title || '—',

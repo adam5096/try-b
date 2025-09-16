@@ -64,7 +64,7 @@ const rules = reactive<FormRules>({
 });
 
 const submitReview = async (formEl: FormInstance | undefined) => {
-	if (!formEl) return;
+	if (!formEl) { return; }
 	await formEl.validate(async (valid) => {
 		if (valid) {
 			const programId = String(route.params.programId);

@@ -34,8 +34,8 @@ const rules: FormRules<ReviewForm> = {
 		{ required: true, message: '請輸入評價內容', trigger: ['blur', 'change'] },
 		{
 			validator: (_r, value: string, callback) => {
-				if (typeof value !== 'string') return callback(new Error('內容格式不正確'));
-				if (value.length > MAX_LENGTH) return callback(new Error(`字數請在 ${MAX_LENGTH} 字以內`));
+				if (typeof value !== 'string') { return callback(new Error('內容格式不正確')); }
+				if (value.length > MAX_LENGTH) { return callback(new Error(`字數請在 ${MAX_LENGTH} 字以內`)); }
 				callback();
 			},
 			trigger: ['blur', 'change'],
@@ -44,7 +44,7 @@ const rules: FormRules<ReviewForm> = {
 	agree: [
 		{
 			validator: (_r, value: boolean, callback) => {
-				if (!value) return callback(new Error('請勾選同意聲明'));
+				if (!value) { return callback(new Error('請勾選同意聲明')); }
 				callback();
 			},
 			trigger: 'change',
@@ -62,7 +62,7 @@ function handleCancel(): void {
 
 async function handleSubmit(): Promise<void> {
 	const valid = await formRef.value?.validate().catch(() => false);
-	if (!valid) return;
+	if (!valid) { return; }
 
 	// 預留：提交 API
 	ElMessage.success('已送出評價');
