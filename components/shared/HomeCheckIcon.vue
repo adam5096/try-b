@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { CircleCheckFilled } from '@element-plus/icons-vue'
+import { CircleCheckFilled } from '@element-plus/icons-vue';
 </script>
 
 <template>
-  <CircleCheckFilled class="w-6 h-6 text-primary-blue-light" />
+	<CircleCheckFilled class="w-6 h-6 text-primary-blue-light" />
 </template>

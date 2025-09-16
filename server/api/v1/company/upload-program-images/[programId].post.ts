@@ -1,29 +1,29 @@
-import { createApiHandler } from '~/server/utils/apiHandler'
-import { createAuthHeaders } from '~/server/utils/headers'
+import { createApiHandler } from '~/server/utils/apiHandler';
+import { createAuthHeaders } from '~/server/utils/headers';
 
 export default createApiHandler(async (event) => {
-  const programId = getRouterParam(event, 'programId')
-  
-  if (!programId) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Missing programId parameter',
-    })
-  }
+	const programId = getRouterParam(event, 'programId');
 
-  // 讀取原始請求體，而不是解析後的 FormData
-  const body = await readRawBody(event)
-  
-  // 使用統一的認證 headers 處理
-  const headers = createAuthHeaders(event, 'companyAuthToken')
+	if (!programId) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'Missing programId parameter',
+		});
+	}
 
-  // 透過 Nitro 的 proxy 設定轉發到真實後端
-  // 規則：必須包含 api 並使用 /api-proxy 進行代理
-  const data = await event.$fetch(`/api-proxy/api/v1/programs/${programId}/images`, {
-    method: 'POST',
-    headers,
-    body,
-  })
+	// 讀取原始請求體，而不是解析後的 FormData
+	const body = await readRawBody(event);
 
-  return data
-})
+	// 使用統一的認證 headers 處理
+	const headers = createAuthHeaders(event, 'companyAuthToken');
+
+	// 透過 Nitro 的 proxy 設定轉發到真實後端
+	// 規則：必須包含 api 並使用 /api-proxy 進行代理
+	const data = await event.$fetch(`/api-proxy/api/v1/programs/${programId}/images`, {
+		method: 'POST',
+		headers,
+		body,
+	});
+
+	return data;
+});
