@@ -59,5 +59,5 @@ library.add(
 export default defineNuxtPlugin((nuxtApp) => {
 	// 確保在服務端也註冊元件
 	nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon)
-	nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon)
+  nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon)
 });

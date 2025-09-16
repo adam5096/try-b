@@ -18,7 +18,7 @@ export const useUserRegister = () => {
 			method: 'POST',
 			body: registerData,
 		});
-	}
+  }
 
 	return { register };
-}
+};

@@ -46,13 +46,13 @@ const { data: programDetail, error: programError, pending: isLoading } = useComp
 watch(programDetail, (newData) => {
 	if (newData) {
 		programDetailStore.setProgramDetail(newData);
-	}
+  }
 }, { immediate: true });
 
 watch(programError, (newError) => {
 	if (newError) {
 		programDetailStore.setError(newError.message || '載入計畫詳情失敗');
-	}
+  }
 }, { immediate: true });
 
 watch(isLoading, (loading) => {
@@ -66,7 +66,7 @@ const programStats = computed(() => programDetailStore.programStats);
 // 解析 intro 內容
 const parsedIntro = computed(() => {
 	if (!program.value?.intro) return null;
-	return parseIntroContent(program.value.intro);
+  return parseIntroContent(program.value.intro);
 })
 
 // 申請統計資料 (從 e comp 7 API 回應中的 Statistics 物件取得)
@@ -95,11 +95,11 @@ const formatDate = (dateString: string) => {
 		month: '2-digit',
 		day: '2-digit',
 	});
-}
+};
 
 const refresh = () => {
 	window.location.reload();
-}
+};
 </script>
 
 <template>

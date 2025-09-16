@@ -84,11 +84,11 @@ const reviewResult = ref<'approved' | 'rejected'>('approved')
 const submitReview = () => {
 	// 先預設成功：直接導回列表，待串接真實 API 後再補齊流程
 	navigateTo(adminRoutes.comments())
-};
+}
 
 const goToProgram = () => {
 	navigateTo(adminRoutes.programDetail(detail.value.programId))
-};
+}
 
 // 審核歷史（示意資料，用於 UI 切版）
 const reviewHistory = ref<ReviewHistoryItem[]>([
@@ -108,15 +108,15 @@ const reviewHistory = ref<ReviewHistoryItem[]>([
 
 const goBackToList = () => {
 	navigateTo(adminRoutes.comments())
-};
+}
 
 const approve = () => {
 	detail.value.status = 'manualConfirmed'
-};
+}
 
 const reject = () => {
 	detail.value.status = 'manualRejected'
-};
+}
 </script>
 
 <template>

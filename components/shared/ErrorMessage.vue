@@ -95,13 +95,13 @@ const emit = defineEmits<Emits>();
 
 const handleRefresh = () => {
 	emit('refresh');
-}
+};
 
 const handleBack = () => {
 	emit('back');
-}
+};
 
 const handleContact = () => {
 	emit('contact');
-}
+};
 </script>

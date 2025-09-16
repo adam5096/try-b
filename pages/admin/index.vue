@@ -16,7 +16,7 @@ const showPassword = ref(false)
 const onSubmitLogin = () => {
 	// 後續可在此加入實際驗證流程；目前先直接導向管理列表頁
 	navigateTo(adminRoutes.programs())
-};
+}
 </script>
 
 <template>

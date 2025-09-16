@@ -15,18 +15,18 @@ const navItems = [
 
 const handleNav = (item: { key: string; label: string }, idx: number) => {
 	activeIndex.value = idx
-	if (item.key === 'programs') {
+  if (item.key === 'programs') {
 		navigateTo(adminRoutes.programs())
-	}
+  }
 	if (item.key === 'popular') {
 		navigateTo(adminRoutes.trends())
-	}
+  }
 	if (item.key === 'comments') {
 		navigateTo(adminRoutes.comments())
-	}
+  }
 	if (item.key === 'dashboard') {
 		navigateTo(adminRoutes.dashboard())
-	}
+  }
 }
 </script>
 

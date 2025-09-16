@@ -19,30 +19,30 @@ export interface ResourceBudget {
 
 export class PerformanceMonitor {
 	private budgets: PerformanceBudget[] = [];
-	private resourceBudgets: ResourceBudget[] = [];
+  private resourceBudgets: ResourceBudget[] = [];
 
-	/**
+  /**
    * 檢查 Core Web Vitals 是否在預算範圍內
    */
-	checkWebVitals(vitals: Record<string, number>): PerformanceBudget[] {
+  checkWebVitals(vitals: Record<string, number>): PerformanceBudget[] {
 		const budgets = [
 			{ metric: 'LCP', budget: 2500 },
 			{ metric: 'FID', budget: 100 },
 			{ metric: 'CLS', budget: 0.1 },
 			{ metric: 'FCP', budget: 2000 },
 			{ metric: 'TTFB', budget: 800 },
-		]
+		];
 
 		return budgets.map(({ metric, budget }) => {
 			const actual = vitals[metric] || 0;
-			const status: 'pass' | 'fail' = actual <= budget ? 'pass' : 'fail';
+      const status: 'pass' | 'fail' = actual <= budget ? 'pass' : 'fail';
 
-			const result = { metric, budget, actual, status };
-			this.budgets.push(result);
+      const result = { metric, budget, actual, status };
+      this.budgets.push(result);
 
-			return result;
-		})
-	}
+      return result;
+    })
+  }
 
 	/**
    * 檢查資源大小是否在預算範圍內
@@ -54,18 +54,18 @@ export class PerformanceMonitor {
 			{ resourceType: 'image', budget: 1000000 }, // 1MB
 			{ resourceType: 'font', budget: 100000 }, // 100KB
 			{ resourceType: 'total', budget: 2000000 }, // 2MB
-		]
+		];
 
 		return budgets.map(({ resourceType, budget }) => {
 			const actual = this.getResourceSize(resourceType);
-			const status: 'pass' | 'fail' = actual <= budget ? 'pass' : 'fail';
+      const status: 'pass' | 'fail' = actual <= budget ? 'pass' : 'fail';
 
-			const result = { resourceType, budget, actual, status };
-			this.resourceBudgets.push(result);
+      const result = { resourceType, budget, actual, status };
+      this.resourceBudgets.push(result);
 
-			return result;
-		})
-	}
+      return result;
+    })
+  }
 
 	/**
    * 獲取特定類型資源的大小
@@ -73,28 +73,28 @@ export class PerformanceMonitor {
 	private getResourceSize(resourceType: string): number {
 		if (!import.meta.client) return 0;
 
-		const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
-		let totalSize = 0;
+    const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+    let totalSize = 0;
 
-		resources.forEach((resource) => {
+    resources.forEach((resource) => {
 			if (resourceType === 'total') {
 				totalSize += resource.transferSize || 0;
-			}
+      }
 			else {
 				const url = resource.name.toLowerCase();
-				if (
+        if (
 					(resourceType === 'script' && url.includes('.js'))
-					|| (resourceType === 'stylesheet' && url.includes('.css'))
+          || (resourceType === 'stylesheet' && url.includes('.css'))
 					|| (resourceType === 'image' && /\.(jpg|jpeg|png|gif|webp|svg)$/.test(url))
-					|| (resourceType === 'font' && /\.(woff|woff2|ttf|otf)$/.test(url))
+          || (resourceType === 'font' && /\.(woff|woff2|ttf|otf)$/.test(url))
 				) {
 					totalSize += resource.transferSize || 0;
-				}
+        }
 			}
 		});
 
-		return totalSize;
-	}
+    return totalSize;
+  }
 
 	/**
    * 生成效能報告
@@ -110,11 +110,11 @@ export class PerformanceMonitor {
 		};
 	} {
 		const allBudgets = [...this.budgets, ...this.resourceBudgets];
-		const passedChecks = allBudgets.filter(b => b.status === 'pass').length;
-		const failedChecks = allBudgets.filter(b => b.status === 'fail').length;
-		const overallScore = Math.round((passedChecks / allBudgets.length) * 100);
+    const passedChecks = allBudgets.filter(b => b.status === 'pass').length;
+    const failedChecks = allBudgets.filter(b => b.status === 'fail').length;
+    const overallScore = Math.round((passedChecks / allBudgets.length) * 100);
 
-		return {
+    return {
 			webVitals: this.budgets,
 			resources: this.resourceBudgets,
 			summary: {
@@ -123,7 +123,7 @@ export class PerformanceMonitor {
 				failedChecks,
 				overallScore,
 			},
-		}
+		};
 	}
 
 	/**
@@ -132,7 +132,7 @@ export class PerformanceMonitor {
 	async sendReport(report: ReturnType<PerformanceMonitor['generateReport']>): Promise<void> {
 		if (process.env.NODE_ENV !== 'production') {
 			console.log('Performance Report:', report);
-			return;
+      return;
 		}
 
 		try {
@@ -143,7 +143,7 @@ export class PerformanceMonitor {
 					event_label: `Score: ${report.summary.overallScore}%`,
 					value: report.summary.overallScore,
 				});
-			}
+      }
 
 			// 發送到自建監控系統
 			// await fetch('/api/analytics/performance', {
@@ -154,7 +154,7 @@ export class PerformanceMonitor {
 		}
 		catch (error) {
 			console.error('Failed to send performance report:', error);
-		}
+    }
 	}
 }
 

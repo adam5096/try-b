@@ -86,15 +86,15 @@ const visibleApplications = computed(() => {
 	// 狀態過濾
 	const filtered = applicationList.value.filter((item) => {
 		if (selectedStatuses.value.length === 0) return true
-		return selectedStatuses.value.includes(item.status)
-	});
-	// 日期排序（appliedAt）
-	const sorted = filtered.slice().sort((a, b) => {
+    return selectedStatuses.value.includes(item.status)
+  });
+  // 日期排序（appliedAt）
+  const sorted = filtered.slice().sort((a, b) => {
 		const ta = new Date(a.appliedAt).getTime()
-		const tb = new Date(b.appliedAt).getTime()
-		return sortOrder.value === 'desc' ? tb - ta : ta - tb
-	});
-	return sorted
+    const tb = new Date(b.appliedAt).getTime()
+    return sortOrder.value === 'desc' ? tb - ta : ta - tb
+  });
+  return sorted
 });
 
 // Pagination state
@@ -105,17 +105,17 @@ const currentPage = ref<number>(1)
 const totalItems = computed<number>(() => visibleApplications.value.length)
 const pageStartDisplay = computed<number>(() => {
 	if (totalItems.value === 0) return 0
-	return (currentPage.value - 1) * pageSize.value + 1
+  return (currentPage.value - 1) * pageSize.value + 1
 });
 const pageEndDisplay = computed<number>(() => {
 	if (totalItems.value === 0) return 0
-	return Math.min(currentPage.value * pageSize.value, totalItems.value)
+  return Math.min(currentPage.value * pageSize.value, totalItems.value)
 });
 
 const paginatedApplications = computed<ApplicationItem[]>(() => {
 	const start = (currentPage.value - 1) * pageSize.value
-	const end = start + pageSize.value
-	return visibleApplications.value.slice(start, end)
+  const end = start + pageSize.value
+  return visibleApplications.value.slice(start, end)
 });
 
 // Reset page when filters change
@@ -127,45 +127,45 @@ watch(visibleApplications, () => {
 watch(isFilterOpen, (open) => {
 	if (open) {
 		draftSelectedStatuses.value = [...selectedStatuses.value]
-		draftSortOrder.value = sortOrder.value
-	}
+    draftSortOrder.value = sortOrder.value
+  }
 })
 
 function toggleDraftStatus(status: ApplicationStatus): void {
 	const set = new Set(draftSelectedStatuses.value)
-	if (set.has(status)) {
+  if (set.has(status)) {
 		set.delete(status)
-	}
+  }
 	else {
 		set.add(status)
-	}
+  }
 	draftSelectedStatuses.value = Array.from(set)
 }
 
 function resetDraftFilters(): void {
 	draftSelectedStatuses.value = []
-	draftSortOrder.value = 'desc'
+  draftSortOrder.value = 'desc'
 }
 
 function applyDraftFilters(): void {
 	selectedStatuses.value = [...draftSelectedStatuses.value]
-	sortOrder.value = draftSortOrder.value
-	isFilterOpen.value = false
+  sortOrder.value = draftSortOrder.value
+  isFilterOpen.value = false
 }
 
 function getTagType(status: ApplicationStatus): 'success' | 'warning' | 'danger' | 'info' {
 	switch (status) {
 		case '已通過':
 			return 'success'
-		case '待審核':
+  case '待審核':
 			return 'warning'
-		case '未通過':
+  case '未通過':
 			return 'danger'
-		case '已取消':
+  case '已取消':
 			return 'info'
-		case '已完成':
+  case '已完成':
 			return 'success'
-	}
+  }
 }
 
 function getStatusText(status: ApplicationStatus): string {

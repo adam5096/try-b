@@ -25,30 +25,30 @@ const isLoading = ref(false);
 async function handleSubmit() {
 	if (password.value !== confirmPassword.value) {
 		ElMessage.error('兩次輸入的密碼不一致');
-		return;
+    return;
 	}
 	if (!formData.value.name || !formData.value.account || !formData.value.email || !password.value) {
 		ElMessage.error('請填寫所有必填欄位');
-		return;
+    return;
 	}
 
 	isLoading.value = true;
-	try {
+  try {
 		const registerPayload: UserRegisterData = {
 			...formData.value,
 			password: password.value,
-		}
+		};
 		await authStore.register(registerPayload);
-		ElMessage.success('註冊成功！現在您可以登入了。');
-		router.push({ name: 'user-login' });
-	}
+    ElMessage.success('註冊成功！現在您可以登入了。');
+    router.push({ name: 'user-login' });
+  }
 	catch (error: any) {
 		const errorMessage = error.data?.message || '註冊失敗，請稍後再試。';
-		ElMessage.error(errorMessage);
-	}
+    ElMessage.error(errorMessage);
+  }
 	finally {
 		isLoading.value = false;
-	}
+  }
 }
 </script>
 

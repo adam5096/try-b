@@ -4,26 +4,26 @@ import { getForwardHeaders } from '~/server/utils/headers'
 export default createApiHandler(async (event) => {
 	const programId = getRouterParam(event, 'programId')
 
-	if (!programId) {
+  if (!programId) {
 		throw createError({
 			statusCode: 400,
 			statusMessage: 'Missing programId parameter',
 		})
-	}
+  }
 
 	// 讀取請求體
 	const body = await readBody(event)
 
-	// 使用統一的 headers 處理（申請需要認證）
-	const headers = getForwardHeaders(event)
+  // 使用統一的 headers 處理（申請需要認證）
+  const headers = getForwardHeaders(event)
 
-	// 透過 Nitro 的 proxy 設定轉發到真實後端
-	// 規則：必須包含 api 並使用 /api-proxy 進行代理
-	const data = await event.$fetch(`/api-proxy/api/v1/programs/${programId}/applications`, {
+  // 透過 Nitro 的 proxy 設定轉發到真實後端
+  // 規則：必須包含 api 並使用 /api-proxy 進行代理
+  const data = await event.$fetch(`/api-proxy/api/v1/programs/${programId}/applications`, {
 		method: 'POST',
 		headers,
 		body,
 	})
 
-	return data
+  return data
 });

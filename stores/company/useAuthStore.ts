@@ -16,44 +16,44 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 		secure: (import.meta as any).prod ?? false,
 	};
 	const tokenCookie = useCookie<string | null>('companyAuthToken', cookieOptions)
-	const userCookie = useCookie<CompanyProfile | null>('companyAuthUser', cookieOptions)
-	const companyIdCookie = useCookie<number | null>('companyId', cookieOptions)
-	// 保存登入回應中的基本使用者資訊（含 Role、Account）以供版頭顯示
-	const basicUserCookie = useCookie<CompanyUser | null>('companyAuthBasic', cookieOptions)
+  const userCookie = useCookie<CompanyProfile | null>('companyAuthUser', cookieOptions)
+  const companyIdCookie = useCookie<number | null>('companyId', cookieOptions)
+  // 保存登入回應中的基本使用者資訊（含 Role、Account）以供版頭顯示
+  const basicUserCookie = useCookie<CompanyUser | null>('companyAuthBasic', cookieOptions)
 
-	const token = ref<string | null>(tokenCookie.value ?? null)
-	const user = ref<CompanyProfile | null>(userCookie.value ?? null)
-	const companyId = ref<number | null>(companyIdCookie.value ?? null)
-	const basicUser = ref<CompanyUser | null>(basicUserCookie.value ?? null)
+  const token = ref<string | null>(tokenCookie.value ?? null)
+  const user = ref<CompanyProfile | null>(userCookie.value ?? null)
+  const companyId = ref<number | null>(companyIdCookie.value ?? null)
+  const basicUser = ref<CompanyUser | null>(basicUserCookie.value ?? null)
 
-	const { $api } = useNuxtApp()
-	const api = $api as typeof $fetch
+  const { $api } = useNuxtApp()
+  const api = $api as typeof $fetch
 
-	const isLoggedIn = computed(() => !!token.value && !!user.value)
+  const isLoggedIn = computed(() => !!token.value && !!user.value)
 
-	/**
+  /**
    * @description 取得當前登入的企業使用者詳細資料
    *              此函式會使用儲存的 token 發送請求至 GET /api/v1/company
    */
-	async function fetchUser() {
+  async function fetchUser() {
 		if (!token.value) return
 
-		try {
+    try {
 			const { data: userData } = await useFetch<CompanyProfile>('/v1/company', {
 				baseURL: '/api',
 			});
-			if (userData.value) {
+      if (userData.value) {
 				user.value = userData.value
-				userCookie.value = userData.value
-			}
+        userCookie.value = userData.value
+      }
 			else {
 				throw new Error('No user data returned')
-			}
+      }
 		}
 		catch (error) {
 			// 如果 token 失效或驗證失敗，則清除所有登入狀態
 			await logout()
-		}
+    }
 	}
 
 	/**
@@ -64,45 +64,45 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
    */
 	async function login(loginData: LoginData) {
 		const { login: performLogin } = useCompanyLogin()
-		try {
+    try {
 			// 使用 composable 統一 API 調用方式，與 user 端保持一致
 			const response = await performLogin(loginData)
 
-			if (response && response.token) {
+      if (response && response.token) {
 				token.value = response.token
-				tokenCookie.value = response.token
+        tokenCookie.value = response.token
 
-				// 從登入回應中取得並儲存 CompanyId
-				companyId.value = response.user.companyId
-				companyIdCookie.value = response.user.companyId
+        // 從登入回應中取得並儲存 CompanyId
+        companyId.value = response.user.companyId
+        companyIdCookie.value = response.user.companyId
 
-				// 保存登入回應中的基本使用者資訊（Account/Role）
-				basicUser.value = response.user
-				basicUserCookie.value = response.user
+        // 保存登入回應中的基本使用者資訊（Account/Role）
+        basicUser.value = response.user
+        basicUserCookie.value = response.user
 
-				// 登入成功後，重置企業付款狀態持久化並同步到 store
-				const companyPayedCookie = useCookie<boolean>('company_is_payed', {
+        // 登入成功後，重置企業付款狀態持久化並同步到 store
+        const companyPayedCookie = useCookie<boolean>('company_is_payed', {
 					path: '/',
 					sameSite: 'lax',
 				})
-				companyPayedCookie.value = false
-				try {
+        companyPayedCookie.value = false
+        try {
 					const { useCompanyPlanStore } = await import('~/stores/company/usePlanStore')
-					const planStore = useCompanyPlanStore()
-					planStore.resetPaid()
-				}
+          const planStore = useCompanyPlanStore()
+          planStore.resetPaid()
+        }
 				catch (e) {
 					// 忽略可能的循環依賴問題，至少 Cookie 已重置
 				}
 			}
 			else {
 				throw new Error('登入失敗：無效的回應格式')
-			}
+      }
 		}
 		catch (error) {
 			await logout()
-			throw error
-		}
+      throw error
+    }
 	}
 
 	/**
@@ -115,33 +115,33 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 					method: 'POST',
 					baseURL: '/api',
 				})
-			}
+      }
 			catch (error) {
 			}
 		}
 		user.value = null
-		userCookie.value = null
-		token.value = null
-		tokenCookie.value = null
-		companyId.value = null
-		companyIdCookie.value = null
-		basicUser.value = null
-		basicUserCookie.value = null
+    userCookie.value = null
+    token.value = null
+    tokenCookie.value = null
+    companyId.value = null
+    companyIdCookie.value = null
+    basicUser.value = null
+    basicUserCookie.value = null
 
-		// 也一併清除企業付款狀態的持久化 Cookie
-		const companyPayedCookie = useCookie<boolean | null>('company_is_payed', {
+    // 也一併清除企業付款狀態的持久化 Cookie
+    const companyPayedCookie = useCookie<boolean | null>('company_is_payed', {
 			path: '/',
 			sameSite: 'lax',
 		})
-		companyPayedCookie.value = null
+    companyPayedCookie.value = null
 
-		// 清除「首次進入方案列表」的旗標 Cookie
-		const firstVisitFlag = useCookie<boolean | null>('company_purchase_first_visit_done', {
+    // 清除「首次進入方案列表」的旗標 Cookie
+    const firstVisitFlag = useCookie<boolean | null>('company_purchase_first_visit_done', {
 			path: '/',
 			sameSite: 'lax',
 		})
-		firstVisitFlag.value = null
-	}
+    firstVisitFlag.value = null
+  }
 
 	return {
 		user,

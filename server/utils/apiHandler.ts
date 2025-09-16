@@ -9,27 +9,27 @@ export const createApiHandler = <T extends EventHandlerRequest, D>(
 ): EventHandler<T, D> =>
 	defineEventHandler<T>(async (event) => {
 		const startTime = Date.now()
-		const requestId = event.context.requestId || crypto.randomUUID()
+      const requestId = event.context.requestId || crypto.randomUUID()
 
-		try {
+      try {
 			const result = await handler(event)
 
-			// 記錄成功請求
-			const duration = Date.now() - startTime
-			console.log(`✅ API Success [${requestId}]: ${event.path} - ${duration}ms`)
+        // 記錄成功請求
+        const duration = Date.now() - startTime
+        console.log(`✅ API Success [${requestId}]: ${event.path} - ${duration}ms`)
 
-			return result
-		}
+        return result
+      }
 		catch (error: any) {
 			const duration = Date.now() - startTime
 
-			// 根據錯誤類型分類處理
-			if (error.statusCode >= 400 && error.statusCode < 500) {
+        // 根據錯誤類型分類處理
+        if (error.statusCode >= 400 && error.statusCode < 500) {
 				console.warn(`⚠️ Client Error [${requestId}]: ${event.path} - ${error.statusCode} - ${duration}ms`)
-			}
+        }
 			else {
 				console.error(`❌ Server Error [${requestId}]: ${event.path} - ${error.statusCode || 500} - ${duration}ms`)
-			}
+        }
 
 			// 統一錯誤處理
 			throw createError({
@@ -42,7 +42,7 @@ export const createApiHandler = <T extends EventHandlerRequest, D>(
 					duration: `${duration}ms`,
 				},
 			})
-		}
+      }
 	})
 
 /**
@@ -52,7 +52,7 @@ export const createApiHandler = <T extends EventHandlerRequest, D>(
 export const handleApiError = (error: any, defaultMessage: string, requestId?: string) => {
 	const trackingId = requestId || crypto.randomUUID()
 
-	if (error?.statusCode) {
+  if (error?.statusCode) {
 		throw createError({
 			statusCode: error.statusCode,
 			statusMessage: error.statusMessage || defaultMessage,
@@ -62,7 +62,7 @@ export const handleApiError = (error: any, defaultMessage: string, requestId?: s
 				timestamp: new Date().toISOString(),
 			},
 		})
-	}
+  }
 
 	throw createError({
 		statusCode: 500,
@@ -72,4 +72,4 @@ export const handleApiError = (error: any, defaultMessage: string, requestId?: s
 			timestamp: new Date().toISOString(),
 		},
 	})
-};
+}

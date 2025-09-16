@@ -124,17 +124,17 @@ const pageSize = ref(6);
 const total = computed(() => items.value.length);
 const visibleItems = computed(() => {
 	const start = (currentPage.value - 1) * pageSize.value;
-	return items.value.slice(start, start + pageSize.value);
+  return items.value.slice(start, start + pageSize.value);
 })
 
 const pageStartDisplay = computed<number>(() => {
 	if (total.value === 0) return 0;
-	return (currentPage.value - 1) * pageSize.value + 1;
+  return (currentPage.value - 1) * pageSize.value + 1;
 })
 
 const pageEndDisplay = computed<number>(() => {
 	if (total.value === 0) return 0;
-	return Math.min(currentPage.value * pageSize.value, total.value);
+  return Math.min(currentPage.value * pageSize.value, total.value);
 })
 
 function handleClearAll() {
@@ -143,7 +143,7 @@ function handleClearAll() {
 
 function handleToggleFavorite(id: number) {
 	const target = items.value.find(x => x.id === id);
-	if (target) target.isFavorited = !target.isFavorited;
+  if (target) target.isFavorited = !target.isFavorited;
 }
 
 function handleViewDetail(item: FavoriteItem) {

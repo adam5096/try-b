@@ -137,12 +137,12 @@ const totalCandidates = ref<number>(24);
 
 const displayedFrom = computed(() => {
 	if (totalCandidates.value === 0) return 0;
-	return (currentPage.value - 1) * pageSize.value + 1;
+  return (currentPage.value - 1) * pageSize.value + 1;
 })
 
 const displayedTo = computed(() => {
 	const end = currentPage.value * pageSize.value;
-	return end > totalCandidates.value ? totalCandidates.value : end;
+  return end > totalCandidates.value ? totalCandidates.value : end;
 })
 </script>
 

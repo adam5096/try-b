@@ -32,7 +32,7 @@ const fallbackDescriptions: { [key: number]: string } = {
 const processedPlans = computed(() => {
 	if (!plans.value) {
 		return [];
-	}
+  }
 	return plans.value.map(plan => ({
 		...plan,
 		description: plan.description || fallbackDescriptions[plan.id] || '為您的企業需求量身打造',
@@ -75,38 +75,38 @@ function selectPlan(planId: number) {
 // 由目前方案（紅框）共享資料到下方「方案詳情」（黃框）
 const detailDurationAndLimit = computed(() => {
 	const p = planStore.plan as any;
-	if (p && isActivePlan(p)) {
+  if (p && isActivePlan(p)) {
 		return `${p.plan_duration_days} 天 體驗人數上限 ${p.max_participants} 人`;
-	}
+  }
 	return `${currentPlan.value.details.duration}`; // fallback
 })
 
 const detailPeriod = computed(() => {
 	const p = planStore.plan as any;
-	if (p && isActivePlan(p)) {
+  if (p && isActivePlan(p)) {
 		const start = new Date(p.start_date).toLocaleDateString('zh-TW');
-		const end = new Date(p.end_date).toLocaleDateString('zh-TW');
-		return `${start} - ${end}`;
-	}
+    const end = new Date(p.end_date).toLocaleDateString('zh-TW');
+    return `${start} - ${end}`;
+  }
 	return currentPlan.value.details.period; // fallback
 })
 
 // 顯示目前方案名稱（例如：方案C）；無資料時沿用「方案詳情」
 const detailPlanName = computed(() => {
 	const p = planStore.plan as any;
-	if (p && isActivePlan(p)) {
+  if (p && isActivePlan(p)) {
 		return p.plan_name || '方案詳情';
-	}
+  }
 	return '方案詳情';
 })
 
 // 目前方案售價（顯示於「付款金額」）
 const detailPrice = computed(() => {
 	const p = planStore.plan as any;
-	if (p && isActivePlan(p)) {
+  if (p && isActivePlan(p)) {
 		const price = Number(p.plan_price || 0);
-		return `TWD ${price.toLocaleString('zh-TW')}`;
-	}
+    return `TWD ${price.toLocaleString('zh-TW')}`;
+  }
 	// fallback 舊靜態資料
 	return currentPlan.value.amount;
 })
@@ -114,7 +114,7 @@ const detailPrice = computed(() => {
 // 千分位格式化（TWD）
 function formatTwd(value: number | string) {
 	const num = Number(value ?? 0);
-	return `TWD ${num.toLocaleString('zh-TW')}`;
+  return `TWD ${num.toLocaleString('zh-TW')}`;
 }
 </script>
 

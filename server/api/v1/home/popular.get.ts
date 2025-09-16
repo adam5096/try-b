@@ -7,8 +7,8 @@ export default createApiHandler(async (event) => {
 		method: 'GET',
 	})
 
-	// 設置快取標頭，提升效能
-	setHeader(event, 'Cache-Control', 'public, max-age=300, stale-while-revalidate=600')
+  // 設置快取標頭，提升效能
+  setHeader(event, 'Cache-Control', 'public, max-age=300, stale-while-revalidate=600')
 
-	return data
+  return data
 });

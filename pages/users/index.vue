@@ -40,33 +40,33 @@ const setImageLoadingTimeout = (programId: number) => {
 	// 清除之前的計時器（如果存在）
 	if (timeoutIds.has(programId)) {
 		clearTimeout(timeoutIds.get(programId)!);
-	}
+  }
 
 	const timeoutId = setTimeout(() => {
 		if (imageLoadingState[programId] === true) {
 			imageLoadingState[programId] = false; // 超時後強制停止 loading
-		}
+    }
 		timeoutIds.delete(programId); // 清理計時器記錄
-	}, 10000); // 10 秒超時
+  }, 10000); // 10 秒超時
 
-	timeoutIds.set(programId, timeoutId);
-}
+  timeoutIds.set(programId, timeoutId);
+};
 
 // 響應式檢測函數
 const checkIsMobile = () => {
 	isMobile.value = window.innerWidth < 640; // sm breakpoint
-}
+};
 
 // 頁面載入時直接獲取資料，不需要登入驗證
 onMounted(() => {
 	isClient.value = true; // 恢復客戶端標記
 
-	// 初始化響應式檢測
-	checkIsMobile();
+  // 初始化響應式檢測
+  checkIsMobile();
 
-	// 監聽視窗大小變化
-	window.addEventListener('resize', checkIsMobile);
-	programsStore.fetchPrograms({ page: currentPage.value, limit: pageSize });
+  // 監聽視窗大小變化
+  window.addEventListener('resize', checkIsMobile);
+  programsStore.fetchPrograms({ page: currentPage.value, limit: pageSize });
 })
 
 // 儲存 watcher 停止函數，用於清理
@@ -79,13 +79,13 @@ const stopItemsWatch = watch(() => programsStore.items, (newItems) => {
 			if (program.Id && imageLoadingState[program.Id] === undefined) {
 				// 如果沒有 CoverImage，直接設為不載入（使用 fallback）
 				imageLoadingState[program.Id] = program.CoverImage ? true : false;
-				// 如果有 CoverImage，啟動超時保護
-				if (program.CoverImage) {
+        // 如果有 CoverImage，啟動超時保護
+        if (program.CoverImage) {
 					setImageLoadingTimeout(program.Id);
-				}
+        }
 			}
 		});
-	}
+  }
 }, { immediate: true });
 
 const stopPopularWatch = watch(() => programsStore.popular, (newPopular) => {
@@ -94,13 +94,13 @@ const stopPopularWatch = watch(() => programsStore.popular, (newPopular) => {
 			if (program.Id && imageLoadingState[program.Id] === undefined) {
 				// 如果沒有 CoverImage，直接設為不載入（使用 fallback）
 				imageLoadingState[program.Id] = program.CoverImage ? true : false;
-				// 如果有 CoverImage，啟動超時保護
-				if (program.CoverImage) {
+        // 如果有 CoverImage，啟動超時保護
+        if (program.CoverImage) {
 					setImageLoadingTimeout(program.Id);
-				}
+        }
 			}
 		});
-	}
+  }
 }, { immediate: true });
 
 watchStopHandlers.push(stopItemsWatch, stopPopularWatch);
@@ -120,7 +120,7 @@ watch(currentPage, (p) => {
 // 監聽篩選條件變化
 watch([searchKeyword, industry, jobType, location, sort], () => {
 	currentPage.value = 1; // 重置到第一頁
-	programsStore.fetchPrograms({
+  programsStore.fetchPrograms({
 		page: 1,
 		limit: pageSize,
 		keyword: searchKeyword.value,
@@ -136,11 +136,11 @@ const isSwitching = ref(false);
 let carouselSwitchTimer: ReturnType<typeof setTimeout> | null = null;
 const onCarouselChange = () => {
 	isSwitching.value = true;
-	if (carouselSwitchTimer) clearTimeout(carouselSwitchTimer);
-	carouselSwitchTimer = setTimeout(() => {
+  if (carouselSwitchTimer) clearTimeout(carouselSwitchTimer);
+  carouselSwitchTimer = setTimeout(() => {
 		isSwitching.value = false;
-	}, 200);
-}
+  }, 200);
+};
 
 const industries = ref([
 	{ value: 'tech', label: '科技業' },
@@ -172,70 +172,70 @@ const sortOptions = ref([
 const formatProgramDate = (program: Program) => {
 	if (!program.ProgramStartDate || !program.ProgramEndDate) {
 		return '日期未定';
-	}
+  }
 
 	try {
 		const startDate = new Date(program.ProgramStartDate);
-		const endDate = new Date(program.ProgramEndDate);
+    const endDate = new Date(program.ProgramEndDate);
 
-		// 檢查日期是否有效
-		if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    // 檢查日期是否有效
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
 			return '日期格式錯誤';
-		}
+    }
 
 		const formatDate = (date: Date) => {
 			return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
-		};
+    };
 
 		return `${formatDate(startDate)} - ${formatDate(endDate)}`;
-	}
+  }
 	catch (error) {
 		// 日期格式化錯誤（靜默處理）
 		return '日期格式錯誤';
-	}
+  }
 };
 
 // 解析清單項目的 ProgramId（以回傳的 Id 為主，保守兼容 id）
 const resolveProgramId = (program: any) => {
 	return program?.Id ?? program?.id ?? null;
-}
+};
 
 // 圖片載入處理函數 - 改用 Loading 狀態
 const handleImageLoad = (programId: number) => {
 	imageLoadingState[programId] = false; // 載入完成，停止 loading
-}
+};
 
 const handleImageError = (programId: number) => {
 	imageLoadingState[programId] = false; // 即使錯誤也要停止 loading
-}
+};
 
 // 檢查圖片是否正在載入中
 const isImageLoading = (programId: number) => {
 	// 只有明確設為 true 時才顯示 loading
 	return imageLoadingState[programId] === true;
-}
+};
 
 // 處理查看詳情按鈕點擊
 const handleViewDetail = async (program: any) => {
 	try {
 		const programId = resolveProgramId(program);
-		if (programId === undefined || programId === null || programId === '') {
+    if (programId === undefined || programId === null || programId === '') {
 			// 此體驗卡片缺少有效的 programId，暫時無法查看詳情
-			return
+			return;
 		}
 		// 先取得計畫詳情
 		await programDetailStore.fetchDetail(programId);
 
-		// 導航到計畫詳情頁
-		await navigateTo(userRoutes.programDetail(programId));
-	}
+    // 導航到計畫詳情頁
+    await navigateTo(userRoutes.programDetail(programId));
+  }
 	catch (error) {
 		// 處理查看詳情錯誤（靜默處理）
 		// 如果取得詳情失敗，仍然導航到詳情頁，讓詳情頁處理錯誤狀態
 		const programId = resolveProgramId(program);
-		if (programId !== undefined && programId !== null && programId !== '') {
+    if (programId !== undefined && programId !== null && programId !== '') {
 			await navigateTo(userRoutes.programDetail(programId));
-		}
+    }
 	}
 };
 
@@ -245,25 +245,25 @@ onUnmounted(() => {
 	watchStopHandlers.forEach((stopFn) => {
 		try {
 			stopFn();
-		}
+    }
 		catch (error) {
 			// 靜默處理 watcher 停止錯誤
 		}
 	});
 
-	// 清理所有超時計時器
-	timeoutIds.forEach((timeoutId) => {
+  // 清理所有超時計時器
+  timeoutIds.forEach((timeoutId) => {
 		clearTimeout(timeoutId);
-	})
-	timeoutIds.clear();
+  })
+  timeoutIds.clear();
 
-	// 移除視窗大小變化監聽器
-	window.removeEventListener('resize', checkIsMobile);
+  // 移除視窗大小變化監聽器
+  window.removeEventListener('resize', checkIsMobile);
 
-	// 清理圖片載入狀態
-	Object.keys(imageLoadingState).forEach((key) => {
+  // 清理圖片載入狀態
+  Object.keys(imageLoadingState).forEach((key) => {
 		delete imageLoadingState[key as any];
-	})
+  })
 });
 </script>
 

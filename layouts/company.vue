@@ -41,11 +41,11 @@ async function handleLogout() {
 				cancelButtonText: '取消',
 				type: 'warning',
 			},
-		)
+		);
 
 		await authStore.logout();
-		router.push('/company/login');
-	}
+    router.push('/company/login');
+  }
 	catch (error) {
 		// 使用者點擊 "取消" 或關閉對話框
 		// 'cancel' 字串會被 ElMessageBox.confirm 的 Promise a catch 到

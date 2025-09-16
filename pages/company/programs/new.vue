@@ -61,80 +61,80 @@ const { data: positionsData, pending: positionsPending, error: positionsError } 
 watchEffect(() => {
 	if (industriesData?.value) {
 		industries.value = industriesData.value;
-		// 預設從第一筆開始展示；若已有既定 id 則依 id 對應
-		if (!selectedIndustryTitle.value) {
+    // 預設從第一筆開始展示；若已有既定 id 則依 id 對應
+    if (!selectedIndustryTitle.value) {
 			if (form.value.industry_id) {
 				const found = industries.value.find(i => i.id === form.value.industry_id);
-				if (found) {
+        if (found) {
 					selectedIndustryTitle.value = found.title;
-				}
+        }
 				else if (industries.value.length > 0) {
 					selectedIndustryTitle.value = industries.value[0].title;
-					form.value.industry_id = industries.value[0].id;
-				}
+          form.value.industry_id = industries.value[0].id;
+        }
 			}
 			else if (industries.value.length > 0) {
 				selectedIndustryTitle.value = industries.value[0].title;
-				form.value.industry_id = industries.value[0].id;
-			}
+        form.value.industry_id = industries.value[0].id;
+      }
 		}
 	}
 	if (positionsData?.value) {
 		positions.value = positionsData.value;
-		if (!selectedPositionTitle.value) {
+    if (!selectedPositionTitle.value) {
 			if (form.value.job_title_id) {
 				const found = positions.value.find(p => p.id === form.value.job_title_id);
-				if (found) {
+        if (found) {
 					selectedPositionTitle.value = found.title;
-				}
+        }
 				else if (positions.value.length > 0) {
 					selectedPositionTitle.value = positions.value[0].title;
-					form.value.job_title_id = positions.value[0].id;
-				}
+          form.value.job_title_id = positions.value[0].id;
+        }
 			}
 			else if (positions.value.length > 0) {
 				selectedPositionTitle.value = positions.value[0].title;
-				form.value.job_title_id = positions.value[0].id;
-			}
+        form.value.job_title_id = positions.value[0].id;
+      }
 		}
 	}
 	if (industriesError?.value) {
 		ElNotification({ title: '載入產業失敗', message: String(industriesError.value), type: 'error' });
-	}
+  }
 	if (positionsError?.value) {
 		ElNotification({ title: '載入職務失敗', message: String(positionsError.value), type: 'error' });
-	}
+  }
 });
 
 function addStep() {
 	if (form.value.steps.length < 5) {
 		form.value.steps.push({ name: '自定義項目', description: '' });
-	}
+  }
 }
 
 function onUploadChange(file: any) {
 	const raw: File | undefined = file?.raw;
-	if (!raw) return false;
-	if (!ACCEPTED_MIME_TYPES.includes(raw.type)) {
+  if (!raw) return false;
+  if (!ACCEPTED_MIME_TYPES.includes(raw.type)) {
 		ElNotification({ title: '格式不支援', message: '僅支援 jpg、jpeg、webp', type: 'warning' });
-		return false;
-	}
+    return false;
+  }
 	if (raw.size > MAX_FILE_SIZE_BYTES) {
 		ElNotification({ title: '檔案過大', message: '單檔大小不可超過 5MB', type: 'warning' });
-		return false;
-	}
+    return false;
+  }
 	if (uploadFiles.value.length >= 4) {
 		ElNotification({ title: '數量超過上限', message: '最多僅可上傳 4 張', type: 'warning' });
-		return false;
-	}
+    return false;
+  }
 	uploadFiles.value.push(raw);
-	return false;
+  return false;
 }
 
 function onUploadRemove(file: any) {
 	const raw: File | undefined = file?.raw;
-	if (!raw) return;
-	uploadFiles.value = uploadFiles.value.filter(f => f !== raw);
+  if (!raw) return;
+  uploadFiles.value = uploadFiles.value.filter(f => f !== raw);
 }
 
 async function handleSubmit() {
@@ -144,57 +144,57 @@ async function handleSubmit() {
 			message: '您必須同意服務條款與隱私權政策才能繼續。',
 			type: 'warning',
 		});
-		return;
+    return;
 	}
 
 	// 送出前：將使用者選到的 title 轉回對應 id
 	const industryId = industries.value.find(i => i.title === selectedIndustryTitle.value)?.id;
-	const positionId = positions.value.find(p => p.title === selectedPositionTitle.value)?.id;
-	if (industryId) form.value.industry_id = industryId;
-	if (positionId) form.value.job_title_id = positionId;
+  const positionId = positions.value.find(p => p.title === selectedPositionTitle.value)?.id;
+  if (industryId) form.value.industry_id = industryId;
+  if (positionId) form.value.job_title_id = positionId;
 
-	// 開發模式下輸出選擇結果，便於除錯
+  // 開發模式下輸出選擇結果，便於除錯
 
-	isLoading.value = true;
-	try {
+  isLoading.value = true;
+  try {
 		const createResult: any = await programStore.createProgram(form.value);
-		if (!createResult?.success) {
+    if (!createResult?.success) {
 			ElNotification({ title: '錯誤', message: createResult?.error?.message || '建立計畫失敗，請稍後再試。', type: 'error' });
-			return;
+      return;
 		}
 
 		const newProgramId: number | undefined = createResult?.data?.id;
-		if (!newProgramId) {
+    if (!newProgramId) {
 			ElNotification({ title: '錯誤', message: '建立成功但無法取得新計畫 ID。', type: 'error' });
-			return;
+      return;
 		}
 
 		if (uploadFiles.value.length > 0) {
 			try {
 				const uploadResult = await uploadProgramImages(newProgramId, uploadFiles.value);
 
-				// 圖片上傳後，重新抓取程式列表以確保 CoverImage 更新
-				await programStore.fetchPrograms();
-			}
+        // 圖片上傳後，重新抓取程式列表以確保 CoverImage 更新
+        await programStore.fetchPrograms();
+      }
 			catch (e) {
 				ElNotification({ title: '部分失敗', message: '計畫已建立，但圖片上傳失敗。', type: 'warning' });
-				return; // 停留在本頁讓使用者可重試
+        return; // 停留在本頁讓使用者可重試
 			}
 		}
 
 		ElNotification({ title: '成功', message: '體驗計畫與圖片已上傳完成！', type: 'success' });
-		await navigateTo('/company');
-	}
+    await navigateTo('/company');
+  }
 	catch (e) {
 		ElNotification({
 			title: '系統錯誤',
 			message: '發生未知錯誤，請聯繫管理員。',
 			type: 'error',
 		});
-	}
+  }
 	finally {
 		isLoading.value = false;
-	}
+  }
 }
 </script>
 

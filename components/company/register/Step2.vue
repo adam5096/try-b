@@ -16,11 +16,11 @@ const createRequiredValidator = (message: string) => {
 	return (rule: any, value: any, callback: (error?: Error) => void) => {
 		if (!value) {
 			callback(new Error(message))
-		}
+    }
 		else {
 			callback()
-		}
-	}
+    }
+	};
 };
 
 const rules = reactive<FormRules>({
@@ -32,38 +32,38 @@ const rules = reactive<FormRules>({
 
 const handleNextClick = async () => {
 	const formEl = formRef.value
-	if (!formEl) return
+  if (!formEl) return
 
-	// 1. 等待 Element Plus 表單驗證通過
-	try {
+  // 1. 等待 Element Plus 表單驗證通過
+  try {
 		await formEl.validate()
-	}
+  }
 	catch (validationError) {
 		ElMessage({ message: '請檢查表單欄位是否都已正確填寫', type: 'warning' })
-		return; // 如果驗證失敗，則停止執行
+    return; // 如果驗證失敗，則停止執行
 	}
 
 	isLoading.value = true
-	try {
+  try {
 		// 2. 準備要發送到後端的 payload
 		// 使用物件解構來建立一個新物件，同時排除僅供前端使用的 'confirmPassword' 欄位
 		const { confirmPassword, ...payload } = props.formData
 
-		// 3. 使用統一的 API 函數呼叫 API
-		const { data: response, error } = await useFetch('/v1/company', {
+    // 3. 使用統一的 API 函數呼叫 API
+    const { data: response, error } = await useFetch('/v1/company', {
 			method: 'POST',
 			baseURL: '/api',
 			body: payload,
 		})
 
-		// 4a. 處理成功的回應
-		if (error.value) {
+    // 4a. 處理成功的回應
+    if (error.value) {
 			throw error.value
-		}
+    }
 
 		ElMessage({ message: '註冊成功！', type: 'success' })
-		emit('next')
-	}
+    emit('next')
+  }
 	catch (error: any) {
 		// 4b. 處理失敗的回應
 		ElMessage({
@@ -71,16 +71,16 @@ const handleNextClick = async () => {
 			type: 'error',
 			duration: 5000, // 讓錯誤訊息停留久一點
 		})
-	}
+  }
 	finally {
 		// 5. 無論成功或失敗，最後都要結束 loading 狀態
 		isLoading.value = false
-	}
+  }
 }
 
 const handlePrevClick = () => {
 	emit('previous')
-};
+}
 </script>
 
 <template>

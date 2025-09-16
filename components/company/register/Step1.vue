@@ -16,37 +16,37 @@ const createRequiredValidator = (message: string) => {
 	return (rule: any, value: any, callback: (error?: Error) => void) => {
 		if (!value && value !== 0) {
 			callback(new Error(message))
-		}
+    }
 		else {
 			callback()
-		}
-	}
+    }
+	};
 };
 
 const validateEmail = (rule: any, value: any, callback: (error?: Error) => void) => {
 	if (!value) {
 		callback(new Error('Email為必填'))
-		return;
+    return;
 	}
 	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-	if (!emailRegex.test(value)) {
+  if (!emailRegex.test(value)) {
 		callback(new Error('請輸入有效的 Email 格式'))
-	}
+  }
 	else {
 		callback()
-	}
+  }
 }
 
 const validateConfirmPassword = (rule: any, value: any, callback: (error?: Error) => void) => {
 	if (value === '') {
 		callback(new Error('確認密碼為必填'))
-	}
+  }
 	else if (value !== props.formData.password) {
 		callback(new Error('兩次輸入的密碼不一致'))
-	}
+  }
 	else {
 		callback()
-	}
+  }
 }
 
 const rules = reactive<FormRules>({
@@ -62,18 +62,18 @@ const rules = reactive<FormRules>({
 
 const handleNextClick = async () => {
 	const formEl = formRef.value
-	if (!formEl) return
+  if (!formEl) return
 
-	try {
+  try {
 		await formEl.validate()
-		emit('next')
-	}
+    emit('next')
+  }
 	catch (fields) {
 		// 驗證失敗後，Element Plus 會更新其內部狀態以顯示錯誤。
 		// 這個更新不是同步的。我們必須使用 nextTick 等待下一個 DOM 更新週期，
 		// 以確保當 Playwright 進行下一步斷言時，錯誤訊息的 DOM 元素已經被渲染出來。
 		await nextTick()
-	}
+  }
 }
 </script>
 

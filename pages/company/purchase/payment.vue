@@ -24,19 +24,19 @@ const cardName = ref('')
 const MAX_CARD_DIGITS = 16
 function onCardNumberInput(val: string) {
 	const digitsOnly = String(val || '').replace(/\D/g, '').slice(0, MAX_CARD_DIGITS)
-	const grouped = digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ').trim()
-	cardNumber.value = grouped
+  const grouped = digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ').trim()
+  cardNumber.value = grouped
 }
 
 // 有效期限：每 2 位自動補 " / "，最多 4 位數字 (MMYY)
 function onExpiryInput(val: string) {
 	const digits = String(val || '').replace(/\D/g, '').slice(0, 4)
-	if (digits.length <= 2) {
+  if (digits.length <= 2) {
 		expiryDate.value = digits
-	}
+  }
 	else {
 		expiryDate.value = `${digits.slice(0, 2)} / ${digits.slice(2)}`
-	}
+  }
 }
 
 // CVC：僅數字，最多 3 位
@@ -46,14 +46,14 @@ function onCvcInput(val: string) {
 
 const goBack = () => {
 	router.back()
-};
+}
 
 const confirmPayment = () => {
 	// 使用 Nuxt 3 推薦的 navigateTo，並搭配「命名路由」
 	return navigateTo({
 		name: 'company-purchase-success',
 	})
-};
+}
 </script>
 
 <template>

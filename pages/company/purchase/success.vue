@@ -101,12 +101,12 @@ const planStore = useCompanyPlanStore()
 onMounted(async () => {
 	try {
 		const minDelay = new Promise(resolve => setTimeout(resolve, 800))
-		// 觸發一次取資料，確保 Header 顯示 loading
-		await Promise.allSettled([planStore.fetchCurrentPlan(), minDelay])
-	}
+    // 觸發一次取資料，確保 Header 顯示 loading
+    await Promise.allSettled([planStore.fetchCurrentPlan(), minDelay])
+  }
 	finally {
 		planStore.markPaid()
-	}
+  }
 })
 
 function goToPlans() {

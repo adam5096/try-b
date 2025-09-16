@@ -67,28 +67,28 @@ const allowPrefixes = [
 const buildKeylessUrl = (sourceUrl: string): string => {
 	try {
 		const u = new URL(sourceUrl);
-		if (u.pathname.startsWith('/maps/embed/v1/')) {
+    if (u.pathname.startsWith('/maps/embed/v1/')) {
 			const q = u.searchParams.get('q');
-			if (q) {
+      if (q) {
 				return `https://www.google.com/maps?q=${q}&output=embed`;
-			}
+      }
 		}
 	}
 	catch {
 		// ignore
 	}
 	return '';
-}
+};
 
 const safeSrc = computed(() => {
 	const val = props.src?.toString() ?? '';
-	if (!val) return '';
+  if (!val) return '';
 
-	// 若是需要 key 的 v1 形式，優先改為 keyless 形式（避免本機/未授權網域報錯）
-	if (val.includes('/maps/embed/v1/')) {
+  // 若是需要 key 的 v1 形式，優先改為 keyless 形式（避免本機/未授權網域報錯）
+  if (val.includes('/maps/embed/v1/')) {
 		const keyless = buildKeylessUrl(val);
-		if (keyless) return keyless;
-	}
+    if (keyless) return keyless;
+  }
 
 	// 允許的 Google Maps 網域
 	return allowPrefixes.some(p => val.startsWith(p)) ? val : '';
@@ -96,39 +96,39 @@ const safeSrc = computed(() => {
 
 const handleLoad = () => {
 	isMapLoading.value = false;
-}
+};
 
 // 根據 safeSrc 控制骨架顯示：無可用來源則不顯示骨架
 watch(
 	safeSrc,
 	(val) => {
 		isMapLoading.value = !!val;
-	},
+  },
 	{ immediate: true },
 );
 
 // 防止某些環境下 iframe @load 不觸發：僅在仍為 loading 時，延遲關閉骨架
 if (import.meta.client) {
 	let fallbackTimer: number | null = null;
-	watch(
+  watch(
 		isMapLoading,
 		(loading) => {
 			if (loading) {
 				if (fallbackTimer !== null) clearTimeout(fallbackTimer);
-				fallbackTimer = window.setTimeout(() => {
+        fallbackTimer = window.setTimeout(() => {
 					if (isMapLoading.value) {
 						isMapLoading.value = false;
-					}
+          }
 					fallbackTimer = null;
-				}, 5000);
-			}
+        }, 5000);
+      }
 			else if (fallbackTimer !== null) {
 				clearTimeout(fallbackTimer);
-				fallbackTimer = null;
-			}
+        fallbackTimer = null;
+      }
 		},
 		{ immediate: true },
-	)
+	);
 }
 </script>
 

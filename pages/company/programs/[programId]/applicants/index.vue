@@ -23,7 +23,7 @@ watch(
 	([companyId, programId]) => {
 		if (companyId && programId) {
 			refreshApplicants()
-		}
+    }
 	},
 	{ immediate: true },
 );

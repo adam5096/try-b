@@ -13,7 +13,7 @@ export const useCompanyLogin = () => {
 				password: loginData.psd,
 			},
 		});
-	}
+  }
 
 	return { login };
-}
+};

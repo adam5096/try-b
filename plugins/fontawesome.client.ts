@@ -62,6 +62,6 @@ library.add(
 export default defineNuxtPlugin((nuxtApp) => {
 	// 註冊 FontAwesome 元件（專案中使用 kebab-case）
 	nuxtApp.vueApp.component('font-awesome-icon', FontAwesomeIcon)
-	// 註冊 PascalCase 版本以提供相容性
-	nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon)
+  // 註冊 PascalCase 版本以提供相容性
+  nuxtApp.vueApp.component('FontAwesomeIcon', FontAwesomeIcon)
 });

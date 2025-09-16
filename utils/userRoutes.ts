@@ -22,12 +22,12 @@ export const userRoutes = {
 		if (!programId) {
 			// programId is required for programDetail route
 			return '/users/programs/404'; // 或拋出錯誤
-		}
+    }
 
 		return {
 			name: 'user-program-detail',
 			params: { programId: programId.toString() },
-		}
+		};
 	},
 	companyDetail: (companyId: string | number) => ({
 		name: 'user-company-detail',

@@ -100,26 +100,26 @@ const statusClassMap: Record<ReviewStatus, string> = {
 
 const visibleComments = computed(() => {
 	const q = query.value.trim().toLowerCase()
-	const filtered = allComments.value.filter((c) => {
+  const filtered = allComments.value.filter((c) => {
 		const matchQuery = q
 			? c.programTitle.toLowerCase().includes(q) || c.reviewer.toLowerCase().includes(q) || c.programId.toLowerCase().includes(q)
 			: true
-		const matchRating = (() => {
+    const matchRating = (() => {
 			if (filterRating.value === 'all') return true
-			if (filterRating.value === '5') return c.rating === 5
-			if (filterRating.value === '4plus') return c.rating >= 4
-			if (filterRating.value === '3plus') return c.rating >= 3
-			return true
-		})()
-		const matchStatus = filterStatus.value === 'all' ? true : c.status === filterStatus.value
-		return matchQuery && matchRating && matchStatus
-	});
+      if (filterRating.value === '5') return c.rating === 5
+      if (filterRating.value === '4plus') return c.rating >= 4
+      if (filterRating.value === '3plus') return c.rating >= 3
+      return true
+    })()
+    const matchStatus = filterStatus.value === 'all' ? true : c.status === filterStatus.value
+    return matchQuery && matchRating && matchStatus
+  });
 
-	const sorted = filtered.sort((a, b) => {
+  const sorted = filtered.sort((a, b) => {
 		if (sortBy.value === 'recent') return a.date < b.date ? 1 : a.date > b.date ? -1 : 0
-		return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
-	});
-	return sorted
+    return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
+  });
+  return sorted
 });
 
 const total = computed(() => visibleComments.value.length)
@@ -129,18 +129,18 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 const paginatedComments = computed(() => {
 	const start = (currentPage.value - 1) * pageSize.value
-	const end = start + pageSize.value
-	return visibleComments.value.slice(start, end)
+  const end = start + pageSize.value
+  return visibleComments.value.slice(start, end)
 });
 const displayedFrom = computed(() => (total.value === 0 ? 0 : (currentPage.value - 1) * pageSize.value + 1))
 const displayedTo = computed(() => {
 	const end = currentPage.value * pageSize.value
-	return end > total.value ? total.value : end
+  return end > total.value ? total.value : end
 });
 
 const goToDetail = (commentId: number) => {
 	navigateTo(adminRoutes.commentReview(commentId))
-};
+}
 </script>
 
 <template>

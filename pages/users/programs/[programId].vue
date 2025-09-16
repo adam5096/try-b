@@ -26,11 +26,11 @@ const isLoggedIn = computed(() => userAuthStore.isLoggedIn);
 
 const toggleFavorite = () => {
 	isFavorited.value = !isFavorited.value;
-}
+};
 
 const goBack = () => {
 	router.push({ name: 'user-landing' });
-}
+};
 
 // 取得路由參數中的計畫 ID
 const route = useRoute();
@@ -45,56 +45,56 @@ const errorMessage = computed(() => programDetailStore.error);
 // 解析 intro 內容
 const parsedIntro = computed(() => {
 	if (!programDetail.value?.intro) return null;
-	return parseIntroContent(programDetail.value.intro);
+  return parseIntroContent(programDetail.value.intro);
 })
 
 // 圖片載入處理函數
 const handleImageLoad = (imageUrl: string) => {
 	imageLoadingState[imageUrl] = false;
-}
+};
 
 const handleImageError = (imageUrl: string) => {
 	imageLoadingState[imageUrl] = false;
-}
+};
 
 // 檢查圖片是否正在載入中
 const isImageLoading = (imageUrl: string) => {
 	return imageLoadingState[imageUrl] === true;
-}
+};
 
 // 初始化圖片載入狀態
 const initializeImageStates = (images: string[]) => {
 	images.forEach((imageUrl) => {
 		if (imageUrl && imageLoadingState[imageUrl] === undefined) {
 			imageLoadingState[imageUrl] = true;
-		}
+    }
 	});
-}
+};
 
 // 頁面載入時取得計畫詳情
 onMounted(async () => {
 	isClient.value = true;
-	if (programId.value) {
+  if (programId.value) {
 		try {
 			await programDetailStore.fetchDetail(programId.value);
-			// 初始化所有圖片載入狀態
-			const allImages: string[] = [];
+      // 初始化所有圖片載入狀態
+      const allImages: string[] = [];
 
-			// 企業封面和 LOGO
-			if (programDetail.value?.company_cover) {
+      // 企業封面和 LOGO
+      if (programDetail.value?.company_cover) {
 				allImages.push(programDetail.value.company_cover);
-			}
+      }
 			if (programDetail.value?.company_logo) {
 				allImages.push(programDetail.value.company_logo);
-			}
+      }
 
 			// 體驗照片
 			if (programDetail.value?.Images) {
 				allImages.push(...programDetail.value.Images.filter(img => img));
-			}
+      }
 
 			initializeImageStates(allImages);
-		}
+    }
 		catch (error) {
 		}
 	}
@@ -104,19 +104,19 @@ onMounted(async () => {
 onUnmounted(() => {
 	Object.keys(imageLoadingState).forEach((key) => {
 		delete imageLoadingState[key];
-	})
+  })
 });
 
 // 錯誤處理函數
 const handleRefresh = async () => {
 	if (programId.value) {
 		await programDetailStore.refreshDetail();
-	}
+  }
 };
 
 const handleBack = () => {
 	router.push({ name: 'user-landing' });
-}
+};
 
 const handleContact = () => {
 	// 這裡可以實作聯絡客服的邏輯
@@ -128,36 +128,36 @@ const handleContact = () => {
 const formatDate = (dateString: string) => {
 	if (!dateString || dateString === '0001-01-01T00:00:00') {
 		return '日期未定';
-	}
+  }
 
 	try {
 		const date = new Date(dateString);
-		if (isNaN(date.getTime())) {
+    if (isNaN(date.getTime())) {
 			return '日期格式錯誤';
-		}
+    }
 
 		return `${date.getFullYear()}年${String(date.getMonth() + 1).padStart(2, '0')}月${String(date.getDate()).padStart(2, '0')}日`;
-	}
+  }
 	catch (error) {
 		return '日期格式錯誤';
-	}
+  }
 };
 
 // 移除假資料，使用 store 中的真實資料
 
 const onApplySubmitted = async () => {
 	showApply.value = false;
-	await navigateTo({ name: 'user-landing' }); // 導到 users/index.vue
-}
+  await navigateTo({ name: 'user-landing' }); // 導到 users/index.vue
+};
 
 // 申請按鈕點擊處理：未登入導向登入頁（附帶返回 redirect），已登入則開啟申請流程
 const handleApplyClick = async () => {
 	if (!isLoggedIn.value) {
 		await navigateTo({ name: 'user-login', query: { redirect: route.fullPath } });
-		return;
+    return;
 	}
 	showApply.value = true;
-}
+};
 </script>
 
 <template>

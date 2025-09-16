@@ -57,13 +57,13 @@ const scaleOptions = [
 function nextStep() {
 	if (currentStep.value < 3) {
 		currentStep.value++
-	}
+  }
 }
 
 function previousStep() {
 	if (currentStep.value > 1) {
 		currentStep.value--
-	}
+  }
 }
 </script>
 

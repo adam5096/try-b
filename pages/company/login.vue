@@ -20,32 +20,32 @@ const errorMessage = ref('');
 
 async function handleLogin() {
 	isLoading.value = true;
-	errorMessage.value = '';
-	let willRedirect = false;
-	try {
+  errorMessage.value = '';
+  let willRedirect = false;
+  try {
 		await authStore.login(loginData.value);
 
-		const redirectPath = useRoute().query.redirect as string;
-		// 為了讓第一次畫面能以 SSR 預先渲染，登入後改為「全頁重新導向」
-		// 僅允許導向到企業端內部頁面，否則回到企業首頁
-		const targetPath = (redirectPath && redirectPath.startsWith('/company/'))
+    const redirectPath = useRoute().query.redirect as string;
+    // 為了讓第一次畫面能以 SSR 預先渲染，登入後改為「全頁重新導向」
+    // 僅允許導向到企業端內部頁面，否則回到企業首頁
+    const targetPath = (redirectPath && redirectPath.startsWith('/company/'))
 			? redirectPath
 			: router.resolve(routes.company.landing()).path;
 
-		if (import.meta.client) {
+    if (import.meta.client) {
 			// 進行全頁重新導向，於導向完成前維持按鈕 loading 狀態
 			willRedirect = true;
-			window.location.replace(targetPath);
-		}
+      window.location.replace(targetPath);
+    }
 	}
 	catch (error: any) {
 		errorMessage.value = '登入失敗，請檢查您的帳號和密碼。';
-	}
+  }
 	finally {
 		// 僅在未跳轉的情況下才關閉 loading
 		if (!willRedirect) {
 			isLoading.value = false;
-		}
+    }
 	}
 }
 </script>

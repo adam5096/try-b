@@ -117,54 +117,54 @@ const statusClassMap: Record<ProgramStatus, string> = {
 
 const applyFilters = () => {
 	appliedReviewStatus.value = uiReviewStatus.value;
-	appliedProgramStatus.value = uiProgramStatus.value;
-	appliedDateFrom.value = uiDateFrom.value;
-	appliedDateTo.value = uiDateTo.value;
-}
+  appliedProgramStatus.value = uiProgramStatus.value;
+  appliedDateFrom.value = uiDateFrom.value;
+  appliedDateTo.value = uiDateTo.value;
+};
 
 const clearFilters = () => {
 	uiReviewStatus.value = 'all';
-	uiProgramStatus.value = 'all';
-	uiDateFrom.value = '';
-	uiDateTo.value = '';
-	applyFilters();
-}
+  uiProgramStatus.value = 'all';
+  uiDateFrom.value = '';
+  uiDateTo.value = '';
+  applyFilters();
+};
 
 const visiblePrograms = computed(() => {
 	const q = query.value.trim().toLowerCase();
-	const filtered = allPrograms.value.filter((p) => {
+  const filtered = allPrograms.value.filter((p) => {
 		const matchQuery = q
 			? p.title.toLowerCase().includes(q) || p.company.toLowerCase().includes(q)
 			: true;
-		const matchProgramStatus = (() => {
+    const matchProgramStatus = (() => {
 			const f = appliedProgramStatus.value;
-			if (f === 'all') return true;
-			if (f === 'upcoming') return p.status === 'draft' || p.status === 'recruiting';
-			if (f === 'ongoing') return p.status === 'ongoing';
-			// 將取消視為已完成的一種結束狀態，與設計的「已完成」同一分組
-			if (f === 'finished') return p.status === 'finished' || p.status === 'canceled';
-			return true;
-		})();
-		const matchReviewStatus = appliedReviewStatus.value === 'all'
+      if (f === 'all') return true;
+      if (f === 'upcoming') return p.status === 'draft' || p.status === 'recruiting';
+      if (f === 'ongoing') return p.status === 'ongoing';
+      // 將取消視為已完成的一種結束狀態，與設計的「已完成」同一分組
+      if (f === 'finished') return p.status === 'finished' || p.status === 'canceled';
+      return true;
+    })();
+    const matchReviewStatus = appliedReviewStatus.value === 'all'
 			? true
 			: p.reviewStatus === appliedReviewStatus.value;
-		const matchDateFrom = appliedDateFrom.value
+    const matchDateFrom = appliedDateFrom.value
 			? p.startDate >= appliedDateFrom.value
 			: true;
-		const matchDateTo = appliedDateTo.value
+    const matchDateTo = appliedDateTo.value
 			? (p.endDate || p.startDate) <= appliedDateTo.value
 			: true;
-		return matchQuery && matchProgramStatus && matchReviewStatus && matchDateFrom && matchDateTo;
-	})
-	const sorted = filtered.sort((a, b) => (a.startDate < b.startDate ? 1 : a.startDate > b.startDate ? -1 : 0));
-	return sorted;
+    return matchQuery && matchProgramStatus && matchReviewStatus && matchDateFrom && matchDateTo;
+  })
+  const sorted = filtered.sort((a, b) => (a.startDate < b.startDate ? 1 : a.startDate > b.startDate ? -1 : 0));
+  return sorted;
 })
 
 const total = computed(() => visiblePrograms.value.length);
 
 const goToDetail = (programId: number) => {
 	navigateTo(adminRoutes.programDetail(programId))
-};
+}
 </script>
 
 <template>

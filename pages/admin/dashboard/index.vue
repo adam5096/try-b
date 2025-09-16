@@ -313,5 +313,5 @@ const popularPrograms = [
 
 const goToAllPopular = () => {
 	navigateTo(adminRoutes.trends())
-};
+}
 </script>
