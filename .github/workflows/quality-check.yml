@@ -22,10 +22,8 @@ jobs:
     - name: 安裝 pnpm
       uses: pnpm/action-setup@v4
         
-    - name: 清理並重新安裝依賴
-      run: |
-        rm -rf node_modules
-        pnpm install --frozen-lockfile
+    - name: 安裝依賴（跳過腳本避免 oxc-parser 問題）
+      run: pnpm install --frozen-lockfile --ignore-scripts
         
     - name: ESLint 檢查
       run: pnpm lint
