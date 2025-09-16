@@ -1,17 +1,14 @@
 // @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs';
+import withNuxt from './.nuxt/eslint.config.mjs'
 
 export default withNuxt(
 	{
 		rules: {
-			// 不使用分號
-			'semi': ['error', 'never'],
-			// 統一使用單引號
+			// 與 nuxt.config.ts 中的 stylistic 配置保持一致
+			'semi': ['error', 'always'],
 			'quotes': ['error', 'single'],
-			// 統一使用 2 個空格縮排
-			'indent': ['error', 2],
-			// 禁止行尾空格
-			'no-trailing-spaces': 'error',
-    }
+			'indent': ['error', 'tab'],
+			'no-trailing-spaces': 'error'
+		}
 	}
 )
