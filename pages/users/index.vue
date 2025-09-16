@@ -262,7 +262,7 @@ onUnmounted(() => {
 
 	// 清理圖片載入狀態
 	Object.keys(imageLoadingState).forEach((key) => {
-		delete imageLoadingState[key as any];
+		imageLoadingState[key as any] = undefined;
 	});
 });
 </script>

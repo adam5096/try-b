@@ -10,29 +10,24 @@ export const useUserProgramDetail = () => {
    * @returns Promise<ProgramDetail>
    */
 	const fetchProgramDetail = async (programId: string | number): Promise<ProgramDetail> => {
-		try {
-			// 使用本地 BFF 端點
-			const url = `/api/v1/users/program-detail/${programId}`;
+		// 使用本地 BFF 端點
+		const url = `/api/v1/users/program-detail/${programId}`;
 
-			// 取得 user auth token 來設定 headers（如果需要認證）
-			const { useUserAuthStore } = await import('~/stores/user/useAuthStore');
-			const authStore = useUserAuthStore();
-			const headers: Record<string, string> = {};
+		// 取得 user auth token 來設定 headers（如果需要認證）
+		const { useUserAuthStore } = await import('~/stores/user/useAuthStore');
+		const authStore = useUserAuthStore();
+		const headers: Record<string, string> = {};
 
-			if (authStore.token) {
-				headers.authorization = `Bearer ${authStore.token}`;
-			}
-
-			const response = await $fetch<ProgramDetail>(url, {
-				method: 'GET',
-				headers,
-			});
-
-			return response;
+		if (authStore.token) {
+			headers.authorization = `Bearer ${authStore.token}`;
 		}
-		catch (error) {
-			throw error;
-		}
+
+		const response = await $fetch<ProgramDetail>(url, {
+			method: 'GET',
+			headers,
+		});
+
+		return response;
 	};
 
 	return {

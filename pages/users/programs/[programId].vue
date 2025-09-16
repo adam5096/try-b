@@ -103,7 +103,7 @@ onMounted(async () => {
 // 組件卸載時清理
 onUnmounted(() => {
 	Object.keys(imageLoadingState).forEach((key) => {
-		delete imageLoadingState[key];
+		imageLoadingState[key] = undefined;
 	});
 });
 

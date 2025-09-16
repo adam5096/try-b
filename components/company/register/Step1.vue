@@ -62,7 +62,9 @@ const rules = reactive<FormRules>({
 
 const handleNextClick = async () => {
 	const formEl = formRef.value;
-	if (!formEl) { return; }
+	if (!formEl) {
+		return;
+	}
 
 	try {
 		await formEl.validate();

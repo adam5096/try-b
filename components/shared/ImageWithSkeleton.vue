@@ -55,7 +55,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const isLoaded = ref(false);
 const normalizeUrl = (u?: string | null) => {
-	if (!u) { return u as any; }
+	if (!u) {
+		return u as any;
+	}
 	const httpsUrl = u.trim().replace(/^http:\/\//i, 'https://');
 	try {
 		return encodeURI(httpsUrl);

@@ -198,7 +198,7 @@ async function submitEvaluationForItem(item: ReviewItem) {
 		}
 
 		// 清除編輯狀態
-		delete editingEvaluation.value[item.serial_num];
+		editingEvaluation.value[item.serial_num] = undefined;
 
 		ElMessage.success('評價提交成功！');
 	}
@@ -228,7 +228,7 @@ async function submitEvaluationForItem(item: ReviewItem) {
 			if (errorMessage === '體驗尚未結束') {
 				ElMessage.warning('體驗尚未結束');
 				// 退出編輯模式，收合多行輸入框
-				delete editingEvaluation.value[item.serial_num];
+				editingEvaluation.value[item.serial_num] = undefined;
 				return;
 			}
 		}
@@ -257,7 +257,7 @@ async function submitEvaluationForItem(item: ReviewItem) {
 
 // 取消編輯
 function cancelEditEvaluation(item: ReviewItem) {
-	delete editingEvaluation.value[item.serial_num];
+	editingEvaluation.value[item.serial_num] = undefined;
 }
 
 // 監聽分頁變化

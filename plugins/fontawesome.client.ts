@@ -47,7 +47,7 @@ library.add(
 	faHeart,
 	faQuestionCircle,
 	faCalendarAlt,
-	// @ts-ignore
+	// @ts-expect-error - faHeartRegular is not properly typed
 	faHeartRegular,
 	faClipboardList,
 	faStar,

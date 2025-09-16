@@ -67,7 +67,7 @@
 							體驗計畫進行時間
 						</dt>
 						<dd class="mt-0.5 text-gray-900">
-							{{ program.runFrom }} 至 {{ program.runTo }}　{{ program.durationNote }}
+							{{ program.runFrom }} 至 {{ program.runTo }} {{ program.durationNote }}
 						</dd>
 					</div>
 				</dl>

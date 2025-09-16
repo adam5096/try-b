@@ -11,4 +11,6 @@ if (import.meta.client) {
 }
 </script>
 
-<template></template>
+<template>
+	<div />
+</template>

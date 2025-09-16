@@ -33,6 +33,9 @@ export default withNuxt(
 			'no-multiple-empty-lines': ['error', { max: 1 }], // 限制連續空行
 			'curly': 'error', // 要求控制語句使用大括號
 
+			// 覆蓋 Nuxt stylistic 規則
+			'@stylistic/max-statements-per-line': 'warn', // 一行多個語句改為警告
+
 			// 格式化規則由 Nuxt stylistic 自動處理
 			// indent, quotes, semi, commaDangle 等
 		},

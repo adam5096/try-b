@@ -32,7 +32,9 @@ const rules = reactive<FormRules>({
 
 const handleNextClick = async () => {
 	const formEl = formRef.value;
-	if (!formEl) { return; }
+	if (!formEl) {
+		return;
+	}
 
 	// 1. 等待 Element Plus 表單驗證通過
 	try {
