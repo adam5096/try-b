@@ -1,6 +1,6 @@
-import { userRoutes } from './userRoutes';
-import { companyRoutes } from './companyRoutes';
-import { adminRoutes } from './adminRoutes';
+import { userRoutes } from './userRoutes'
+import { companyRoutes } from './companyRoutes'
+import { adminRoutes } from './adminRoutes'
 
 /**
  * 集中管理應用程式的路由。
@@ -12,14 +12,14 @@ import { adminRoutes } from './adminRoutes';
  * - routes.company.dashboard() (未來擴充)
  */
 export const routes = {
-  // 首頁/通用路由
-  home: () => ({ name: 'index' }),
-  homeFeaturedPrograms: () => ({ path: '/#featured-programs' }),
-  plan: () => ({ name: 'plan' }),
-  loginRoles: () => ({ name: 'roles' }),
+	// 首頁/通用路由
+	home: () => ({ name: 'index' }),
+	homeFeaturedPrograms: () => ({ path: '/#featured-programs' }),
+	plan: () => ({ name: 'plan' }),
+	loginRoles: () => ({ name: 'roles' }),
 
-  // 各模組路由
-  user: userRoutes,
-  company: companyRoutes,
-  admin: adminRoutes,
-}; 
+	// 各模組路由
+	user: userRoutes,
+	company: companyRoutes,
+	admin: adminRoutes,
+} 

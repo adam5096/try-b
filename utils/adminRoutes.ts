@@ -9,19 +9,17 @@
  * 以利檔案路徑調整時不影響呼叫端。
  */
 export const adminRoutes = {
-  programs: () => ({ name: 'admin-programs' }),
-  programDetail: (programId: string | number) => ({
-    name: 'admin-single-program-info',
-    params: { programId },
-  }),
-  trends: () => ({ name: 'admin-trends' }),
-  comments: () => ({ name: 'admin-comments' }),
-  // pp7: 單一留言評價詳情審核頁
-  commentReview: (commentId: string | number) => ({
-    name: 'admin-comment-review',
-    params: { commentId },
-  }),
-  dashboard: () => ({ name: 'admin-dashboard' }),
-};
-
-
+	programs: () => ({ name: 'admin-programs' }),
+	programDetail: (programId: string | number) => ({
+		name: 'admin-single-program-info',
+		params: { programId },
+	}),
+	trends: () => ({ name: 'admin-trends' }),
+	comments: () => ({ name: 'admin-comments' }),
+	// pp7: 單一留言評價詳情審核頁
+	commentReview: (commentId: string | number) => ({
+		name: 'admin-comment-review',
+		params: { commentId },
+	}),
+	dashboard: () => ({ name: 'admin-dashboard' }),
+}

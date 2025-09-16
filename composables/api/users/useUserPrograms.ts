@@ -1,9 +1,9 @@
 import type { ProgramsResponse, ProgramsQueryParams } from '~/types/users/program';
 
 export const useUserPrograms = () => {
-  const fetchPrograms = async (params: ProgramsQueryParams = {}) => {
-    const queryParams = new URLSearchParams();
-    
+	const fetchPrograms = async (params: ProgramsQueryParams = {}) => {
+		const queryParams = new URLSearchParams();
+
     if (params.page) queryParams.append('page', params.page.toString());
     if (params.limit) queryParams.append('limit', params.limit.toString());
     if (params.keyword) queryParams.append('keyword', params.keyword);
@@ -16,24 +16,25 @@ export const useUserPrograms = () => {
     const url = `/api/v1/users/programs${queryString ? '?' + queryString : ''}`;
 
     try {
-      // 使用 $fetch 呼叫本地 BFF 端點
-      const data = await $fetch<ProgramsResponse>(url, { method: 'GET' });
-      
-      return {
-        data: { value: data },
-        error: { value: null },
-        pending: { value: false }
-      };
-    } catch (error) {
-      return {
-        data: { value: null },
-        error: { value: error },
-        pending: { value: false }
-      };
-    }
-  };
+			// 使用 $fetch 呼叫本地 BFF 端點
+			const data = await $fetch<ProgramsResponse>(url, { method: 'GET' });
 
-  return {
-    fetchPrograms
-  };
+      return {
+				data: { value: data },
+				error: { value: null },
+				pending: { value: false },
+			};
+		}
+		catch (error) {
+			return {
+				data: { value: null },
+				error: { value: error },
+				pending: { value: false },
+			};
+		}
+	};
+
+	return {
+		fetchPrograms,
+	};
 };
