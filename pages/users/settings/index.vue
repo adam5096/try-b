@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
-import { UploadFilled } from '@element-plus/icons-vue'
+import { UploadFilled } from '@element-plus/icons-vue';
 
 definePageMeta({
 	name: 'user-settings',

@@ -25,7 +25,7 @@ if (import.meta.server) {
 	await planStore.init();
 }
 
-const programsPath = router.resolve(r.landing()).path;  // 計畫列表
+const programsPath = router.resolve(r.landing()).path; // 計畫列表
 const newProgramPath = router.resolve(r.newProgram()).path; // 新增體驗
 const purchasePath = router.resolve(r.purchase()).path; // 方案
 const commentsPath = router.resolve(r.comments()).path; // 評價管理
@@ -44,8 +44,8 @@ async function handleLogout() {
 		);
 
 		await authStore.logout();
-    router.push('/company/login');
-  }
+		router.push('/company/login');
+	}
 	catch (error) {
 		// 使用者點擊 "取消" 或關閉對話框
 		// 'cancel' 字串會被 ElMessageBox.confirm 的 Promise a catch 到

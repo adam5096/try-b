@@ -19,54 +19,54 @@ export interface ParsedIntro {
  */
 export function parseIntroContent(intro: string): ParsedIntro {
 	if (!intro || typeof intro !== 'string') {
-		return { fallback: intro || '' }
-  }
+		return { fallback: intro || '' };
+	}
 
 	// 檢查是否為新格式（包含 \r\n\r\n 或 \n\n 分隔符）
 	if (!intro.includes('\r\n\r\n') && !intro.includes('\n\n')) {
-		return { fallback: intro }
-  }
+		return { fallback: intro };
+	}
 
 	try {
 		// 按 \r\n\r\n 或 \n\n 分割主要區塊
-		const separator = intro.includes('\r\n\r\n') ? '\r\n\r\n' : '\n\n'
-    const blocks = intro.split(separator).map(block => block.trim()).filter(block => block.length > 0)
+		const separator = intro.includes('\r\n\r\n') ? '\r\n\r\n' : '\n\n';
+		const blocks = intro.split(separator).map(block => block.trim()).filter(block => block.length > 0);
 
-    const result: ParsedIntro = {}
+		const result: ParsedIntro = {};
 
-    for (const block of blocks) {
-			const blockLower = block.toLowerCase()
+		for (const block of blocks) {
+			const blockLower = block.toLowerCase();
 
-      // 體驗介紹
-      if (blockLower.includes('體驗介紹：') || blockLower.includes('體驗介紹')) {
-				result.experienceIntro = extractContentAfterColon(block)
-      }
+			// 體驗介紹
+			if (blockLower.includes('體驗介紹：') || blockLower.includes('體驗介紹')) {
+				result.experienceIntro = extractContentAfterColon(block);
+			}
 			// 師資介紹
 			else if (blockLower.includes('師資介紹：') || blockLower.includes('師資介紹')) {
-				result.teacherIntro = extractContentAfterColon(block)
-      }
+				result.teacherIntro = extractContentAfterColon(block);
+			}
 			// 參加限制
 			else if (blockLower.includes('參加限制：') || blockLower.includes('參加限制')) {
-				result.requirements = extractListItems(block)
-      }
+				result.requirements = extractListItems(block);
+			}
 			// 行前須知與準備清單
 			else if (blockLower.includes('行前須知') || blockLower.includes('準備清單')) {
-				result.preparation = extractListItems(block)
-      }
+				result.preparation = extractListItems(block);
+			}
 		}
 
 		// 如果沒有解析到任何結構化內容，回退到原始內容
 		if (!result.experienceIntro && !result.teacherIntro && !result.requirements && !result.preparation) {
-			return { fallback: intro }
-    }
+			return { fallback: intro };
+		}
 
-		return result
-  }
-	catch (error) {
+		return result;
+	}
+	catch (_error) {
 		// 解析失敗時回退到原始內容
 		// Intro 解析失敗，使用原始內容
-		return { fallback: intro }
-  }
+		return { fallback: intro };
+	}
 }
 
 /**
@@ -75,11 +75,11 @@ export function parseIntroContent(intro: string): ParsedIntro {
  * @returns 冒號後的內容
  */
 function extractContentAfterColon(text: string): string {
-	const colonIndex = text.indexOf('：')
-  if (colonIndex === -1) {
-		return text
-  }
-	return text.substring(colonIndex + 1).trim()
+	const colonIndex = text.indexOf('：');
+	if (colonIndex === -1) {
+		return text;
+	}
+	return text.substring(colonIndex + 1).trim();
 }
 
 /**
@@ -88,17 +88,17 @@ function extractContentAfterColon(text: string): string {
  * @returns 列表項目陣列
  */
 function extractListItems(text: string): string[] {
-	const content = extractContentAfterColon(text)
+	const content = extractContentAfterColon(text);
 
-  // 按 \r\n 或 \n 分割，然後過濾空行
-  const lineSeparator = content.includes('\r\n') ? '\r\n' : '\n'
-  const lines = content.split(lineSeparator).map(line => line.trim()).filter(line => line.length > 0)
+	// 按 \r\n 或 \n 分割，然後過濾空行
+	const lineSeparator = content.includes('\r\n') ? '\r\n' : '\n';
+	const lines = content.split(lineSeparator).map(line => line.trim()).filter(line => line.length > 0);
 
-  // 處理編號列表（如 "1.項目" 或 "1)項目"）
-  return lines.map((line) => {
+	// 處理編號列表（如 "1.項目" 或 "1)項目"）
+	return lines.map((line) => {
 		// 移除開頭的編號（如 "1."、"1)"、"1、" 等）
-		return line.replace(/^\d+[\.\)、]\s*/, '').trim()
-  });
+		return line.replace(/^\d+[.)、]\s*/, '').trim();
+	});
 }
 
 /**
@@ -107,7 +107,7 @@ function extractListItems(text: string): string[] {
  * @returns 是否為新格式
  */
 export function isNewFormatIntro(intro: string): boolean {
-	return Boolean(intro && (intro.includes('\r\n\r\n') || intro.includes('\n\n')))
+	return Boolean(intro && (intro.includes('\r\n\r\n') || intro.includes('\n\n')));
 }
 
 /**
@@ -117,14 +117,14 @@ export function isNewFormatIntro(intro: string): boolean {
  * - 依照指定長度截斷並補上省略號
  */
 export function extractIntroSummaryForCard(intro: string, maxLength = 120): string {
-	const parsed = parseIntroContent(intro || '')
-  const raw = parsed.experienceIntro || parsed.fallback || ''
+	const parsed = parseIntroContent(intro || '');
+	const raw = parsed.experienceIntro || parsed.fallback || '';
 
-  const singleLine = String(raw)
+	const singleLine = String(raw)
 		.replace(/\r\n|\n|\r/g, ' ')
 		.replace(/\s+/g, ' ')
-		.trim()
+		.trim();
 
-  if (singleLine.length <= maxLength) return singleLine
-  return singleLine.slice(0, Math.max(0, maxLength - 1)).trimEnd() + '…'
+	if (singleLine.length <= maxLength) return singleLine;
+	return singleLine.slice(0, Math.max(0, maxLength - 1)).trimEnd() + '…';
 }

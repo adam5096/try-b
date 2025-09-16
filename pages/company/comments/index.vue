@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue';
-import { UserFilled } from '@element-plus/icons-vue'
+import { UserFilled } from '@element-plus/icons-vue';
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 import { useCompanyCommentReviews } from '~/composables/api/company/useCompanyCommentReviews';
 
@@ -14,55 +14,55 @@ const filters = reactive({
 	rating: 'all',
 	dateSort: 'desc',
 	dateRange: '',
-})
+});
 
-const comments = ref<any[]>([])
-const loading = ref(true)
-const loadError = ref<string | null>(null)
+const comments = ref<any[]>([]);
+const loading = ref(true);
+const loadError = ref<string | null>(null);
 
 const pagination = reactive({
 	currentPage: 1,
 	pageSize: 10,
 	total: 0,
-})
+});
 
-const authStore = useCompanyAuthStore()
-const { fetchEvaluations } = useCompanyCommentReviews()
+const authStore = useCompanyAuthStore();
+const { fetchEvaluations } = useCompanyCommentReviews();
 
 function formatDate(input: string) {
-	const d = new Date(input)
-  if (isNaN(d.getTime())) return input
-  const y = d.getFullYear()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${y}/${m}/${day}`
+	const d = new Date(input);
+	if (isNaN(d.getTime())) return input;
+	const y = d.getFullYear();
+	const m = String(d.getMonth() + 1).padStart(2, '0');
+	const day = String(d.getDate()).padStart(2, '0');
+	return `${y}/${m}/${day}`;
 }
 
 async function loadData() {
-	loading.value = true
-  loadError.value = null
-  // 開發階段若無 companyId，使用 9 做測試
-  const companyId = authStore.companyId ?? 9
-  try {
-		const { data, error } = await fetchEvaluations(companyId, { page: pagination.currentPage, limit: pagination.pageSize })
-    if (error.value) {
-			comments.value = []
-      pagination.total = 0
-      loadError.value = (error.value as any)?.message || '取得資料失敗'
-      return;
+	loading.value = true;
+	loadError.value = null;
+	// 開發階段若無 companyId，使用 9 做測試
+	const companyId = authStore.companyId ?? 9;
+	try {
+		const { data, error } = await fetchEvaluations(companyId, { page: pagination.currentPage, limit: pagination.pageSize });
+		if (error.value) {
+			comments.value = [];
+			pagination.total = 0;
+			loadError.value = (error.value as any)?.message || '取得資料失敗';
+			return;
 		}
 		if (data.value) {
-			pagination.total = data.value.TotalCount || 0
-      comments.value = (data.value.Data || []).map(item => ({
+			pagination.total = data.value.TotalCount || 0;
+			comments.value = (data.value.Data || []).map(item => ({
 				id: item.Id,
 				author: {
 					name: item.ParticipantName,
 					// 直接採用後端 Headshot（只處理空白字元編碼）
 					avatar: (() => {
-						const raw = item.Headshot || ''
-            if (!raw) return ''
-            return encodeURI(raw)
-          })(),
+						const raw = item.Headshot || '';
+						if (!raw) return '';
+						return encodeURI(raw);
+					})(),
 					role: item.Identity?.title || '—',
 					age: item.ParticipantAge,
 				},
@@ -70,24 +70,24 @@ async function loadData() {
 				rating: item.Score,
 				date: formatDate(item.EvaluationDate),
 				text: item.Comment,
-			}))
-    }
+			}));
+		}
 	}
 	catch (e: any) {
-		loadError.value = e?.message || '取得資料失敗'
-  }
+		loadError.value = e?.message || '取得資料失敗';
+	}
 	finally {
-		loading.value = false
-  }
+		loading.value = false;
+	}
 }
 
 function handlePageChange(page: number) {
-	pagination.currentPage = page
-  loadData()
+	pagination.currentPage = page;
+	loadData();
 }
 
 onMounted(() => {
-	loadData()
+	loadData();
 });
 </script>
 

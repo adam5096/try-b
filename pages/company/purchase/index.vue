@@ -1,8 +1,8 @@
 <!-- ep10-3 企業方案頁面 -->
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { Check } from '@element-plus/icons-vue'
+import { ref, onMounted, computed } from 'vue';
+import { Check } from '@element-plus/icons-vue';
 import { useCompanyAllPlans } from '~/composables/api/company/useCompanyAllPlans';
 import { useCompanyPlanStore } from '~/stores/company/usePlanStore';
 import { isActivePlan } from '~/types/company/plan/current';
@@ -11,15 +11,15 @@ definePageMeta({
 	ssr: false, // CSR 模式
 	layout: 'company',
 	name: 'company-purchase-index',
-})
+});
 
-const router = useRouter()
+const router = useRouter();
 const { plans, isLoading, error, fetchAllPlans } = useCompanyAllPlans();
 const planStore = useCompanyPlanStore();
 
 onMounted(() => {
 	fetchAllPlans();
-})
+});
 
 const fallbackDescriptions: { [key: number]: string } = {
 	2: '適合小型企業與新創公司',
@@ -32,12 +32,12 @@ const fallbackDescriptions: { [key: number]: string } = {
 const processedPlans = computed(() => {
 	if (!plans.value) {
 		return [];
-  }
+	}
 	return plans.value.map(plan => ({
 		...plan,
 		description: plan.description || fallbackDescriptions[plan.id] || '為您的企業需求量身打造',
 	}));
-})
+});
 
 interface CurrentPlan {
 	orderNumber: string;
@@ -61,60 +61,60 @@ const currentPlan = ref<CurrentPlan>({
 		limit: '體驗人數上限 30 人',
 		period: '2025 年 6 月 1 日 - 2025 年 8 月 31 日',
 	},
-})
+});
 
-const activeStep = ref(0)
+const activeStep = ref(0);
 
 function selectPlan(planId: number) {
 	return navigateTo({
 		name: 'company-purchase-payment',
 		query: { planId },
-	})
+	});
 }
 
 // 由目前方案（紅框）共享資料到下方「方案詳情」（黃框）
 const detailDurationAndLimit = computed(() => {
 	const p = planStore.plan as any;
-  if (p && isActivePlan(p)) {
+	if (p && isActivePlan(p)) {
 		return `${p.plan_duration_days} 天 體驗人數上限 ${p.max_participants} 人`;
-  }
+	}
 	return `${currentPlan.value.details.duration}`; // fallback
-})
+});
 
 const detailPeriod = computed(() => {
 	const p = planStore.plan as any;
-  if (p && isActivePlan(p)) {
+	if (p && isActivePlan(p)) {
 		const start = new Date(p.start_date).toLocaleDateString('zh-TW');
-    const end = new Date(p.end_date).toLocaleDateString('zh-TW');
-    return `${start} - ${end}`;
-  }
+		const end = new Date(p.end_date).toLocaleDateString('zh-TW');
+		return `${start} - ${end}`;
+	}
 	return currentPlan.value.details.period; // fallback
-})
+});
 
 // 顯示目前方案名稱（例如：方案C）；無資料時沿用「方案詳情」
 const detailPlanName = computed(() => {
 	const p = planStore.plan as any;
-  if (p && isActivePlan(p)) {
+	if (p && isActivePlan(p)) {
 		return p.plan_name || '方案詳情';
-  }
+	}
 	return '方案詳情';
-})
+});
 
 // 目前方案售價（顯示於「付款金額」）
 const detailPrice = computed(() => {
 	const p = planStore.plan as any;
-  if (p && isActivePlan(p)) {
+	if (p && isActivePlan(p)) {
 		const price = Number(p.plan_price || 0);
-    return `TWD ${price.toLocaleString('zh-TW')}`;
-  }
+		return `TWD ${price.toLocaleString('zh-TW')}`;
+	}
 	// fallback 舊靜態資料
 	return currentPlan.value.amount;
-})
+});
 
 // 千分位格式化（TWD）
 function formatTwd(value: number | string) {
 	const num = Number(value ?? 0);
-  return `TWD ${num.toLocaleString('zh-TW')}`;
+	return `TWD ${num.toLocaleString('zh-TW')}`;
 }
 </script>
 

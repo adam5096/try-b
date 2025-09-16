@@ -66,6 +66,6 @@ withDefaults(defineProps<Props>(), {
 // 根據行數決定寬度變化，讓骨架看起來更自然
 const getLineWidth = (lineIndex: number) => {
 	const widths = ['w-full', 'w-5/6', 'w-4/5', 'w-3/4', 'w-2/3'];
-  return widths[lineIndex % widths.length] || 'w-full';
+	return widths[lineIndex % widths.length] || 'w-full';
 };
 </script>

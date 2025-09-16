@@ -5,7 +5,7 @@ definePageMeta({
 	layout: 'company',
 	name: 'company-settings',
 	ssr: false, // CSR 模式
-})
+});
 
 const companyInfo = ref({
 	name: '台灣科技創新有限公司',
@@ -17,23 +17,23 @@ const companyInfo = ref({
 	description: '台灣科技創新有限公司成立於2010年,專注於軟體開發與人工智能解決方案,致力於為企業提供創新的技術服務。我們的使命是透過科技提升企業效率,創造更美好的未來。',
 	logo: '',
 	cover: '',
-})
+});
 
 const passwordInfo = ref({
 	current: '',
 	new: '',
 	confirm: '',
-})
+});
 
 const contactInfo = ref({
 	name: '陳企業管理員',
 	title: '人資經理',
 	email: 'hr@techinnov.com.tw',
 	phone: '02-2345-6789',
-})
+});
 
-const industryOptions = ['科技業', '金融業', '製造業', '服務業']
-const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500人以上']
+const industryOptions = ['科技業', '金融業', '製造業', '服務業'];
+const scaleOptions = ['1-50人', '51-100人', '100-200人', '201-500人', '500人以上'];
 </script>
 
 <template>

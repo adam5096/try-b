@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useCompanyPlanStore } from '~/stores/company/usePlanStore'
+import { useCompanyPlanStore } from '~/stores/company/usePlanStore';
 
-const planStore = useCompanyPlanStore()
+const planStore = useCompanyPlanStore();
 </script>
 
 <template>

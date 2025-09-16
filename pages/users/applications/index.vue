@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 
 definePageMeta({
@@ -7,7 +7,7 @@ definePageMeta({
 	layout: 'user',
 	middleware: 'user-auth',
 	ssr: false, // CSR 模式
-})
+});
 
 type ApplicationStatus = '待審核' | '已通過' | '未通過' | '已取消' | '已完成';
 
@@ -26,18 +26,18 @@ interface ApplicationItem {
 }
 
 // Filter state (applied)
-const isFilterOpen = ref(false)
-const selectedStatuses = ref<ApplicationStatus[]>([]) // 空陣列 = 全部狀態
+const isFilterOpen = ref(false);
+const selectedStatuses = ref<ApplicationStatus[]>([]); // 空陣列 = 全部狀態
 type SortOrder = 'desc' | 'asc';
-const sortOrder = ref<SortOrder>('desc') // 日期排序（申請日期）
-const popoverWidthCss = 'clamp(320px, 92vw, 520px)'
+const sortOrder = ref<SortOrder>('desc'); // 日期排序（申請日期）
+const popoverWidthCss = 'clamp(320px, 92vw, 520px)';
 
 // Filter state (draft, inside popover)
-const draftSelectedStatuses = ref<ApplicationStatus[]>([])
-const draftSortOrder = ref<SortOrder>('desc')
+const draftSelectedStatuses = ref<ApplicationStatus[]>([]);
+const draftSortOrder = ref<SortOrder>('desc');
 
 // 下拉選單顯示的狀態選項（不包含「已完成」）
-const statusOptions: ApplicationStatus[] = ['待審核', '已通過', '未通過', '已取消']
+const statusOptions: ApplicationStatus[] = ['待審核', '已通過', '未通過', '已取消'];
 
 const applicationList = ref<ApplicationItem[]>([
 	{
@@ -80,96 +80,96 @@ const applicationList = ref<ApplicationItem[]>([
 		description: '體驗數位行銷專案的企劃與執行，從廣告投放到成效追蹤。',
 		organizer: '台灣數位行銷協會',
 	},
-])
+]);
 
 const visibleApplications = computed(() => {
 	// 狀態過濾
 	const filtered = applicationList.value.filter((item) => {
-		if (selectedStatuses.value.length === 0) return true
-    return selectedStatuses.value.includes(item.status)
-  });
-  // 日期排序（appliedAt）
-  const sorted = filtered.slice().sort((a, b) => {
-		const ta = new Date(a.appliedAt).getTime()
-    const tb = new Date(b.appliedAt).getTime()
-    return sortOrder.value === 'desc' ? tb - ta : ta - tb
-  });
-  return sorted
+		if (selectedStatuses.value.length === 0) return true;
+		return selectedStatuses.value.includes(item.status);
+	});
+	// 日期排序（appliedAt）
+	const sorted = filtered.slice().sort((a, b) => {
+		const ta = new Date(a.appliedAt).getTime();
+		const tb = new Date(b.appliedAt).getTime();
+		return sortOrder.value === 'desc' ? tb - ta : ta - tb;
+	});
+	return sorted;
 });
 
 // Pagination state
-const pageSize = ref<number>(5)
-const currentPage = ref<number>(1)
+const pageSize = ref<number>(5);
+const currentPage = ref<number>(1);
 
 // Derived pagination info
-const totalItems = computed<number>(() => visibleApplications.value.length)
+const totalItems = computed<number>(() => visibleApplications.value.length);
 const pageStartDisplay = computed<number>(() => {
-	if (totalItems.value === 0) return 0
-  return (currentPage.value - 1) * pageSize.value + 1
+	if (totalItems.value === 0) return 0;
+	return (currentPage.value - 1) * pageSize.value + 1;
 });
 const pageEndDisplay = computed<number>(() => {
-	if (totalItems.value === 0) return 0
-  return Math.min(currentPage.value * pageSize.value, totalItems.value)
+	if (totalItems.value === 0) return 0;
+	return Math.min(currentPage.value * pageSize.value, totalItems.value);
 });
 
 const paginatedApplications = computed<ApplicationItem[]>(() => {
-	const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return visibleApplications.value.slice(start, end)
+	const start = (currentPage.value - 1) * pageSize.value;
+	const end = start + pageSize.value;
+	return visibleApplications.value.slice(start, end);
 });
 
 // Reset page when filters change
 watch(visibleApplications, () => {
-	currentPage.value = 1
+	currentPage.value = 1;
 });
 
 // Popover open → 複製目前套用的濾鏡到草稿
 watch(isFilterOpen, (open) => {
 	if (open) {
-		draftSelectedStatuses.value = [...selectedStatuses.value]
-    draftSortOrder.value = sortOrder.value
-  }
-})
+		draftSelectedStatuses.value = [...selectedStatuses.value];
+		draftSortOrder.value = sortOrder.value;
+	}
+});
 
 function toggleDraftStatus(status: ApplicationStatus): void {
-	const set = new Set(draftSelectedStatuses.value)
-  if (set.has(status)) {
-		set.delete(status)
-  }
+	const set = new Set(draftSelectedStatuses.value);
+	if (set.has(status)) {
+		set.delete(status);
+	}
 	else {
-		set.add(status)
-  }
-	draftSelectedStatuses.value = Array.from(set)
+		set.add(status);
+	}
+	draftSelectedStatuses.value = Array.from(set);
 }
 
 function resetDraftFilters(): void {
-	draftSelectedStatuses.value = []
-  draftSortOrder.value = 'desc'
+	draftSelectedStatuses.value = [];
+	draftSortOrder.value = 'desc';
 }
 
 function applyDraftFilters(): void {
-	selectedStatuses.value = [...draftSelectedStatuses.value]
-  sortOrder.value = draftSortOrder.value
-  isFilterOpen.value = false
+	selectedStatuses.value = [...draftSelectedStatuses.value];
+	sortOrder.value = draftSortOrder.value;
+	isFilterOpen.value = false;
 }
 
 function getTagType(status: ApplicationStatus): 'success' | 'warning' | 'danger' | 'info' {
 	switch (status) {
 		case '已通過':
-			return 'success'
-  case '待審核':
-			return 'warning'
-  case '未通過':
-			return 'danger'
-  case '已取消':
-			return 'info'
-  case '已完成':
-			return 'success'
-  }
+			return 'success';
+		case '待審核':
+			return 'warning';
+		case '未通過':
+			return 'danger';
+		case '已取消':
+			return 'info';
+		case '已完成':
+			return 'success';
+	}
 }
 
 function getStatusText(status: ApplicationStatus): string {
-	return status === '待審核' ? '審核中' : status
+	return status === '待審核' ? '審核中' : status;
 }
 
 function onCancel(appId: number): void {

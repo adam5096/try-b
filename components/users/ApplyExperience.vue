@@ -48,8 +48,8 @@ const rules: FormRules<ApplyForm> = {
 		{
 			validator: (_rule, value: boolean, callback) => {
 				if (value) callback();
-        else callback(new Error('請勾選同意條款'));
-      },
+				else callback(new Error('請勾選同意條款'));
+			},
 			trigger: 'change',
 		},
 	],
@@ -63,22 +63,22 @@ const emit = defineEmits<{ (e: 'submitted'): void; (e: 'close'): void }>();
 
 const handleSubmit = async () => {
 	if (!formRef.value) return;
-  await formRef.value.validate(async (valid) => {
+	await formRef.value.validate(async (valid) => {
 		if (!valid) return;
-    try {
+		try {
 			submitting.value = true;
-      const authStore = useUserAuthStore();
-      const { submitApplication } = useUserApplications();
+			const authStore = useUserAuthStore();
+			const { submitApplication } = useUserApplications();
 
-      const participantId = authStore.user?.id;
-      if (!participantId) {
+			const participantId = authStore.user?.id;
+			if (!participantId) {
 				ElMessage.error('尚未登入，請先登入後再嘗試');
-        return;
+				return;
 			}
 
 			if (!props.programId) {
 				ElMessage.error('缺少活動識別資訊，請重新進入此頁');
-        return;
+				return;
 			}
 
 			const payload = {
@@ -92,21 +92,21 @@ const handleSubmit = async () => {
 
 			try {
 				await submitApplication(Number(props.programId), payload);
-        ElMessage.success('提交成功，等待企業審核');
-        emit('submitted');
-      }
+				ElMessage.success('提交成功，等待企業審核');
+				emit('submitted');
+			}
 			catch (e: any) {
 				if (e?.status === 400) {
 					ElMessage.warning('已經申請過，請查看其他活動');
-          emit('close');
-          return;
+					emit('close');
+					return;
 				}
 				ElMessage.error(e?.message || '提交失敗，請稍後再試');
-      }
+			}
 		}
 		finally {
 			submitting.value = false;
-    }
+		}
 	});
 };
 </script>

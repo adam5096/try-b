@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { navigateTo, useRoute } from '#app';
-import { ArrowRight } from '@element-plus/icons-vue'
+import { ArrowRight } from '@element-plus/icons-vue';
 import { adminRoutes } from '~/utils/adminRoutes';
 
 definePageMeta({
@@ -38,8 +38,8 @@ interface ReviewHistoryItem {
 	note: string;
 }
 
-const route = useRoute()
-const commentIdFromRoute = computed(() => String(route.params.commentId ?? ''))
+const route = useRoute();
+const commentIdFromRoute = computed(() => String(route.params.commentId ?? ''));
 
 // demo data for UI build
 const detail = ref<CommentDetail>({
@@ -60,35 +60,35 @@ const detail = ref<CommentDetail>({
 	updatedAt: '2025-09-16 09:15:22',
 	commentText:
     '這次體驗課程安排緊湊，導師講解清晰，實作環節也很有幫助。建議增加更多與產業顧問的 Q&A 時間。',
-})
+});
 
 const statusLabelMap: Record<ReviewStatus, string> = {
 	systemApproved: '已通過(系統)',
 	systemRejected: '已拒絕(系統)',
 	manualConfirmed: '已確認(人工)',
 	manualRejected: '已拒絕(人工)',
-}
+};
 
 const statusTagTypeMap: Record<ReviewStatus, 'success' | 'danger' | 'info' | 'warning'> = {
 	systemApproved: 'success',
 	systemRejected: 'danger',
 	manualConfirmed: 'info',
 	manualRejected: 'danger',
-}
+};
 
-const reviewNote = ref('')
-const ratingScore = computed(() => `${detail.value.rating.toFixed(1)} / 5.0`)
+const reviewNote = ref('');
+const ratingScore = computed(() => `${detail.value.rating.toFixed(1)} / 5.0`);
 
-const reviewResult = ref<'approved' | 'rejected'>('approved')
+const reviewResult = ref<'approved' | 'rejected'>('approved');
 
 const submitReview = () => {
 	// 先預設成功：直接導回列表，待串接真實 API 後再補齊流程
-	navigateTo(adminRoutes.comments())
-}
+	navigateTo(adminRoutes.comments());
+};
 
 const goToProgram = () => {
-	navigateTo(adminRoutes.programDetail(detail.value.programId))
-}
+	navigateTo(adminRoutes.programDetail(detail.value.programId));
+};
 
 // 審核歷史（示意資料，用於 UI 切版）
 const reviewHistory = ref<ReviewHistoryItem[]>([
@@ -104,19 +104,19 @@ const reviewHistory = ref<ReviewHistoryItem[]>([
 		type: '人工審核',
 		note: '確認內容為系統誤判，無不雅、謾罵、攻擊、猥褻等字眼，標記為已通過。',
 	},
-])
+]);
 
 const goBackToList = () => {
-	navigateTo(adminRoutes.comments())
-}
+	navigateTo(adminRoutes.comments());
+};
 
 const approve = () => {
-	detail.value.status = 'manualConfirmed'
-}
+	detail.value.status = 'manualConfirmed';
+};
 
 const reject = () => {
-	detail.value.status = 'manualRejected'
-}
+	detail.value.status = 'manualRejected';
+};
 </script>
 
 <template>

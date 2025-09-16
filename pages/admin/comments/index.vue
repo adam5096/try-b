@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { Search } from '@element-plus/icons-vue'
+import { Search } from '@element-plus/icons-vue';
 import { navigateTo } from '#app';
 import { adminRoutes } from '~/utils/adminRoutes';
 
@@ -22,10 +22,10 @@ interface CommentItem {
 	date: string; // YYYY/MM/DD
 }
 
-const query = ref('')
-const filterRating = ref<'all' | '5' | '4plus' | '3plus'>('all')
-const filterStatus = ref<'all' | ReviewStatus>('all')
-const sortBy = ref<'recent' | 'oldest'>('recent')
+const query = ref('');
+const filterRating = ref<'all' | '5' | '4plus' | '3plus'>('all');
+const filterStatus = ref<'all' | ReviewStatus>('all');
+const sortBy = ref<'recent' | 'oldest'>('recent');
 
 const allComments = ref<CommentItem[]>([
 	{
@@ -82,65 +82,65 @@ const allComments = ref<CommentItem[]>([
 		status: 'systemApproved',
 		date: '2025/11/20',
 	},
-])
+]);
 
 const statusLabelMap: Record<ReviewStatus, string> = {
 	systemApproved: '已通過(系統)',
 	systemRejected: '已拒絕(系統)',
 	manualConfirmed: '已確認(人工)',
 	manualRejected: '已拒絕(人工)',
-}
+};
 
 const statusClassMap: Record<ReviewStatus, string> = {
 	systemApproved: 'bg-green-50 text-green-700 border border-green-200',
 	systemRejected: 'bg-red-50 text-red-700 border border-red-200',
 	manualConfirmed: 'bg-blue-50 text-blue-700 border border-blue-200',
 	manualRejected: 'bg-red-50 text-red-700 border border-red-200',
-}
+};
 
 const visibleComments = computed(() => {
-	const q = query.value.trim().toLowerCase()
-  const filtered = allComments.value.filter((c) => {
+	const q = query.value.trim().toLowerCase();
+	const filtered = allComments.value.filter((c) => {
 		const matchQuery = q
 			? c.programTitle.toLowerCase().includes(q) || c.reviewer.toLowerCase().includes(q) || c.programId.toLowerCase().includes(q)
-			: true
-    const matchRating = (() => {
-			if (filterRating.value === 'all') return true
-      if (filterRating.value === '5') return c.rating === 5
-      if (filterRating.value === '4plus') return c.rating >= 4
-      if (filterRating.value === '3plus') return c.rating >= 3
-      return true
-    })()
-    const matchStatus = filterStatus.value === 'all' ? true : c.status === filterStatus.value
-    return matchQuery && matchRating && matchStatus
-  });
+			: true;
+		const matchRating = (() => {
+			if (filterRating.value === 'all') return true;
+			if (filterRating.value === '5') return c.rating === 5;
+			if (filterRating.value === '4plus') return c.rating >= 4;
+			if (filterRating.value === '3plus') return c.rating >= 3;
+			return true;
+		})();
+		const matchStatus = filterStatus.value === 'all' ? true : c.status === filterStatus.value;
+		return matchQuery && matchRating && matchStatus;
+	});
 
-  const sorted = filtered.sort((a, b) => {
-		if (sortBy.value === 'recent') return a.date < b.date ? 1 : a.date > b.date ? -1 : 0
-    return a.date > b.date ? 1 : a.date < b.date ? -1 : 0
-  });
-  return sorted
+	const sorted = filtered.sort((a, b) => {
+		if (sortBy.value === 'recent') return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+		return a.date > b.date ? 1 : a.date < b.date ? -1 : 0;
+	});
+	return sorted;
 });
 
-const total = computed(() => visibleComments.value.length)
+const total = computed(() => visibleComments.value.length);
 
 // pagination
-const currentPage = ref(1)
-const pageSize = ref(10)
+const currentPage = ref(1);
+const pageSize = ref(10);
 const paginatedComments = computed(() => {
-	const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return visibleComments.value.slice(start, end)
+	const start = (currentPage.value - 1) * pageSize.value;
+	const end = start + pageSize.value;
+	return visibleComments.value.slice(start, end);
 });
-const displayedFrom = computed(() => (total.value === 0 ? 0 : (currentPage.value - 1) * pageSize.value + 1))
+const displayedFrom = computed(() => (total.value === 0 ? 0 : (currentPage.value - 1) * pageSize.value + 1));
 const displayedTo = computed(() => {
-	const end = currentPage.value * pageSize.value
-  return end > total.value ? total.value : end
+	const end = currentPage.value * pageSize.value;
+	return end > total.value ? total.value : end;
 });
 
 const goToDetail = (commentId: number) => {
-	navigateTo(adminRoutes.commentReview(commentId))
-}
+	navigateTo(adminRoutes.commentReview(commentId));
+};
 </script>
 
 <template>

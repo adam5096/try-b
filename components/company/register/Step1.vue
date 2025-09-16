@@ -1,53 +1,53 @@
 <script setup lang="ts">
-import { reactive, ref, nextTick } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
+import { reactive, ref, nextTick } from 'vue';
+import type { FormInstance, FormRules } from 'element-plus';
 
 const props = defineProps<{
 	formData: any;
 	industryOptions: { value: number; label: string }[];
 	scaleOptions: { value: number; label: string }[];
-}>()
+}>();
 
-const emit = defineEmits(['next'])
+const emit = defineEmits(['next']);
 
-const formRef = ref<FormInstance>()
+const formRef = ref<FormInstance>();
 
 const createRequiredValidator = (message: string) => {
 	return (rule: any, value: any, callback: (error?: Error) => void) => {
 		if (!value && value !== 0) {
-			callback(new Error(message))
-    }
+			callback(new Error(message));
+		}
 		else {
-			callback()
-    }
+			callback();
+		}
 	};
 };
 
 const validateEmail = (rule: any, value: any, callback: (error?: Error) => void) => {
 	if (!value) {
-		callback(new Error('Email為必填'))
-    return;
+		callback(new Error('Email為必填'));
+		return;
 	}
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(value)) {
-		callback(new Error('請輸入有效的 Email 格式'))
-  }
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	if (!emailRegex.test(value)) {
+		callback(new Error('請輸入有效的 Email 格式'));
+	}
 	else {
-		callback()
-  }
-}
+		callback();
+	}
+};
 
 const validateConfirmPassword = (rule: any, value: any, callback: (error?: Error) => void) => {
 	if (value === '') {
-		callback(new Error('確認密碼為必填'))
-  }
+		callback(new Error('確認密碼為必填'));
+	}
 	else if (value !== props.formData.password) {
-		callback(new Error('兩次輸入的密碼不一致'))
-  }
+		callback(new Error('兩次輸入的密碼不一致'));
+	}
 	else {
-		callback()
-  }
-}
+		callback();
+	}
+};
 
 const rules = reactive<FormRules>({
 	name: [{ validator: createRequiredValidator('企業名稱為必填'), trigger: 'blur' }],
@@ -58,23 +58,23 @@ const rules = reactive<FormRules>({
 	industry_id: [{ validator: createRequiredValidator('產業類別為必填'), trigger: 'change' }],
 	scale_id: [{ validator: createRequiredValidator('企業規模為必填'), trigger: 'change' }],
 	address: [{ validator: createRequiredValidator('企業地址為必填'), trigger: 'blur' }],
-})
+});
 
 const handleNextClick = async () => {
-	const formEl = formRef.value
-  if (!formEl) return
+	const formEl = formRef.value;
+	if (!formEl) return;
 
-  try {
-		await formEl.validate()
-    emit('next')
-  }
+	try {
+		await formEl.validate();
+		emit('next');
+	}
 	catch (fields) {
 		// 驗證失敗後，Element Plus 會更新其內部狀態以顯示錯誤。
 		// 這個更新不是同步的。我們必須使用 nextTick 等待下一個 DOM 更新週期，
 		// 以確保當 Playwright 進行下一步斷言時，錯誤訊息的 DOM 元素已經被渲染出來。
-		await nextTick()
-  }
-}
+		await nextTick();
+	}
+};
 </script>
 
 <template>

@@ -14,7 +14,6 @@ useSeoMeta({
 	twitterImage: 'https://try-b.vercel.app/img/home/home-worker-bg.webp',
 	twitterImageAlt: 'TRY β 職業體驗平台',
 });
-
 </script>
 
 <template>

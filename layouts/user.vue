@@ -12,20 +12,20 @@ watch(isMenuOpen, (isOpen) => {
 	if (import.meta.client) {
 		if (isOpen) {
 			const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-      document.body.style.overflow = 'hidden';
+			document.body.style.paddingRight = `${scrollbarWidth}px`;
+			document.body.style.overflow = 'hidden';
 
-      nextTick(() => {
+			nextTick(() => {
 				if (mobileMenuRef.value) {
 					menuHeight.value = mobileMenuRef.value.offsetHeight;
-        }
+				}
 			});
-    }
+		}
 		else {
 			document.body.style.paddingRight = '';
-      document.body.style.overflow = '';
-      menuHeight.value = 0;
-    }
+			document.body.style.overflow = '';
+			menuHeight.value = 0;
+		}
 	}
 });
 
@@ -54,7 +54,7 @@ const userLinks = ref([
 		route: { name: 'user-comments' },
 		icon: ['fas', 'star'],
 	},
-])
+]);
 
 const authStore = useUserAuthStore();
 
@@ -70,8 +70,8 @@ async function handleLogout() {
 			},
 		);
 		await authStore.logout();
-    await navigateTo({ name: 'user-login' });
-  }
+		await navigateTo({ name: 'user-login' });
+	}
 	catch (error) {
 		// Suppress error when user clicks "cancel"
 		if (error !== 'cancel') {
@@ -82,16 +82,16 @@ async function handleLogout() {
 const handleResize = () => {
 	if (window.innerWidth >= 1024) {
 		isMenuOpen.value = false;
-  }
+	}
 };
 
 onMounted(() => {
 	window.addEventListener('resize', handleResize);
-})
+});
 
 onBeforeUnmount(() => {
 	window.removeEventListener('resize', handleResize);
-})
+});
 </script>
 
 <template>

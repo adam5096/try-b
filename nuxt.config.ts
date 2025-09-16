@@ -134,10 +134,10 @@ export default defineNuxtConfig({
 	eslint: {
 		config: {
 			stylistic: {
-				semi: true,           // 使用分號
-				quotes: 'single',     // 使用單引號
+				semi: true, // 使用分號
+				quotes: 'single', // 使用單引號
 				commaDangle: 'always-multiline',
-				indent: 'tab',        // 使用 Tab 縮排
+				indent: 'tab', // 使用 Tab 縮排
 			},
 		},
 	},

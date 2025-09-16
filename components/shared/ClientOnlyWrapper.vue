@@ -18,9 +18,9 @@ const props = withDefaults(defineProps<Props>(), {
 	fallbackHeight: '200px',
 });
 
-const isClient = ref(false)
+const isClient = ref(false);
 
 onMounted(() => {
-	isClient.value = true
+	isClient.value = true;
 });
 </script>

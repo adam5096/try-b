@@ -9,9 +9,9 @@ definePageMeta({
 	ssr: false, // CSR 模式
 });
 
-const steps = [Step1, Step2, Step3]
+const steps = [Step1, Step2, Step3];
 
-const currentStep = ref(1)
+const currentStep = ref(1);
 
 const formData = reactive({
 	// Step 1 data
@@ -56,14 +56,14 @@ const scaleOptions = [
 
 function nextStep() {
 	if (currentStep.value < 3) {
-		currentStep.value++
-  }
+		currentStep.value++;
+	}
 }
 
 function previousStep() {
 	if (currentStep.value > 1) {
-		currentStep.value--
-  }
+		currentStep.value--;
+	}
 }
 </script>
 

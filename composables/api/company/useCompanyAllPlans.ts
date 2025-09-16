@@ -4,7 +4,7 @@ export function useCompanyAllPlans() {
 	// 取得 company auth token 來設定 headers
 	const tokenCookie = useCookie<string | null>('companyAuthToken');
 
-  const {
+	const {
 		data: plans,
 		pending: isLoading,
 		error,
@@ -16,14 +16,14 @@ export function useCompanyAllPlans() {
 		immediate: false,
 		headers: computed(() => {
 			const headers: Record<string, string> = {};
-      if (tokenCookie.value) {
+			if (tokenCookie.value) {
 				headers.authorization = `Bearer ${tokenCookie.value}`;
-      }
+			}
 			return headers;
-    }),
+		}),
 	});
 
-  return {
+	return {
 		plans,
 		isLoading,
 		error,

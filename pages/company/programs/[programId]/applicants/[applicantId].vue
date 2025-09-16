@@ -12,14 +12,14 @@ import {
 	Phone,
 	Document,
 	Download,
-} from '@element-plus/icons-vue'
+} from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
-import type { ApplicantDetail, ProgramPlan } from '~/types/company/applicant'
+import type { ApplicantDetail, ProgramPlan } from '~/types/company/applicant';
 
 definePageMeta({
 	name: 'company-program-applicant-detail',
 	layout: 'company',
-})
+});
 
 const route = useRoute();
 const {
@@ -65,21 +65,21 @@ const rules = reactive<FormRules>({
 
 const submitReview = async (formEl: FormInstance | undefined) => {
 	if (!formEl) return;
-  await formEl.validate(async (valid) => {
+	await formEl.validate(async (valid) => {
 		if (valid) {
 			const programId = String(route.params.programId);
-      const applicantId = String(route.params.applicantId);
+			const applicantId = String(route.params.applicantId);
 
-      await submitReviewApi(authStore.companyId, programId, applicantId, {
+			await submitReviewApi(authStore.companyId, programId, applicantId, {
 				status_id: decisionForm.value.status === 'pending' ? 2 : 3, // 2=核准申請, 3=婉拒申請
 				comment: decisionForm.value.feedback,
 			});
 
-      if (submitError.value) {
+			if (submitError.value) {
 				// 直接顯示 HTTP 400 的 response body 內容
 				const responseBody = submitError.value.data?.Message || submitError.value.data?.message || submitError.value.message || '未知錯誤';
 
-        await ElMessageBox.alert(
+				await ElMessageBox.alert(
 					responseBody,
 					'錯誤',
 					{ type: 'error' },
@@ -95,9 +95,9 @@ const submitReview = async (formEl: FormInstance | undefined) => {
 								programId,
 							},
 						});
-          },
+					},
 				});
-      }
+			}
 		}
 	});
 };

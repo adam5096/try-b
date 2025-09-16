@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
-import type { ReviewItem, ReviewStatus, CommentsQueryParams, SubmitEvaluationPayload } from '~/types/users/comment'
-import { useUserComments } from '~/composables/api/users/useUserComments'
-import { useUserEvaluation } from '~/composables/api/users/useUserEvaluation'
+import { ref, computed, onMounted, watch } from 'vue';
+import type { ReviewItem, ReviewStatus, CommentsQueryParams, SubmitEvaluationPayload } from '~/types/users/comment';
+import { useUserComments } from '~/composables/api/users/useUserComments';
+import { useUserEvaluation } from '~/composables/api/users/useUserEvaluation';
 
 definePageMeta({
 	name: 'user-comments',
 	layout: 'user',
 	middleware: 'user-auth',
 	ssr: false, // CSR 模式
-})
+});
 
 // API 相關
 const { fetchComments } = useUserComments();
@@ -21,25 +21,25 @@ const error = ref<any>(null);
 // 將後端回傳之 company_logo 轉為可用圖片 URL（相對路徑 → 透過本機代理）
 function resolveCompanyLogo(rawLogoPath?: string | null): string | undefined {
 	if (!rawLogoPath) return undefined;
-  const trimmed = String(rawLogoPath).trim();
-  if (!trimmed) return undefined;
-  // 已是完整網址則直接使用
-  if (/^https?:\/\//i.test(trimmed)) {
+	const trimmed = String(rawLogoPath).trim();
+	if (!trimmed) return undefined;
+	// 已是完整網址則直接使用
+	if (/^https?:\/\//i.test(trimmed)) {
 		return encodeURI(trimmed);
-  }
+	}
 	// 相對路徑：走 Nitro proxy，避免 CORS 與混合內容
 	const normalized = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
-  // 合併重複斜線，避免出現 /api-proxy//Images/... 造成 404
-  const proxied = `/api-proxy${normalized}`.replace(/\/{2,}/g, '/');
-  return encodeURI(proxied);
+	// 合併重複斜線，避免出現 /api-proxy//Images/... 造成 404
+	const proxied = `/api-proxy${normalized}`.replace(/\/{2,}/g, '/');
+	return encodeURI(proxied);
 }
 
 // 日期格式化
 const { $dayjs } = useNuxtApp();
 function formatEvaluationDate(dateStr?: string | null): string {
 	if (!dateStr) return '';
-  const d = $dayjs(dateStr);
-  return d.isValid() ? d.format('YYYY/MM/DD HH:mm:ss') : '';
+	const d = $dayjs(dateStr);
+	return d.isValid() ? d.format('YYYY/MM/DD HH:mm:ss') : '';
 }
 
 // 篩選器狀態
@@ -90,9 +90,9 @@ const statusIdToText = (statusId: number): ReviewStatus => {
 // 載入評價數據
 const loadComments = async () => {
 	loading.value = true;
-  error.value = null;
+	error.value = null;
 
-  try {
+	try {
 		const params: CommentsQueryParams = {
 			page: currentPage.value,
 			limit: pageSize.value,
@@ -101,28 +101,28 @@ const loadComments = async () => {
 		};
 
 		const result = await fetchComments(params);
-    commentsData.value = result.data.value;
-  }
+		commentsData.value = result.data.value;
+	}
 	catch (err) {
 		error.value = err;
-  }
+	}
 	finally {
 		loading.value = false;
-  }
+	}
 };
 
 // 篩選相關函數
 function onClearFilters() {
 	selectedStatuses.value = [];
-  selectedDateSort.value = 'newest';
-  currentPage.value = 1;
-  loadComments();
+	selectedDateSort.value = 'newest';
+	currentPage.value = 1;
+	loadComments();
 }
 
 function onApplyFilters() {
 	currentPage.value = 1;
-  filterVisible.value = false;
-  loadComments();
+	filterVisible.value = false;
+	loadComments();
 }
 
 // 狀態標籤類型
@@ -132,16 +132,16 @@ function tagTypeForStatus(status: ReviewStatus): 'success' | 'warning' | 'danger
 		case '人工已通過':
 		case '全部通過':
 			return 'success';
-  case '審核中':
+		case '審核中':
 		case '待處理':
 			return 'warning';
-  case '系統已拒絕':
+		case '系統已拒絕':
 		case '人工已拒絕':
 		case '全部拒絕':
 			return 'danger';
-  default:
+		default:
 			return 'info';
-  }
+	}
 }
 
 // 開始編輯評價
@@ -155,9 +155,9 @@ function startEditEvaluation(item: ReviewItem) {
 // 提交評價
 async function submitEvaluationForItem(item: ReviewItem) {
 	const evaluationData = editingEvaluation.value[item.serial_num];
-  if (!evaluationData) return;
+	if (!evaluationData) return;
 
-  try {
+	try {
 		// 顯示確認訊息
 		await ElMessageBox.confirm(
 			'確定要提交此評價嗎？',
@@ -172,87 +172,87 @@ async function submitEvaluationForItem(item: ReviewItem) {
 		// 設定逐筆提交 loading
 		submittingEvaluation.value[item.serial_num] = true;
 
-    const payload: SubmitEvaluationPayload = {
+		const payload: SubmitEvaluationPayload = {
 			score: evaluationData.score,
 			comment: evaluationData.comment,
 		};
 
 		// 從 auth store 取得 userId，programId 來自列表的 program_id（新欄位）
 		const authStore = useUserAuthStore();
-    const userId = authStore.user?.id as number | undefined;
-    if (!userId) throw new Error('尚未登入或缺少使用者資訊');
+		const userId = authStore.user?.id as number | undefined;
+		if (!userId) throw new Error('尚未登入或缺少使用者資訊');
 
-    const result = await submitEvaluation(userId, item.program_id, payload);
+		const result = await submitEvaluation(userId, item.program_id, payload);
 
-    if (result.error.value) {
+		if (result.error.value) {
 			throw result.error.value;
-    }
+		}
 
 		// 成功後更新本地數據
 		const list = commentsData.value?.Data || [];
-    const itemIndex = list.findIndex((review: ReviewItem) => review.serial_num === item.serial_num);
-    if (itemIndex !== -1) {
+		const itemIndex = list.findIndex((review: ReviewItem) => review.serial_num === item.serial_num);
+		if (itemIndex !== -1) {
 			list[itemIndex].score = evaluationData.score;
-      list[itemIndex].comment = evaluationData.comment;
-      list[itemIndex].status_id = 2; // 假設提交後變為已通過狀態
-    }
+			list[itemIndex].comment = evaluationData.comment;
+			list[itemIndex].status_id = 2; // 假設提交後變為已通過狀態
+		}
 
 		// 清除編輯狀態
 		delete editingEvaluation.value[item.serial_num];
 
-    ElMessage.success('評價提交成功！');
-  }
+		ElMessage.success('評價提交成功！');
+	}
 	catch (error: any) {
 		if (error === 'cancel') return;
 
-    // 針對 400 Bad Request：直接以彈窗呈現後端訊息（忠實顯示）
-    const status = error?.status || error?.statusCode || error?.response?.status;
-    const bodyMessage = error?.data?.message || error?.response?._data?.message || error?.message;
-    if (status === 400 && bodyMessage) {
+		// 針對 400 Bad Request：直接以彈窗呈現後端訊息（忠實顯示）
+		const status = error?.status || error?.statusCode || error?.response?.status;
+		const bodyMessage = error?.data?.message || error?.response?._data?.message || error?.message;
+		if (status === 400 && bodyMessage) {
 			await ElMessageBox.alert(bodyMessage, '提交失敗', {
 				type: 'error',
 				confirmButtonText: '我知道了',
 			});
-      return;
+			return;
 		}
 
 		// 其他錯誤：保留原本處理邏輯
 		let errorMessage = '提交失敗，請稍後重試';
 
-    // 處理後端錯誤回應（同時兼容大小寫與 _data 來源）
-    const backendMessage = error?.data?.Message || error?.data?.message || error?.response?._data?.message;
-    if (backendMessage) {
+		// 處理後端錯誤回應（同時兼容大小寫與 _data 來源）
+		const backendMessage = error?.data?.Message || error?.data?.message || error?.response?._data?.message;
+		if (backendMessage) {
 			errorMessage = backendMessage;
 
-      // 特殊處理「體驗尚未結束」錯誤
-      if (errorMessage === '體驗尚未結束') {
+			// 特殊處理「體驗尚未結束」錯誤
+			if (errorMessage === '體驗尚未結束') {
 				ElMessage.warning('體驗尚未結束');
-        // 退出編輯模式，收合多行輸入框
-        delete editingEvaluation.value[item.serial_num];
-        return;
+				// 退出編輯模式，收合多行輸入框
+				delete editingEvaluation.value[item.serial_num];
+				return;
 			}
 		}
 		else if (error?.message) {
 			if (error.message.includes('網路')) {
 				errorMessage = '網路連線異常，請檢查網路後重試';
-      }
+			}
 			else if (error.message.includes('認證') || error.message.includes('登入')) {
 				errorMessage = '登入已過期，請重新登入';
-      }
+			}
 			else if (error.message.includes('維護')) {
 				errorMessage = '服務暫時維護中，請稍後再試';
-      }
+			}
 			else {
 				errorMessage = error.message;
-      }
+			}
 		}
 
 		ElMessage.error(errorMessage);
-  }
+	}
 	finally {
 		// 無論成功或失敗，關閉 loading
 		submittingEvaluation.value[item.serial_num] = false;
-  }
+	}
 }
 
 // 取消編輯
@@ -263,12 +263,12 @@ function cancelEditEvaluation(item: ReviewItem) {
 // 監聽分頁變化
 watch([currentPage, pageSize], () => {
 	loadComments();
-})
+});
 
 // 初始化載入
 onMounted(() => {
 	loadComments();
-})
+});
 </script>
 
 <template>

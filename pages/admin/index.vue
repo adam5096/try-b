@@ -8,15 +8,15 @@ definePageMeta({
 	layout: 'blank' as any,
 });
 
-const username = ref('')
-const password = ref('')
-const rememberMe = ref(false)
-const showPassword = ref(false)
+const username = ref('');
+const password = ref('');
+const rememberMe = ref(false);
+const showPassword = ref(false);
 
 const onSubmitLogin = () => {
 	// 後續可在此加入實際驗證流程；目前先直接導向管理列表頁
-	navigateTo(adminRoutes.programs())
-}
+	navigateTo(adminRoutes.programs());
+};
 </script>
 
 <template>

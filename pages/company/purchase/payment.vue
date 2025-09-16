@@ -1,59 +1,59 @@
 <!-- ep10-1 付款頁面 -->
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 import {
 	Check,
-} from '@element-plus/icons-vue'
+} from '@element-plus/icons-vue';
 
 definePageMeta({
 	layout: 'company',
 	name: 'company-purchase-payment',
-})
+});
 
-const router = useRouter()
+const router = useRouter();
 
-const paymentMethod = ref('creditCard')
+const paymentMethod = ref('creditCard');
 
 // 信用卡欄位（ElInput 為受控元件，需綁定 v-model 才可輸入）
-const cardNumber = ref('')
-const expiryDate = ref('')
-const cvc = ref('')
-const cardName = ref('')
+const cardNumber = ref('');
+const expiryDate = ref('');
+const cvc = ref('');
+const cardName = ref('');
 
 // 輸入 4 位自動加入空白（僅允許數字）
-const MAX_CARD_DIGITS = 16
+const MAX_CARD_DIGITS = 16;
 function onCardNumberInput(val: string) {
-	const digitsOnly = String(val || '').replace(/\D/g, '').slice(0, MAX_CARD_DIGITS)
-  const grouped = digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ').trim()
-  cardNumber.value = grouped
+	const digitsOnly = String(val || '').replace(/\D/g, '').slice(0, MAX_CARD_DIGITS);
+	const grouped = digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
+	cardNumber.value = grouped;
 }
 
 // 有效期限：每 2 位自動補 " / "，最多 4 位數字 (MMYY)
 function onExpiryInput(val: string) {
-	const digits = String(val || '').replace(/\D/g, '').slice(0, 4)
-  if (digits.length <= 2) {
-		expiryDate.value = digits
-  }
+	const digits = String(val || '').replace(/\D/g, '').slice(0, 4);
+	if (digits.length <= 2) {
+		expiryDate.value = digits;
+	}
 	else {
-		expiryDate.value = `${digits.slice(0, 2)} / ${digits.slice(2)}`
-  }
+		expiryDate.value = `${digits.slice(0, 2)} / ${digits.slice(2)}`;
+	}
 }
 
 // CVC：僅數字，最多 3 位
 function onCvcInput(val: string) {
-	cvc.value = String(val || '').replace(/\D/g, '').slice(0, 3)
+	cvc.value = String(val || '').replace(/\D/g, '').slice(0, 3);
 }
 
 const goBack = () => {
-	router.back()
-}
+	router.back();
+};
 
 const confirmPayment = () => {
 	// 使用 Nuxt 3 推薦的 navigateTo，並搭配「命名路由」
 	return navigateTo({
 		name: 'company-purchase-success',
-	})
-}
+	});
+};
 </script>
 
 <template>

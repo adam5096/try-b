@@ -1,4 +1,4 @@
-import type { Industry, JobTitle } from './program'
+import type { Industry, JobTitle } from './program';
 
 export interface ProgramCreationStep {
 	Name: string;

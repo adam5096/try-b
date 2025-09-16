@@ -48,7 +48,7 @@ const pricingOptions = [
 		limit: '體驗人數最多 200 人',
 		audience: '適合大型企業與特殊需求',
 	},
-]
+];
 
 const statsCards = [
 	{
@@ -63,7 +63,7 @@ const statsCards = [
 		percentage: '40%',
 		description: '平均每次體驗活動節省招聘成本',
 	},
-]
+];
 
 // 對應統計卡片由左至右的示意圖片
 const statImages = [
@@ -71,7 +71,6 @@ const statImages = [
 	'/img/home/plan/plan-02.webp',
 	'/img/home/plan/plan-03.webp',
 ];
-
 </script>
 
 <template>
