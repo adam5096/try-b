@@ -16,7 +16,7 @@ const isFavorited = ref(false);
 const showApply = ref(false);
 
 // 圖片載入狀態管理
-const imageLoadingState = reactive<Record<string, boolean>>({});
+const imageLoadingState = reactive<Record<string, boolean | undefined>>({});
 const isClient = ref(false);
 
 // 使用 store 管理計畫詳情

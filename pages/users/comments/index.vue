@@ -61,7 +61,7 @@ const pageSizeOptions = [10, 20, 30, 50];
 const filterVisible = ref(false);
 
 // 評價輸入狀態
-const editingEvaluation = ref<{ [key: string]: { score: number; comment: string } }>({});
+const editingEvaluation = ref<{ [key: string]: { score: number; comment: string } | undefined }>({});
 
 // 提交 loading 狀態（逐筆）
 const submittingEvaluation = ref<{ [key: string]: boolean }>({});
@@ -469,12 +469,12 @@ onMounted(() => {
 					<div class="space-y-4">
 						<div>
 							<label class="block text-sm font-medium text-gray-700 mb-2">評分</label>
-							<el-rate v-model="editingEvaluation[item.serial_num].score" />
+							<el-rate v-model="editingEvaluation[item.serial_num]!.score" />
 						</div>
 						<div>
 							<label class="block text-sm font-medium text-gray-700 mb-2">評價內容</label>
 							<el-input
-								v-model="editingEvaluation[item.serial_num].comment"
+								v-model="editingEvaluation[item.serial_num]!.comment"
 								type="textarea"
 								:rows="4"
 								placeholder="請輸入您的評價..."

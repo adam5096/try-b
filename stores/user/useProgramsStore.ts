@@ -68,12 +68,15 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
 						return httpsUrl.replace(/\s/g, '%20');
 					}
 				};
-				const normalizeProgram = (raw: unknown): Program => ({
-					...(raw as Record<string, unknown>),
-					Id: (raw as Record<string, unknown>)?.Id ?? null,
-					CoverImage: normalizeImageUrl((raw as Record<string, unknown>)?.CoverImage),
-					imageLoaded: false, // 初始化圖片載入狀態
-				} as unknown as Program);
+				const normalizeProgram = (raw: unknown): Program => {
+					const rawObj = raw as Record<string, unknown>;
+					return {
+						...rawObj,
+						Id: rawObj?.Id ?? null,
+						CoverImage: normalizeImageUrl(rawObj?.CoverImage as string | null | undefined),
+						imageLoaded: false, // 初始化圖片載入狀態
+					} as Program;
+				};
 
 				const normalizedItems = (data.value.items || []).map(normalizeProgram);
 
@@ -83,7 +86,7 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
 				currentLimit.value = data.value.limit || 6;
 
 				// 熱門清單：優先採用後端傳回的 PopularPrograms
-				const rawPopular = (data.value as Record<string, unknown>).PopularPrograms || [];
+				const rawPopular = (data.value as unknown as Record<string, unknown>).PopularPrograms || [];
 				backendPopularPrograms.value = Array.isArray(rawPopular)
 					? rawPopular.map(normalizeProgram)
 					: [];

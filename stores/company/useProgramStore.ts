@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed, watch } from 'vue';
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
-import type { ProgramsResponse, CreateProgramPayload } from '~/types/company/program';
+import type { ProgramsResponse, CreateProgramPayload, Program } from '~/types/company/program';
 import type { ProgramCreationResponse } from '~/types/company/programCreation';
 
 export const useCompanyProgramStore = defineStore('company-program', () => {
@@ -35,11 +35,12 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
 
 	const programs = computed(() => (data.value?.items || []).map((p: unknown) => {
 		const normalizeToHttps = (u?: string | null) => (u ? u.replace(/^http:\/\//i, 'https://') : null);
+		const rawObj = p as Record<string, unknown>;
 		return {
-			...(p as Record<string, unknown>),
-			CoverImage: normalizeToHttps((p as Record<string, unknown>)?.CoverImage as string | null),
+			...rawObj,
+			CoverImage: normalizeToHttps(rawObj?.CoverImage as string | null),
 			imageLoaded: false, // 初始化圖片載入狀態
-		};
+		} as Program;
 	}));
 	const total = computed(() => data.value?.total || 0);
 

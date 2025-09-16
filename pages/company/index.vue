@@ -7,6 +7,7 @@ import {
 } from '@element-plus/icons-vue';
 import { computed } from 'vue';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
+import type { Program } from '~/types/company/program';
 
 definePageMeta({
 	layout: 'company',
@@ -30,7 +31,7 @@ if (import.meta.server) {
 }
 
 // 依狀態回傳徽章樣式
-const getStatusBadgeClass = (program: any) => {
+const getStatusBadgeClass = (program: Program) => {
 	const status = getProgramStatus(program);
 	return status === '未發布'
 		? 'bg-yellow-300 text-black'
@@ -43,7 +44,7 @@ const handlePageChange = (page: number) => {
 	programStore.setPage(page);
 };
 
-const getProgramStatus = (program: any) => {
+const getProgramStatus = (program: Program) => {
 	const now = new Date();
 	const publishStart = new Date(program.PublishStartDate);
 	const publishEnd = new Date(program.PublishEndDate);

@@ -15,7 +15,7 @@ const programsStore = useUserProgramsStore();
 const programDetailStore = useUserProgramDetailStore();
 
 // 管理圖片載入狀態 - 改用 Element Plus Loading
-const imageLoadingState = reactive<Record<number, boolean>>({});
+const imageLoadingState = reactive<Record<number, boolean | undefined>>({});
 const isClient = ref(false);
 const isMobile = ref(false);
 
