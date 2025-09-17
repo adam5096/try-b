@@ -6,6 +6,8 @@ const props = defineProps<{
 	formData: any
 	industryOptions: { value: number, label: string }[]
 	scaleOptions: { value: number, label: string }[]
+	industriesPending?: boolean
+	industriesError?: any
 }>();
 
 const emit = defineEmits(['next']);
@@ -170,6 +172,8 @@ const handleNextClick = async () => {
 					v-model="formData.industry_id"
 					placeholder="請選擇企業的產業類別"
 					class="w-full"
+					:loading="industriesPending"
+					:disabled="industriesPending || !!industriesError"
 				>
 					<el-option
 						v-for="item in industryOptions"
@@ -178,6 +182,13 @@ const handleNextClick = async () => {
 						:value="item.value"
 					/>
 				</el-select>
+				<!-- 錯誤訊息顯示 -->
+				<div
+					v-if="industriesError"
+					class="mt-1 text-sm text-red-500"
+				>
+					載入產業清單失敗，請重新整理頁面
+				</div>
 			</el-form-item>
 
 			<el-form-item
