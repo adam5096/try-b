@@ -24,17 +24,6 @@ useSeoMeta({
 			error-color="#EF4444"
 			:height="6"
 		/>
-
-		<div id="viewport-guard">
-			<div class="guard-card">
-				<div class="guard-title">
-					視窗寬度過小
-				</div>
-				<div class="guard-text">
-					請調整到 ≥ 370px 以獲得最佳體驗。此寬度下介面可能出現擠壓或遮擋。
-				</div>
-			</div>
-		</div>
 		<NuxtLayout>
 			<NuxtPage />
 		</NuxtLayout>
@@ -42,23 +31,5 @@ useSeoMeta({
 </template>
 
 <style>
-/* 預設隱藏提示容器，僅在小螢幕時顯示 */
-#viewport-guard { display: none; }
 
-/* 視窗寬度小於 370px 時顯示遮罩，阻擋互動與滾動（不顯示橫向捲軸、不再縮小 UI） */
-@media (max-width: 369.98px) {
-  #viewport-guard {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: rgba(255,255,255,0.96);
-    backdrop-filter: blur(2px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: auto;
-  }
-}
-
-/* （已移除卡片樣式） */
 </style>
