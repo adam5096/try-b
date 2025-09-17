@@ -25,17 +25,17 @@ const isLoading = ref(false);
 // 資安考量：統一錯誤訊息處理
 function sanitizeErrorMessage(error: any): string {
 	const statusCode = error.status || error.statusCode || error.data?.status;
-	
+
 	// 4xx 錯誤：顯示通用訊息，避免洩露系統資訊
 	if (statusCode >= 400 && statusCode < 500) {
 		return '請求處理失敗，請檢查輸入資料';
 	}
-	
+
 	// 5xx 錯誤：顯示通用訊息，避免洩露系統架構
 	if (statusCode >= 500) {
 		return '系統暫時無法處理請求，請稍後再試';
 	}
-	
+
 	// 其他錯誤：使用原始訊息
 	return error.data?.message || error.message || '未知錯誤';
 }
@@ -57,7 +57,7 @@ async function handleSubmit() {
 			password: password.value,
 		};
 		const response = await authStore.register(registerPayload);
-		
+
 		// 使用 Element Plus MessageBox 顯示註冊成功訊息
 		ElMessageBox.alert(
 			`歡迎 ${response.Account}！\n您的帳戶已成功建立，現在可以登入了。`,
@@ -67,8 +67,8 @@ async function handleSubmit() {
 				confirmButtonText: '前往登入',
 				callback: () => {
 					router.push({ name: 'user-login' });
-				}
-			}
+				},
+			},
 		);
 	}
 	catch (error: any) {
