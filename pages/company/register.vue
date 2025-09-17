@@ -47,7 +47,7 @@ const industryOptions = computed(() => {
 	}
 	return industriesData.value.map(item => ({
 		value: item.id,
-		label: item.title
+		label: item.title,
 	}));
 });
 
