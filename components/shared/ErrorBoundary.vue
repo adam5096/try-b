@@ -15,8 +15,8 @@
 
 <script setup lang="ts">
 interface Props {
-	fallbackTitle?: string;
-	fallbackMessage?: string;
+	fallbackTitle?: string
+	fallbackMessage?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {

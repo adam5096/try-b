@@ -10,7 +10,8 @@ export default createApiHandler(async (event) => {
 
 	// 透過 Nitro 的 proxy 設定轉發到真實後端
 	// 規則：必須包含 api 並使用 /api-proxy 進行代理
-	const data = await event.$fetch('/api-proxy/api/v1/users/register', {
+	// 根據 Postman 測試結果，正確的端點是 /api/v1/users (不包含 /register)
+	const data = await event.$fetch('/api-proxy/api/v1/users', {
 		method: 'POST',
 		headers,
 		body,

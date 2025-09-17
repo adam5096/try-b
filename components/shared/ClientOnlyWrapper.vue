@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 interface Props {
-	fallbackHeight?: string;
+	fallbackHeight?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {

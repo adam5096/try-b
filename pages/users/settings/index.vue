@@ -46,7 +46,7 @@ const cityOptions = [
 	{ label: '台南市', value: 'tainan' },
 	{ label: '高雄市', value: 'kaohsiung' },
 ];
-const districtOptions: { [key: string]: { label: string; value: string }[] } = reactive({
+const districtOptions: { [key: string]: { label: string, value: string }[] } = reactive({
 	taipei: [
 		{ label: '中正區', value: 'zhongzheng' },
 		{ label: '大同區', value: 'datong' },

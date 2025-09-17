@@ -364,43 +364,43 @@ const reviewStatusClassMap: Record<ReviewStatus, string> = {
 };
 
 interface ProgramDetails {
-	title: string;
-	planId: string;
-	submittedAt: string;
-	reviewStatus: ReviewStatus;
+	title: string
+	planId: string
+	submittedAt: string
+	reviewStatus: ReviewStatus
 
-	experienceName: string;
-	companyName: string;
-	location: string;
-	contactPhone: string;
-	publishFrom: string;
-	publishTo: string;
-	runFrom: string;
-	runTo: string;
-	durationNote: string;
+	experienceName: string
+	companyName: string
+	location: string
+	contactPhone: string
+	publishFrom: string
+	publishTo: string
+	runFrom: string
+	runTo: string
+	durationNote: string
 
-	industry: string;
-	jobCategory: string;
-	contactName: string;
-	contactEmail: string;
-	participantRange: string;
+	industry: string
+	jobCategory: string
+	contactName: string
+	contactEmail: string
+	participantRange: string
 
 	// next section contents
-	intro: string;
-	teacher: { name: string; bio: string };
-	experiences: Array<{ title: string; description: string }>;
-	requirements: string[];
+	intro: string
+	teacher: { name: string, bio: string }
+	experiences: Array<{ title: string, description: string }>
+	requirements: string[]
 
 	// this section
-	preNotes: string[];
-	checklist: string[];
-	itinerary: Array<{ day: string; description: string }>;
+	preNotes: string[]
+	checklist: string[]
+	itinerary: Array<{ day: string, description: string }>
 
 	// photos
-	photos: Array<{ caption: string }>;
+	photos: Array<{ caption: string }>
 
 	// review history
-	reviewHistory: Array<{ time: string; operator: string; kind: string; note: string }>;
+	reviewHistory: Array<{ time: string, operator: string, kind: string, note: string }>
 }
 
 const program: ProgramDetails = {

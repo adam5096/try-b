@@ -12,17 +12,17 @@ definePageMeta({
 type ApplicationStatus = '待審核' | '已通過' | '未通過' | '已取消' | '已完成';
 
 interface ApplicationItem {
-	id: number;
-	title: string;
-	company: string;
-	appliedAt: string; // YYYY/MM/DD
-	status: ApplicationStatus;
-	location: string;
-	dateFrom: string; // YYYY/MM/DD
-	dateTo: string; // YYYY/MM/DD
-	participantsRange: string; // e.g. "2-5人"
-	description: string;
-	organizer: string;
+	id: number
+	title: string
+	company: string
+	appliedAt: string // YYYY/MM/DD
+	status: ApplicationStatus
+	location: string
+	dateFrom: string // YYYY/MM/DD
+	dateTo: string // YYYY/MM/DD
+	participantsRange: string // e.g. "2-5人"
+	description: string
+	organizer: string
 }
 
 // Filter state (applied)

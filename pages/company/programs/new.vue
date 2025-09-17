@@ -45,8 +45,8 @@ const form = ref<CreateProgramPayload>({
 });
 
 // 下拉清單資料與選取值（依需求使用 title 作為 value）
-const industries = ref<{ id: number; title: string }[]>([]);
-const positions = ref<{ id: number; title: string }[]>([]);
+const industries = ref<{ id: number, title: string }[]>([]);
+const positions = ref<{ id: number, title: string }[]>([]);
 const selectedIndustryTitle = ref<string>('');
 const selectedPositionTitle = ref<string>('');
 

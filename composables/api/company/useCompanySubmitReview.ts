@@ -1,15 +1,15 @@
 import type { FetchError } from 'ofetch';
 
 interface SubmitReviewPayload {
-	status_id: 2 | 3; // 2 for approved, 3 for rejected
-	comment: string;
+	status_id: 2 | 3 // 2 for approved, 3 for rejected
+	comment: string
 }
 
 export interface SubmitReviewResponse {
-	message: string;
-	status: number;
-	status_title: 'Approved' | 'Rejected' | string;
-	comment: string;
+	message: string
+	status: number
+	status_title: 'Approved' | 'Rejected' | string
+	comment: string
 }
 
 export const useCompanySubmitReview = () => {

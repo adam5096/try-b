@@ -3,32 +3,32 @@ import dayjs from 'dayjs';
 import { extractIntroSummaryForCard } from '~/utils/introParser';
 
 type PopularProgram = {
-	id: number;
-	company_name: string;
-	name: string;
-	intro: string;
-	address: string | null;
-	program_start_date: string | null;
-	program_end_date: string | null;
-	days_left: number | null;
-	applied_count: number | null;
-	img_path: string | null;
+	id: number
+	company_name: string
+	name: string
+	intro: string
+	address: string | null
+	program_start_date: string | null
+	program_end_date: string | null
+	days_left: number | null
+	applied_count: number | null
+	img_path: string | null
 };
 
 type HomePageResponse = {
-	PopularPrograms?: PopularProgram[];
+	PopularPrograms?: PopularProgram[]
 };
 
 export type HomeHighScoreCard = {
-	id: number | null;
-	title: string;
-	description: string;
-	meta: string; // 公司名稱
-	dateText: string; // YYYY/MM/DD - YYYY/MM/DD
-	location: string;
-	appliedCount: string;
-	daysLeft: string;
-	coverUrl: string | null;
+	id: number | null
+	title: string
+	description: string
+	meta: string // 公司名稱
+	dateText: string // YYYY/MM/DD - YYYY/MM/DD
+	location: string
+	appliedCount: string
+	daysLeft: string
+	coverUrl: string | null
 };
 
 function formatDateToYmd(dateStr: string): string {

@@ -61,7 +61,7 @@ const pageSizeOptions = [10, 20, 30, 50];
 const filterVisible = ref(false);
 
 // 評價輸入狀態
-const editingEvaluation = ref<{ [key: string]: { score: number; comment: string } | undefined }>({});
+const editingEvaluation = ref<{ [key: string]: { score: number, comment: string } | undefined }>({});
 
 // 提交 loading 狀態（逐筆）
 const submittingEvaluation = ref<{ [key: string]: boolean }>({});

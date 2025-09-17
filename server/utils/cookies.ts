@@ -6,11 +6,11 @@ export const setAuthCookie = (
 	token: string,
 	cookieName: string,
 	options: {
-		maxAge?: number;
-		secure?: boolean;
-		httpOnly?: boolean;
-		path?: string;
-		sameSite?: 'strict' | 'lax' | 'none';
+		maxAge?: number
+		secure?: boolean
+		httpOnly?: boolean
+		path?: string
+		sameSite?: 'strict' | 'lax' | 'none'
 	} = {},
 ) => {
 	const defaultOptions = {

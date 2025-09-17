@@ -13,29 +13,29 @@ definePageMeta({
 type ReviewStatus = 'systemApproved' | 'systemRejected' | 'manualConfirmed' | 'manualRejected';
 
 interface CommentDetail {
-	id: string;
-	programTitle: string;
-	programId: string;
-	industryType: string;
-	jobType: string;
-	location: string;
-	dateRange: string;
-	durationText: string;
-	reviewer: string;
-	reviewerRole: string;
-	reviewerAge: number;
-	rating: number;
-	status: ReviewStatus;
-	submittedAt: string;
-	updatedAt: string;
-	commentText: string;
+	id: string
+	programTitle: string
+	programId: string
+	industryType: string
+	jobType: string
+	location: string
+	dateRange: string
+	durationText: string
+	reviewer: string
+	reviewerRole: string
+	reviewerAge: number
+	rating: number
+	status: ReviewStatus
+	submittedAt: string
+	updatedAt: string
+	commentText: string
 }
 
 interface ReviewHistoryItem {
-	time: string;
-	operator: string;
-	type: string;
-	note: string;
+	time: string
+	operator: string
+	type: string
+	note: string
 }
 
 const route = useRoute();

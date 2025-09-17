@@ -5,6 +5,13 @@ import withNuxt from './.nuxt/eslint.config.mjs';
 export default withNuxt(
 	{
 		rules: {
+			// 關閉分號要求
+			'@stylistic/semi': 'off',
+			'@stylistic/semi-spacing': 'off',
+
+			// ASI 錯誤檢查（不強制分號，但檢查潛在問題）
+			'no-unexpected-multiline': 'error', // 檢查意外的多行語句
+			'no-return-await': 'error', // 檢查 return await 問題
 			// 🔴 只保留最關鍵的安全規則
 			'no-undef': 'error', // 防止未定義變數
 			'no-redeclare': 'error', // 防止重複聲明

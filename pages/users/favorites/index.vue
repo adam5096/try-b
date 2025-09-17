@@ -9,15 +9,15 @@ definePageMeta({
 });
 
 type FavoriteItem = {
-	id: number;
-	title: string;
-	description: string;
-	city: string;
-	start: string;
-	end: string;
-	applicants: number;
-	status: '體驗進行中' | '已結束' | '即將開始';
-	isFavorited: boolean;
+	id: number
+	title: string
+	description: string
+	city: string
+	start: string
+	end: string
+	applicants: number
+	status: '體驗進行中' | '已結束' | '即將開始'
+	isFavorited: boolean
 };
 
 const items = ref<FavoriteItem[]>([
