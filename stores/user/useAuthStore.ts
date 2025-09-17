@@ -52,7 +52,8 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 	async function register(registerData: UserRegisterData) {
 		const userRegister = useUserRegister();
 		try {
-			await userRegister.register(registerData);
+			const response = await userRegister.register(registerData);
+			return response;
 		}
 		catch (err: unknown) {
 			const message = (err as { data?: { message?: string }; message?: string })?.data?.message || (err as { message?: string })?.message || '註冊失敗：伺服器錯誤';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import { useUserAuthStore } from '~/stores/user/useAuthStore';
 import type { UserRegisterData } from '~/types/users/user';
 
@@ -22,6 +22,24 @@ const password = ref('');
 const confirmPassword = ref('');
 const isLoading = ref(false);
 
+// 資安考量：統一錯誤訊息處理
+function sanitizeErrorMessage(error: any): string {
+	const statusCode = error.status || error.statusCode || error.data?.status;
+	
+	// 4xx 錯誤：顯示通用訊息，避免洩露系統資訊
+	if (statusCode >= 400 && statusCode < 500) {
+		return '請求處理失敗，請檢查輸入資料';
+	}
+	
+	// 5xx 錯誤：顯示通用訊息，避免洩露系統架構
+	if (statusCode >= 500) {
+		return '系統暫時無法處理請求，請稍後再試';
+	}
+	
+	// 其他錯誤：使用原始訊息
+	return error.data?.message || error.message || '未知錯誤';
+}
+
 async function handleSubmit() {
 	if (password.value !== confirmPassword.value) {
 		ElMessage.error('兩次輸入的密碼不一致');
@@ -38,13 +56,25 @@ async function handleSubmit() {
 			...formData.value,
 			password: password.value,
 		};
-		await authStore.register(registerPayload);
-		ElMessage.success('註冊成功！現在您可以登入了。');
-		router.push({ name: 'user-login' });
+		const response = await authStore.register(registerPayload);
+		
+		// 使用 Element Plus MessageBox 顯示註冊成功訊息
+		ElMessageBox.alert(
+			`歡迎 ${response.Account}！\n您的帳戶已成功建立，現在可以登入了。`,
+			'註冊成功',
+			{
+				type: 'success',
+				confirmButtonText: '前往登入',
+				callback: () => {
+					router.push({ name: 'user-login' });
+				}
+			}
+		);
 	}
 	catch (error: any) {
-		const errorMessage = error.data?.message || '註冊失敗，請稍後再試。';
-		ElMessage.error(errorMessage);
+		// 資安考量：統一錯誤訊息處理
+		const sanitizedMessage = sanitizeErrorMessage(error);
+		ElMessage.error(sanitizedMessage);
 	}
 	finally {
 		isLoading.value = false;
@@ -161,7 +191,7 @@ async function handleSubmit() {
 					</button>
 				</div>
 				<div class="text-center text-xs text-gray-500">
-					註冊即表示您同意我們的<a href="#">服務條款</a>與<a href="#">隱私權政策</a>
+					註冊即表示您同意我們的服務條款與隱私權政策
 				</div>
 			</form>
 			<div class="relative">
