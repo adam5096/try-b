@@ -70,15 +70,15 @@
 
 <script setup lang="ts">
 interface Props {
-	title?: string; // 錯誤標題
-	message?: string; // 錯誤訊息
-	showRefresh?: boolean; // 是否顯示重新整理按鈕
-	showBack?: boolean; // 是否顯示返回按鈕
-	showContact?: boolean; // 是否顯示聯絡客服按鈕
+	title?: string // 錯誤標題
+	message?: string // 錯誤訊息
+	showRefresh?: boolean // 是否顯示重新整理按鈕
+	showBack?: boolean // 是否顯示返回按鈕
+	showContact?: boolean // 是否顯示聯絡客服按鈕
 }
 
 interface Emits {
-	(e: 'refresh' | 'back' | 'contact'): void; // 事件類型
+	(e: 'refresh' | 'back' | 'contact'): void // 事件類型
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -14,9 +14,9 @@ const commentId = computed(() => String(route.params.commentId ?? ''));
 const MAX_LENGTH = 1000;
 
 type ReviewForm = {
-	rating: number;
-	content: string;
-	agree: boolean;
+	rating: number
+	content: string
+	agree: boolean
 };
 
 const formRef = ref<FormInstance>();

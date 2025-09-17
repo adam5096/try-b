@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import { useUserAuthStore } from '~/stores/user/useAuthStore';
 import type { UserRegisterData } from '~/types/users/user';
+import {
+	validateName,
+	validateAccount,
+	validateEmail,
+	validatePasswordStrength,
+	validatePasswordMatch,
+	validateForm,
+	isFieldValid,
+} from '~/utils/users/formValidation';
 
 definePageMeta({
 	name: 'user-register',
@@ -22,13 +31,61 @@ const password = ref('');
 const confirmPassword = ref('');
 const isLoading = ref(false);
 
-async function handleSubmit() {
-	if (password.value !== confirmPassword.value) {
-		ElMessage.error('兩次輸入的密碼不一致');
-		return;
+// 表單驗證狀態
+const formErrors = ref<Record<string, string>>({});
+const isFormValid = ref(false);
+
+// 驗證器配置（使用 utils/formValidation.ts 中的函數）
+const validators = {
+	name: validateName,
+	account: validateAccount,
+	email: validateEmail,
+	password: validatePasswordStrength,
+	confirmPassword: () => validatePasswordMatch(password.value, confirmPassword.value),
+};
+
+// 檢查表單是否有效
+function checkFormValidity() {
+	// 準備表單資料
+	const formDataForValidation = {
+		name: formData.value.name,
+		account: formData.value.account,
+		email: formData.value.email,
+		password: password.value,
+		confirmPassword: confirmPassword.value,
+	};
+
+	// 使用通用驗證函數
+	const result = validateForm(formDataForValidation, validators);
+
+	formErrors.value = result.errors;
+	isFormValid.value = result.isValid;
+}
+
+// 資安考量：統一錯誤訊息處理
+function sanitizeErrorMessage(error: any): string {
+	const statusCode = error.status || error.statusCode || error.data?.status;
+
+	// 4xx 錯誤：顯示通用訊息，避免洩露系統資訊
+	if (statusCode >= 400 && statusCode < 500) {
+		return '請求處理失敗，請檢查輸入資料';
 	}
-	if (!formData.value.name || !formData.value.account || !formData.value.email || !password.value) {
-		ElMessage.error('請填寫所有必填欄位');
+
+	// 5xx 錯誤：顯示通用訊息，避免洩露系統架構
+	if (statusCode >= 500) {
+		return '系統暫時無法處理請求，請稍後再試';
+	}
+
+	// 其他錯誤：使用原始訊息
+	return error.data?.message || error.message || '未知錯誤';
+}
+
+async function handleSubmit() {
+	// 先進行表單驗證
+	checkFormValidity();
+
+	if (!isFormValid.value) {
+		ElMessage.error('請修正表單中的錯誤後再提交');
 		return;
 	}
 
@@ -38,13 +95,25 @@ async function handleSubmit() {
 			...formData.value,
 			password: password.value,
 		};
-		await authStore.register(registerPayload);
-		ElMessage.success('註冊成功！現在您可以登入了。');
-		router.push({ name: 'user-login' });
+		const response = await authStore.register(registerPayload);
+
+		// 使用 Element Plus MessageBox 顯示註冊成功訊息
+		ElMessageBox.alert(
+			`歡迎 ${response.Account}！\n您的帳戶已成功建立，現在可以登入了。`,
+			'註冊成功',
+			{
+				type: 'success',
+				confirmButtonText: '前往登入',
+				callback: () => {
+					router.push({ name: 'user-login' });
+				},
+			},
+		);
 	}
 	catch (error: any) {
-		const errorMessage = error.data?.message || '註冊失敗，請稍後再試。';
-		ElMessage.error(errorMessage);
+		// 資安考量：統一錯誤訊息處理
+		const sanitizedMessage = sanitizeErrorMessage(error);
+		ElMessage.error(sanitizedMessage);
 	}
 	finally {
 		isLoading.value = false;
@@ -80,9 +149,34 @@ async function handleSubmit() {
 							type="text"
 							autocomplete="name"
 							required
-							class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"
+							minlength="2"
+							maxlength="20"
+							:class="[
+								'mt-1 block w-full rounded-md px-1 py-2 shadow-sm focus:outline-none sm:text-sm',
+								formErrors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',
+							]"
 							placeholder="請輸入您的姓名"
+							@input="checkFormValidity"
+							@blur="checkFormValidity"
 						>
+						<p
+							v-if="formErrors.name"
+							class="mt-1 text-sm text-red-600"
+						>
+							{{ formErrors.name }}
+						</p>
+						<p
+							v-else-if="isFieldValid(formData.name, validators.name)"
+							class="mt-1 text-sm text-green-600"
+						>
+							✓ 可使用
+						</p>
+						<p
+							v-else
+							class="mt-1 text-sm text-gray-500"
+						>
+							姓名只能包含中文、英文字母和數字，長度 2-20 字元
+						</p>
 					</div>
 					<div class="pt-4">
 						<label
@@ -96,9 +190,34 @@ async function handleSubmit() {
 							type="text"
 							autocomplete="username"
 							required
-							class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"
+							minlength="3"
+							maxlength="20"
+							:class="[
+								'mt-1 block w-full rounded-md px-1 py-2 shadow-sm focus:outline-none sm:text-sm',
+								formErrors.account ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',
+							]"
 							placeholder="請輸入您的帳號"
+							@input="checkFormValidity"
+							@blur="checkFormValidity"
 						>
+						<p
+							v-if="formErrors.account"
+							class="mt-1 text-sm text-red-600"
+						>
+							{{ formErrors.account }}
+						</p>
+						<p
+							v-else-if="isFieldValid(formData.account, validators.account)"
+							class="mt-1 text-sm text-green-600"
+						>
+							✓ 可使用
+						</p>
+						<p
+							v-else
+							class="mt-1 text-sm text-gray-500"
+						>
+							帳號只能包含英文字母、數字和底線，長度 3-20 字元
+						</p>
 					</div>
 					<div class="pt-4">
 						<label
@@ -112,9 +231,34 @@ async function handleSubmit() {
 							type="email"
 							autocomplete="email"
 							required
-							class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"
+							minlength="5"
+							maxlength="100"
+							:class="[
+								'mt-1 block w-full rounded-md px-1 py-2 shadow-sm focus:outline-none sm:text-sm',
+								formErrors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',
+							]"
 							placeholder="請輸入您的電子郵件"
+							@input="checkFormValidity"
+							@blur="checkFormValidity"
 						>
+						<p
+							v-if="formErrors.email"
+							class="mt-1 text-sm text-red-600"
+						>
+							{{ formErrors.email }}
+						</p>
+						<p
+							v-else-if="isFieldValid(formData.email, validators.email)"
+							class="mt-1 text-sm text-green-600"
+						>
+							✓ 可使用
+						</p>
+						<p
+							v-else
+							class="mt-1 text-sm text-gray-500"
+						>
+							請輸入有效的電子郵件地址，長度 5-100 字元
+						</p>
 					</div>
 					<div class="pt-4">
 						<label
@@ -128,9 +272,34 @@ async function handleSubmit() {
 							type="password"
 							autocomplete="new-password"
 							required
-							class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"
+							minlength="8"
+							maxlength="12"
+							:class="[
+								'mt-1 block w-full rounded-md px-1 py-2 shadow-sm focus:outline-none sm:text-sm',
+								formErrors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',
+							]"
 							placeholder="請輸入您的密碼"
+							@input="checkFormValidity"
+							@blur="checkFormValidity"
 						>
+						<p
+							v-if="formErrors.password"
+							class="mt-1 text-sm text-red-600"
+						>
+							{{ formErrors.password }}
+						</p>
+						<p
+							v-else-if="isFieldValid(password, validators.password)"
+							class="mt-1 text-sm text-green-600"
+						>
+							✓ 可使用
+						</p>
+						<p
+							v-else
+							class="mt-1 text-sm text-gray-500"
+						>
+							密碼必須包含大小寫字母、數字和特殊字元，長度 8-12 字元
+						</p>
 					</div>
 					<div class="pt-4">
 						<label
@@ -144,24 +313,55 @@ async function handleSubmit() {
 							type="password"
 							autocomplete="new-password"
 							required
-							class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"
+							minlength="8"
+							maxlength="12"
+							:class="[
+								'mt-1 block w-full rounded-md px-1 py-2 shadow-sm focus:outline-none sm:text-sm',
+								formErrors.confirmPassword ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',
+							]"
 							placeholder="請再次輸入您的密碼"
+							@input="checkFormValidity"
+							@blur="checkFormValidity"
 						>
+						<p
+							v-if="formErrors.confirmPassword"
+							class="mt-1 text-sm text-red-600"
+						>
+							{{ formErrors.confirmPassword }}
+						</p>
+						<p
+							v-else-if="isFieldValid(confirmPassword, validators.confirmPassword)"
+							class="mt-1 text-sm text-green-600"
+						>
+							✓ 可使用
+						</p>
+						<p
+							v-else
+							class="mt-1 text-sm text-gray-500"
+						>
+							請再次輸入相同的密碼以確認
+						</p>
 					</div>
 				</div>
 
 				<div>
 					<button
 						type="submit"
-						:disabled="isLoading"
-						class="group relative flex w-full justify-center rounded-md border border-transparent bg-gray-400 py-2 px-4 text-sm font-medium text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-300"
+						:disabled="isLoading || !isFormValid"
+						:class="[
+							'group relative flex w-full justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
+							isLoading || !isFormValid
+								? 'bg-gray-300 cursor-not-allowed'
+								: 'bg-indigo-600 hover:bg-indigo-700',
+						]"
 					>
 						<span v-if="isLoading">註冊中...</span>
+						<span v-else-if="!isFormValid">請完成表單驗證</span>
 						<span v-else>註冊</span>
 					</button>
 				</div>
 				<div class="text-center text-xs text-gray-500">
-					註冊即表示您同意我們的<a href="#">服務條款</a>與<a href="#">隱私權政策</a>
+					註冊即表示您同意我們的服務條款與隱私權政策
 				</div>
 			</form>
 			<div class="relative">

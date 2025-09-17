@@ -10,16 +10,16 @@ type ProgramPhaseFilter = 'all' | 'upcoming' | 'ongoing' | 'finished';
 type ReviewStatus = 'systemApproved' | 'systemRejected' | 'manualConfirmed' | 'manualRejected';
 
 interface ProgramItem {
-	id: number;
-	title: string;
-	company: string;
-	location: string;
-	startDate: string; // YYYY-MM-DD
-	endDate: string; // YYYY-MM-DD
-	applicants: number;
-	slots: number;
-	status: ProgramStatus;
-	reviewStatus: ReviewStatus;
+	id: number
+	title: string
+	company: string
+	location: string
+	startDate: string // YYYY-MM-DD
+	endDate: string // YYYY-MM-DD
+	applicants: number
+	slots: number
+	status: ProgramStatus
+	reviewStatus: ReviewStatus
 }
 
 const query = ref('');

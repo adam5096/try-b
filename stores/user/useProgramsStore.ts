@@ -52,7 +52,7 @@ export const useUserProgramsStore = defineStore('userPrograms', () => {
 			const { data, error: apiError } = await apiFetchPrograms(queryParams);
 
 			if (apiError.value) {
-				const err = apiError.value as { data?: { message?: string }; message?: string };
+				const err = apiError.value as { data?: { message?: string }, message?: string };
 				throw new Error(err?.data?.message ?? err?.message ?? '取得計畫列表失敗');
 			}
 

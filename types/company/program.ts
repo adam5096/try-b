@@ -1,174 +1,174 @@
 export interface Industry {
-	Id: number;
-	Title: string;
+	Id: number
+	Title: string
 }
 
 export interface JobTitle {
-	Id: number;
-	Title: string;
+	Id: number
+	Title: string
 }
 
 export interface ProgramStep {
-	Id: number;
-	Name: string;
-	Description: string;
-	CreatedAt: string;
-	UpdatedAt: string;
+	Id: number
+	Name: string
+	Description: string
+	CreatedAt: string
+	UpdatedAt: string
 }
 
 export interface ProgramImage {
-	Id: number;
-	ImgPath: string;
+	Id: number
+	ImgPath: string
 }
 
 export interface ProgramStatus {
-	Id: number;
-	Title: string;
+	Id: number
+	Title: string
 }
 
 export interface ProgramStatistics {
-	TotalApplicants: number;
-	ReviewedCount: number;
-	PendingCount: number;
+	TotalApplicants: number
+	ReviewedCount: number
+	PendingCount: number
 }
 
 export interface ProgramViews {
-	TotalViews: number;
-	WeeklyViews: number;
-	DailyViews: number;
+	TotalViews: number
+	WeeklyViews: number
+	DailyViews: number
 }
 
 export interface Program {
-	Id: number;
-	Name: string;
-	Intro: string;
-	Industry: Industry;
-	JobTitle: JobTitle;
-	address: string; // API schema shows lowercase, but template uses uppercase. Let's align with what template expects.
-	Address: string;
-	contact_name: string; // API schema shows lowercase
-	ContactName: string; // Aligning with PascalCase convention from other fields
-	contact_phone: string; // API schema shows lowercase
-	ContactPhone: string; // Aligning with PascalCase
-	contact_email: string; // API schema shows lowercase
-	ContactEmail: string; // Aligning with PascalCase
-	min_people: number;
-	MinPeople: number;
-	max_people: number;
-	MaxPeople: number;
-	publish_start_date: string;
-	PublishStartDate: string;
-	publish_duration_days: number;
-	PublishDurationDays: number;
-	publish_end_date: string;
-	PublishEndDate: string;
-	program_start_date: string;
-	ProgramStartDate: string;
-	program_end_date: string;
-	ProgramEndDate: string;
-	program_duration_days: number;
-	ProgramDurationDays: number;
-	status_id: number;
-	status_title: string;
-	Status: ProgramStatus;
-	applied_count: number;
-	AppliedCount: number; // 新版本 API 回應欄位
-	CoverImage: string | null; // 新版本 API 回應欄位 - 封面圖片
-	imageLoaded?: boolean; // 圖片載入狀態
-	Images: ProgramImage[];
-	Steps: ProgramStep[];
-	Statistics: ProgramStatistics;
-	Views: ProgramViews;
+	Id: number
+	Name: string
+	Intro: string
+	Industry: Industry
+	JobTitle: JobTitle
+	address: string // API schema shows lowercase, but template uses uppercase. Let's align with what template expects.
+	Address: string
+	contact_name: string // API schema shows lowercase
+	ContactName: string // Aligning with PascalCase convention from other fields
+	contact_phone: string // API schema shows lowercase
+	ContactPhone: string // Aligning with PascalCase
+	contact_email: string // API schema shows lowercase
+	ContactEmail: string // Aligning with PascalCase
+	min_people: number
+	MinPeople: number
+	max_people: number
+	MaxPeople: number
+	publish_start_date: string
+	PublishStartDate: string
+	publish_duration_days: number
+	PublishDurationDays: number
+	publish_end_date: string
+	PublishEndDate: string
+	program_start_date: string
+	ProgramStartDate: string
+	program_end_date: string
+	ProgramEndDate: string
+	program_duration_days: number
+	ProgramDurationDays: number
+	status_id: number
+	status_title: string
+	Status: ProgramStatus
+	applied_count: number
+	AppliedCount: number // 新版本 API 回應欄位
+	CoverImage: string | null // 新版本 API 回應欄位 - 封面圖片
+	imageLoaded?: boolean // 圖片載入狀態
+	Images: ProgramImage[]
+	Steps: ProgramStep[]
+	Statistics: ProgramStatistics
+	Views: ProgramViews
 }
 
 export interface ProgramsListItem {
-	Id: number;
-	Name: string;
-	StatusTitle: string;
-	applied_count: number;
-	views: number;
-	PublishStartDate: string;
-	ProgramEndDate: string;
+	Id: number
+	Name: string
+	StatusTitle: string
+	applied_count: number
+	views: number
+	PublishStartDate: string
+	ProgramEndDate: string
 }
 
 export interface ProgramsResponse {
-	total: number;
-	page: number;
-	limit: number;
-	items: Program[];
-	message: string | null;
+	total: number
+	page: number
+	limit: number
+	items: Program[]
+	message: string | null
 }
 
 export interface ProgramStepPayload {
-	name: string;
-	description: string;
+	name: string
+	description: string
 }
 
 export interface CreateProgramPayload {
-	name: string;
-	intro: string;
-	industry_id: number;
-	job_title_id: number;
-	address: string;
-	address_map: string;
-	contact_name: string;
-	contact_phone: string;
-	contact_email: string;
-	min_people: number;
-	max_people: number;
-	publish_start_date: string;
-	publish_duration_days: number;
-	program_start_date: string;
-	program_end_date: string;
-	steps: ProgramStepPayload[];
-	images: string[];
+	name: string
+	intro: string
+	industry_id: number
+	job_title_id: number
+	address: string
+	address_map: string
+	contact_name: string
+	contact_phone: string
+	contact_email: string
+	min_people: number
+	max_people: number
+	publish_start_date: string
+	publish_duration_days: number
+	program_start_date: string
+	program_end_date: string
+	steps: ProgramStepPayload[]
+	images: string[]
 }
 
 // e comp 7 API 回應型別定義
 export interface ProgramDetailStep {
-	Name: string;
-	Description: string;
+	Name: string
+	Description: string
 }
 
 export interface ProgramDetailStatistics {
-	TotalApplicants: number;
-	ReviewedCount: number;
-	PendingCount: number;
+	TotalApplicants: number
+	ReviewedCount: number
+	PendingCount: number
 }
 
 export interface ProgramDetailResponse {
-	Id: number;
-	Name: string;
-	Intro: string;
+	Id: number
+	Name: string
+	Intro: string
 	Industry: {
-		Id: number;
-		Title: string;
-	};
+		Id: number
+		Title: string
+	}
 	JobTitle: {
-		Id: number;
-		Title: string;
-	};
+		Id: number
+		Title: string
+	}
 	Status: {
-		Id: number;
-		Title: string;
-	};
-	Address: string;
-	ContactName: string;
-	ContactPhone: string;
-	MinPeople: number;
-	MaxPeople: number;
-	PublishStartDate: string;
-	PublishDurationDays: number;
-	PublishEndDate: string;
-	ProgramStartDate: string;
-	ProgramEndDate: string;
-	ProgramDurationDays: number;
-	Statistics: ProgramDetailStatistics;
-	Steps: ProgramDetailStep[];
-	Images: ProgramImage[];
+		Id: number
+		Title: string
+	}
+	Address: string
+	ContactName: string
+	ContactPhone: string
+	MinPeople: number
+	MaxPeople: number
+	PublishStartDate: string
+	PublishDurationDays: number
+	PublishEndDate: string
+	ProgramStartDate: string
+	ProgramEndDate: string
+	ProgramDurationDays: number
+	Statistics: ProgramDetailStatistics
+	Steps: ProgramDetailStep[]
+	Images: ProgramImage[]
 	Views: {
-		TotalViews: number;
-		WeeklyViews: number;
-		DailyViews: number;
-	};
+		TotalViews: number
+		WeeklyViews: number
+		DailyViews: number
+	}
 }

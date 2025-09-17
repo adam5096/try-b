@@ -1,8 +1,8 @@
 import type { CompanyEvaluationListResponse } from '~/types/company/evaluation';
 
 export interface FetchCompanyEvaluationsParams {
-	page?: number;
-	limit?: number;
+	page?: number
+	limit?: number
 }
 
 export const useCompanyCommentReviews = () => {

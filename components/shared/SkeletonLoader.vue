@@ -46,12 +46,12 @@
 
 <script setup lang="ts">
 interface Props {
-	showTitle?: boolean; // 是否顯示標題骨架
-	showImage?: boolean; // 是否顯示圖片骨架
-	showButton?: boolean; // 是否顯示按鈕骨架
-	lines?: number; // 文字行數
-	imageHeightClass?: string; // 圖片骨架高度（Tailwind 類別）
-	buttonHeightClass?: string; // 按鈕骨架高度（Tailwind 類別）
+	showTitle?: boolean // 是否顯示標題骨架
+	showImage?: boolean // 是否顯示圖片骨架
+	showButton?: boolean // 是否顯示按鈕骨架
+	lines?: number // 文字行數
+	imageHeightClass?: string // 圖片骨架高度（Tailwind 類別）
+	buttonHeightClass?: string // 按鈕骨架高度（Tailwind 類別）
 }
 
 withDefaults(defineProps<Props>(), {

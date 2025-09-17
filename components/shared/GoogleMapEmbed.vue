@@ -45,9 +45,9 @@
 import { computed, ref, watch } from 'vue';
 
 interface Props {
-	src?: string | null;
-	heightClass?: string; // Tailwind 高度：如 h-64 md:h-96
-	emptyText?: string;
+	src?: string | null
+	heightClass?: string // Tailwind 高度：如 h-64 md:h-96
+	emptyText?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {

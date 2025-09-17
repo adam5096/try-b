@@ -25,7 +25,7 @@ export const useUserApplications = () => {
 			const status = response.status;
 
 			if (status === 200 || status === 201) {
-				return { data, status } as { data: SubmitApplicationResponse; status: 200 | 201 };
+				return { data, status } as { data: SubmitApplicationResponse, status: 200 | 201 };
 			}
 			// 其他非預期成功狀態，統一丟出錯誤以便上層處理
 			return Promise.reject({ status, data });
