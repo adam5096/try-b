@@ -1,23 +1,23 @@
 export interface ApplicantsListResponse {
 	Statistics: {
-		TotalApplicants: number;
-		ReviewedCount: number;
-		PendingCount: number;
-	};
+		TotalApplicants: number
+		ReviewedCount: number
+		PendingCount: number
+	}
 	PendingApplications: Array<{
-		participant_id: number;
-		applicant_name: string;
-		identity: number;
-		submit_date: string;
-		review_status: string;
-	}>;
+		participant_id: number
+		applicant_name: string
+		identity: number
+		submit_date: string
+		review_status: string
+	}>
 	ReviewedApplications: Array<{
-		participant_id: number;
-		applicant_name: string;
-		identity: number;
-		submit_date: string;
-		review_status: string;
-	}>;
+		participant_id: number
+		applicant_name: string
+		identity: number
+		submit_date: string
+		review_status: string
+	}>
 }
 
 export const useCompanyApplicants = (companyId: MaybeRefOrGetter<number | null>, programId: MaybeRefOrGetter<string | number>) => {

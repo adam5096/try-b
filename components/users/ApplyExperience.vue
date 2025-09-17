@@ -8,13 +8,13 @@ import { useUserAuthStore } from '~/stores/user/useAuthStore';
 type DateModel = [Date, Date] | '';
 
 interface ApplyForm {
-	name: string;
-	phone: string;
-	email: string;
-	dateRange: DateModel;
-	resume: number | null;
-	message: string;
-	agree: boolean;
+	name: string
+	phone: string
+	email: string
+	dateRange: DateModel
+	resume: number | null
+	message: string
+	agree: boolean
 }
 
 const props = defineProps<{ programId: string | number }>();

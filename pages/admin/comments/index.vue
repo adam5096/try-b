@@ -13,13 +13,13 @@ definePageMeta({
 type ReviewStatus = 'systemApproved' | 'systemRejected' | 'manualConfirmed' | 'manualRejected';
 
 interface CommentItem {
-	id: number;
-	programTitle: string;
-	programId: string;
-	reviewer: string;
-	rating: number;
-	status: ReviewStatus;
-	date: string; // YYYY/MM/DD
+	id: number
+	programTitle: string
+	programId: string
+	reviewer: string
+	rating: number
+	status: ReviewStatus
+	date: string // YYYY/MM/DD
 }
 
 const query = ref('');

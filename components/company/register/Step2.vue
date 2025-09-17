@@ -4,7 +4,7 @@ import type { FormInstance, FormRules } from 'element-plus';
 import { ElMessage } from 'element-plus';
 
 const props = defineProps<{
-	formData: any;
+	formData: any
 }>();
 
 const emit = defineEmits(['next', 'previous']);

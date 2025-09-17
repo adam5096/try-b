@@ -34,13 +34,13 @@
 import { ref, watch, computed, onMounted, nextTick } from 'vue';
 
 interface Props {
-	src?: string | null;
-	alt?: string;
-	fallbackSrc?: string;
-	imgClass?: string; // classes applied to <img>
-	wrapperClass?: string; // classes applied to wrapper
-	skeletonHeightClass?: string; // height class for skeleton image area
-	fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside';
+	src?: string | null
+	alt?: string
+	fallbackSrc?: string
+	imgClass?: string // classes applied to <img>
+	wrapperClass?: string // classes applied to wrapper
+	skeletonHeightClass?: string // height class for skeleton image area
+	fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside'
 }
 
 const props = withDefaults(defineProps<Props>(), {

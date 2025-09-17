@@ -40,15 +40,15 @@ const processedPlans = computed(() => {
 });
 
 interface CurrentPlan {
-	orderNumber: string;
-	paymentDate: string;
-	paymentMethod: string;
-	amount: string;
+	orderNumber: string
+	paymentDate: string
+	paymentMethod: string
+	amount: string
 	details: {
-		duration: string;
-		limit: string;
-		period: string;
-	};
+		duration: string
+		limit: string
+		period: string
+	}
 }
 
 const currentPlan = ref<CurrentPlan>({

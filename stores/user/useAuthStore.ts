@@ -44,7 +44,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 		}
 		catch (err: unknown) {
 			await logout();
-			const message = (err as { data?: { message?: string }; message?: string })?.data?.message || (err as { message?: string })?.message || '登入失敗：伺服器錯誤';
+			const message = (err as { data?: { message?: string }, message?: string })?.data?.message || (err as { message?: string })?.message || '登入失敗：伺服器錯誤';
 			throw new Error(message);
 		}
 	}
@@ -56,7 +56,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 			return response;
 		}
 		catch (err: unknown) {
-			const message = (err as { data?: { message?: string }; message?: string })?.data?.message || (err as { message?: string })?.message || '註冊失敗：伺服器錯誤';
+			const message = (err as { data?: { message?: string }, message?: string })?.data?.message || (err as { message?: string })?.message || '註冊失敗：伺服器錯誤';
 			throw new Error(message);
 		}
 	}

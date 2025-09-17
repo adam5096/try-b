@@ -1,6 +1,6 @@
 export interface BasicOptionItem {
-	id: number;
-	title: string;
+	id: number
+	title: string
 }
 
 // 取得產業清單

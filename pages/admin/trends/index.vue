@@ -42,15 +42,15 @@ const sortOptions = [
 ];
 
 type TrendItem = {
-	id: number;
-	title: string;
-	company: string;
-	dateRange: string;
-	description: string;
-	category: string;
-	views: number;
-	favorites: number;
-	applicants: number;
+	id: number
+	title: string
+	company: string
+	dateRange: string
+	description: string
+	category: string
+	views: number
+	favorites: number
+	applicants: number
 };
 
 const trendItems = ref<TrendItem[]>([
@@ -113,14 +113,14 @@ const trendItems = ref<TrendItem[]>([
 
 // 可添加的體驗（下方表格區）
 type CandidateItem = {
-	id: number;
-	title: string;
-	company: string;
-	category: string;
-	views: number;
-	favorites: number;
-	applicants: number;
-	aiScore: number;
+	id: number
+	title: string
+	company: string
+	category: string
+	views: number
+	favorites: number
+	applicants: number
+	aiScore: number
 };
 
 const candidateItems = ref<CandidateItem[]>([

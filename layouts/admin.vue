@@ -13,7 +13,7 @@ const navItems = [
 	{ key: 'logout', label: '登出' },
 ];
 
-const handleNav = (item: { key: string; label: string }, idx: number) => {
+const handleNav = (item: { key: string, label: string }, idx: number) => {
 	activeIndex.value = idx;
 	if (item.key === 'programs') {
 		navigateTo(adminRoutes.programs());

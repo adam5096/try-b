@@ -26,7 +26,7 @@ const formData = reactive({
 	address: '',
 	website: '',
 	intro: '',
-	CompanyImg: [] as { type: string; img_path: string }[],
+	CompanyImg: [] as { type: string, img_path: string }[],
 
 	// Step 2 data
 	CompanyContact: {

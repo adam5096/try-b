@@ -4,17 +4,17 @@
  */
 
 export interface PerformanceBudget {
-	metric: string;
-	budget: number;
-	actual: number;
-	status: 'pass' | 'fail';
+	metric: string
+	budget: number
+	actual: number
+	status: 'pass' | 'fail'
 }
 
 export interface ResourceBudget {
-	resourceType: string;
-	budget: number;
-	actual: number;
-	status: 'pass' | 'fail';
+	resourceType: string
+	budget: number
+	actual: number
+	status: 'pass' | 'fail'
 }
 
 export class PerformanceMonitor {
@@ -100,14 +100,14 @@ export class PerformanceMonitor {
    * 生成效能報告
    */
 	generateReport(): {
-		webVitals: PerformanceBudget[];
-		resources: ResourceBudget[];
+		webVitals: PerformanceBudget[]
+		resources: ResourceBudget[]
 		summary: {
-			totalChecks: number;
-			passedChecks: number;
-			failedChecks: number;
-			overallScore: number;
-		};
+			totalChecks: number
+			passedChecks: number
+			failedChecks: number
+			overallScore: number
+		}
 	} {
 		const allBudgets = [...this.budgets, ...this.resourceBudgets];
 		const passedChecks = allBudgets.filter(b => b.status === 'pass').length;

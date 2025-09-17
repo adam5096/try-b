@@ -3,9 +3,9 @@ import { reactive, ref, nextTick } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
 
 const props = defineProps<{
-	formData: any;
-	industryOptions: { value: number; label: string }[];
-	scaleOptions: { value: number; label: string }[];
+	formData: any
+	industryOptions: { value: number, label: string }[]
+	scaleOptions: { value: number, label: string }[]
 }>();
 
 const emit = defineEmits(['next']);

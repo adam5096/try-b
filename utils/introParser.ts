@@ -5,11 +5,11 @@
  */
 
 export interface ParsedIntro {
-	experienceIntro?: string;
-	teacherIntro?: string;
-	requirements?: string[];
-	preparation?: string[];
-	fallback?: string; // 原始內容，用於向後相容
+	experienceIntro?: string
+	teacherIntro?: string
+	requirements?: string[]
+	preparation?: string[]
+	fallback?: string // 原始內容，用於向後相容
 }
 
 /**
