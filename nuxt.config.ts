@@ -6,6 +6,61 @@ export default defineNuxtConfig({
 	modules: ['@nuxtjs/tailwindcss', '@nuxt/fonts', '@nuxt/eslint', // Sitemap 模組
 		'@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security'],
 
+	// 安全設定
+	security: {
+		// 啟用 Strict CSP 支援
+		nonce: true, // SSR 模式下的 nonce 支援
+		sri: true, // Subresource Integrity 支援
+		
+		// Content Security Policy - 使用 Strict CSP
+		headers: {
+			contentSecurityPolicy: {
+				'script-src': [
+					"'self'", // 同源腳本
+					"'strict-dynamic'", // Strict CSP 核心
+					"'nonce-{{nonce}}'", // SSR nonce 支援
+					'https://www.googletagmanager.com', // Google Analytics
+					'https://www.google-analytics.com'
+				],
+				'style-src': [
+					"'self'", // 同源樣式
+					'https://fonts.googleapis.com', // Google Fonts
+					"'unsafe-inline'" // Element Plus 和 Tailwind 需要
+				],
+				'img-src': [
+					"'self'", // 同源圖片
+					'data:', // Data URLs
+					'https://trybeta.rocket-coding.com', // API 域名
+					'https://images.unsplash.com',
+					'https://i.imgur.com'
+				],
+				'connect-src': [
+					"'self'", // 同源連線
+					'https://trybeta.rocket-coding.com', // API 連線
+					'https://www.google-analytics.com'
+				],
+				'font-src': [
+					"'self'", // 同源字體
+					'https://fonts.gstatic.com', // Google Fonts
+					'data:' // Data URLs
+				],
+				'base-uri': ["'none'"], // 禁止 base 標籤
+				'object-src': ["'none'"], // 禁止物件嵌入
+				'script-src-attr': ["'none'"], // 禁止內聯腳本屬性
+				'upgrade-insecure-requests': true // 升級不安全請求
+			}
+		},
+		// Rate Limiter - 優化設定
+		rateLimiter: {
+			tokensPerInterval: 100, // 每分鐘 100 個請求
+			interval: 'minute',
+			headers: true, // 在回應標頭中顯示限制資訊
+			throwError: true, // 拋出 429 錯誤
+			whiteList: [], // 白名單 IP（可根據需要添加）
+			driver: { name: 'lruCache' } // 使用 LRU Cache 存儲
+		}
+	},
+
 	imports: {
 		dirs: ['stores/**', 'composables/**'],
 	},	devtools: { enabled: true },

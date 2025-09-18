@@ -10,11 +10,11 @@ export default defineNuxtPlugin(() => {
 
 	const GA_ID = config.public.googleAnalyticsId;
 
-	// 載入 Google Analytics
-	const script = document.createElement('script');
-	script.async = true;
-	script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-	document.head.appendChild(script);
+	// 使用 useScript 載入 Google Analytics（符合 Strict CSP）
+	useScript(`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`, {
+		async: true,
+		defer: true
+	});
 
 	// 初始化 gtag
 	(window as any).dataLayer = (window as any).dataLayer || [];
