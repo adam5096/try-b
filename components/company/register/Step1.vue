@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { reactive, ref, nextTick } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus';
+import { reactive, ref, nextTick, watch, onUnmounted } from 'vue';
+import type { FormInstance, FormRules, UploadRawFile } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 const props = defineProps<{
 	formData: any
@@ -8,11 +9,194 @@ const props = defineProps<{
 	scaleOptions: { value: number, label: string }[]
 	industriesPending?: boolean
 	industriesError?: any
+	uploadedFiles?: { logo: File | null, cover: File | null, environment: File | null }
 }>();
 
-const emit = defineEmits(['next']);
+const emit = defineEmits(['next', 'update-files']);
 
 const formRef = ref<FormInstance>();
+
+// 檔案上傳狀態 - 使用 props 中的狀態
+const logoFile = ref<File | null>(props.uploadedFiles?.logo || null);
+const coverFile = ref<File | null>(props.uploadedFiles?.cover || null);
+const environmentFile = ref<File | null>(props.uploadedFiles?.environment || null);
+
+// 檔案預覽 URL
+const logoPreview = ref<string>('');
+const coverPreview = ref<string>('');
+const environmentPreview = ref<string>('');
+
+// 初始化預覽 URL（如果已有檔案）
+if (logoFile.value) {
+	logoPreview.value = URL.createObjectURL(logoFile.value);
+}
+if (coverFile.value) {
+	coverPreview.value = URL.createObjectURL(coverFile.value);
+}
+if (environmentFile.value) {
+	environmentPreview.value = URL.createObjectURL(environmentFile.value);
+}
+
+// 監聽 props 變化，當從 Step2 回到 Step1 時重新初始化檔案狀態
+watch(() => props.uploadedFiles, (newFiles) => {
+	if (newFiles) {
+		// 清理舊的預覽 URL
+		if (logoPreview.value) {
+			URL.revokeObjectURL(logoPreview.value);
+		}
+		if (coverPreview.value) {
+			URL.revokeObjectURL(coverPreview.value);
+		}
+		if (environmentPreview.value) {
+			URL.revokeObjectURL(environmentPreview.value);
+		}
+
+		// 更新檔案狀態
+		logoFile.value = newFiles.logo;
+		coverFile.value = newFiles.cover;
+		environmentFile.value = newFiles.environment;
+
+		// 重新建立預覽 URL
+		if (logoFile.value) {
+			logoPreview.value = URL.createObjectURL(logoFile.value);
+		}
+		else {
+			logoPreview.value = '';
+		}
+		if (coverFile.value) {
+			coverPreview.value = URL.createObjectURL(coverFile.value);
+		}
+		else {
+			coverPreview.value = '';
+		}
+		if (environmentFile.value) {
+			environmentPreview.value = URL.createObjectURL(environmentFile.value);
+		}
+		else {
+			environmentPreview.value = '';
+		}
+	}
+}, { deep: true });
+
+// 清理預覽 URL，避免記憶體洩漏
+onUnmounted(() => {
+	if (logoPreview.value) {
+		URL.revokeObjectURL(logoPreview.value);
+	}
+	if (coverPreview.value) {
+		URL.revokeObjectURL(coverPreview.value);
+	}
+	if (environmentPreview.value) {
+		URL.revokeObjectURL(environmentPreview.value);
+	}
+});
+
+// 檔案上傳處理
+const handleLogoUpload = (file: UploadRawFile) => {
+	if (!file) { return false; }
+
+	// 檔案類型驗證
+	const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+	if (!allowedTypes.includes(file.type)) {
+		ElMessage.error('企業標誌只支援 JPG、PNG、WEBP 格式');
+		return false;
+	}
+
+	// 檔案大小驗證 (5MB)
+	if (file.size > 5 * 1024 * 1024) {
+		ElMessage.error('企業標誌檔案大小不能超過 5MB');
+		return false;
+	}
+
+	logoFile.value = file;
+
+	// 建立預覽 URL
+	if (logoPreview.value) {
+		URL.revokeObjectURL(logoPreview.value);
+	}
+	logoPreview.value = URL.createObjectURL(file);
+
+	return true;
+};
+
+const handleCoverUpload = (file: UploadRawFile) => {
+	if (!file) { return false; }
+
+	// 檔案類型驗證
+	const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+	if (!allowedTypes.includes(file.type)) {
+		ElMessage.error('企業封面只支援 JPG、PNG、WEBP 格式');
+		return false;
+	}
+
+	// 檔案大小驗證 (10MB)
+	if (file.size > 10 * 1024 * 1024) {
+		ElMessage.error('企業封面檔案大小不能超過 10MB');
+		return false;
+	}
+
+	coverFile.value = file;
+
+	// 建立預覽 URL
+	if (coverPreview.value) {
+		URL.revokeObjectURL(coverPreview.value);
+	}
+	coverPreview.value = URL.createObjectURL(file);
+
+	return true;
+};
+
+const handleEnvironmentUpload = (file: UploadRawFile) => {
+	if (!file) { return false; }
+
+	// 檔案類型驗證
+	const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+	if (!allowedTypes.includes(file.type)) {
+		ElMessage.error('企業環境照片只支援 JPG、PNG、WEBP 格式');
+		return false;
+	}
+
+	// 檔案大小驗證 (10MB)
+	if (file.size > 10 * 1024 * 1024) {
+		ElMessage.error('企業環境照片檔案大小不能超過 10MB');
+		return false;
+	}
+
+	environmentFile.value = file;
+
+	// 建立預覽 URL
+	if (environmentPreview.value) {
+		URL.revokeObjectURL(environmentPreview.value);
+	}
+	environmentPreview.value = URL.createObjectURL(file);
+
+	return true;
+};
+
+// 移除檔案
+const removeLogo = () => {
+	logoFile.value = null;
+	if (logoPreview.value) {
+		URL.revokeObjectURL(logoPreview.value);
+		logoPreview.value = '';
+	}
+};
+
+const removeCover = () => {
+	coverFile.value = null;
+	if (coverPreview.value) {
+		URL.revokeObjectURL(coverPreview.value);
+		coverPreview.value = '';
+	}
+};
+
+const removeEnvironment = () => {
+	environmentFile.value = null;
+	if (environmentPreview.value) {
+		URL.revokeObjectURL(environmentPreview.value);
+		environmentPreview.value = '';
+	}
+};
 
 const createRequiredValidator = (message: string) => {
 	return (rule: any, value: any, callback: (error?: Error) => void) => {
@@ -70,6 +254,14 @@ const handleNextClick = async () => {
 
 	try {
 		await formEl.validate();
+
+		// 每次點擊下一步都更新檔案狀態，確保狀態同步
+		emit('update-files', {
+			logo: logoFile.value,
+			cover: coverFile.value,
+			environment: environmentFile.value,
+		});
+
 		emit('next');
 	}
 	catch (fields) {
@@ -243,29 +435,175 @@ const handleNextClick = async () => {
 			</el-form-item>
 
 			<div class="col-span-2 mt-2 grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
+				<!-- 企業標誌上傳 -->
 				<div>
 					<label class="mb-2 block text-sm font-medium text-gray-900">企業標誌</label>
 					<div
 						class="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4"
 					>
 						<div
-							class="flex h-36 w-36 items-center justify-center rounded-full bg-gray-200 text-gray-400"
+							v-if="logoPreview"
+							class="relative aspect-[16/9] w-full rounded-md overflow-hidden"
 						>
-							<!-- Placeholder for logo -->
+							<img
+								:src="logoPreview"
+								alt="企業標誌預覽"
+								class="h-full w-full object-cover"
+							>
+							<button
+								type="button"
+								class="absolute top-1 right-1 h-6 w-6 rounded-full bg-red-500 text-white text-xs hover:bg-red-600"
+								@click="removeLogo"
+							>
+								×
+							</button>
 						</div>
-						<el-button>更換標誌</el-button>
+						<div
+							v-else
+							class="aspect-[16/9] w-full rounded-md bg-gray-200 flex items-center justify-center"
+						>
+							<svg
+								class="h-12 w-12"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+								/>
+							</svg>
+						</div>
+						<el-upload
+							:show-file-list="false"
+							:before-upload="handleLogoUpload"
+							accept="image/jpeg,image/jpg,image/png,image/webp"
+							class="upload-demo"
+						>
+							<el-button type="primary">
+								{{ logoFile ? '更換標誌' : '上傳標誌' }}
+							</el-button>
+						</el-upload>
+						<p class="text-xs text-gray-500">
+							建議尺寸：16:9，最大 5MB
+						</p>
 					</div>
 				</div>
+
+				<!-- 企業封面上傳 -->
 				<div>
 					<label class="mb-2 block text-sm font-medium text-gray-900">企業封面</label>
 					<div
 						class="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4"
 					>
-						<div class="aspect-[16/9] w-full rounded-md bg-gray-200">
-							<!-- Placeholder for cover image -->
+						<div
+							v-if="coverPreview"
+							class="relative aspect-[16/9] w-full rounded-md overflow-hidden"
+						>
+							<img
+								:src="coverPreview"
+								alt="企業封面預覽"
+								class="h-full w-full object-cover"
+							>
+							<button
+								type="button"
+								class="absolute top-2 right-2 h-6 w-6 rounded-full bg-red-500 text-white text-xs hover:bg-red-600"
+								@click="removeCover"
+							>
+								×
+							</button>
 						</div>
-						<el-button>更換封面</el-button>
+						<div
+							v-else
+							class="aspect-[16/9] w-full rounded-md bg-gray-200 flex items-center justify-center"
+						>
+							<svg
+								class="h-12 w-12 text-gray-400"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+								/>
+							</svg>
+						</div>
+						<el-upload
+							:show-file-list="false"
+							:before-upload="handleCoverUpload"
+							accept="image/jpeg,image/jpg,image/png,image/webp"
+							class="upload-demo"
+						>
+							<el-button type="primary">
+								{{ coverFile ? '更換封面' : '上傳封面' }}
+							</el-button>
+						</el-upload>
+						<p class="text-xs text-gray-500">
+							建議尺寸：16:9，最大 10MB
+						</p>
 					</div>
+				</div>
+			</div>
+
+			<!-- 企業環境照片上傳 -->
+			<div class="col-span-2 mt-4">
+				<label class="mb-2 block text-sm font-medium text-gray-900">企業環境照片</label>
+				<div
+					class="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4"
+				>
+					<div
+						v-if="environmentPreview"
+						class="relative aspect-[16/9] w-full max-w-md rounded-md overflow-hidden"
+					>
+						<img
+							:src="environmentPreview"
+							alt="企業環境照片預覽"
+							class="h-full w-full object-cover"
+						>
+						<button
+							type="button"
+							class="absolute top-2 right-2 h-6 w-6 rounded-full bg-red-500 text-white text-xs hover:bg-red-600"
+							@click="removeEnvironment"
+						>
+							×
+						</button>
+					</div>
+					<div
+						v-else
+						class="aspect-[16/9] w-full max-w-md rounded-md bg-gray-200 flex items-center justify-center"
+					>
+						<svg
+							class="h-12 w-12 text-gray-400"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+							/>
+						</svg>
+					</div>
+					<el-upload
+						:show-file-list="false"
+						:before-upload="handleEnvironmentUpload"
+						accept="image/jpeg,image/jpg,image/png,image/webp"
+						class="upload-demo"
+					>
+						<el-button type="primary">
+							{{ environmentFile ? '更換環境照片' : '上傳環境照片' }}
+						</el-button>
+					</el-upload>
+					<p class="text-xs text-gray-500">
+						建議尺寸：16:9，最大 10MB
+					</p>
 				</div>
 			</div>
 

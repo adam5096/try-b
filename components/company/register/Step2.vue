@@ -2,12 +2,15 @@
 import { reactive, ref } from 'vue';
 import type { FormInstance, FormRules } from 'element-plus';
 import { ElMessage } from 'element-plus';
+import type { CompanyRegisterRequest } from '~/types/company/company';
+import { useCompanyRegister } from '~/composables/api/company/useCompanyRegister';
 
 const props = defineProps<{
 	formData: any
+	uploadedFiles?: { logo: File | null, cover: File | null, environment: File | null }
 }>();
 
-const emit = defineEmits(['next', 'previous']);
+const emit = defineEmits(['next', 'prev', 'registration-success']);
 
 const formRef = ref<FormInstance>();
 const isLoading = ref(false);
@@ -48,30 +51,55 @@ const handleNextClick = async () => {
 	isLoading.value = true;
 	try {
 		// 2. 準備要發送到後端的 payload
-		// 使用物件解構來建立一個新物件，同時排除僅供前端使用的 'confirmPassword' 欄位
-		const { confirmPassword, ...payload } = props.formData;
+		// 排除不需要的欄位並轉換 CompanyContact 格式
+		const { confirmPassword, CompanyContact, CompanyImg, ...restData } = props.formData;
 
-		// 3. 使用統一的 API 函數呼叫 API
-		const { data: response, error } = await useFetch('/v1/company', {
-			method: 'POST',
-			baseURL: '/api',
-			body: payload,
-		});
+		const payload: CompanyRegisterRequest = {
+			...restData,
+			company_contact: {
+				name: CompanyContact.name,
+				job_title: CompanyContact.job_title,
+				email: CompanyContact.email,
+				phone: CompanyContact.phone,
+			},
+		};
+
+		console.log('發送的 payload:', payload);
+		console.log('上傳的檔案:', props.uploadedFiles);
+
+		// 3. 使用 useCompanyRegister composable
+		const { register } = useCompanyRegister();
+		const result = await register(payload, props.uploadedFiles);
 
 		// 4a. 處理成功的回應
-		if (error.value) {
-			throw error.value;
+		if (result.success) {
+			ElMessage({
+				message: `註冊成功！企業 ID: ${result.data?.company_id}`,
+				type: 'success',
+			});
+			// 發送註冊成功事件給父組件
+			emit('registration-success', result);
+			// 先跳轉到 Step3 展示成功頁面
+			emit('next');
 		}
-
-		ElMessage({ message: '註冊成功！', type: 'success' });
-		emit('next');
+		else {
+			// 4b. 處理失敗的回應
+			const errorMessage = result.error?.errors?.length
+				? result.error.errors.join('、')
+				: result.error?.message || '註冊失敗，請檢查您的資料或稍後再試';
+			ElMessage({
+				message: `註冊失敗: ${errorMessage}`,
+				type: 'error',
+				duration: 5000,
+			});
+		}
 	}
 	catch (error: any) {
-		// 4b. 處理失敗的回應
+		// 4c. 處理其他錯誤
 		ElMessage({
-			message: `註冊失敗: ${error?.data?.message || error?.message || '請檢查您的資料或稍後再試'}`,
+			message: `註冊失敗: ${error?.message || '請檢查您的資料或稍後再試'}`,
 			type: 'error',
-			duration: 5000, // 讓錯誤訊息停留久一點
+			duration: 5000,
 		});
 	}
 	finally {
@@ -81,7 +109,7 @@ const handleNextClick = async () => {
 };
 
 const handlePrevClick = () => {
-	emit('previous');
+	emit('prev');
 };
 </script>
 
@@ -100,46 +128,50 @@ const handlePrevClick = () => {
 			size="large"
 		>
 			<el-form-item
-				label="聯絡人姓名 *"
+				label="聯絡人姓名"
 				prop="CompanyContact.name"
 				class="col-span-2 md:col-span-1"
 			>
 				<el-input
 					v-model="formData.CompanyContact.name"
 					placeholder="請輸入聯絡人姓名"
+					:disabled="isLoading"
 				/>
 			</el-form-item>
 
 			<el-form-item
-				label="職稱 *"
+				label="職稱"
 				prop="CompanyContact.job_title"
 				class="col-span-2 md:col-span-1"
 			>
 				<el-input
 					v-model="formData.CompanyContact.job_title"
 					placeholder="請輸入聯絡人職稱"
+					:disabled="isLoading"
 				/>
 			</el-form-item>
 
 			<el-form-item
-				label="電子郵件 *"
+				label="電子郵件"
 				prop="CompanyContact.email"
 				class="col-span-2"
 			>
 				<el-input
 					v-model="formData.CompanyContact.email"
 					placeholder="請輸入聯絡人電子郵件"
+					:disabled="isLoading"
 				/>
 			</el-form-item>
 
 			<el-form-item
-				label="聯絡電話 *"
+				label="聯絡電話"
 				prop="CompanyContact.phone"
 				class="col-span-2"
 			>
 				<el-input
 					v-model="formData.CompanyContact.phone"
 					placeholder="請輸入聯絡人電話"
+					:disabled="isLoading"
 				/>
 			</el-form-item>
 
@@ -148,6 +180,7 @@ const handlePrevClick = () => {
 					native-type="button"
 					size="large"
 					class="px-8 py-6 text-base font-bold"
+					:disabled="isLoading"
 					@click="handlePrevClick"
 				>
 					上一步
