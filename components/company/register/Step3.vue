@@ -1,7 +1,20 @@
 <script setup lang="ts">
 const router = useRouter();
 
+// 接收註冊成功的資料
+const props = defineProps<{
+	formData?: any
+	registrationResult?: {
+		success: boolean
+		data?: {
+			company_id: number
+			message: string
+		}
+	}
+}>();
+
 function goToLogin() {
+	// 跳轉到企業登入頁面
 	router.push({ name: 'companyLogin' });
 }
 </script>
@@ -11,6 +24,14 @@ function goToLogin() {
 		<h1 class="mb-4 text-3xl font-bold text-gray-800">
 			恭喜您，註冊成功！
 		</h1>
+		<div
+			v-if="props.registrationResult?.data?.company_id"
+			class="mb-4"
+		>
+			<p class="text-lg text-gray-700">
+				企業 ID: <span class="font-bold text-primary-blue">{{ props.registrationResult.data.company_id }}</span>
+			</p>
+		</div>
 		<p class="mb-8 text-gray-600">
 			已發送驗證郵件，請至電子郵件信箱點擊連結進行驗證！
 		</p>
