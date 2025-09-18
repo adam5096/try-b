@@ -74,9 +74,11 @@ pnpm preview
 - Font Awesome（自訂插件註冊 `font-awesome-icon`）
 - Swiper（`nuxt-swiper`）
 - 日期處理：`dayjs`（插件擴充 `updateLocale`、`relativeTime`、`utc`）
+- Nuxt Security（`nuxt-security`，CSP、Rate Limiting、SRI 等資安功能）
 
 ### 開發工具
-- ESLint 9（整合 `@nuxt/eslint`，專案使用 Tab 縮排、尾逗號等 stylistic 設定）
+- ESLint 9（整合 `@nuxt/eslint`，專案使用 Tab 縮排、不使用分號等 stylistic 設定）
+- Vitest（測試框架，含覆蓋率報告）
 
 ### 伺服器端（Nuxt Nitro）BFF - Backend for Frontend
 - 以 Nitro Server 端點作為 API 代理層（例如：`server/api/v1/home/popular.get.ts`）
@@ -86,15 +88,24 @@ pnpm preview
 - SSR 轉譯：`@popperjs/core`、`element-plus`
 - 允許的遠端圖片來源：`trybeta.rocket-coding.com`、`images.unsplash.com`、`i.imgur.com`
 
+### 資安防護
+- **Content Security Policy (CSP)**：Strict CSP 模式，包含 nonce 支援
+- **Subresource Integrity (SRI)**：確保外部資源完整性
+- **Rate Limiting**：每分鐘 100 請求限制，使用 LRU Cache 存儲
+- **Cookie 安全設定**：httpOnly、secure、sameSite 防護
+- **請求升級**：自動將 HTTP 升級為 HTTPS
+- **腳本限制**：禁止內聯腳本屬性、物件嵌入、base 標籤
+- **統一 API 錯誤處理**：請求追蹤與錯誤分類機制
+
 ---
 
 ## API 架構與開發約定
 
 ### 呼叫策略
-- 統一使用 `useFetch` 進行 HTTP 請求，透過 BFF 架構處理 API 調用。
-- 開發環境（`NODE_ENV=development`）：`baseURL = /api-proxy`，由 Nitro 代理轉發至真實後端。
-- 生產環境（`NODE_ENV=production`）：`baseURL = NUXT_PUBLIC_API_BASE_URL`。
-- 後端實際路徑需包含 `api`（例如：`/api/v1/...`），並透過代理形如：`/api-proxy/api/v1/...`。
+- 統一使用 `$fetch` 進行 HTTP 請求，透過 BFF 架構處理 API 調用
+- 開發環境（`NODE_ENV=development`）：`baseURL = /api-proxy`，由 Nitro 代理轉發至真實後端
+- 生產環境（`NODE_ENV=production`）：`baseURL = NUXT_PUBLIC_API_BASE_URL`
+- 後端實際路徑需包含 `api`（例如：`/api/v1/...`），並透過代理形如：`/api-proxy/api/v1/...`
 
 ### 權限與錯誤處理
 - 401 錯誤統一在前端插件攔截（`plugins/api.ts`），依請求前綴自動導向：
@@ -114,6 +125,8 @@ pnpm preview
 - `pnpm preview`：本機預覽產出
 - `pnpm generate`：靜態化（如需）
 - `pnpm lint` / `pnpm lint:fix`：程式碼風格與修復
+- `pnpm test`：執行測試
+- `pnpm test:coverage`：測試覆蓋率報告
 
 ---
 
@@ -124,15 +137,16 @@ try-b/
 ├── assets/            # 靜態資源（CSS、圖片）
 ├── components/        # Vue 元件（company/shared/users）
 ├── composables/       # 組合式函數（含 api 封裝）
-├── layouts/           # 頁面佈局
+├── layouts/           # 頁面佈局（main/company/user/admin/default/blank）
 ├── middleware/        # 路由中介軟體（company-auth、user-auth 等）
 ├── pages/             # 頁面（admin/company/users...）
-├── plugins/           # Nuxt 插件（api、dayjs、fontawesome）
+├── plugins/           # Nuxt 插件（api、dayjs、fontawesome、error-handler）
 ├── public/            # 靜態公開資源（favicon、_robots.txt、img/*）
 ├── server/            # Nitro API 代理端點（/api/v1/**）
 ├── stores/            # Pinia 狀態（user/company/admin）
 ├── types/             # TypeScript 型別
-└── utils/             # 工具
+├── utils/             # 工具函數
+└── test/              # 測試檔案
 ```
 
 ---
@@ -141,14 +155,14 @@ try-b/
 - `_robots.txt`：搜尋引擎爬蟲規則
 - `img/`：站內靜態圖片（如 `home/`、`company/`、`admin/`、`users/` 等）
   - 重要：Nitro 針對 `/img/**` 與 `/_ipx/**` 已設定長時間快取 headers
-  - Nuxt Image 透過 IPX 處理圖片輸出與格式（預設輸出 webp、quality=70）
+  - Nuxt Image 透過 IPX 處理圖片輸出與格式（預設輸出 webp、quality=80）
 
 ---
 
 ## 路由與頁面
 - `pages/users/*`：使用者端（登入、收藏、申請、計畫詳情、設定、評論等）
 - `pages/company/*`：企業端（登入、計畫建立/管理、申請者管理、購買流程、評論等）
-- `pages/admin/*`：管理員端 (未來展望)（儀表板、評論審核、計畫管理、趨勢）
+- `pages/admin/*`：管理員端（儀表板、評論審核、計畫管理、趨勢）
 
 對應中介層：
 - `middleware/user-auth.ts`：使用者權限
@@ -160,8 +174,9 @@ try-b/
 ## 程式碼風格
 - 使用 ESLint 9 與 `@nuxt/eslint` 預設規範；專案 stylistic 設定包含：
   - Tab 縮排
-  - 需要分號
+  - 不使用分號
   - 多行結尾使用尾逗號
+- 環境區分：開發/生產環境使用不同的 ESLint 規則嚴格度
 
 ---
 
@@ -201,5 +216,7 @@ try-b/
 ---
 
 ## 備註
-- 設計工具（Figma、Miro 等）未納入此程式倉庫，若需補充請於此區更新。
-- 若需擴充 API，請遵循現有模式：優先 `$fetch`、路徑需含 `api`、開發環境使用 `/api-proxy` 代理、並延續錯誤攔截與導流行為。
+- 設計工具（Figma、Miro 等）未納入此程式倉庫，若需補充請於此區更新
+- 若需擴充 API，請遵循現有模式：優先 `$fetch`、路徑需含 `api`、開發環境使用 `/api-proxy` 代理、並延續錯誤攔截與導流行為
+- 專案已實現完整的資安防護機制，包括 CSP、認證、速率限制等
+- 測試覆蓋率報告可透過 `pnpm test:coverage` 查看

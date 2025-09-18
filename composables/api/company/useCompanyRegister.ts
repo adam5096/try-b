@@ -10,6 +10,20 @@ export const useCompanyRegister = () => {
 		try {
 			console.log('🚀 開始註冊請求... (v3.0 - 透過 BFF 代理)');
 
+			// 檢查檔案大小（適應 Vercel Hobby 計劃限制）
+			const maxFileSize = 1.5 * 1024 * 1024; // 1.5MB 限制
+			if (files) {
+				if (files.logo && files.logo.size > maxFileSize) {
+					throw new Error('Logo 檔案大小超過 1.5MB 限制，請壓縮後再上傳');
+				}
+				if (files.cover && files.cover.size > maxFileSize) {
+					throw new Error('Cover 檔案大小超過 1.5MB 限制，請壓縮後再上傳');
+				}
+				if (files.environment && files.environment.size > maxFileSize) {
+					throw new Error('Environment 檔案大小超過 1.5MB 限制，請壓縮後再上傳');
+				}
+			}
+
 			// 建立 FormData 物件
 			const formData = new FormData();
 
@@ -40,6 +54,8 @@ export const useCompanyRegister = () => {
 			const response = await $fetch<CompanyRegisterSuccessResponse>('/api/v1/company', {
 				method: 'POST',
 				body: formData, // 使用 FormData 物件
+				// 根據環境設定不同的超時時間
+				timeout: process.env.NODE_ENV === 'development' ? 30000 : 8000, // 開發環境 30 秒，生產環境 8 秒
 			});
 
 			const endTime = Date.now();
@@ -69,6 +85,32 @@ export const useCompanyRegister = () => {
 					error: {
 						message: errorData.message,
 						errors: errorData.errors,
+					},
+				};
+			}
+
+			// 處理超時錯誤
+			if (error.message?.includes('timeout') || error.message?.includes('TimeoutError') || error.statusCode === 504) {
+				return {
+					success: false,
+					data: null,
+					error: {
+						message: process.env.NODE_ENV === 'development' 
+							? '請求處理時間過長，請檢查後端服務狀態' 
+							: '請求處理時間過長，請壓縮圖片後再試',
+						errors: [],
+					},
+				};
+			}
+
+			// 處理檔案大小錯誤
+			if (error.statusCode === 413) {
+				return {
+					success: false,
+					data: null,
+					error: {
+						message: '檔案大小超過限制，請壓縮圖片後再試',
+						errors: [],
 					},
 				};
 			}
