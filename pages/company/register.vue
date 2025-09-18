@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import Step1 from '~/components/company/register/Step1.vue';
 import Step2 from '~/components/company/register/Step2.vue';
 import Step3 from '~/components/company/register/Step3.vue';
+import { useCompanyIndustries } from '~/composables/api/company/useCompanyIndustries';
 
 definePageMeta({
 	layout: 'main',
@@ -37,14 +38,35 @@ const formData = reactive({
 	},
 });
 
-const industryOptions = [
-	{ value: 1, label: '資訊科技' },
-	{ value: 2, label: '金融保險' },
-	{ value: 3, label: '教育' },
-	{ value: 4, label: '醫療保健' },
-	{ value: 5, label: '零售' },
-	{ value: 6, label: '製造' },
-];
+// 檔案上傳狀態
+const uploadedFiles = reactive({
+	logo: null as File | null,
+	cover: null as File | null,
+	environment: null as File | null,
+});
+
+// 註冊結果狀態
+const registrationResult = ref<{
+	success: boolean
+	data?: {
+		company_id: number
+		message: string
+	}
+} | null>(null);
+
+// 使用 API 取得產業清單
+const { data: industriesData, pending: industriesPending, error: industriesError } = useCompanyIndustries();
+
+// 將 API 資料轉換為 el-option 需要的格式
+const industryOptions = computed(() => {
+	if (!industriesData.value) {
+		return [];
+	}
+	return industriesData.value.map(item => ({
+		value: item.id,
+		label: item.title,
+	}));
+});
 
 const scaleOptions = [
 	{ value: 1, label: '1-10人' },
@@ -64,6 +86,18 @@ function previousStep() {
 	if (currentStep.value > 1) {
 		currentStep.value--;
 	}
+}
+
+// 處理檔案更新事件
+function handleFileUpdate(files: { logo: File | null, cover: File | null, environment: File | null }) {
+	uploadedFiles.logo = files.logo;
+	uploadedFiles.cover = files.cover;
+	uploadedFiles.environment = files.environment;
+}
+
+// 處理註冊成功事件
+function handleRegistrationSuccess(result: { success: boolean, data?: { company_id: number, message: string } }) {
+	registrationResult.value = result;
 }
 </script>
 
@@ -129,8 +163,14 @@ function previousStep() {
 						:form-data="formData"
 						:industry-options="industryOptions"
 						:scale-options="scaleOptions"
+						:industries-pending="industriesPending"
+						:industries-error="industriesError"
+						:uploaded-files="uploadedFiles"
+						:registration-result="registrationResult"
 						@next="nextStep"
 						@prev="previousStep"
+						@update-files="handleFileUpdate"
+						@registration-success="handleRegistrationSuccess"
 					/>
 				</Transition>
 			</KeepAlive>

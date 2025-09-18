@@ -57,3 +57,34 @@ export interface CompanyProfile {
 	CompanyContact: CompanyContact
 	CompanyImg: CompanyImg[]
 }
+
+export interface CompanyRegisterRequest {
+	name: string
+	industry_id: number
+	tax_id_num: string
+	address: string
+	website: string
+	intro: string
+	scale_id: number
+	account: string
+	email: string
+	password: string
+	company_contact: {
+		name: string
+		job_title: string
+		email: string
+		phone: string
+	}
+}
+
+export interface CompanyRegisterSuccessResponse {
+	status: 201
+	message: string
+	company_id: number
+}
+
+export interface CompanyRegisterErrorResponse {
+	status: 400
+	message: string
+	errors: string[]
+}
