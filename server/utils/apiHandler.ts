@@ -53,7 +53,7 @@ export const handleApiError = (error: any, defaultMessage: string, requestId?: s
 
 	// 資安考量：統一處理 5xx 錯誤，不洩露內部錯誤詳情
 	const isServerError = !error?.statusCode || error.statusCode >= 500;
-	
+
 	if (error?.statusCode && !isServerError) {
 		throw createError({
 			statusCode: error.statusCode,

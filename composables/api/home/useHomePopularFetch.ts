@@ -43,7 +43,21 @@ function formatDateToYmd(dateStr: string): string {
 export function useHomePopularFetch() {
 	const { data, pending, error, refresh } = useAsyncData<HomePageResponse>(
 		'home-popular',
-		() => $fetch('/api/v1/home/popular'),
+		async (): Promise<HomePageResponse> => {
+			try {
+				const result = await $fetch<HomePageResponse>('/api/v1/home/popular');
+				return result;
+			} catch (err: any) {
+				// 資安考量：統一錯誤處理，不洩露 API endpoint 詳情
+				if (err.status >= 500) {
+					throw createError({
+						statusCode: 500,
+						statusMessage: '服務暫時無法使用，請稍後再試',
+					});
+				}
+				throw err;
+			}
+		},
 		{
 			server: true,
 			lazy: false,
@@ -65,22 +79,12 @@ export function useHomePopularFetch() {
 						: [],
 				};
 			},
-			// 資安考量：統一錯誤處理，不洩露 API endpoint 詳情
-			onResponseError({ response }) {
-				// 將所有 5xx 錯誤統一處理
-				if (response.status >= 500) {
-					throw createError({
-						statusCode: 500,
-						statusMessage: '服務暫時無法使用，請稍後再試',
-					});
-				}
-			},
 		},
 	);
 
 	const cards = computed<HomeHighScoreCard[]>(() => {
-		const source = data.value?.PopularPrograms ?? [];
-		const mapped = source.slice(0, 3).map<HomeHighScoreCard>(x => ({
+		const source = (data.value as HomePageResponse)?.PopularPrograms ?? [];
+		const mapped = source.slice(0, 3).map((x: PopularProgram) => ({
 			id: x.id ?? null,
 			title: x.name ?? '—',
 			description: extractIntroSummaryForCard(x.intro || ''),
