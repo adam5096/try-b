@@ -416,7 +416,7 @@ const defaultCardImages = [
 				>
 					<SharedErrorMessage
 						title="載入熱門活動失敗"
-						:message="error.message || '無法載入熱門體驗活動，請稍後再試'"
+						message="服務暫時無法使用，請稍後再試"
 						:show-refresh="true"
 						@refresh="refresh"
 					/>

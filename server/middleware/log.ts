@@ -7,7 +7,7 @@ export default defineEventHandler((event) => {
 	const url = getRequestURL(event);
 
 	// 記錄請求開始
-	console.log(`[${new Date().toISOString()}] ${method} ${url.pathname}`);
+	// 請求日誌記錄
 
 	// 監聽回應完成
 	event.node.res.on('finish', () => {
@@ -22,7 +22,7 @@ export default defineEventHandler((event) => {
 			console.warn(`[${new Date().toISOString()}] ${method} ${url.pathname} - ${statusCode} - ${duration}ms`);
 		}
 		else {
-			console.log(`[${new Date().toISOString()}] ${method} ${url.pathname} - ${statusCode} - ${duration}ms`);
+			// 請求完成日誌記錄
 		}
 
 		// 記錄慢請求
