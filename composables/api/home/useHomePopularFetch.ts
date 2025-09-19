@@ -47,7 +47,8 @@ export function useHomePopularFetch() {
 			try {
 				const result = await $fetch<HomePageResponse>('/api/v1/home/popular');
 				return result;
-			} catch (err: any) {
+			}
+			catch (err: any) {
 				// 資安考量：統一錯誤處理，不洩露 API endpoint 詳情
 				if (err.status >= 500) {
 					throw createError({
