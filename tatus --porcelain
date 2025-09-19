@@ -1,0 +1,183 @@
+warning: in the working copy of 'pages/users/register.vue', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/pages/users/register.vue b/pages/users/register.vue[m
+[1mindex 7e9380c..59cd857 100644[m
+[1m--- a/pages/users/register.vue[m
+[1m+++ b/pages/users/register.vue[m
+[36m@@ -3,6 +3,15 @@[m [mimport { ref } from 'vue';[m
+ import { ElMessage, ElMessageBox } from 'element-plus';[m
+ import { useUserAuthStore } from '~/stores/user/useAuthStore';[m
+ import type { UserRegisterData } from '~/types/users/user';[m
+[32m+[m[32mimport {[m
+[32m+[m	[32mvalidateName,[m
+[32m+[m	[32mvalidateAccount,[m
+[32m+[m	[32mvalidateEmail,[m
+[32m+[m	[32mvalidatePasswordStrength,[m
+[32m+[m	[32mvalidatePasswordMatch,[m
+[32m+[m	[32mvalidateForm,[m
+[32m+[m	[32misFieldValid,[m
+[32m+[m[32m} from '~/utils/users/formValidation';[m
+ [m
+ definePageMeta({[m
+ 	name: 'user-register',[m
+[36m@@ -22,6 +31,37 @@[m [mconst password = ref('');[m
+ const confirmPassword = ref('');[m
+ const isLoading = ref(false);[m
+ [m
+[32m+[m[32m// 表單驗證狀態[m
+[32m+[m[32mconst formErrors = ref<Record<string, string>>({});[m
+[32m+[m[32mconst isFormValid = ref(false);[m
+[32m+[m
+[32m+[m[32m// 驗證器配置（使用 utils/formValidation.ts 中的函數）[m
+[32m+[m[32mconst validators = {[m
+[32m+[m	[32mname: validateName,[m
+[32m+[m	[32maccount: validateAccount,[m
+[32m+[m	[32memail: validateEmail,[m
+[32m+[m	[32mpassword: validatePasswordStrength,[m
+[32m+[m	[32mconfirmPassword: () => validatePasswordMatch(password.value, confirmPassword.value),[m
+[32m+[m[32m};[m
+[32m+[m
+[32m+[m[32m// 檢查表單是否有效[m
+[32m+[m[32mfunction checkFormValidity() {[m
+[32m+[m	[32m// 準備表單資料[m
+[32m+[m	[32mconst formDataForValidation = {[m
+[32m+[m		[32mname: formData.value.name,[m
+[32m+[m		[32maccount: formData.value.account,[m
+[32m+[m		[32memail: formData.value.email,[m
+[32m+[m		[32mpassword: password.value,[m
+[32m+[m		[32mconfirmPassword: confirmPassword.value,[m
+[32m+[m	[32m};[m
+[32m+[m
+[32m+[m	[32m// 使用通用驗證函數[m
+[32m+[m	[32mconst result = validateForm(formDataForValidation, validators);[m
+[32m+[m
+[32m+[m	[32mformErrors.value = result.errors;[m
+[32m+[m	[32misFormValid.value = result.isValid;[m
+[32m+[m[32m}[m
+[32m+[m
+ // 資安考量：統一錯誤訊息處理[m
+ function sanitizeErrorMessage(error: any): string {[m
+ 	const statusCode = error.status || error.statusCode || error.data?.status;[m
+[36m@@ -41,12 +81,11 @@[m [mfunction sanitizeErrorMessage(error: any): string {[m
+ }[m
+ [m
+ async function handleSubmit() {[m
+[31m-	if (password.value !== confirmPassword.value) {[m
+[31m-		ElMessage.error('兩次輸入的密碼不一致');[m
+[31m-		return;[m
+[31m-	}[m
+[31m-	if (!formData.value.name || !formData.value.account || !formData.value.email || !password.value) {[m
+[31m-		ElMessage.error('請填寫所有必填欄位');[m
+[32m+[m	[32m// 先進行表單驗證[m
+[32m+[m	[32mcheckFormValidity();[m
+[32m+[m
+[32m+[m	[32mif (!isFormValid.value) {[m
+[32m+[m		[32mElMessage.error('請修正表單中的錯誤後再提交');[m
+ 		return;[m
+ 	}[m
+ [m
+[36m@@ -110,9 +149,34 @@[m [masync function handleSubmit() {[m
+ 							type="text"[m
+ 							autocomplete="name"[m
+ 							required[m
+[31m-							class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"[m
+[32m+[m							[32mminlength="2"[m
+[32m+[m							[32mmaxlength="20"[m
+[32m+[m							[32m:class="[[m
+[32m+[m								[32m'mt-1 block w-full rounded-md px-1 py-2 shadow-sm focus:outline-none sm:text-sm',[m
+[32m+[m								[32mformErrors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',[m
+[32m+[m							[32m]"[m
+ 							placeholder="請輸入您的姓名"[m
+[32m+[m							[32m@input="checkFormValidity"[m
+[32m+[m							[32m@blur="checkFormValidity"[m
+[32m+[m						[32m>[m
+[32m+[m						[32m<p[m
+[32m+[m							[32mv-if="formErrors.name"[m
+[32m+[m							[32mclass="mt-1 text-sm text-red-600"[m
+[32m+[m						[32m>[m
+[32m+[m							[32m{{ formErrors.name }}[m
+[32m+[m						[32m</p>[m
+[32m+[m						[32m<p[m
+[32m+[m							[32mv-else-if="isFieldValid(formData.name, validators.name)"[m
+[32m+[m							[32mclass="mt-1 text-sm text-green-600"[m
+[32m+[m						[32m>[m
+[32m+[m							[32m✓ 可使用[m
+[32m+[m						[32m</p>[m
+[32m+[m						[32m<p[m
+[32m+[m							[32mv-else[m
+[32m+[m							[32mclass="mt-1 text-sm text-gray-500"[m
+ 						>[m
+[32m+[m							[32m姓名只能包含中文、英文字母和數字，長度 2-20 字元[m
+[32m+[m						[32m</p>[m
+ 					</div>[m
+ 					<div class="pt-4">[m
+ 						<label[m
+[36m@@ -126,9 +190,34 @@[m [masync function handleSubmit() {[m
+ 							type="text"[m
+ 							autocomplete="username"[m
+ 							required[m
+[31m-							class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"[m
+[32m+[m							[32mminlength="3"[m
+[32m+[m							[32mmaxlength="20"[m
+[32m+[m							[32m:class="[[m
+[32m+[m								[32m'mt-1 block w-full rounded-md px-1 py-2 shadow-sm focus:outline-none sm:text-sm',[m
+[32m+[m								[32mformErrors.account ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',[m
+[32m+[m							[32m]"[m
+ 							placeholder="請輸入您的帳號"[m
+[32m+[m							[32m@input="checkFormValidity"[m
+[32m+[m							[32m@blur="checkFormValidity"[m
+ 						>[m
+[32m+[m						[32m<p[m
+[32m+[m							[32mv-if="formErrors.account"[m
+[32m+[m							[32mclass="mt-1 text-sm text-red-600"[m
+[32m+[m						[32m>[m
+[32m+[m							[32m{{ formErrors.account }}[m
+[32m+[m						[32m</p>[m
+[32m+[m						[32m<p[m
+[32m+[m							[32mv-else-if="isFieldValid(formData.account, validators.account)"[m
+[32m+[m							[32mclass="mt-1 text-sm text-green-600"[m
+[32m+[m						[32m>[m
+[32m+[m							[32m✓ 可使用[m
+[32m+[m						[32m</p>[m
+[32m+[m						[32m<p[m
+[32m+[m							[32mv-else[m
+[32m+[m							[32mclass="mt-1 text-sm text-gray-500"[m
+[32m+[m						[32m>[m
+[32m+[m							[32m帳號只能包含英文字母、數字和底線，長度 3-20 字元[m
+[32m+[m						[32m</p>[m
+ 					</div>[m
+ 					<div class="pt-4">[m
+ 						<label[m
+[36m@@ -142,9 +231,34 @@[m [masync function handleSubmit() {[m
+ 							type="email"[m
+ 							autocomplete="email"[m
+ 							required[m
+[31m-							class="mt-1 block w-full rounded-md border-gray-300 px-1 py-2 shadow-sm focus:outline-none sm:text-sm"[m
+[32m+[m							[32mminlength="5"[m
+[32m+[m							[32mmaxlength="100"[m
+[32m+[m							[32m:class="[[m
+[32m+[m								[32m'mt-1 block w-full rounded-md px-1 py-2 shadow-sm focus:outline-none sm:text-sm',[m
+[32m+[m								[32mformErrors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500',[m
+[32m+[m							[32m]"[m
+ 							placeholder="請輸入您的電子郵件"[m
+[32m+[m							[32m@input="checkFormValidity"[m
+[32m+[m							[32m@blur="checkFormValidity"[m
+[32m+[m						[32m>[m
+[32m+[m						[32m<p[m
+[32m+[m							[32mv-if="formErrors.email"[m
+[32m+[m							[32mclass="mt-1 text-sm text-red-600"[m
+[32m+[m						[32m>[m
+[32m+[m							[32m{{ formErrors.email }}[m
+[32m+[m						[32m</p>[m
+[32m+[m						[32m<p[m
+[32m+[m							[32mv-else-if="isFieldValid(formData.email, validators.email)"[m
+[32m+[m							[32mclass="mt-1 text-sm text-green-600"[m
+[32m+[m						[32m>[m
+[32m+[m							[32m✓ 可使用[m
+[32m+[m						[32m</p>[m
+[32m+[m						[32m<p[m
+[32m+[m							[32mv-else[m
+[32m+[m							[32mclass="mt-1 text-sm text-gray-500"[m
+ 						>[m
+[32m+[m							[32m請輸入有效的電子郵件地址，長度 5-100 字元[m
+[32m+[m						[32m</p>[m
+ 					</div>[m
