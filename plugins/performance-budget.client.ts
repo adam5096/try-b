@@ -64,9 +64,7 @@ export default defineNuxtPlugin(() => {
 				// 在開發環境中顯示報告
 				if (process.env.NODE_ENV === 'development') {
 					console.group('🚀 Performance Budget Report');
-					console.table(report.webVitals);
-					console.table(report.resources);
-					console.log('📊 Summary:', report.summary);
+					// 效能預算報告記錄
 					console.groupEnd();
 				}
 			}, 2000); // 等待 2 秒確保所有資源載入完成

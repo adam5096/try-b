@@ -8,8 +8,6 @@ import type {
 export const useCompanyRegister = () => {
 	const register = async (data: CompanyRegisterRequest, files?: { logo?: File | null, cover?: File | null, environment?: File | null }) => {
 		try {
-			console.log('🚀 開始註冊請求... (v3.0 - 透過 BFF 代理)');
-
 			// 檢查檔案大小（適應 Vercel Hobby 計劃限制）
 			const maxFileSize = 1.5 * 1024 * 1024; // 1.5MB 限制
 			if (files) {
@@ -29,25 +27,20 @@ export const useCompanyRegister = () => {
 
 			// 將所有表單資料包裝成 dto 物件
 			formData.append('dto', JSON.stringify(data));
-			console.log('表單資料已添加到 FormData');
 
 			// 添加檔案到 FormData
 			if (files) {
 				if (files.logo) {
 					formData.append('logo', files.logo);
-					console.log('Logo 檔案已添加:', files.logo.name);
 				}
 				if (files.cover) {
 					formData.append('cover', files.cover);
-					console.log('Cover 檔案已添加:', files.cover.name);
 				}
 				if (files.environment) {
 					formData.append('environment', files.environment);
-					console.log('Environment 檔案已添加:', files.environment.name);
 				}
 			}
 
-			console.log('開始發送請求到 BFF...');
 			const startTime = Date.now();
 
 			// 使用 BFF 端點，統一經過代理處理
@@ -59,7 +52,6 @@ export const useCompanyRegister = () => {
 			});
 
 			const endTime = Date.now();
-			console.log(`請求完成，耗時: ${endTime - startTime}ms`);
 
 			return {
 				success: true,
@@ -95,8 +87,8 @@ export const useCompanyRegister = () => {
 					success: false,
 					data: null,
 					error: {
-						message: process.env.NODE_ENV === 'development' 
-							? '請求處理時間過長，請檢查後端服務狀態' 
+						message: process.env.NODE_ENV === 'development'
+							? '請求處理時間過長，請檢查後端服務狀態'
 							: '請求處理時間過長，請壓縮圖片後再試',
 						errors: [],
 					},

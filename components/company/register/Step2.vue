@@ -64,9 +64,6 @@ const handleNextClick = async () => {
 			},
 		};
 
-		console.log('發送的 payload:', payload);
-		console.log('上傳的檔案:', props.uploadedFiles);
-
 		// 3. 使用 useCompanyRegister composable
 		const { register } = useCompanyRegister();
 		const result = await register(payload, props.uploadedFiles);

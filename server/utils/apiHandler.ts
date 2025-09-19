@@ -16,7 +16,6 @@ export const createApiHandler = <T extends EventHandlerRequest, D>(
 
 			// 記錄成功請求
 			const duration = Date.now() - startTime;
-			console.log(`✅ API Success [${requestId}]: ${event.path} - ${duration}ms`);
 
 			return result;
 		}

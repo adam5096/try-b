@@ -10,7 +10,7 @@ export default defineNuxtPlugin(() => {
 
 	// Web Vitals 監控實現
 	const reportWebVitals = (metric: any) => {
-		console.log('Web Vital:', metric);
+		// Web Vital 監控記錄
 
 		// 發送到 Google Analytics 4
 		if (typeof (window as any).gtag !== 'undefined') {
