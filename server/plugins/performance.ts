@@ -21,7 +21,7 @@ export default defineNitroPlugin((nitroApp) => {
 
 		// 記錄 API 請求統計
 		if (event.path.startsWith('/api/')) {
-			console.log(`📊 API Request [${requestId}]: ${event.path} - ${duration}ms`);
+			// API 請求統計記錄
 		}
 	});
 
@@ -32,7 +32,7 @@ export default defineNitroPlugin((nitroApp) => {
 
 		// 記錄完成狀態
 		if (event.node.res.statusCode >= 200 && event.node.res.statusCode < 300) {
-			console.log(`✅ Request completed [${requestId}]: ${event.path} - ${duration}ms`);
+			// 請求完成記錄
 		}
 	});
 });

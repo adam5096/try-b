@@ -27,7 +27,7 @@ export default defineEventHandler((event) => {
 
 		// 記錄認證狀態（僅在開發環境）
 		if (process.env.NODE_ENV === 'development') {
-			console.log(`🔐 Auth middleware [${event.context.requestId}]: ${event.context.authType || 'anonymous'} - ${event.path}`);
+			// 開發環境認證狀態記錄
 		}
 	}
 	catch (error) {
