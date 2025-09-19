@@ -30,12 +30,12 @@ export const createApiHandler = <T extends EventHandlerRequest, D>(
 				console.error(`❌ Server Error [${requestId}]: ${event.path} - ${error.statusCode || 500} - ${duration}ms`);
 			}
 
-			// 統一錯誤處理
+			// 統一錯誤處理 - 資安考量：不洩露內部錯誤詳情
+			const isServerError = !error.statusCode || error.statusCode >= 500;
 			throw createError({
-				statusCode: error?.statusCode || 500,
-				statusMessage: error?.message || 'Internal server error',
+				statusCode: isServerError ? 500 : error.statusCode,
+				statusMessage: isServerError ? '服務暫時無法使用，請稍後再試' : (error?.message || '請求處理失敗'),
 				data: {
-					...error?.data,
 					requestId,
 					timestamp: new Date().toISOString(),
 					duration: `${duration}ms`,
@@ -51,12 +51,14 @@ export const createApiHandler = <T extends EventHandlerRequest, D>(
 export const handleApiError = (error: any, defaultMessage: string, requestId?: string) => {
 	const trackingId = requestId || crypto.randomUUID();
 
-	if (error?.statusCode) {
+	// 資安考量：統一處理 5xx 錯誤，不洩露內部錯誤詳情
+	const isServerError = !error?.statusCode || error.statusCode >= 500;
+	
+	if (error?.statusCode && !isServerError) {
 		throw createError({
 			statusCode: error.statusCode,
 			statusMessage: error.statusMessage || defaultMessage,
 			data: {
-				...error.data,
 				requestId: trackingId,
 				timestamp: new Date().toISOString(),
 			},
@@ -65,7 +67,7 @@ export const handleApiError = (error: any, defaultMessage: string, requestId?: s
 
 	throw createError({
 		statusCode: 500,
-		statusMessage: defaultMessage,
+		statusMessage: '服務暫時無法使用，請稍後再試',
 		data: {
 			requestId: trackingId,
 			timestamp: new Date().toISOString(),

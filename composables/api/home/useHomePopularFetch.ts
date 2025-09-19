@@ -65,6 +65,16 @@ export function useHomePopularFetch() {
 						: [],
 				};
 			},
+			// 資安考量：統一錯誤處理，不洩露 API endpoint 詳情
+			onResponseError({ response }) {
+				// 將所有 5xx 錯誤統一處理
+				if (response.status >= 500) {
+					throw createError({
+						statusCode: 500,
+						statusMessage: '服務暫時無法使用，請稍後再試',
+					});
+				}
+			},
 		},
 	);
 
