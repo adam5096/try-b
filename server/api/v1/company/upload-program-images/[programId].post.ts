@@ -36,7 +36,8 @@ export default createApiHandler(async (event) => {
 
 		console.log('✅ 後端圖片上傳成功:', data);
 		return data;
-	} catch (error) {
+	}
+	catch (error) {
 		console.error('❌ 後端圖片上傳失敗:', error);
 		throw error;
 	}

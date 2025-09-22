@@ -26,39 +26,39 @@ const formRef = ref();
 const rules = reactive({
 	name: [
 		{ required: true, message: '請輸入體驗名稱', trigger: 'blur' },
-		{ max: 10, message: '體驗名稱最多10個字', trigger: 'blur' }
+		{ max: 10, message: '體驗名稱最多10個字', trigger: 'blur' },
 	],
 	intro: [
-		{ required: true, message: '請輸入體驗介紹', trigger: 'blur' }
+		{ required: true, message: '請輸入體驗介紹', trigger: 'blur' },
 	],
 	industry_id: [
-		{ required: true, message: '請選擇產業類別', trigger: 'change' }
+		{ required: true, message: '請選擇產業類別', trigger: 'change' },
 	],
 	job_title_id: [
-		{ required: true, message: '請選擇職務類別', trigger: 'change' }
+		{ required: true, message: '請選擇職務類別', trigger: 'change' },
 	],
 	address: [
-		{ required: true, message: '請輸入體驗地址', trigger: 'blur' }
+		{ required: true, message: '請輸入體驗地址', trigger: 'blur' },
 	],
 	contact_name: [
-		{ required: true, message: '請輸入聯絡人姓名', trigger: 'blur' }
+		{ required: true, message: '請輸入聯絡人姓名', trigger: 'blur' },
 	],
 	contact_phone: [
-		{ required: true, message: '請輸入聯絡電話', trigger: 'blur' }
+		{ required: true, message: '請輸入聯絡電話', trigger: 'blur' },
 	],
 	contact_email: [
 		{ required: true, message: '請輸入聯絡信箱', trigger: 'blur' },
-		{ type: 'email' as const, message: '請輸入正確的電子信箱格式', trigger: 'blur' }
+		{ type: 'email' as const, message: '請輸入正確的電子信箱格式', trigger: 'blur' },
 	],
 	publish_start_date: [
-		{ required: true, message: '請選擇體驗刊登開始日期', trigger: 'change' }
+		{ required: true, message: '請選擇體驗刊登開始日期', trigger: 'change' },
 	],
 	program_start_date: [
-		{ required: true, message: '請選擇計畫開始日期', trigger: 'change' }
+		{ required: true, message: '請選擇計畫開始日期', trigger: 'change' },
 	],
 	program_end_date: [
-		{ required: true, message: '請選擇計畫結束日期', trigger: 'change' }
-	]
+		{ required: true, message: '請選擇計畫結束日期', trigger: 'change' },
+	],
 });
 
 const form = ref<CreateProgramPayload>({
@@ -197,18 +197,18 @@ async function handleImageUploadInBackground(programId: number, files: File[]) {
 
 		// 使用 Promise.race 來處理超時
 		const result = await Promise.race([uploadPromise, timeoutPromise]);
-		
+
 		// 上傳成功，重新抓取程式列表
 		await programStore.fetchPrograms();
-		
+
 		ElNotification({
 			title: '上傳完成',
 			message: '圖片已成功上傳並更新！',
 			type: 'success',
 			duration: 6000, // 延長到 6 秒
 		});
-	} catch (error) {
-		
+	}
+	catch (error) {
 		// 根據錯誤類型顯示不同的通知
 		if (error instanceof Error && error.message === '上傳超時') {
 			ElNotification({
@@ -217,14 +217,16 @@ async function handleImageUploadInBackground(programId: number, files: File[]) {
 				type: 'warning',
 				duration: 8000, // 延長到 8 秒
 			});
-		} else if (error instanceof Error && (error.message.includes('502') || error.message.includes('Bad Gateway'))) {
+		}
+		else if (error instanceof Error && (error.message.includes('502') || error.message.includes('Bad Gateway'))) {
 			ElNotification({
 				title: '圖片伺服器維護中',
 				message: '圖片上傳服務暫時維護中，計畫已建立完成，圖片將在服務恢復後自動上傳。',
 				type: 'warning',
 				duration: 10000, // 延長到 10 秒
 			});
-		} else {
+		}
+		else {
 			ElNotification({
 				title: '上傳失敗',
 				message: '圖片上傳失敗，請稍後手動重新上傳。',
@@ -252,11 +254,12 @@ async function handleSubmit() {
 	if (positionId) { form.value.job_title_id = positionId; }
 
 	// 使用 Element Plus 表單驗證
-	if (!formRef.value) return;
-	
+	if (!formRef.value) { return; }
+
 	try {
 		await formRef.value.validate();
-	} catch (error) {
+	}
+	catch (error) {
 		// 驗證失敗，Element Plus 會自動顯示錯誤訊息
 		return;
 	}
@@ -276,9 +279,9 @@ async function handleSubmit() {
 		}
 
 		// 顯示計畫建立成功的通知
-		ElNotification({ 
-			title: '成功', 
-			message: '體驗計畫已建立完成！', 
+		ElNotification({
+			title: '成功',
+			message: '體驗計畫已建立完成！',
 			type: 'success',
 			duration: 5000, // 延長到 5 秒
 		});
@@ -287,10 +290,11 @@ async function handleSubmit() {
 		if (uploadFiles.value.length > 0) {
 			// 立即導航到公司首頁，不等待圖片上傳
 			await navigateTo('/company');
-			
+
 			// 在背景處理圖片上傳
 			handleImageUploadInBackground(newProgramId, uploadFiles.value);
-		} else {
+		}
+		else {
 			// 沒有圖片，直接導航
 			await navigateTo('/company');
 		}
@@ -323,13 +327,21 @@ async function handleSubmit() {
 				label-position="top"
 				@submit.prevent="handleSubmit"
 			>
-				<el-form-item label="體驗名稱 (最多10個字)" prop="name" required>
+				<el-form-item
+					label="體驗名稱 (最多10個字)"
+					prop="name"
+					required
+				>
 					<el-input
 						v-model="form.name"
 						placeholder="請輸入體驗計畫的正式名稱"
 					/>
 				</el-form-item>
-				<el-form-item label="體驗介紹" prop="intro" required>
+				<el-form-item
+					label="體驗介紹"
+					prop="intro"
+					required
+				>
 					<el-input
 						v-model="form.intro"
 						type="textarea"
@@ -344,7 +356,11 @@ async function handleSubmit() {
 						:sm="24"
 						:md="12"
 					>
-						<el-form-item label="產業類別" prop="industry_id" required>
+						<el-form-item
+							label="產業類別"
+							prop="industry_id"
+							required
+						>
 							<el-select
 								v-model="selectedIndustryTitle"
 								placeholder="請選擇產業類別"
@@ -370,7 +386,11 @@ async function handleSubmit() {
 						:sm="24"
 						:md="12"
 					>
-						<el-form-item label="職務類別" prop="job_title_id" required>
+						<el-form-item
+							label="職務類別"
+							prop="job_title_id"
+							required
+						>
 							<el-select
 								v-model="selectedPositionTitle"
 								placeholder="請選擇職務類別"
@@ -393,7 +413,11 @@ async function handleSubmit() {
 					</el-col>
 				</el-row>
 
-				<el-form-item label="體驗地址" prop="address" required>
+				<el-form-item
+					label="體驗地址"
+					prop="address"
+					required
+				>
 					<el-input
 						v-model="form.address"
 						placeholder="請輸入體驗地點的完整地址"
@@ -406,7 +430,11 @@ async function handleSubmit() {
 						:sm="24"
 						:md="12"
 					>
-						<el-form-item label="聯絡人" prop="contact_name" required>
+						<el-form-item
+							label="聯絡人"
+							prop="contact_name"
+							required
+						>
 							<el-input
 								v-model="form.contact_name"
 								placeholder="請輸入聯絡人姓名"
@@ -418,7 +446,11 @@ async function handleSubmit() {
 						:sm="24"
 						:md="12"
 					>
-						<el-form-item label="電話" prop="contact_phone" required>
+						<el-form-item
+							label="電話"
+							prop="contact_phone"
+							required
+						>
 							<el-input
 								v-model="form.contact_phone"
 								placeholder="請輸入聯絡電話"
@@ -427,7 +459,11 @@ async function handleSubmit() {
 					</el-col>
 				</el-row>
 
-				<el-form-item label="聯絡信箱" prop="contact_email" required>
+				<el-form-item
+					label="聯絡信箱"
+					prop="contact_email"
+					required
+				>
 					<el-input
 						v-model="form.contact_email"
 						placeholder="請輸入聯絡信箱"
@@ -482,7 +518,11 @@ async function handleSubmit() {
 									style="width: 100%"
 								/>
 							</el-form-item>
-							<el-form-item label="體驗刊登開始日期" prop="publish_start_date" required>
+							<el-form-item
+								label="體驗刊登開始日期"
+								prop="publish_start_date"
+								required
+							>
 								<el-date-picker
 									v-model="form.publish_start_date"
 									type="date"
@@ -499,7 +539,11 @@ async function handleSubmit() {
 									style="width: 100%"
 								/>
 							</el-form-item>
-							<el-form-item label="計畫開始日期" prop="program_start_date" required>
+							<el-form-item
+								label="計畫開始日期"
+								prop="program_start_date"
+								required
+							>
 								<el-date-picker
 									v-model="form.program_start_date"
 									type="date"
@@ -509,7 +553,11 @@ async function handleSubmit() {
 									style="width: 100%"
 								/>
 							</el-form-item>
-							<el-form-item label="計畫結束日期" prop="program_end_date" required>
+							<el-form-item
+								label="計畫結束日期"
+								prop="program_end_date"
+								required
+							>
 								<el-date-picker
 									v-model="form.program_end_date"
 									type="date"

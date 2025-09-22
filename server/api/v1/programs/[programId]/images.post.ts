@@ -41,9 +41,10 @@ export default defineEventHandler(async (event) => {
 
 		console.log('✅ 後端圖片上傳成功:', data);
 		return data;
-	} catch (error: any) {
+	}
+	catch (error: any) {
 		console.error('❌ 後端圖片上傳失敗:', error);
-		
+
 		// 提供更詳細的錯誤資訊
 		if (error.statusCode === 502) {
 			throw createError({
@@ -55,7 +56,8 @@ export default defineEventHandler(async (event) => {
 					programId,
 				},
 			});
-		} else if (error.statusCode === 500) {
+		}
+		else if (error.statusCode === 500) {
 			throw createError({
 				statusCode: 500,
 				statusMessage: '圖片上傳服務內部錯誤，請稍後再試',
@@ -64,7 +66,8 @@ export default defineEventHandler(async (event) => {
 					programId,
 				},
 			});
-		} else {
+		}
+		else {
 			// 其他錯誤直接拋出
 			throw createError({
 				statusCode: error.statusCode || 500,
