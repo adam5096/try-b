@@ -110,6 +110,8 @@ onBeforeUnmount(() => {
 								src="/img/home/try-beta-logo.webp"
 								alt="TRY Beta 網站商標"
 								class="h-full w-full object-contain"
+								width="252"
+								height="62"
 							/>
 						</div>
 					</NuxtLink>

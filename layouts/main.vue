@@ -71,6 +71,8 @@ const socialLinks = ref([
 								src="/img/home/try-beta-logo.webp"
 								alt="TRY Beta 網站商標"
 								class="h-full w-full object-contain"
+								width="252"
+								height="62"
 							/>
 						</div>
 					</NuxtLink>
@@ -167,6 +169,8 @@ const socialLinks = ref([
 					src="/img/home/home-worker-bg.webp"
 					alt="Footer background"
 					class="w-full h-full object-cover object-center"
+					width="1920"
+					height="1280"
 				/>
 			</div>
 
@@ -188,6 +192,8 @@ const socialLinks = ref([
 								src="/img/home/try-beta-logo.webp"
 								alt="TRYB Logo"
 								class="w-40 h-auto filter-to-white"
+								width="160"
+								height="40"
 							/>
 						</div>
 						<div class="mt-6 flex gap-6">
