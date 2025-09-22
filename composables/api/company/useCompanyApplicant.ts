@@ -13,7 +13,7 @@ export const useCompanyApplicant = (
 		// 當 companyId 為空時，返回 null，不發送請求
 		if (!resolvedCompanyId || !resolvedProgramId || !resolvedApplicantId) { return null; }
 
-		return `/api/v1/company/applicant/${resolvedCompanyId}/${resolvedProgramId}/${resolvedApplicantId}`;
+		return `/api/v1/company/${resolvedCompanyId}/programs/${resolvedProgramId}/applications/${resolvedApplicantId}`;
 	});
 
 	return useFetch<ApplicantDetail>(() => url.value || '', {
