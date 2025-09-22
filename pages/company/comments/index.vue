@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, watch } from 'vue';
 import { UserFilled } from '@element-plus/icons-vue';
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 import { useCompanyCommentReviews } from '~/composables/api/company/useCompanyCommentReviews';
@@ -9,12 +9,8 @@ definePageMeta({
 	name: 'company-comments',
 });
 
-const filters = reactive({
-	programName: '',
-	rating: 'all',
-	dateSort: 'desc',
-	dateRange: '',
-});
+const route = useRoute();
+const router = useRouter();
 
 const comments = ref<any[]>([]);
 const loading = ref(true);
@@ -57,12 +53,7 @@ async function loadData() {
 				id: item.Id,
 				author: {
 					name: item.ParticipantName,
-					// 直接採用後端 Headshot（只處理空白字元編碼）
-					avatar: (() => {
-						const raw = item.Headshot || '';
-						if (!raw) { return ''; }
-						return encodeURI(raw);
-					})(),
+					avatar: item.Headshot || '',
 					role: item.Identity?.title || '—',
 					age: item.ParticipantAge,
 				},
@@ -87,6 +78,7 @@ function handlePageChange(page: number) {
 }
 
 onMounted(() => {
+	// 第一時間載入數據
 	loadData();
 });
 </script>
@@ -98,77 +90,6 @@ onMounted(() => {
 		<h1 class="text-2xl font-bold">
 			體驗者評價管理
 		</h1>
-
-		<el-card>
-			<div class="flex flex-wrap items-end gap-x-6 gap-y-4">
-				<div
-					class="flex-grow"
-					style="min-width: 260px; max-width: 720px; flex-basis: 40%;"
-				>
-					<el-input
-						id="programName"
-						v-model="filters.programName"
-						placeholder="搜尋計畫名稱..."
-					/>
-				</div>
-				<div>
-					<el-select
-						id="rating"
-						v-model="filters.rating"
-						placeholder="全部分數"
-						style="width: 160px"
-					>
-						<el-option
-							label="全部分數"
-							value="all"
-						/>
-						<el-option
-							label="5 星"
-							value="5"
-						/>
-						<el-option
-							label="4 星"
-							value="4"
-						/>
-						<el-option
-							label="3 星"
-							value="3"
-						/>
-						<el-option
-							label="2 星"
-							value="2"
-						/>
-						<el-option
-							label="1 星"
-							value="1"
-						/>
-					</el-select>
-				</div>
-				<div>
-					<div class="flex items-center gap-2">
-						<el-select
-							id="dateSort"
-							v-model="filters.dateSort"
-							style="width: 140px"
-						>
-							<el-option
-								label="日期:新到舊"
-								value="desc"
-							/>
-							<el-option
-								label="日期:舊到新"
-								value="asc"
-							/>
-						</el-select>
-					</div>
-				</div>
-				<div>
-					<el-button type="primary">
-						篩選
-					</el-button>
-				</div>
-			</div>
-		</el-card>
 
 		<el-card>
 			<template #header>
@@ -307,3 +228,4 @@ onMounted(() => {
 		</el-card>
 	</div>
 </template>
+
