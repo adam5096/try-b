@@ -58,6 +58,8 @@ async function handleLogin() {
 				src="/img/home/home-worker-bg.webp"
 				alt="Login background"
 				class="h-full w-full object-cover"
+				width="1920"
+				height="1280"
 				sizes="sm:0 md:50vw lg:50vw"
 				format="webp"
 				quality="80"
