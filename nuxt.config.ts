@@ -145,7 +145,7 @@ export default defineNuxtConfig({
 		// 圖片格式和品質設定
 		format: ['webp'],
 		quality: 80,
-		// 修正：統一使用 Vercel 提供者，避免 IPX 在預渲染時的問題
+		// 修正：統一使用 vercel 提供者，確保在 Vercel 部署中正常工作
 		provider: 'vercel',
 		// 允許優化的外部域名
 		domains: ['trybeta.rocket-coding.com', 'images.unsplash.com', 'i.imgur.com'],
@@ -171,11 +171,16 @@ export default defineNuxtConfig({
 			'1920': 1920,
 			'3840': 3840,
 		},
-		// 添加 Vercel 特定配置
+		// Vercel 圖片優化配置
 		vercel: {
-			// 確保在 Vercel 環境下正確處理圖片
-			baseURL: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
+			// 使用 Vercel 的圖片優化服務
+			baseURL: undefined, // 讓 Vercel 自動處理
 		},
+		// 添加圖片預載入和載入策略
+		preload: true,
+		loading: 'lazy',
+		// 添加 CORS 支援
+		cors: true,
 	},
 
 	// 安全設定 - 開發環境完全關閉安全限制
