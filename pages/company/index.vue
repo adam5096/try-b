@@ -5,8 +5,9 @@ import {
 	Location,
 	User,
 } from '@element-plus/icons-vue';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
+import { useCompanyIndustries } from '~/composables/api/company/useCompanyIndustries';
 import type { Program } from '~/types/company/program';
 
 definePageMeta({
@@ -15,15 +16,82 @@ definePageMeta({
 	ssr: false, // CSR 模式
 });
 
-const searchForm = {
+// 過濾表單狀態
+const searchForm = ref({
 	name: '',
 	industry: '',
-	job_type: '',
 	sort: 'date_desc',
-};
+});
 
+// 狀態標籤篩選
+const activeStatusTab = ref('all');
+
+// 載入狀態
+const isFilterLoading = ref(false);
+
+// Store 和 API
 const programStore = useCompanyProgramStore();
-const programs = computed(() => programStore.programs);
+const { data: industries, pending: industriesLoading } = useCompanyIndustries();
+
+// 基礎資料
+const allPrograms = computed(() => programStore.programs);
+
+// 過濾後的計畫列表
+const filteredPrograms = computed(() => {
+	let filtered = [...allPrograms.value];
+
+	// 名稱搜尋過濾
+	if (searchForm.value.name) {
+		filtered = filtered.filter(program => 
+			program.Name.toLowerCase().includes(searchForm.value.name.toLowerCase())
+		);
+	}
+
+	// 產業類別過濾
+	if (searchForm.value.industry) {
+		filtered = filtered.filter(program => 
+			program.Industry.Id === Number(searchForm.value.industry)
+		);
+	}
+
+
+	// 狀態標籤過濾
+	if (activeStatusTab.value !== 'all') {
+		filtered = filtered.filter(program => {
+			const status = program.Status.Title;
+			switch (activeStatusTab.value) {
+				case 'passed':
+					return status === '已通過';
+				case 'published':
+					return status === '已發布';
+				case 'pending':
+					return status === '待發布';
+				case 'rejected':
+					return status === '已拒絕';
+				case 'reviewing':
+					return status === '審核中';
+				default:
+					return true;
+			}
+		});
+	}
+
+	// 排序
+	if (searchForm.value.sort === 'date_desc') {
+		filtered.sort((a, b) => 
+			new Date(b.PublishStartDate).getTime() - new Date(a.PublishStartDate).getTime()
+		);
+	} else if (searchForm.value.sort === 'date_asc') {
+		filtered.sort((a, b) => 
+			new Date(a.PublishStartDate).getTime() - new Date(b.PublishStartDate).getTime()
+		);
+	}
+
+	return filtered;
+});
+
+// 顯示的計畫列表（使用過濾後的結果）
+const programs = computed(() => filteredPrograms.value);
 
 // SSR 頁面初始化：伺服端先抓列表，加速首屏
 if (import.meta.server) {
@@ -97,6 +165,31 @@ const formatIntroText = (raw: any): string => {
 		.trim();
 };
 
+// 清空過濾器
+const clearFilters = async () => {
+	isFilterLoading.value = true;
+	
+	// 使用 nextTick 確保載入效果可見
+	await nextTick();
+	
+	searchForm.value = {
+		name: '',
+		industry: '',
+		sort: 'date_desc',
+	};
+	activeStatusTab.value = 'all';
+	
+	// 模擬載入時間
+	setTimeout(() => {
+		isFilterLoading.value = false;
+	}, 300);
+};
+
+// 狀態標籤切換
+const handleStatusTabChange = (tabName: string | number) => {
+	activeStatusTab.value = String(tabName);
+};
+
 // 查看詳情（與使用者端交互一致，改導到公司端詳情頁）
 const handleViewDetail = async (program: any) => {
 	const id = program?.Id;
@@ -124,7 +217,7 @@ const handleViewDetail = async (program: any) => {
 			</div>
 
 			<!-- Filters -->
-			<el-card class="mt-4">
+			<el-card class="mt-4" v-loading="isFilterLoading">
 				<el-form label-position="top">
 					<el-row
 						:gutter="12"
@@ -140,7 +233,7 @@ const handleViewDetail = async (program: any) => {
 									v-model="searchForm.name"
 									placeholder="搜尋計畫名稱..."
 									:prefix-icon="Search"
-									style="width: 100%"
+									clearable
 								/>
 							</el-form-item>
 						</el-col>
@@ -153,37 +246,14 @@ const handleViewDetail = async (program: any) => {
 								<el-select
 									v-model="searchForm.industry"
 									placeholder="產業類別"
-									style="width: 100%"
+									clearable
+									:loading="industriesLoading"
 								>
 									<el-option
-										label="資訊科技"
-										value="tech"
-									/>
-									<el-option
-										label="行銷廣告"
-										value="marketing"
-									/>
-								</el-select>
-							</el-form-item>
-						</el-col>
-						<el-col
-							:xs="24"
-							:sm="24"
-							:md="6"
-						>
-							<el-form-item>
-								<el-select
-									v-model="searchForm.job_type"
-									placeholder="職務類別"
-									style="width: 100%"
-								>
-									<el-option
-										label="軟體工程師"
-										value="swe"
-									/>
-									<el-option
-										label="產品設計師"
-										value="pd"
+										v-for="industry in industries"
+										:key="industry.id"
+										:label="industry.title"
+										:value="industry.id.toString()"
 									/>
 								</el-select>
 							</el-form-item>
@@ -197,7 +267,6 @@ const handleViewDetail = async (program: any) => {
 								<el-select
 									v-model="searchForm.sort"
 									placeholder="排序方式"
-									style="width: 100%"
 								>
 									<el-option
 										label="日期：由新到舊"
@@ -210,14 +279,32 @@ const handleViewDetail = async (program: any) => {
 								</el-select>
 							</el-form-item>
 						</el-col>
+						<el-col
+							:xs="24"
+							:sm="24"
+							:md="6"
+						>
+							<el-form-item>
+								<el-button 
+									type="info" 
+									plain 
+									@click="clearFilters"
+									:disabled="isFilterLoading"
+									style="width: 100%"
+								>
+									清空篩選
+								</el-button>
+							</el-form-item>
+						</el-col>
 					</el-row>
 				</el-form>
 			</el-card>
 
 			<!-- Tabs -->
 			<el-tabs
-				model-value="all"
+				v-model="activeStatusTab"
 				class="mt-4"
+				@tab-change="handleStatusTabChange"
 			>
 				<el-tab-pane
 					label="全部計畫"
@@ -299,7 +386,9 @@ const handleViewDetail = async (program: any) => {
 				class="text-center p-8 text-gray-500"
 			>
 				<p class="tracking-wider">
-					目前沒有任何計畫。
+					{{ activeStatusTab === 'all' && !searchForm.name && !searchForm.industry
+						? '目前沒有任何計畫。' 
+						: '目前無符合資料' }}
 				</p>
 			</div>
 			<!-- Real Cards -->
