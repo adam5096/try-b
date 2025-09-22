@@ -140,6 +140,8 @@ const statImages = [
 							class="mt-8 w-40 h-40 object-cover rounded-md"
 							:src="statImages[idx]"
 							alt="stat image"
+							width="160"
+							height="160"
 							format="webp"
 							loading="lazy"
 						/>
