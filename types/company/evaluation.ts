@@ -10,9 +10,9 @@ export interface CompanyEvaluationItem {
 	ParticipantName: string
 	Identity: ParticipantIdentity
 	ParticipantAge: number
-	Headshot?: string
-	ProgramPlanName: string
+	Headshot: string
 	ProgramPlanId: number
+	ProgramPlanName: string
 	Score: number
 	Comment: string
 	EvaluationDate: string
