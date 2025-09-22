@@ -42,22 +42,21 @@ const filteredPrograms = computed(() => {
 
 	// 名稱搜尋過濾
 	if (searchForm.value.name) {
-		filtered = filtered.filter(program => 
-			program.Name.toLowerCase().includes(searchForm.value.name.toLowerCase())
+		filtered = filtered.filter(program =>
+			program.Name.toLowerCase().includes(searchForm.value.name.toLowerCase()),
 		);
 	}
 
 	// 產業類別過濾
 	if (searchForm.value.industry) {
-		filtered = filtered.filter(program => 
-			program.Industry.Id === Number(searchForm.value.industry)
+		filtered = filtered.filter(program =>
+			program.Industry.Id === Number(searchForm.value.industry),
 		);
 	}
 
-
 	// 狀態標籤過濾
 	if (activeStatusTab.value !== 'all') {
-		filtered = filtered.filter(program => {
+		filtered = filtered.filter((program) => {
 			const status = program.Status.Title;
 			switch (activeStatusTab.value) {
 				case 'passed':
@@ -78,12 +77,13 @@ const filteredPrograms = computed(() => {
 
 	// 排序
 	if (searchForm.value.sort === 'date_desc') {
-		filtered.sort((a, b) => 
-			new Date(b.PublishStartDate).getTime() - new Date(a.PublishStartDate).getTime()
+		filtered.sort((a, b) =>
+			new Date(b.PublishStartDate).getTime() - new Date(a.PublishStartDate).getTime(),
 		);
-	} else if (searchForm.value.sort === 'date_asc') {
-		filtered.sort((a, b) => 
-			new Date(a.PublishStartDate).getTime() - new Date(b.PublishStartDate).getTime()
+	}
+	else if (searchForm.value.sort === 'date_asc') {
+		filtered.sort((a, b) =>
+			new Date(a.PublishStartDate).getTime() - new Date(b.PublishStartDate).getTime(),
 		);
 	}
 
@@ -168,17 +168,17 @@ const formatIntroText = (raw: any): string => {
 // 清空過濾器
 const clearFilters = async () => {
 	isFilterLoading.value = true;
-	
+
 	// 使用 nextTick 確保載入效果可見
 	await nextTick();
-	
+
 	searchForm.value = {
 		name: '',
 		industry: '',
 		sort: 'date_desc',
 	};
 	activeStatusTab.value = 'all';
-	
+
 	// 模擬載入時間
 	setTimeout(() => {
 		isFilterLoading.value = false;
@@ -217,7 +217,10 @@ const handleViewDetail = async (program: any) => {
 			</div>
 
 			<!-- Filters -->
-			<el-card class="mt-4" v-loading="isFilterLoading">
+			<el-card
+				v-loading="isFilterLoading"
+				class="mt-4"
+			>
 				<el-form label-position="top">
 					<el-row
 						:gutter="12"
@@ -285,12 +288,12 @@ const handleViewDetail = async (program: any) => {
 							:md="6"
 						>
 							<el-form-item>
-								<el-button 
-									type="info" 
-									plain 
-									@click="clearFilters"
+								<el-button
+									type="info"
+									plain
 									:disabled="isFilterLoading"
 									style="width: 100%"
+									@click="clearFilters"
 								>
 									清空篩選
 								</el-button>
@@ -387,7 +390,7 @@ const handleViewDetail = async (program: any) => {
 			>
 				<p class="tracking-wider">
 					{{ activeStatusTab === 'all' && !searchForm.name && !searchForm.industry
-						? '目前沒有任何計畫。' 
+						? '目前沒有任何計畫。'
 						: '目前無符合資料' }}
 				</p>
 			</div>

@@ -1,6 +1,6 @@
 /**
  * 公司端計畫列表過濾功能測試
- * 
+ *
  * 測試範圍：
  * 1. 基本過濾功能（名稱搜尋、產業類別、職務類別）
  * 2. 狀態標籤篩選
@@ -103,36 +103,35 @@ describe('公司端計畫列表過濾功能', () => {
 	describe('基本過濾功能', () => {
 		it('應該能根據計畫名稱進行搜尋', () => {
 			const searchTerm = '軟體';
-			const filtered = mockPrograms.filter(program => 
-				program.Name.includes(searchTerm)
+			const filtered = mockPrograms.filter(program =>
+				program.Name.includes(searchTerm),
 			);
-			
+
 			expect(filtered).toHaveLength(1);
 			expect(filtered[0].Name).toBe('軟體工程師體驗計畫');
 		});
 
 		it('應該能根據產業類別進行過濾', () => {
 			const industryId = 10; // 資訊科技
-			const filtered = mockPrograms.filter(program => 
-				program.Industry.Id === industryId
+			const filtered = mockPrograms.filter(program =>
+				program.Industry.Id === industryId,
 			);
-			
+
 			expect(filtered).toHaveLength(1);
 			expect(filtered[0].Industry.Title).toBe('資訊科技');
 		});
-
 
 		it('應該支援多個過濾條件的 AND 組合', () => {
 			const filters = {
 				name: '行銷',
 				industryId: 8, // 行銷/傳播
 			};
-			
-			const filtered = mockPrograms.filter(program => 
-				program.Name.includes(filters.name) &&
-				program.Industry.Id === filters.industryId
+
+			const filtered = mockPrograms.filter(program =>
+				program.Name.includes(filters.name)
+				&& program.Industry.Id === filters.industryId,
 			);
-			
+
 			expect(filtered).toHaveLength(1);
 			expect(filtered[0].Name).toBe('行銷專員實習計畫');
 		});
@@ -141,20 +140,20 @@ describe('公司端計畫列表過濾功能', () => {
 	describe('狀態標籤篩選', () => {
 		it('應該能根據審核狀態進行篩選 - 已通過', () => {
 			const statusFilter = 'passed'; // 已通過
-			const filtered = mockPrograms.filter(program => 
-				program.Status.Title === '已通過'
+			const filtered = mockPrograms.filter(program =>
+				program.Status.Title === '已通過',
 			);
-			
+
 			expect(filtered).toHaveLength(1);
 			expect(filtered[0].Status.Title).toBe('已通過');
 		});
 
 		it('應該能根據審核狀態進行篩選 - 審核中', () => {
 			const statusFilter = 'reviewing'; // 審核中
-			const filtered = mockPrograms.filter(program => 
-				program.Status.Title === '審核中'
+			const filtered = mockPrograms.filter(program =>
+				program.Status.Title === '審核中',
 			);
-			
+
 			expect(filtered).toHaveLength(1);
 			expect(filtered[0].Status.Title).toBe('審核中');
 		});
@@ -162,26 +161,26 @@ describe('公司端計畫列表過濾功能', () => {
 		it('應該支援全部計畫狀態顯示', () => {
 			const statusFilter = 'all'; // 全部計畫
 			const filtered = mockPrograms; // 不進行狀態過濾
-			
+
 			expect(filtered).toHaveLength(2);
 		});
 	});
 
 	describe('排序功能', () => {
 		it('應該支援按日期由新到舊排序', () => {
-			const sorted = [...mockPrograms].sort((a, b) => 
-				new Date(b.PublishStartDate).getTime() - new Date(a.PublishStartDate).getTime()
+			const sorted = [...mockPrograms].sort((a, b) =>
+				new Date(b.PublishStartDate).getTime() - new Date(a.PublishStartDate).getTime(),
 			);
-			
+
 			expect(sorted[0].Name).toBe('行銷專員實習計畫'); // 2024-02-01
 			expect(sorted[1].Name).toBe('軟體工程師體驗計畫'); // 2024-01-01
 		});
 
 		it('應該支援按日期由舊到新排序', () => {
-			const sorted = [...mockPrograms].sort((a, b) => 
-				new Date(a.PublishStartDate).getTime() - new Date(b.PublishStartDate).getTime()
+			const sorted = [...mockPrograms].sort((a, b) =>
+				new Date(a.PublishStartDate).getTime() - new Date(b.PublishStartDate).getTime(),
 			);
-			
+
 			expect(sorted[0].Name).toBe('軟體工程師體驗計畫'); // 2024-01-01
 			expect(sorted[1].Name).toBe('行銷專員實習計畫'); // 2024-02-01
 		});
@@ -190,19 +189,19 @@ describe('公司端計畫列表過濾功能', () => {
 	describe('錯誤處理', () => {
 		it('應該處理空搜尋結果', () => {
 			const searchTerm = '不存在的計畫';
-			const filtered = mockPrograms.filter(program => 
-				program.Name.includes(searchTerm)
+			const filtered = mockPrograms.filter(program =>
+				program.Name.includes(searchTerm),
 			);
-			
+
 			expect(filtered).toHaveLength(0);
 		});
 
 		it('應該處理無效的過濾條件', () => {
 			const invalidIndustryId = 999;
-			const filtered = mockPrograms.filter(program => 
-				program.Industry.Id === invalidIndustryId
+			const filtered = mockPrograms.filter(program =>
+				program.Industry.Id === invalidIndustryId,
 			);
-			
+
 			expect(filtered).toHaveLength(0);
 		});
 
@@ -210,7 +209,7 @@ describe('公司端計畫列表過濾功能', () => {
 			// 模擬 API 錯誤
 			const mockError = new Error('API 載入失敗');
 			vi.fn(() => Promise.reject(mockError));
-			
+
 			// 這裡應該顯示錯誤訊息
 			expect(mockError.message).toBe('API 載入失敗');
 		});
@@ -225,7 +224,7 @@ describe('公司端計畫列表過濾功能', () => {
 		it('應該在過濾結果為空時顯示適當訊息', () => {
 			const filteredPrograms: Program[] = [];
 			const emptyMessage = filteredPrograms.length === 0 ? '目前無符合資料' : '';
-			
+
 			expect(emptyMessage).toBe('目前無符合資料');
 		});
 
@@ -235,14 +234,14 @@ describe('公司端計畫列表過濾功能', () => {
 				industry: 'tech',
 				job_type: 'swe',
 			});
-			
+
 			// 模擬清空過濾器
 			filters.value = {
 				name: '',
 				industry: '',
 				job_type: '',
 			};
-			
+
 			expect(filters.value.name).toBe('');
 			expect(filters.value.industry).toBe('');
 			expect(filters.value.job_type).toBe('');
