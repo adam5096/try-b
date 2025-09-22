@@ -45,15 +45,15 @@ export interface CompanyContact {
 }
 
 export interface CompanyProfile {
-	name: string
-	industry_id: number
-	tax_id_num: string
-	address: string
-	website: string
-	intro: string
-	scale_id: number
-	account: string
-	email: string
+	Name: string
+	IndustryId: number
+	TaxIdNum: string
+	Address: string
+	Website: string
+	Intro: string
+	ScaleId: number
+	Account: string
+	Email: string
 	CompanyContact: CompanyContact
 	CompanyImg: CompanyImg[]
 }
