@@ -11,19 +11,34 @@ export default createApiHandler(async (event) => {
 		});
 	}
 
-	// 讀取原始請求體，而不是解析後的 FormData
-	const body = await readRawBody(event);
+	console.log('📤 後端收到圖片上傳請求，programId:', programId);
+
+	// 讀取 FormData 請求體
+	const formData = await readFormData(event);
 
 	// 使用統一的認證 headers 處理
 	const headers = createAuthHeaders(event, 'companyAuthToken');
 
-	// 透過 Nitro 的 proxy 設定轉發到真實後端
-	// 規則：必須包含 api 並使用 /api-proxy 進行代理
-	const data = await event.$fetch(`/api-proxy/api/v1/programs/${programId}/images`, {
-		method: 'POST',
-		headers,
-		body,
-	});
+	try {
+		// 根據規格書，正確的 API 路徑應該是 /api/v1/programs/{program_id}/images
+		// 透過 Nitro 的 proxy 設定轉發到真實後端
+		const data = await event.$fetch(`/api-proxy/api/v1/programs/${programId}/images`, {
+			method: 'POST',
+			headers: {
+				...headers,
+				// 確保 Content-Type 正確設定
+				'Content-Type': 'multipart/form-data',
+			},
+			body: formData,
+			// 設定較長的超時時間
+			timeout: 60000, // 60 秒
+		});
 
-	return data;
+		console.log('✅ 後端圖片上傳成功:', data);
+		return data;
+	}
+	catch (error) {
+		console.error('❌ 後端圖片上傳失敗:', error);
+		throw error;
+	}
 });
