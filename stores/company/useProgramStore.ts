@@ -70,20 +70,20 @@ export const useCompanyProgramStore = defineStore('company-program', () => {
 		}
 
 		try {
-			const { data: responseData } = await useFetch<ProgramCreationResponse>(`/v1/company/programs/${authStore.companyId}`, {
+			const responseData = await $fetch<ProgramCreationResponse>(`/api/v1/company/programs/${authStore.companyId}`, {
 				method: 'POST',
-				baseURL: '/api',
 				body: payload,
 			});
 
-			if (responseData.value) {
+			if (responseData) {
 				await fetchPrograms();
-				return { success: true, data: responseData.value };
+				return { success: true, data: responseData };
 			}
 
 			return { success: false, error: new Error('No data returned') };
 		}
 		catch (fetchError: unknown) {
+			console.error('❌ 建立計畫請求失敗:', fetchError);
 			return { success: false, error: fetchError };
 		}
 	}
