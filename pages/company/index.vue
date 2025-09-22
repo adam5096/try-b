@@ -50,7 +50,7 @@ const filteredPrograms = computed(() => {
 
 	// 產業類別過濾
 	if (searchForm.value.industry) {
-		filtered = filtered.filter(program => {
+		filtered = filtered.filter((program) => {
 			// 安全檢查：確保 Industry 物件存在
 			if (!program.Industry || !program.Industry.Id) {
 				return false;
@@ -66,7 +66,7 @@ const filteredPrograms = computed(() => {
 			if (!program.Status || !program.Status.Title) {
 				return false; // 如果沒有狀態資訊，則不顯示在篩選結果中
 			}
-			
+
 			const status = program.Status.Title;
 			switch (activeStatusTab.value) {
 				case 'passed':

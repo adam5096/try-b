@@ -1,8 +1,8 @@
 <template>
 	<div
+		v-loading="!isLoaded"
 		class="relative overflow-hidden"
 		:class="wrapperClass"
-		v-loading="!isLoaded"
 		element-loading-text="載入中..."
 		element-loading-background="rgba(255, 255, 255, 0.8)"
 		element-loading-spinner="el-icon-loading"

@@ -212,16 +212,16 @@ describe('公司端計畫列表過濾功能', () => {
 					...mockPrograms[0],
 					Id: 999,
 					Status: null, // 缺少狀態資訊
-				}
+				},
 			];
-			
-			const filtered = programsWithMissingStatus.filter(program => {
+
+			const filtered = programsWithMissingStatus.filter((program) => {
 				if (!program.Status || !program.Status.Title) {
 					return false;
 				}
 				return program.Status.Title === '已通過';
 			});
-			
+
 			expect(filtered).toHaveLength(1);
 			expect(filtered[0].Id).toBe(1); // 只有原本的計畫通過篩選
 		});
@@ -237,18 +237,18 @@ describe('公司端計畫列表過濾功能', () => {
 					...mockPrograms[1],
 					Id: 101,
 					Status: { Id: 1, Title: '已發布' },
-				}
+				},
 			];
-			
+
 			// 測試已發布狀態的過濾
-			const filtered = programsWithPublishedStatus.filter(program => {
+			const filtered = programsWithPublishedStatus.filter((program) => {
 				if (!program.Status || !program.Status.Title) {
 					return false;
 				}
 				const status = program.Status.Title;
 				return status === '已發布';
 			});
-			
+
 			expect(filtered).toHaveLength(2);
 			expect(filtered[0].Id).toBe(100);
 			expect(filtered[1].Id).toBe(101);
@@ -261,16 +261,16 @@ describe('公司端計畫列表過濾功能', () => {
 					...mockPrograms[0],
 					Id: 999,
 					Industry: null, // 缺少產業資訊
-				}
+				},
 			];
-			
-			const filtered = programsWithMissingIndustry.filter(program => {
+
+			const filtered = programsWithMissingIndustry.filter((program) => {
 				if (!program.Industry || !program.Industry.Id) {
 					return false;
 				}
 				return program.Industry.Id === 10;
 			});
-			
+
 			expect(filtered).toHaveLength(1);
 			expect(filtered[0].Id).toBe(1); // 只有原本的計畫通過篩選
 		});
