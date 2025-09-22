@@ -194,7 +194,7 @@ async function handleLogin() {
 						<span v-else>登入</span>
 					</button>
 
-					<div class="mt-6 text-center">
+					<!-- <div class="mt-6 text-center">
 						<p class="text-sm text-gray-600">
 							還沒有帳戶？
 							<NuxtLink
@@ -204,7 +204,7 @@ async function handleLogin() {
 								立即註冊
 							</NuxtLink>
 						</p>
-					</div>
+					</div> -->
 				</form>
 			</div>
 		</div>
