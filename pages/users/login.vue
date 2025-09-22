@@ -181,12 +181,12 @@ async function handleLogin() {
 					</button>
 				</div>
 			</form>
-			<div class="relative">
+			<!-- <div class="relative">
 				<div
 					class="absolute inset-0 flex items-center"
 					aria-hidden="true"
 				>
-					<div class="w-full border-t border-gray-300" />
+					<div class="w-full border-t border-gray-300"></div>
 				</div>
 				<div class="relative flex justify-center text-sm">
 					<span class="bg-gray-50 px-2 text-gray-500">或使用其他方式登入</span>
@@ -203,7 +203,7 @@ async function handleLogin() {
 			<div class="text-center text-sm">
 				還沒有帳戶？
 				<NuxtLink :to="{ name: 'user-register' }">立即註冊</NuxtLink>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </template>
