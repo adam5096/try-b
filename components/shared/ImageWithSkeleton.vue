@@ -2,31 +2,21 @@
 	<div
 		class="relative overflow-hidden"
 		:class="wrapperClass"
+		v-loading="!isLoaded"
+		element-loading-text="載入中..."
+		element-loading-background="rgba(255, 255, 255, 0.8)"
+		element-loading-spinner="el-icon-loading"
 	>
-		<el-skeleton
-			:loading="!isLoaded"
-			animated
-			:throttle="{ leading: 400, trailing: 300, initVal: true }"
+		<img
+			ref="imgEl"
+			:src="currentSrc"
+			:alt="alt || 'image'"
+			loading="lazy"
+			decoding="async"
+			:class="imgClass"
+			@load="handleLoad"
+			@error="handleError"
 		>
-			<template #template>
-				<el-skeleton-item
-					variant="image"
-					:style="skeletonStyle"
-				/>
-			</template>
-			<template #default>
-				<img
-					ref="imgEl"
-					:src="currentSrc"
-					:alt="alt || 'image'"
-					loading="lazy"
-					decoding="async"
-					:class="['transition-opacity duration-500', imgClass, isLoaded ? 'opacity-100' : 'opacity-0']"
-					@load="handleLoad"
-					@error="handleError"
-				>
-			</template>
-		</el-skeleton>
 	</div>
 </template>
 
@@ -39,7 +29,6 @@ interface Props {
 	fallbackSrc?: string
 	imgClass?: string // classes applied to <img>
 	wrapperClass?: string // classes applied to wrapper
-	skeletonHeightClass?: string // height class for skeleton image area
 	fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside'
 }
 
@@ -49,7 +38,6 @@ const props = withDefaults(defineProps<Props>(), {
 	fallbackSrc: '/img/home/home-worker-bg.webp',
 	imgClass: 'w-full h-48 object-cover',
 	wrapperClass: '',
-	skeletonHeightClass: 'h-48',
 	fit: 'cover',
 });
 
@@ -69,14 +57,7 @@ const normalizeUrl = (u?: string | null) => {
 const currentSrc = ref<string>(normalizeUrl(props.src) || props.fallbackSrc);
 const imgEl = ref<HTMLImageElement | null>(null);
 
-const skeletonStyle = computed(() => {
-	// 將傳入的高度類別轉為對應的 style（骨架用 inline style 更穩定）
-	// 只處理常見的 h-48 / h-full；其餘交給外層控制
-	if (props.skeletonHeightClass === 'h-full') {
-		return 'width: 100%; height: 100%';
-	}
-	return 'width: 100%; height: 12rem'; // h-48 約 12rem
-});
+// 移除 skeleton 相關邏輯，改用 v-loading
 
 watch(
 	() => props.src,
@@ -88,25 +69,28 @@ watch(
 );
 
 const handleLoad = () => {
+	// 圖片載入完成，移除 loading 遮罩
 	isLoaded.value = true;
 };
 
 const handleError = () => {
-	// 若原圖失敗，嘗試切換到 fallback，再等待 onload 觸發
+	// 若原圖失敗，嘗試切換到 fallback
 	if (currentSrc.value !== props.fallbackSrc) {
 		currentSrc.value = props.fallbackSrc;
+		isLoaded.value = false; // 重置載入狀態，重新顯示 loading
 	}
 	else {
-		// fallback 也失敗時，直接顯示占位並結束 loading
+		// fallback 也失敗時，結束 loading 狀態
 		isLoaded.value = true;
 	}
 };
 
-// 若圖片已在快取中（complete=true 且 naturalWidth>0），掛載後立即隱藏骨架
+// 若圖片已在快取中，立即移除 loading 遮罩
 onMounted(async () => {
 	await nextTick();
 	const el = imgEl.value as HTMLImageElement | null;
 	if (el && el.complete && el.naturalWidth > 0) {
+		// 圖片已在快取中，立即移除 loading
 		isLoaded.value = true;
 	}
 });

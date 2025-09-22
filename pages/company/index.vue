@@ -9,6 +9,7 @@ import { computed, ref, watch } from 'vue';
 import { useCompanyProgramStore } from '~/stores/company/useProgramStore';
 import { useCompanyIndustries } from '~/composables/api/company/useCompanyIndustries';
 import type { Program } from '~/types/company/program';
+import ImageWithSkeleton from '~/components/shared/ImageWithSkeleton.vue';
 
 definePageMeta({
 	layout: 'company',
@@ -49,14 +50,23 @@ const filteredPrograms = computed(() => {
 
 	// 產業類別過濾
 	if (searchForm.value.industry) {
-		filtered = filtered.filter(program =>
-			program.Industry.Id === Number(searchForm.value.industry),
-		);
+		filtered = filtered.filter(program => {
+			// 安全檢查：確保 Industry 物件存在
+			if (!program.Industry || !program.Industry.Id) {
+				return false;
+			}
+			return program.Industry.Id === Number(searchForm.value.industry);
+		});
 	}
 
 	// 狀態標籤過濾
 	if (activeStatusTab.value !== 'all') {
 		filtered = filtered.filter((program) => {
+			// 安全檢查：確保 Status 物件存在
+			if (!program.Status || !program.Status.Title) {
+				return false; // 如果沒有狀態資訊，則不顯示在篩選結果中
+			}
+			
 			const status = program.Status.Title;
 			switch (activeStatusTab.value) {
 				case 'passed':
@@ -120,7 +130,7 @@ const getProgramStatus = (program: Program) => {
 	const programEnd = new Date(program.ProgramEndDate);
 
 	if (now < publishStart) { return '未發布'; }
-	if (now >= publishStart && now <= publishEnd) { return '已發佈'; }
+	if (now >= publishStart && now <= publishEnd) { return '已發布'; }
 	if (now > publishEnd && now < programStart) { return '已截止'; }
 	if (now >= programStart && now <= programEnd) { return '進行中'; }
 	if (now > programEnd) { return '已結束'; }
@@ -406,12 +416,11 @@ const handleViewDetail = async (program: any) => {
 				>
 					<!-- 封面與狀態徽章 -->
 					<div class="relative flex-shrink-0">
-						<img
-							:src="program.CoverImage || '/img/home/home-worker-bg.webp'"
+						<ImageWithSkeleton
+							:src="program.CoverImage"
 							alt="program image"
-							class="w-full h-48 object-cover"
-							loading="lazy"
-						>
+							img-class="w-full h-48 object-cover"
+						/>
 						<div
 							class="absolute top-2 left-2 px-2 py-1 text-xs rounded z-10"
 							:class="getStatusBadgeClass(program)"
