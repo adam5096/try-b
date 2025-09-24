@@ -1,9 +1,13 @@
 <!-- ep10-1 付款頁面 -->
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import {
 	Check,
 } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
+import { useCompanyPayment } from '~/composables/api/company/useCompanyPayment';
+import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
+import type { CreatePaymentRequest } from '~/types/company/payment';
 
 definePageMeta({
 	layout: 'company',
@@ -11,6 +15,15 @@ definePageMeta({
 });
 
 const router = useRouter();
+const authStore = useCompanyAuthStore();
+const { createPayment, submitToNewebPay, validateCreditCard } = useCompanyPayment();
+
+// 從 URL 查詢參數取得方案 ID
+const route = useRoute();
+const planId = computed(() => {
+	const id = route.query.planId;
+	return id ? Number(id) : null;
+});
 
 const paymentMethod = ref('creditCard');
 
@@ -18,7 +31,10 @@ const paymentMethod = ref('creditCard');
 const cardNumber = ref('');
 const expiryDate = ref('');
 const cvc = ref('');
-const cardName = ref('');
+const cardEmail = ref('');
+
+// 付款狀態
+const isPaymentLoading = ref(false);
 
 // 輸入 4 位自動加入空白（僅允許數字）
 const MAX_CARD_DIGITS = 16;
@@ -48,11 +64,76 @@ const goBack = () => {
 	router.back();
 };
 
-const confirmPayment = () => {
-	// 使用 Nuxt 3 推薦的 navigateTo，並搭配「命名路由」
-	return navigateTo({
-		name: 'company-purchase-success',
-	});
+const confirmPayment = async () => {
+	// 檢查必要參數
+	if (!planId.value) {
+		ElMessage.error('請先選擇方案');
+		return;
+	}
+
+	if (!authStore.companyId) {
+		ElMessage.error('請先登入企業帳號');
+		return;
+	}
+
+	// 如果是信用卡付款，先驗證表單
+	if (paymentMethod.value === 'creditCard') {
+		const validation = validateCreditCard({
+			cardNumber: cardNumber.value,
+			expiryDate: expiryDate.value,
+			cvc: cvc.value,
+			cardEmail: cardEmail.value,
+		});
+
+		if (!validation.isValid) {
+			validation.errors.forEach(error => {
+				ElMessage.error(error);
+			});
+			return;
+		}
+	}
+
+	try {
+		isPaymentLoading.value = true;
+
+		// 建立付款請求
+		const paymentRequest: CreatePaymentRequest = {
+			plan_id: planId.value,
+			company_id: authStore.companyId,
+			payment_method: paymentMethod.value === 'creditCard' ? 'CREDIT' : 'CVS',
+			email: authStore.user?.Email || 'test@example.com', // 使用企業用戶信箱
+			// 如果是信用卡付款，包含信用卡資訊
+			...(paymentMethod.value === 'creditCard' && {
+				card_number: cardNumber.value.replace(/\s/g, ''), // 移除空格
+				card_expiry: expiryDate.value.replace(/\s/g, ''), // 移除空格
+				card_cvc: cvc.value,
+				card_email: cardEmail.value,
+			}),
+		};
+
+		// 調用建立付款 API
+		const paymentResponse = await createPayment(paymentRequest);
+
+		// 準備藍新金流表單資料
+		const newebPayData = {
+			MerchantID: paymentResponse.PaymentData.MerchantID,
+			TradeInfo: paymentResponse.PaymentData.TradeInfo,
+			TradeSha: paymentResponse.PaymentData.TradeSha,
+			Version: paymentResponse.PaymentData.Version,
+		};
+
+		// 自動提交到藍新金流
+		submitToNewebPay(newebPayData, paymentResponse.PayGetWay);
+
+		ElMessage.success('正在跳轉到付款頁面...');
+	}
+	catch (error) {
+		console.error('付款處理錯誤:', error);
+		ElMessage.error(error instanceof Error ? error.message : '付款處理失敗，請稍後再試');
+	}
+	finally {
+		isPaymentLoading.value = false;
+	}
 };
 </script>
 
@@ -203,6 +284,20 @@ const confirmPayment = () => {
 								@input="onCardNumberInput"
 							/>
 						</div>
+						<div class="col-span-2">
+							<label
+								for="cardEmail"
+								class="block text-sm font-medium text-gray-700 mb-1"
+							>持卡人信箱</label>
+							<el-input
+								id="cardEmail"
+								v-model="cardEmail"
+								placeholder="請輸入持卡人信箱"
+								size="large"
+								type="email"
+								autocomplete="email"
+							/>
+						</div>
 						<div>
 							<label
 								for="expiryDate"
@@ -266,6 +361,7 @@ const confirmPayment = () => {
 			<div class="flex justify-between">
 				<el-button
 					size="large"
+					:disabled="isPaymentLoading"
 					@click="goBack"
 				>
 					上一步
@@ -273,9 +369,11 @@ const confirmPayment = () => {
 				<el-button
 					type="primary"
 					size="large"
+					:loading="isPaymentLoading"
+					:disabled="isPaymentLoading"
 					@click="confirmPayment"
 				>
-					確認付款
+					{{ isPaymentLoading ? '處理中...' : '確認付款' }}
 				</el-button>
 			</div>
 		</div>
