@@ -25,4 +25,3 @@ export default createApiHandler(async (event) => {
 
 	return backendResponse;
 });
-

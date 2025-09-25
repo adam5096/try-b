@@ -1,12 +1,13 @@
 <!-- ep10-1 付款頁面 -->
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import {
 	Check,
 } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { useCompanyPayment } from '~/composables/api/company/useCompanyPayment';
 import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
+import { useCompanyAllPlans } from '~/composables/api/company/useCompanyAllPlans';
 import type { CreatePaymentRequest } from '~/types/company/payment';
 
 definePageMeta({
@@ -16,7 +17,8 @@ definePageMeta({
 
 const router = useRouter();
 const authStore = useCompanyAuthStore();
-const { createPayment, submitToNewebPay, validateCreditCard } = useCompanyPayment();
+const { createPayment, submitToNewebPay } = useCompanyPayment();
+const { plans, fetchAllPlans } = useCompanyAllPlans();
 
 // 從 URL 查詢參數取得方案 ID
 const route = useRoute();
@@ -25,40 +27,33 @@ const planId = computed(() => {
 	return id ? Number(id) : null;
 });
 
+// 取得當前選擇的方案資料
+const selectedPlan = computed(() => {
+	if (!plans.value || !planId.value) {
+		return null;
+	}
+	return plans.value.find(plan => plan.id === planId.value);
+});
+
+// 格式化金額顯示
+const formatTwd = (value: number | string) => {
+	const num = Number(value ?? 0);
+	return `TWD ${num.toLocaleString('zh-TW')}`;
+};
+
 const paymentMethod = ref('creditCard');
 
-// 信用卡欄位（ElInput 為受控元件，需綁定 v-model 才可輸入）
-const cardNumber = ref('');
-const expiryDate = ref('');
-const cvc = ref('');
-const cardEmail = ref('');
+// 注意：信用卡資訊將在藍新金流頁面填寫，不需要前端欄位
 
 // 付款狀態
 const isPaymentLoading = ref(false);
 
-// 輸入 4 位自動加入空白（僅允許數字）
-const MAX_CARD_DIGITS = 16;
-function onCardNumberInput(val: string) {
-	const digitsOnly = String(val || '').replace(/\D/g, '').slice(0, MAX_CARD_DIGITS);
-	const grouped = digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
-	cardNumber.value = grouped;
-}
+// 注意：信用卡輸入處理函數已移除，因為將在藍新金流頁面填寫
 
-// 有效期限：每 2 位自動補 " / "，最多 4 位數字 (MMYY)
-function onExpiryInput(val: string) {
-	const digits = String(val || '').replace(/\D/g, '').slice(0, 4);
-	if (digits.length <= 2) {
-		expiryDate.value = digits;
-	}
-	else {
-		expiryDate.value = `${digits.slice(0, 2)} / ${digits.slice(2)}`;
-	}
-}
-
-// CVC：僅數字，最多 3 位
-function onCvcInput(val: string) {
-	cvc.value = String(val || '').replace(/\D/g, '').slice(0, 3);
-}
+// 載入方案資料
+onMounted(() => {
+	fetchAllPlans();
+});
 
 const goBack = () => {
 	router.back();
@@ -76,39 +71,21 @@ const confirmPayment = async () => {
 		return;
 	}
 
-	// 如果是信用卡付款，先驗證表單
-	if (paymentMethod.value === 'creditCard') {
-		const validation = validateCreditCard({
-			cardNumber: cardNumber.value,
-			expiryDate: expiryDate.value,
-			cvc: cvc.value,
-			cardEmail: cardEmail.value,
-		});
-
-		if (!validation.isValid) {
-			validation.errors.forEach(error => {
-				ElMessage.error(error);
-			});
-			return;
-		}
+	// 只有選擇信用卡付款時才呼叫 API
+	if (paymentMethod.value !== 'creditCard') {
+		ElMessage.warning('目前只支援信用卡付款，請選擇信用卡付款方式');
+		return;
 	}
+
+	// 注意：信用卡資訊將在藍新金流頁面填寫，不需要前端驗證
 
 	try {
 		isPaymentLoading.value = true;
 
-		// 建立付款請求
+		// 建立付款請求 - 使用簡化的 API 格式
 		const paymentRequest: CreatePaymentRequest = {
 			plan_id: planId.value,
 			company_id: authStore.companyId,
-			payment_method: paymentMethod.value === 'creditCard' ? 'CREDIT' : 'CVS',
-			email: authStore.user?.Email || 'test@example.com', // 使用企業用戶信箱
-			// 如果是信用卡付款，包含信用卡資訊
-			...(paymentMethod.value === 'creditCard' && {
-				card_number: cardNumber.value.replace(/\s/g, ''), // 移除空格
-				card_expiry: expiryDate.value.replace(/\s/g, ''), // 移除空格
-				card_cvc: cvc.value,
-				card_email: cardEmail.value,
-			}),
 		};
 
 		// 調用建立付款 API
@@ -166,7 +143,7 @@ const confirmPayment = async () => {
 							方案
 						</p>
 						<p class="text-gray-600">
-							您選擇的方案：60天 體驗人數上限 30 人
+							您選擇的方案：{{ selectedPlan ? `${selectedPlan.duration_days}天 體驗人數上限 ${selectedPlan.max_participants} 人` : '載入中...' }}
 						</p>
 					</div>
 					<div class="text-right">
@@ -174,7 +151,7 @@ const confirmPayment = async () => {
 							方案費用
 						</p>
 						<p class="text-2xl font-semibold text-gray-800">
-							TWD 3,500
+							{{ selectedPlan ? formatTwd(selectedPlan.price) : '載入中...' }}
 						</p>
 					</div>
 				</div>
@@ -258,93 +235,13 @@ const confirmPayment = async () => {
 				</el-radio-group>
 			</div>
 
-			<!-- Credit Card Form -->
-			<div
-				v-if="paymentMethod === 'creditCard'"
-				class="mb-8"
-			>
-				<h3 class="text-lg font-semibold mb-4 text-gray-800">
-					信用卡資訊
-				</h3>
-				<div class="border border-gray-200 rounded-lg p-6">
-					<div class="grid grid-cols-2 gap-x-4 gap-y-6">
-						<div class="col-span-2">
-							<label
-								for="cardNumber"
-								class="block text-sm font-medium text-gray-700 mb-1"
-							>卡號</label>
-							<el-input
-								id="cardNumber"
-								v-model="cardNumber"
-								placeholder="1234 5678 9012 3456"
-								size="large"
-								inputmode="numeric"
-								maxlength="19"
-								autocomplete="cc-number"
-								@input="onCardNumberInput"
-							/>
-						</div>
-						<div class="col-span-2">
-							<label
-								for="cardEmail"
-								class="block text-sm font-medium text-gray-700 mb-1"
-							>持卡人信箱</label>
-							<el-input
-								id="cardEmail"
-								v-model="cardEmail"
-								placeholder="請輸入持卡人信箱"
-								size="large"
-								type="email"
-								autocomplete="email"
-							/>
-						</div>
-						<div>
-							<label
-								for="expiryDate"
-								class="block text-sm font-medium text-gray-700 mb-1"
-							>有效期限</label>
-							<el-input
-								id="expiryDate"
-								v-model="expiryDate"
-								placeholder="MM / YY"
-								size="large"
-								autocomplete="cc-exp"
-								maxlength="7"
-								inputmode="numeric"
-								@input="onExpiryInput"
-							/>
-						</div>
-						<div>
-							<label
-								for="cvc"
-								class="block text-sm font-medium text-gray-700 mb-1"
-							>安全碼</label>
-							<el-input
-								id="cvc"
-								v-model="cvc"
-								placeholder="123"
-								size="large"
-								inputmode="numeric"
-								maxlength="3"
-								autocomplete="cc-csc"
-								@input="onCvcInput"
-							/>
-						</div>
-					</div>
-					<div class="mt-6">
-						<el-checkbox
-							label="儲存此卡片資訊，下次可快速結帳"
-							size="large"
-						/>
-					</div>
-				</div>
-			</div>
+			<!-- 信用卡資訊將在藍新金流頁面填寫 -->
 
 			<!-- Totals -->
 			<div class="bg-gray-50 rounded-lg p-6 mb-8">
 				<div class="flex justify-between items-center text-gray-800 mb-2">
 					<p>方案費用</p>
-					<p>TWD 3,500</p>
+					<p>{{ selectedPlan ? formatTwd(selectedPlan.price) : '載入中...' }}</p>
 				</div>
 				<div class="flex justify-between items-center text-sm text-gray-500 mb-4">
 					<p>手續費</p>
@@ -353,7 +250,7 @@ const confirmPayment = async () => {
 				<div class="border-t border-gray-200 my-4" />
 				<div class="flex justify-between items-center font-semibold text-lg text-gray-800">
 					<p>總計金額</p>
-					<p>TWD 3,500</p>
+					<p>{{ selectedPlan ? formatTwd(selectedPlan.price) : '載入中...' }}</p>
 				</div>
 			</div>
 

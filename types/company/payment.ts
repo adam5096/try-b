@@ -4,13 +4,6 @@
 export interface CreatePaymentRequest {
 	plan_id: number
 	company_id: number
-	payment_method: 'CREDIT' | 'APPLEPAY' | 'GOOGLEPAY' | 'CVS' | 'ATM'
-	email: string
-	// 藍新金流 MPG 交易所需欄位
-	card_number?: string
-	card_expiry?: string
-	card_cvc?: string
-	card_email?: string
 }
 
 // 建立訂單回應
@@ -29,9 +22,9 @@ export interface CreatePaymentResponse {
 // 藍新金流回調資料 (POST /api/v1/callback)
 // 根據藍新金流技術文件 4-2 MPG 交易規範
 export interface NewebPayCallbackRequest {
-	TradeInfo: string  // 交易資料 (已加密)
-	TradeSha: string    // 交易資料 SHA256 雜湊值
-	Status: 'SUCCESS' | 'FAILED'  // 交易狀態
+	TradeInfo: string // 交易資料 (已加密)
+	TradeSha: string // 交易資料 SHA256 雜湊值
+	Status: 'SUCCESS' | 'FAILED' // 交易狀態
 }
 
 // 付款結果查詢回應 (GET /api/v1/callback)

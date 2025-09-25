@@ -27,7 +27,7 @@
 所有 API 都使用 `$fetch` 直接呼叫本地 BFF 端點，與現有 API 保持一致：
 ```typescript
 // 正確方式
-const response = await $fetch<ResponseType>('/api/v1/payments', {
+const response = await $fetch<ResponseType>('/api/v1/company/payments/payments', {
   method: 'POST',
   headers: { authorization: `Bearer ${token}` },
   body: paymentData,

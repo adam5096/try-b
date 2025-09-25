@@ -48,7 +48,7 @@
 						<Warning />
 					</el-icon>
 				</div>
-				
+
 				<h3 class="mt-4 text-3xl font-bold">
 					<span v-if="isLoading">處理中...</span>
 					<span v-else-if="error">處理失敗</span>
@@ -65,7 +65,10 @@
 
 			<el-divider class="my-8" />
 
-			<div v-if="!isLoading && !error && paymentResult" class="max-w-2xl mx-auto">
+			<div
+				v-if="!isLoading && !error && paymentResult"
+				class="max-w-2xl mx-auto"
+			>
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
 					<div>
 						<p class="text-sm text-gray-500">
@@ -88,20 +91,26 @@
 						<p class="text-sm text-gray-500">
 							付款狀態
 						</p>
-						<p class="font-bold text-xl" :class="{
-							'text-green-600': paymentResult.PaymentStatus === 'Paid',
-							'text-yellow-600': paymentResult.PaymentStatus === 'Pending',
-							'text-red-600': paymentResult.PaymentStatus === 'Failed'
-						}">
-							{{ paymentResult.PaymentStatus === 'Paid' ? '已付款' : 
-							   paymentResult.PaymentStatus === 'Pending' ? '處理中' : '付款失敗' }}
+						<p
+							class="font-bold text-xl"
+							:class="{
+								'text-green-600': paymentResult.PaymentStatus === 'Paid',
+								'text-yellow-600': paymentResult.PaymentStatus === 'Pending',
+								'text-red-600': paymentResult.PaymentStatus === 'Failed',
+							}"
+						>
+							{{ paymentResult.PaymentStatus === 'Paid' ? '已付款'
+								: paymentResult.PaymentStatus === 'Pending' ? '處理中' : '付款失敗' }}
 						</p>
 					</div>
 				</div>
 			</div>
-			
+
 			<!-- 載入中或錯誤狀態的佔位內容 -->
-			<div v-else class="max-w-2xl mx-auto">
+			<div
+				v-else
+				class="max-w-2xl mx-auto"
+			>
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
 					<div>
 						<p class="text-sm text-gray-500">
@@ -208,7 +217,7 @@ const fetchPaymentResult = async () => {
 	try {
 		const result = await getPaymentResult(orderNum.value);
 		paymentResult.value = result;
-		
+
 		// 如果付款成功，標記為已付款
 		if (result.PaymentStatus === 'Paid') {
 			planStore.markPaid();
@@ -230,7 +239,7 @@ onMounted(async () => {
 		const minDelay = new Promise(resolve => setTimeout(resolve, 800));
 		// 觸發一次取資料，確保 Header 顯示 loading
 		await Promise.allSettled([planStore.fetchCurrentPlan(), minDelay]);
-		
+
 		// 取得付款結果
 		await fetchPaymentResult();
 	}

@@ -18,12 +18,12 @@ export const useCompanyPayment = () => {
 	const createPayment = async (paymentData: CreatePaymentRequest): Promise<CreatePaymentResponse> => {
 		try {
 			const headers: Record<string, string> = {}
-			
+
 			if (authStore.token) {
 				headers.authorization = `Bearer ${authStore.token}`
 			}
 
-			// 使用 $fetch 直接呼叫本地 BFF 端點，與其他 API 保持一致
+			// 使用 $fetch 直接呼叫本地 BFF 端點
 			const response = await $fetch<CreatePaymentResponse>('/api/v1/company/payments/payments', {
 				method: 'POST',
 				headers,
@@ -50,7 +50,7 @@ export const useCompanyPayment = () => {
 	const getPaymentResult = async (orderNum: string): Promise<PaymentResultResponse> => {
 		try {
 			const headers: Record<string, string> = {}
-			
+
 			if (authStore.token) {
 				headers.authorization = `Bearer ${authStore.token}`
 			}
@@ -77,7 +77,7 @@ export const useCompanyPayment = () => {
 	const getPaymentRedirect = async (orderNum: string): Promise<PaymentRedirectResponse> => {
 		try {
 			const headers: Record<string, string> = {}
-			
+
 			if (authStore.token) {
 				headers.authorization = `Bearer ${authStore.token}`
 			}
@@ -158,7 +158,7 @@ export const useCompanyPayment = () => {
 		expiryDate: string
 		cvc: string
 		cardEmail: string
-	}): { isValid: boolean; errors: string[] } => {
+	}): { isValid: boolean, errors: string[] } => {
 		const errors: string[] = []
 
 		// 驗證卡號 (移除空格後檢查)
@@ -182,7 +182,8 @@ export const useCompanyPayment = () => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 		if (!cardData.cardEmail.trim()) {
 			errors.push('請輸入持卡人信箱')
-		} else if (!emailRegex.test(cardData.cardEmail)) {
+		}
+		else if (!emailRegex.test(cardData.cardEmail)) {
 			errors.push('請輸入正確的信箱格式')
 		}
 
