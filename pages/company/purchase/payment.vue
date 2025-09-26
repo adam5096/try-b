@@ -47,6 +47,7 @@ const paymentMethod = ref('creditCard');
 
 // 付款狀態
 const isPaymentLoading = ref(false);
+const isPaymentProcessing = ref(false); // 防止重複點擊
 
 // 注意：信用卡輸入處理函數已移除，因為將在藍新金流頁面填寫
 
@@ -60,6 +61,12 @@ const goBack = () => {
 };
 
 const confirmPayment = async () => {
+	// 防止重複點擊 - 如果正在處理中直接返回
+	if (isPaymentProcessing.value) {
+		ElMessage.warning('付款處理中，請勿重複點擊');
+		return;
+	}
+
 	// 檢查必要參數
 	if (!planId.value) {
 		ElMessage.error('請先選擇方案');
@@ -80,6 +87,8 @@ const confirmPayment = async () => {
 	// 注意：信用卡資訊將在藍新金流頁面填寫，不需要前端驗證
 
 	try {
+		// 設定處理狀態，防止重複點擊
+		isPaymentProcessing.value = true;
 		isPaymentLoading.value = true;
 
 		// 建立付款請求 - 使用簡化的 API 格式
@@ -106,10 +115,26 @@ const confirmPayment = async () => {
 	}
 	catch (error) {
 		console.error('付款處理錯誤:', error);
-		ElMessage.error(error instanceof Error ? error.message : '付款處理失敗，請稍後再試');
+
+		// 特殊處理藍新金流錯誤
+		let errorMessage = '付款處理失敗，請稍後再試';
+		if (error instanceof Error) {
+			const message = error.message;
+			// 檢查是否為訂單編號重複錯誤
+			if (message.includes('MPG03008') || message.includes('已存在相同的商店訂單編號')) {
+				errorMessage = '系統正在處理您的訂單，請稍後重試或聯繫客服';
+			}
+			else {
+				errorMessage = message;
+			}
+		}
+
+		ElMessage.error(errorMessage);
 	}
 	finally {
+		// 重置所有處理狀態
 		isPaymentLoading.value = false;
+		isPaymentProcessing.value = false;
 	}
 };
 </script>
@@ -267,10 +292,10 @@ const confirmPayment = async () => {
 					type="primary"
 					size="large"
 					:loading="isPaymentLoading"
-					:disabled="isPaymentLoading"
+					:disabled="isPaymentProcessing"
 					@click="confirmPayment"
 				>
-					{{ isPaymentLoading ? '處理中...' : '確認付款' }}
+					{{ isPaymentProcessing ? '處理中...' : '確認付款' }}
 				</el-button>
 			</div>
 		</div>
