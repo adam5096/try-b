@@ -1,0 +1,106 @@
+@import '@fortawesome/fontawesome-svg-core/styles.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Skeleton shimmer with stronger contrast and faster cycle */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.55) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  animation: skeleton-shimmer 0.9s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* 禁用 Element Plus 表單驗證的錯誤訊息動畫 */
+.el-form-item__error {
+  transition: none !important;
+  animation: none !important;
+}
+
+@layer components {
+  /* For Layer 2: Blue shape, fades from left to right (sharper fade) */
+  .mask-gradient-to-right {
+    mask-image: linear-gradient(to right, black 60%, transparent 80%);
+    -webkit-mask-image: linear-gradient(to right, black 60%, transparent 80%);
+  }
+
+  /* For Layer 1: Background image, fades out from the center to the left (sharper fade) */
+  .mask-fade-from-center-to-left {
+    mask-image: linear-gradient(to left, black 50%, transparent 80%);
+    -webkit-mask-image: linear-gradient(to left, black 50%, transparent 80%);
+  }
+
+  .el-button.btn-brand-yellow {
+    @apply bg-btn-yellow text-black font-bold py-2 px-4 rounded 
+           transition-all duration-300 
+           hover:bg-[#ffe70c] hover:scale-105;
+  }
+
+  .btn-danger-outline {
+    @apply border border-red-500 bg-transparent text-red-500 font-bold py-2 px-4 rounded transition-colors duration-300;
+  }
+
+  .btn-danger-outline:hover {
+    @apply bg-red-500 text-white;
+  }
+}
+
+@layer utilities {
+  .bg-testimonial-pattern {
+    background-image: url('/img/home/testimonial-bg.webp');
+  }
+
+  .text-stroke-background {
+    color: transparent;
+    -webkit-text-stroke: 1px theme('colors.gray.200');
+    text-stroke: 1px theme('colors.gray.200');
+    paint-order: stroke fill;
+  }
+}
+
+/* Element Plus Message / MessageBox / Notification 全域字級放大（統一 2 倍） */
+/* 可依需求調整為 1.5 ~ 2 之間，這裡統一為 2 倍 */
+/* :root {
+  --app-ep-message-scale: 2;
+} */
+
+/* Message */
+.el-message,
+.el-message__content {
+  font-size: calc(var(--el-font-size-base) * var(--app-ep-message-scale));
+  line-height: 1.5;
+}
+
+/* MessageBox（標題與內容） */
+.el-message-box__title,
+.el-message-box__message,
+.el-message-box__message p {
+  font-size: calc(var(--el-font-size-base) * var(--app-ep-message-scale));
+  line-height: 1.6;
+}
+
+/* Notification（標題與內容） */
+.el-notification__title,
+.el-notification__content {
+  font-size: calc(var(--el-font-size-base) * var(--app-ep-message-scale));
+  line-height: 1.5;
+}
