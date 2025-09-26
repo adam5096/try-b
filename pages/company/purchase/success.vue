@@ -19,28 +19,63 @@
 
 			<div class="text-center">
 				<div
+					v-if="isLoading"
+					class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full"
+				>
+					<el-icon class="w-12 h-12 text-gray-400">
+						<Loading />
+					</el-icon>
+				</div>
+				<div
+					v-else-if="error"
+					class="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full"
+				>
+					<el-icon class="w-12 h-12 text-red-500">
+						<Close />
+					</el-icon>
+				</div>
+				<div
+					v-else-if="paymentResult?.PaymentStatus === 'Paid'"
 					class="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full"
 				>
 					<SharedCheckIcon class="w-12 h-12 text-green-500" />
 				</div>
+				<div
+					v-else
+					class="inline-flex items-center justify-center w-20 h-20 bg-yellow-100 rounded-full"
+				>
+					<el-icon class="w-12 h-12 text-yellow-500">
+						<Warning />
+					</el-icon>
+				</div>
+
 				<h3 class="mt-4 text-3xl font-bold">
-					付款成功！
+					<span v-if="isLoading">處理中...</span>
+					<span v-else-if="error">處理失敗</span>
+					<span v-else-if="paymentResult?.PaymentStatus === 'Paid'">付款成功！</span>
+					<span v-else>付款處理中</span>
 				</h3>
 				<p class="mt-2 text-gray-500">
-					您的方案已成功付款並確認
+					<span v-if="isLoading">正在確認付款狀態...</span>
+					<span v-else-if="error">{{ error }}</span>
+					<span v-else-if="paymentResult?.PaymentStatus === 'Paid'">您的方案已成功付款並確認</span>
+					<span v-else>付款正在處理中，請稍後再確認</span>
 				</p>
 			</div>
 
 			<el-divider class="my-8" />
 
-			<div class="max-w-2xl mx-auto">
+			<div
+				v-if="!isLoading && !error && paymentResult"
+				class="max-w-2xl mx-auto"
+			>
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
 					<div>
 						<p class="text-sm text-gray-500">
 							訂單編號
 						</p>
 						<p class="font-medium text-lg">
-							TXN20231215-78945
+							{{ paymentResult.OrderNum }}
 						</p>
 					</div>
 					<div>
@@ -48,15 +83,57 @@
 							付款方式
 						</p>
 						<p class="font-medium text-lg">
-							信用卡 (末四碼: 5678)
+							{{ paymentResult.PaymentMethod === 'CREDIT' ? '信用卡' : paymentResult.PaymentMethod }}
+							<span v-if="paymentResult.Card4No"> (末四碼: {{ paymentResult.Card4No }})</span>
 						</p>
 					</div>
 					<div class="md:text-left">
 						<p class="text-sm text-gray-500">
-							付款金額
+							付款狀態
+						</p>
+						<p
+							class="font-bold text-xl"
+							:class="{
+								'text-green-600': paymentResult.PaymentStatus === 'Paid',
+								'text-yellow-600': paymentResult.PaymentStatus === 'Pending',
+								'text-red-600': paymentResult.PaymentStatus === 'Failed',
+							}"
+						>
+							{{ paymentResult.PaymentStatus === 'Paid' ? '已付款'
+								: paymentResult.PaymentStatus === 'Pending' ? '處理中' : '付款失敗' }}
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- 載入中或錯誤狀態的佔位內容 -->
+			<div
+				v-else
+				class="max-w-2xl mx-auto"
+			>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+					<div>
+						<p class="text-sm text-gray-500">
+							訂單編號
+						</p>
+						<p class="font-medium text-lg">
+							{{ isLoading ? '載入中...' : orderNum || '未知' }}
+						</p>
+					</div>
+					<div>
+						<p class="text-sm text-gray-500">
+							付款方式
+						</p>
+						<p class="font-medium text-lg">
+							{{ isLoading ? '載入中...' : '未知' }}
+						</p>
+					</div>
+					<div class="md:text-left">
+						<p class="text-sm text-gray-500">
+							付款狀態
 						</p>
 						<p class="font-bold text-xl">
-							TWD 3,500
+							{{ isLoading ? '載入中...' : '未知' }}
 						</p>
 					</div>
 				</div>
@@ -86,8 +163,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, computed } from 'vue';
+import { ElMessage } from 'element-plus';
+import { Loading, Close, Warning } from '@element-plus/icons-vue';
 import { companyRoutes as r } from '~/utils/companyRoutes';
 import { useCompanyPlanStore } from '~/stores/company/usePlanStore';
+import { useCompanyPayment } from '~/composables/api/company/useCompanyPayment';
+import type { PaymentResultResponse } from '~/types/company/payment';
 
 definePageMeta({
 	layout: 'company',
@@ -95,7 +177,61 @@ definePageMeta({
 });
 
 const router = useRouter();
+const route = useRoute();
 const planStore = useCompanyPlanStore();
+const { getPaymentResult } = useCompanyPayment();
+
+// 付款結果資料
+const paymentResult = ref<PaymentResultResponse | null>(null);
+const isLoading = ref(true);
+const error = ref<string | null>(null);
+
+// 從 URL 查詢參數取得訂單編號
+const orderNum = computed(() => {
+	return route.query.order as string;
+});
+
+// 格式化金額顯示
+const formatAmount = (amount: number) => {
+	return `TWD ${amount.toLocaleString('zh-TW')}`;
+};
+
+// 格式化日期顯示
+const formatDate = (dateString: string) => {
+	const date = new Date(dateString);
+	return date.toLocaleDateString('zh-TW', {
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit',
+	});
+};
+
+// 取得付款結果
+const fetchPaymentResult = async () => {
+	if (!orderNum.value) {
+		error.value = '缺少訂單編號';
+		isLoading.value = false;
+		return;
+	}
+
+	try {
+		const result = await getPaymentResult(orderNum.value);
+		paymentResult.value = result;
+
+		// 如果付款成功，標記為已付款
+		if (result.PaymentStatus === 'Paid') {
+			planStore.markPaid();
+		}
+	}
+	catch (err) {
+		console.error('取得付款結果錯誤:', err);
+		error.value = err instanceof Error ? err.message : '取得付款結果失敗';
+		ElMessage.error('無法取得付款結果，請稍後再試');
+	}
+	finally {
+		isLoading.value = false;
+	}
+};
 
 // 進入成功頁：先讓 Header 顯示骨架，取得資料後再標記為已付款
 onMounted(async () => {
@@ -103,9 +239,14 @@ onMounted(async () => {
 		const minDelay = new Promise(resolve => setTimeout(resolve, 800));
 		// 觸發一次取資料，確保 Header 顯示 loading
 		await Promise.allSettled([planStore.fetchCurrentPlan(), minDelay]);
+
+		// 取得付款結果
+		await fetchPaymentResult();
 	}
-	finally {
-		planStore.markPaid();
+	catch (err) {
+		console.error('頁面初始化錯誤:', err);
+		error.value = '頁面初始化失敗';
+		isLoading.value = false;
 	}
 });
 

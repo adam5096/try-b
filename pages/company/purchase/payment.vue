@@ -1,9 +1,14 @@
 <!-- ep10-1 付款頁面 -->
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import {
 	Check,
 } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
+import { useCompanyPayment } from '~/composables/api/company/useCompanyPayment';
+import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
+import { useCompanyAllPlans } from '~/composables/api/company/useCompanyAllPlans';
+import type { CreatePaymentRequest } from '~/types/company/payment';
 
 definePageMeta({
 	layout: 'company',
@@ -11,48 +16,126 @@ definePageMeta({
 });
 
 const router = useRouter();
+const authStore = useCompanyAuthStore();
+const { createPayment, submitToNewebPay } = useCompanyPayment();
+const { plans, fetchAllPlans } = useCompanyAllPlans();
+
+// 從 URL 查詢參數取得方案 ID
+const route = useRoute();
+const planId = computed(() => {
+	const id = route.query.planId;
+	return id ? Number(id) : null;
+});
+
+// 取得當前選擇的方案資料
+const selectedPlan = computed(() => {
+	if (!plans.value || !planId.value) {
+		return null;
+	}
+	return plans.value.find(plan => plan.id === planId.value);
+});
+
+// 格式化金額顯示
+const formatTwd = (value: number | string) => {
+	const num = Number(value ?? 0);
+	return `TWD ${num.toLocaleString('zh-TW')}`;
+};
 
 const paymentMethod = ref('creditCard');
 
-// 信用卡欄位（ElInput 為受控元件，需綁定 v-model 才可輸入）
-const cardNumber = ref('');
-const expiryDate = ref('');
-const cvc = ref('');
-const cardName = ref('');
+// 注意：信用卡資訊將在藍新金流頁面填寫，不需要前端欄位
 
-// 輸入 4 位自動加入空白（僅允許數字）
-const MAX_CARD_DIGITS = 16;
-function onCardNumberInput(val: string) {
-	const digitsOnly = String(val || '').replace(/\D/g, '').slice(0, MAX_CARD_DIGITS);
-	const grouped = digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ').trim();
-	cardNumber.value = grouped;
-}
+// 付款狀態
+const isPaymentLoading = ref(false);
+const isPaymentProcessing = ref(false); // 防止重複點擊
 
-// 有效期限：每 2 位自動補 " / "，最多 4 位數字 (MMYY)
-function onExpiryInput(val: string) {
-	const digits = String(val || '').replace(/\D/g, '').slice(0, 4);
-	if (digits.length <= 2) {
-		expiryDate.value = digits;
-	}
-	else {
-		expiryDate.value = `${digits.slice(0, 2)} / ${digits.slice(2)}`;
-	}
-}
+// 注意：信用卡輸入處理函數已移除，因為將在藍新金流頁面填寫
 
-// CVC：僅數字，最多 3 位
-function onCvcInput(val: string) {
-	cvc.value = String(val || '').replace(/\D/g, '').slice(0, 3);
-}
+// 載入方案資料
+onMounted(() => {
+	fetchAllPlans();
+});
 
 const goBack = () => {
 	router.back();
 };
 
-const confirmPayment = () => {
-	// 使用 Nuxt 3 推薦的 navigateTo，並搭配「命名路由」
-	return navigateTo({
-		name: 'company-purchase-success',
-	});
+const confirmPayment = async () => {
+	// 防止重複點擊 - 如果正在處理中直接返回
+	if (isPaymentProcessing.value) {
+		ElMessage.warning('付款處理中，請勿重複點擊');
+		return;
+	}
+
+	// 檢查必要參數
+	if (!planId.value) {
+		ElMessage.error('請先選擇方案');
+		return;
+	}
+
+	if (!authStore.companyId) {
+		ElMessage.error('請先登入企業帳號');
+		return;
+	}
+
+	// 只有選擇信用卡付款時才呼叫 API
+	if (paymentMethod.value !== 'creditCard') {
+		ElMessage.warning('目前只支援信用卡付款，請選擇信用卡付款方式');
+		return;
+	}
+
+	// 注意：信用卡資訊將在藍新金流頁面填寫，不需要前端驗證
+
+	try {
+		// 設定處理狀態，防止重複點擊
+		isPaymentProcessing.value = true;
+		isPaymentLoading.value = true;
+
+		// 建立付款請求 - 使用簡化的 API 格式
+		const paymentRequest: CreatePaymentRequest = {
+			plan_id: planId.value,
+			company_id: authStore.companyId,
+		};
+
+		// 調用建立付款 API
+		const paymentResponse = await createPayment(paymentRequest);
+
+		// 準備藍新金流表單資料
+		const newebPayData = {
+			MerchantID: paymentResponse.PaymentData.MerchantID,
+			TradeInfo: paymentResponse.PaymentData.TradeInfo,
+			TradeSha: paymentResponse.PaymentData.TradeSha,
+			Version: paymentResponse.PaymentData.Version,
+		};
+
+		// 自動提交到藍新金流
+		submitToNewebPay(newebPayData, paymentResponse.PayGetWay);
+
+		ElMessage.success('正在跳轉到付款頁面...');
+	}
+	catch (error) {
+		console.error('付款處理錯誤:', error);
+
+		// 特殊處理藍新金流錯誤
+		let errorMessage = '付款處理失敗，請稍後再試';
+		if (error instanceof Error) {
+			const message = error.message;
+			// 檢查是否為訂單編號重複錯誤
+			if (message.includes('MPG03008') || message.includes('已存在相同的商店訂單編號')) {
+				errorMessage = '系統正在處理您的訂單，請稍後重試或聯繫客服';
+			}
+			else {
+				errorMessage = message;
+			}
+		}
+
+		ElMessage.error(errorMessage);
+	}
+	finally {
+		// 重置所有處理狀態
+		isPaymentLoading.value = false;
+		isPaymentProcessing.value = false;
+	}
 };
 </script>
 
@@ -85,7 +168,7 @@ const confirmPayment = () => {
 							方案
 						</p>
 						<p class="text-gray-600">
-							您選擇的方案：60天 體驗人數上限 30 人
+							您選擇的方案：{{ selectedPlan ? `${selectedPlan.duration_days}天 體驗人數上限 ${selectedPlan.max_participants} 人` : '載入中...' }}
 						</p>
 					</div>
 					<div class="text-right">
@@ -93,7 +176,7 @@ const confirmPayment = () => {
 							方案費用
 						</p>
 						<p class="text-2xl font-semibold text-gray-800">
-							TWD 3,500
+							{{ selectedPlan ? formatTwd(selectedPlan.price) : '載入中...' }}
 						</p>
 					</div>
 				</div>
@@ -177,79 +260,13 @@ const confirmPayment = () => {
 				</el-radio-group>
 			</div>
 
-			<!-- Credit Card Form -->
-			<div
-				v-if="paymentMethod === 'creditCard'"
-				class="mb-8"
-			>
-				<h3 class="text-lg font-semibold mb-4 text-gray-800">
-					信用卡資訊
-				</h3>
-				<div class="border border-gray-200 rounded-lg p-6">
-					<div class="grid grid-cols-2 gap-x-4 gap-y-6">
-						<div class="col-span-2">
-							<label
-								for="cardNumber"
-								class="block text-sm font-medium text-gray-700 mb-1"
-							>卡號</label>
-							<el-input
-								id="cardNumber"
-								v-model="cardNumber"
-								placeholder="1234 5678 9012 3456"
-								size="large"
-								inputmode="numeric"
-								maxlength="19"
-								autocomplete="cc-number"
-								@input="onCardNumberInput"
-							/>
-						</div>
-						<div>
-							<label
-								for="expiryDate"
-								class="block text-sm font-medium text-gray-700 mb-1"
-							>有效期限</label>
-							<el-input
-								id="expiryDate"
-								v-model="expiryDate"
-								placeholder="MM / YY"
-								size="large"
-								autocomplete="cc-exp"
-								maxlength="7"
-								inputmode="numeric"
-								@input="onExpiryInput"
-							/>
-						</div>
-						<div>
-							<label
-								for="cvc"
-								class="block text-sm font-medium text-gray-700 mb-1"
-							>安全碼</label>
-							<el-input
-								id="cvc"
-								v-model="cvc"
-								placeholder="123"
-								size="large"
-								inputmode="numeric"
-								maxlength="3"
-								autocomplete="cc-csc"
-								@input="onCvcInput"
-							/>
-						</div>
-					</div>
-					<div class="mt-6">
-						<el-checkbox
-							label="儲存此卡片資訊，下次可快速結帳"
-							size="large"
-						/>
-					</div>
-				</div>
-			</div>
+			<!-- 信用卡資訊將在藍新金流頁面填寫 -->
 
 			<!-- Totals -->
 			<div class="bg-gray-50 rounded-lg p-6 mb-8">
 				<div class="flex justify-between items-center text-gray-800 mb-2">
 					<p>方案費用</p>
-					<p>TWD 3,500</p>
+					<p>{{ selectedPlan ? formatTwd(selectedPlan.price) : '載入中...' }}</p>
 				</div>
 				<div class="flex justify-between items-center text-sm text-gray-500 mb-4">
 					<p>手續費</p>
@@ -258,7 +275,7 @@ const confirmPayment = () => {
 				<div class="border-t border-gray-200 my-4" />
 				<div class="flex justify-between items-center font-semibold text-lg text-gray-800">
 					<p>總計金額</p>
-					<p>TWD 3,500</p>
+					<p>{{ selectedPlan ? formatTwd(selectedPlan.price) : '載入中...' }}</p>
 				</div>
 			</div>
 
@@ -266,6 +283,7 @@ const confirmPayment = () => {
 			<div class="flex justify-between">
 				<el-button
 					size="large"
+					:disabled="isPaymentLoading"
 					@click="goBack"
 				>
 					上一步
@@ -273,9 +291,11 @@ const confirmPayment = () => {
 				<el-button
 					type="primary"
 					size="large"
+					:loading="isPaymentLoading"
+					:disabled="isPaymentProcessing"
 					@click="confirmPayment"
 				>
-					確認付款
+					{{ isPaymentProcessing ? '處理中...' : '確認付款' }}
 				</el-button>
 			</div>
 		</div>

@@ -3,8 +3,10 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { Check } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 import { useCompanyAllPlans } from '~/composables/api/company/useCompanyAllPlans';
 import { useCompanyPlanStore } from '~/stores/company/usePlanStore';
+import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 import { isActivePlan } from '~/types/company/plan/current';
 
 definePageMeta({
@@ -16,6 +18,7 @@ definePageMeta({
 const router = useRouter();
 const { plans, isLoading, error, fetchAllPlans } = useCompanyAllPlans();
 const planStore = useCompanyPlanStore();
+const authStore = useCompanyAuthStore();
 
 onMounted(() => {
 	fetchAllPlans();
@@ -66,7 +69,14 @@ const currentPlan = ref<CurrentPlan>({
 const activeStep = ref(0);
 
 function selectPlan(planId: number) {
-	return navigateTo({
+	// 檢查登入狀態
+	if (!authStore.companyId) {
+		ElMessage.error('請先登入企業帳號');
+		return;
+	}
+
+	// 跳轉到付款頁面，並傳遞 planId
+	navigateTo({
 		name: 'company-purchase-payment',
 		query: { planId },
 	});
