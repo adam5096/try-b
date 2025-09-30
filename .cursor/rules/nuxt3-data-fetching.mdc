@@ -1,188 +1,190 @@
 ---
 alwaysApply: false
 ---
-# 每次修改本檔案時，都檢查全部範圍內是否存在多處語焉不詳(敘述模糊，請補充具體感)、語意衝突(後話和前話化打架)。如果發現後請指出並與我討論修改內容的去留。
+# Nuxt 3 資料獲取技術指南
 
-# Nuxt 3 資料獲取與快取策略指南
+簡短描述：本文件專注於 Nuxt 3 資料獲取的技術實作細節，包括 useFetch vs $fetch 的選擇策略、快取控制、SSR 安全性等技術層面的最佳實踐。
 
-簡短描述：本文件定義了 Nuxt 3 專案中資料獲取的標準做法，包括 useFetch vs $fetch 的選擇策略、快取控制、SSR 安全性等最佳實踐。
+最後更新：2024-12-19
 
-最後更新：2024-09-28
-
----
-
-## 核心原則
-
-- **Store 中優先使用 useFetch**：在 Pinia store 中應使用 useFetch 而非 $fetch，提供內建快取機制避免重複請求
-- **快取策略明確**：針對不同資料特性選擇適當的快取策略，平衡效能與資料新鮮度
-- **SSR 安全性**：確保服務端和客戶端資料一致，避免水合不匹配問題
-- **狀態管理整合**：將資料獲取與 reactive 狀態管理良好整合，提供清晰的載入狀態
-
-## useFetch vs $fetch 選擇指南
-
-### 使用 useFetch 的情況
-
-- **Store 中的資料獲取**：提供快取、key 控制、reactive 狀態
-- **需要 SSR 支援**：確保伺服器端預載資料
-- **需要載入狀態**：利用 pending、error 等 reactive 狀態
-- **相對穩定的資料**：如使用者資訊、設定資料
-
-### 使用 $fetch 的情況
-
-- **一次性 API 呼叫**：表單提交、即時操作
-- **不需要快取的動態資料**：即時查詢結果
-- **客戶端專用請求**：不需要 SSR 預載的資料
+> **注意**：完整的 API 開發規範請參考 `api-development-spec.mdc`，本檔案專注於資料獲取的技術細節。
 
 ---
 
-## 快取策略與資料新鮮度判斷
+## 技術選擇原則
 
-當資料請求發生時，需要判斷資料來源：
+### useFetch vs $fetch 技術差異
 
-### 資料來源識別
+| 特性 | useFetch | $fetch |
+|------|----------|--------|
+| 快取機制 | ✅ 內建快取 | ❌ 無快取 |
+| SSR 支援 | ✅ 完整支援 | ⚠️ 需手動處理 |
+| Reactive 狀態 | ✅ pending, error, data | ❌ 需手動管理 |
+| 重複請求防護 | ✅ key 參數控制 | ❌ 無防護 |
+| 記憶體使用 | ⚠️ 較高（狀態管理） | ✅ 較低 |
+| 執行時機控制 | ✅ immediate, watch | ❌ 需手動控制 |
 
-- **初始載入**：第一次執行 useFetch 時的初始數據
-- **URL 變化觸發**：因 URL 參數改變而觸發的自動刷新
-- **手動刷新**：呼叫 refresh/execute 函數的手動更新
-- **監聽器觸發**：通過 watch 參數變化觸發的請求
+### 技術決策樹
 
-### 快取與伺服器請求選擇
-
-根據資料特性選擇快取策略：
-
-- **選擇快取**：使用者基本資料、系統設定、相對穩定的清單資料
-- **請求伺服器**：即時數據、統計資訊、動態查詢結果
-
-## useFetch 配置最佳實踐
-
-### Store 中的標準配置
-
-```typescript
-const {
-  data: fetchedData,
-  pending: isLoading,
-  error,
-  execute: refresh,
-  clear: clearData,
-} = useFetch<DataType>('/api/endpoint', {
-  baseURL: '/api',
-  key: 'unique-cache-key', // 唯一快取 key，避免重複請求
-  server: false, // 根據需求選擇是否在 SSR 階段執行
-  immediate: false, // 手動控制執行時機
-  watch: false, // 避免不必要的自動監聽
-});
 ```
-
-### 監聽資料變化並同步到 Store
-
-```typescript
-watch(fetchedData, (newData) => {
-  if (newData) {
-    storeData.value = newData;
-    persistToStorage(newData); // 持久化儲存
-  }
-});
-```
-
-### 條件性資料獲取
-
-```typescript
-// 監聽依賴變化，有條件地觸發請求
-watch(
-  () => authStore.userId,
-  (newUserId) => {
-    if (newUserId) {
-      refresh(); // 使用 execute 或 refresh 觸發請求
-    }
-  },
-  { immediate: true }
-);
+需要快取嗎？
+├─ 是 → useFetch
+└─ 否 → 需要 SSR 嗎？
+    ├─ 是 → useFetch
+    └─ 否 → 需要載入狀態嗎？
+        ├─ 是 → useFetch
+        └─ 否 → $fetch
 ```
 
 ---
 
-## 程式碼範例
+## 進階配置參數
 
-### ✅ 正確範例：Store 中使用 useFetch
+### useFetch 關鍵參數說明
 
 ```typescript
-export const useDataStore = defineStore('data', () => {
-  const authStore = useAuthStore();
-  
-  // ✅ 使用 useFetch 提供快取和 SSR 安全性
-  const {
-    data: userData,
-    pending: isLoadingUser,
-    error: userError,
-    execute: refreshUser,
-  } = useFetch<User>('/v1/user/profile', {
-    baseURL: '/api',
-    key: 'user-profile', // 唯一快取 key
-    server: false, // 僅在客戶端執行
-    immediate: false, // 手動控制執行
-    watch: false, // 不自動監聽參數變化
-  });
-
-  // 監聽資料變化並同步
-  watch(userData, (newUserData) => {
-    if (newUserData) {
-      user.value = newUserData;
-    }
-  });
-
-  return {
-    userData,
-    isLoadingUser,
-    userError,
-    refreshUser,
-  };
-});
+const { data, pending, error, execute, refresh } = useFetch(url, {
+  key: 'unique-key',        // 快取唯一識別
+  server: true,            // SSR 階段是否執行
+  immediate: true,          // 是否立即執行
+  watch: false,             // 是否監聽參數變化
+  default: () => ({}),      // 預設值
+  transform: (data) => data, // 資料轉換函數
+  pick: ['field1'],        // 只選取特定欄位
+  getCachedData: (key) => {}, // 自定義快取邏輯
+})
 ```
 
-### ❌ 錯誤範例：Store 中使用 $fetch
+### 快取控制策略
 
+#### 1. Key 命名規範
 ```typescript
-// ❌ 在 store 中直接使用 $fetch
-const fetchUserData = async () => {
-  try {
-    loading.value = true;
-    // 每次都發起新請求，沒有快取機制
-    const data = await $fetch('/api/v1/user/profile');
-    user.value = data;
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
-};
+// ✅ 好的命名
+key: 'user-profile-123'
+key: 'company-programs-page-1'
+
+// ❌ 避免的命名
+key: 'data'
+key: 'fetch'
 ```
 
-### ✅ 正確範例：表單提交使用 $fetch
-
+#### 2. 快取生命週期
 ```typescript
-// ✅ 一次性操作使用 $fetch
-const handleSubmitForm = async (formData: FormData) => {
-  try {
-    isSubmitting.value = true;
-    await $fetch('/api/v1/form/submit', {
-      method: 'POST',
-      body: formData,
-    });
-    // 提交成功後可觸發資料刷新
-    await refreshUserData();
-  } catch (error) {
-    handleError(error);
-  } finally {
-    isSubmitting.value = false;
-  }
-};
+// 手動清除快取
+const { clear } = useFetch('/api/data', { key: 'my-data' })
+clear() // 清除特定快取
+
+// 全域清除快取
+await clearNuxtData() // 清除所有快取
+await clearNuxtData('my-data') // 清除特定快取
+```
+
+#### 3. 條件性快取
+```typescript
+const shouldCache = computed(() => authStore.isLoggedIn)
+
+const { data } = useFetch('/api/protected', {
+  key: 'protected-data',
+  server: false,
+  immediate: shouldCache.value, // 根據條件決定是否執行
+})
 ```
 
 ---
 
-## 注意事項
+## 常見問題與解決方案
 
-- 在企業認證等相對穩定的資料 Store 中，優先使用 useFetch 避免路由切換時的重複請求
-- 使用有意義的 key 參數來控制快取範圍，避免不同組件間的快取衝突
-- 合理設定 server、immediate、watch 等參數，根據實際需求平衡效能與使用者體驗
-- 對於需要即時性的資料，考慮使用適當的 refresh 策略而非完全依賴快取
+### 1. SSR 水合不匹配
+```typescript
+// ❌ 問題：服務端和客戶端資料不一致
+const { data } = useFetch('/api/data', {
+  server: true, // 服務端執行
+  // 但客戶端可能因為認證狀態不同而得到不同結果
+})
+
+// ✅ 解決：明確區分 SSR 和客戶端行為
+const { data } = useFetch('/api/data', {
+  server: false, // 僅在客戶端執行
+  key: 'client-only-data'
+})
+```
+
+### 2. 重複請求問題
+```typescript
+// ❌ 問題：多個組件同時請求相同資料
+// Component A
+const { data } = useFetch('/api/user', { key: 'user' })
+// Component B  
+const { data } = useFetch('/api/user', { key: 'user' }) // 重複請求
+
+// ✅ 解決：使用相同的 key 共享快取
+const { data } = useFetch('/api/user', { key: 'user-profile' })
+```
+
+### 3. 記憶體洩漏
+```typescript
+// ❌ 問題：未清理的監聽器
+const { data } = useFetch('/api/data', {
+  watch: [reactiveParam],
+  // 組件銷毀時可能未清理
+})
+
+// ✅ 解決：使用 onUnmounted 清理
+onUnmounted(() => {
+  clearNuxtData('my-cache-key')
+})
+```
+
+---
+
+## 效能優化技巧
+
+### 1. 預載入策略
+```typescript
+// 預載入可能需要的資料
+const { data: prefetchData } = await useFetch('/api/preload', {
+  key: 'preload-data',
+  server: true,
+  immediate: false
+})
+```
+
+### 2. 分頁資料處理
+```typescript
+const { data, pending } = useFetch('/api/items', {
+  key: `items-page-${currentPage.value}`,
+  watch: [currentPage],
+  transform: (data) => ({
+    items: data.items,
+    total: data.total,
+    hasMore: data.items.length === 20
+  })
+})
+```
+
+### 3. 錯誤重試機制
+```typescript
+const { data, error, execute } = useFetch('/api/unreliable', {
+  key: 'retry-data',
+  retry: 3, // 自動重試 3 次
+  retryDelay: 1000 // 重試間隔 1 秒
+})
+```
+
+---
+
+## 技術注意事項
+
+- **記憶體管理**：定期清理不需要的快取，避免記憶體洩漏
+- **SSR 一致性**：確保服務端和客戶端資料一致，避免水合不匹配
+- **Key 命名**：使用有意義且唯一的 key 名稱，避免快取衝突
+- **效能監控**：監控 Core Web Vitals，確保資料獲取不影響使用者體驗
+- **錯誤處理**：建立統一的錯誤處理機制，提供良好的使用者回饋
+
+---
+
+## 相關文件
+
+- **API 開發規範**：`api-development-spec.mdc` - 完整的 API 開發流程
+- **效能優化指南**：`fe-performance-optimization.mdc` - 前端效能最佳實踐
+- **JavaScript 風格指南**：`fe-JavaScript-style-guide.mdc` - 程式碼風格規範
