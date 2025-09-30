@@ -20,8 +20,12 @@ const planStore = useCompanyPlanStore();
 const router = useRouter();
 const isSidebarOpen = ref(false);
 
-// SSR/CSR 皆預抓關鍵資料（頂層 await 允許服務端等待資料）
-if (import.meta.server) {
+// ✅ SSR/CSR 皆預抓關鍵資料 - 避免重複初始化
+if (import.meta.server && !planStore.plan) {
+	await planStore.init();
+}
+else if (import.meta.client && !planStore.plan && authStore.token) {
+	// 客戶端且有 token 但無方案資料時才初始化
 	await planStore.init();
 }
 

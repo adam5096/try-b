@@ -18,18 +18,21 @@ export const useCompanyPlanStore = defineStore('companyPlan', () => {
 		execute: fetchCurrentPlan,
 	} = useFetch<CompanyPlan>('/v1/plans/current', {
 		baseURL: '/api',
-		immediate: false, // 改為 false，避免在沒有 token 時立即請求
+		key: 'company-current-plan', // ✅ 加入快取 key，避免重複請求
+		immediate: false, // 不立即執行，手動控制
+		server: false, // 僅在客戶端執行
 	});
 
-	// 監聽 token 變化，當 token 存在時才獲取 plan
+	// ✅ 監聽登入狀態變化，確保認證完全完成後才獲取 plan
 	watch(
-		() => authStore.token,
-		(newToken) => {
-			if (newToken) {
+		() => authStore.isLoggedIn,
+		(isLoggedIn) => {
+			if (isLoggedIn && !plan.value && !isLoading.value) {
+				// 直接執行，不使用 nextTick 避免阻塞
 				fetchCurrentPlan();
 			}
 		},
-		{ immediate: true }, // 立即執行一次，以處理頁面刷新時 token 已存在的情況
+		{ immediate: true }, // 立即執行一次，以處理頁面刷新時已登入的情況
 	);
 
 	// 同步 isPayed 與 Cookie
