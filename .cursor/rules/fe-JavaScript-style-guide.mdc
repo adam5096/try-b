@@ -44,7 +44,7 @@ alwaysApply: false
 ### 核心原則
 
 - **單一真相來源**：只保留最小可變狀態（API 原始資料、UI 控制），其他顯示用資料以 `computed` 推導
-- **避免狀態同步**：不要使用 `watch` 或 `useEffect` 來同步狀態，而是透過衍生狀態來處理
+- **避免錯誤的狀態同步**：不要使用 `watch` 或 `useEffect` 來手動同步狀態，而是透過衍生狀態來處理
 - **純函數推導**：`computed` 應該是純函數，無副作用，僅基於現有狀態計算新值
 
 ### 何時使用 `computed`
@@ -114,11 +114,11 @@ export const useUserStore = defineStore('user', () => {
 })
 ```
 
-#### 3. 避免狀態同步的反模式
+#### 3. 避免錯誤的狀態同步做法
 
 ```vue
 <script setup lang="ts">
-// ❌ 反模式：使用 watch 同步狀態
+// ❌ 錯誤做法：使用 watch 同步狀態
 const users = ref<User[]>([])
 const selectedUserId = ref<string | null>(null)
 
