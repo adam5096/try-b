@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type {
 	LoginData,
 	CompanyUser,
@@ -30,30 +30,64 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 
 	const isLoggedIn = computed(() => !!token.value && !!user.value);
 
+	// ✅ 使用 useFetch 提供快取和 SSR 安全性
+	const {
+		data: fetchedUserData,
+		pending: isLoadingUser,
+		error: userError,
+		execute: refreshUser,
+		clear: clearUserData,
+	} = useFetch<CompanyProfile>('/v1/company', {
+		baseURL: '/api',
+		key: 'company-user-profile', // 唯一快取 key，避免重複請求
+		server: false, // 僅在客戶端執行
+		immediate: false, // 不立即執行，手動控制
+		watch: false, // 不自動監聽參數變化
+	});
+
+	// 監聽 fetchedUserData 變化並同步到 store
+	watch(fetchedUserData, (newUserData) => {
+		if (newUserData) {
+			user.value = newUserData;
+			userCookie.value = newUserData;
+		}
+	});
+
+	// 監聽錯誤並處理登出
+	watch(userError, (error) => {
+		if (error) {
+			console.error('Company user fetch error:', error);
+			logout();
+		}
+	});
+
 	/**
-   * @description 取得當前登入的企業使用者詳細資料
-   *              此函式會使用儲存的 token 發送請求至 GET /api/v1/company
+   * @description 優化的取得企業使用者資料函式 - 避免重複請求
+   *              使用 useFetch 內建快取機制，確保資料不會重複載入
    */
 	async function fetchUser() {
 		if (!token.value) {
 			return;
 		}
 
-		try {
-			const { data: userData } = await useFetch<CompanyProfile>('/v1/company', {
-				baseURL: '/api',
-			});
-			if (userData.value) {
-				user.value = userData.value;
-				userCookie.value = userData.value;
-			}
-			else {
-				throw new Error('No user data returned');
-			}
+		// ✅ 如果已有使用者資料且無錯誤，不重複請求
+		if (user.value && !userError.value) {
+			console.log('Company user data already exists, skipping fetch');
+			return;
 		}
-		catch (_error) {
-			// 如果 token 失效或驗證失敗，則清除所有登入狀態
-			await logout();
+
+		// ✅ 如果正在載入中，避免重複請求
+		if (isLoadingUser.value) {
+			console.log('Company user fetch already in progress');
+			return;
+		}
+
+		try {
+			await refreshUser();
+		}
+		catch (error) {
+			console.error('Failed to fetch company user:', error);
+			// 錯誤會自動觸發 userError watch 處理登出
 		}
 	}
 
@@ -81,6 +115,9 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 				basicUser.value = response.user;
 				basicUserCookie.value = response.user;
 
+				// ✅ 登入成功後立即獲取完整的使用者資料
+				await fetchUser();
+
 				// 登入成功後，重置企業付款狀態持久化並同步到 store
 				const companyPayedCookie = useCookie<boolean>('company_is_payed', {
 					path: '/',
@@ -107,7 +144,7 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 	}
 
 	/**
-   * @description 企業使用者登出流程
+   * @description 企業使用者登出流程 - 清理所有快取和狀態
    */
 	async function logout() {
 		if (token.value) {
@@ -121,6 +158,11 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 				// 忽略登出時的錯誤
 			}
 		}
+
+		// ✅ 清理 useFetch 快取
+		clearUserData();
+
+		// 清理所有狀態
 		user.value = null;
 		userCookie.value = null;
 		token.value = null;
@@ -151,8 +193,11 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 		companyId,
 		basicUser,
 		isLoggedIn,
+		isLoadingUser, // ✅ 暴露載入狀態
+		userError, // ✅ 暴露錯誤狀態
 		login,
 		logout,
 		fetchUser,
+		refreshUser, // ✅ 暴露手動重新整理函數
 	};
 });
