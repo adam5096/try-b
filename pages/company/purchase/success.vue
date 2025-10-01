@@ -191,6 +191,11 @@ const orderNum = computed(() => {
 	return route.query.order as string;
 });
 
+// 取得藍新金流的 Status 參數
+const newebpayStatus = computed(() => {
+	return route.query.status as string;
+});
+
 // 檢查是否有錯誤狀態
 const hasError = computed(() => {
 	return !!route.query.error;
@@ -200,6 +205,21 @@ const hasError = computed(() => {
 const isProcessingStatus = computed(() => {
 	return route.query.status === 'processing' && !orderNum.value;
 });
+
+// 檢查藍新金流狀態
+const isNewebpaySuccess = computed(() => {
+	return newebpayStatus.value === 'SUCCESS';
+});
+
+// 調試：在 console 顯示所有查詢參數
+if (import.meta.client) {
+	console.log('[Success 頁面] URL 查詢參數:', {
+		order: route.query.order,
+		status: route.query.status,
+		error: route.query.error,
+		allParams: route.query,
+	});
+}
 
 // 格式化金額顯示
 const formatAmount = (amount: number) => {
@@ -218,9 +238,13 @@ const formatDate = (dateString: string) => {
 
 // 取得付款結果
 const fetchPaymentResult = async () => {
+	console.log('[Success 頁面] 開始處理付款結果');
+
 	// 處理錯誤狀態
 	if (hasError.value) {
 		const errorType = route.query.error as string;
+		console.error('[Success 頁面] 錯誤狀態:', errorType);
+
 		if (errorType === 'invalid_callback') {
 			error.value = '付款回調數據格式錯誤';
 		}
@@ -237,19 +261,42 @@ const fetchPaymentResult = async () => {
 
 	// 處理處理中狀態（藍新金流回調但未帶訂單號）
 	if (isProcessingStatus.value) {
+		console.warn('[Success 頁面] 處理中狀態：無訂單號');
 		error.value = '正在確認付款狀態，請稍後再查看訂單列表';
 		isLoading.value = false;
 		ElMessage.warning('付款正在處理中，請稍後在計畫列表查看付款狀態');
 		return;
 	}
 
+	// 檢查藍新金流狀態（但沒有訂單號的情況）
+	if (newebpayStatus.value && !orderNum.value) {
+		console.warn('[Success 頁面] 有藍新金流狀態但缺少訂單號:', {
+			status: newebpayStatus.value,
+			isSuccess: isNewebpaySuccess.value,
+		});
+
+		if (isNewebpaySuccess.value) {
+			error.value = '付款成功但無法取得訂單資訊，請聯繫客服或查看訂單列表';
+			ElMessage.warning(error.value);
+		}
+		else {
+			error.value = `付款狀態：${newebpayStatus.value}，但缺少訂單資訊`;
+			ElMessage.error(error.value);
+		}
+		isLoading.value = false;
+		return;
+	}
+
 	// 必須有訂單編號才能查詢
 	if (!orderNum.value) {
+		console.error('[Success 頁面] 缺少訂單編號');
 		error.value = '缺少訂單編號';
 		isLoading.value = false;
 		ElMessage.error('無法取得訂單資訊');
 		return;
 	}
+
+	console.log('[Success 頁面] 準備查詢訂單:', orderNum.value);
 
 	try {
 		const result = await getPaymentResult(orderNum.value);

@@ -112,11 +112,11 @@ public async Task<IActionResult> CreatePayment([FromBody] PaymentRequest request
         ["Amt"] = order.Amount.ToString(),
         ["ItemDesc"] = GetPlanDescription(request.PlanId),
         
-        // ✅ 正確：指向前端的 API endpoint（前端已實作）
-        ["ReturnURL"] = "https://try-b.vercel.app/api/v1/company/payments/return",
-        
-        // ✅ 正確：指向後端的 API endpoint（後端需實作）
-        ["NotifyURL"] = "https://try-b.vercel.app/api/v1/payments/callback",
+    // ✅ 正確：指向前端的 API endpoint（前端已實作）
+    ["ReturnURL"] = "https://try-b.vercel.app/api/v1/company/payments/return",
+    
+    // ✅ 正確：指向後端的 API endpoint（後端需實作）
+    ["NotifyURL"] = "https://trybeta.rocket-coding.com/api/v1/payments/callback",
         
         ["Email"] = GetCompanyEmail(request.CompanyId),
         

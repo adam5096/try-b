@@ -168,7 +168,7 @@ var tradeInfo = new Dictionary<string, string>
     // ⬇️ 必須設置為前端 API endpoint（前端已實作）
     ["ReturnURL"] = "https://try-b.vercel.app/api/v1/company/payments/return",
     // ⬇️ 必須設置為後端 API endpoint（後端需實作）
-    ["NotifyURL"] = "https://try-b.vercel.app/api/v1/payments/callback",
+    ["NotifyURL"] = "https://trybeta.rocket-coding.com/api/v1/payments/callback",
     ["Email"] = "company@example.com",
     // ... 其他參數
 };
