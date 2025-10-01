@@ -60,7 +60,7 @@ var tradeInfo = new Dictionary<string, string>
     // ⬇️ 關鍵修改：ReturnURL 改為前端 API endpoint
     ["ReturnURL"] = "https://try-b.vercel.app/api/v1/company/payments/return",
     // NotifyURL 改為後端 API endpoint
-    ["NotifyURL"] = "https://try-b.vercel.app/api/v1/payments/callback",
+    ["NotifyURL"] = "https://trybeta.rocket-coding.com/api/v1/payments/callback",
     ["Email"] = company.Email,
     // ... 其他參數
 };
