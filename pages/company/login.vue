@@ -38,10 +38,10 @@ async function handleLogin() {
 		console.log('準備跳轉至:', targetPath);
 
 		if (import.meta.client) {
-			// 進行全頁重新導向，於導向完成前維持按鈕 loading 狀態
+			// 使用 Nuxt 的 navigateTo 進行 SPA 導航，避免快取問題
 			willRedirect = true;
 			console.log('執行頁面跳轉...');
-			window.location.replace(targetPath);
+			await navigateTo(targetPath, { replace: true });
 		}
 	}
 	catch (error: any) {
