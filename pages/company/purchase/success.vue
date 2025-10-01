@@ -186,9 +186,19 @@ const paymentResult = ref<PaymentResultResponse | null>(null);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 
-// 從 URL 查詢參數取得訂單編號
+// 從 URL 查詢參數取得訂單編號和狀態
 const orderNum = computed(() => {
 	return route.query.order as string;
+});
+
+// 檢查是否有錯誤狀態
+const hasError = computed(() => {
+	return !!route.query.error;
+});
+
+// 檢查是否為處理中狀態（從藍新金流直接跳轉但未帶訂單號）
+const isProcessingStatus = computed(() => {
+	return route.query.status === 'processing' && !orderNum.value;
 });
 
 // 格式化金額顯示
@@ -208,9 +218,36 @@ const formatDate = (dateString: string) => {
 
 // 取得付款結果
 const fetchPaymentResult = async () => {
+	// 處理錯誤狀態
+	if (hasError.value) {
+		const errorType = route.query.error as string;
+		if (errorType === 'invalid_callback') {
+			error.value = '付款回調數據格式錯誤';
+		}
+		else if (errorType === 'processing_error') {
+			error.value = '處理付款回調時發生錯誤';
+		}
+		else {
+			error.value = '付款處理失敗';
+		}
+		isLoading.value = false;
+		ElMessage.error(error.value);
+		return;
+	}
+
+	// 處理處理中狀態（藍新金流回調但未帶訂單號）
+	if (isProcessingStatus.value) {
+		error.value = '正在確認付款狀態，請稍後再查看訂單列表';
+		isLoading.value = false;
+		ElMessage.warning('付款正在處理中，請稍後在計畫列表查看付款狀態');
+		return;
+	}
+
+	// 必須有訂單編號才能查詢
 	if (!orderNum.value) {
 		error.value = '缺少訂單編號';
 		isLoading.value = false;
+		ElMessage.error('無法取得訂單資訊');
 		return;
 	}
 
@@ -221,6 +258,10 @@ const fetchPaymentResult = async () => {
 		// 如果付款成功，標記為已付款
 		if (result.PaymentStatus === 'Paid') {
 			planStore.markPaid();
+			ElMessage.success('付款成功！');
+		}
+		else if (result.PaymentStatus === 'Pending') {
+			ElMessage.info('付款處理中，請稍候');
 		}
 	}
 	catch (err) {
