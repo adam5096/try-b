@@ -79,6 +79,14 @@ export default defineNuxtConfig({
 			'/api-proxy/**': {
 				proxy: 'https://trybeta.rocket-coding.com/**',
 			},
+			// API 路由：禁用快取，確保認證資料即時性
+			'/api/**': {
+				headers: {
+					'cache-control': 'no-cache, no-store, must-revalidate',
+					'pragma': 'no-cache',
+					'expires': '0',
+				},
+			},
 			// 靜態圖與 Vercel 圖片輸出的長時間快取（提升重訪/多頁載入速度）
 			'/img/**': {
 				headers: {
@@ -94,6 +102,12 @@ export default defineNuxtConfig({
 			'/_fonts/**': {
 				headers: {
 					'cache-control': 'public, max-age=31536000, immutable',
+				},
+			},
+			// 企業登入頁面：禁用快取，確保認證流程順暢
+			'/company/login': {
+				headers: {
+					'cache-control': 'no-cache, no-store, must-revalidate',
 				},
 			},
 		},

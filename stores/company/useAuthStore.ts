@@ -43,6 +43,8 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 		server: false, // 僅在客戶端執行
 		immediate: false, // 不立即執行，手動控制
 		watch: false, // 不自動監聽參數變化
+		// 添加快取控制，確保登入後獲取最新資料
+		default: () => null,
 	});
 
 	// 監聽 fetchedUserData 變化並同步到 store
@@ -83,6 +85,8 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 		}
 
 		try {
+			// 登入後清除快取，確保獲取最新資料
+			clearUserData();
 			await refreshUser();
 		}
 		catch (error) {
@@ -116,6 +120,8 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 				basicUserCookie.value = response.user;
 
 				// ✅ 登入成功後立即獲取完整的使用者資料
+				// 清除快取並強制重新獲取，確保資料一致性
+				clearUserData();
 				await fetchUser();
 
 				// 登入成功後，重置企業付款狀態持久化並同步到 store
