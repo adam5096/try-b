@@ -35,16 +35,31 @@ export default createApiHandler(async (event) => {
 		const query = getQuery(event);
 		const orderNum = query.orderNum || query.order;
 
-		// 方案 B：如果需要從 TradeInfo 解密取得訂單號，需要調用後端 API
-		// 這裡我們先記錄原始數據，讓後端的 NotifyURL 處理實際的訂單更新
+		// 方案 B：嘗試從 TradeInfo 解密取得訂單號
+		// 根據藍新金流文件，TradeInfo 包含加密的訂單資訊
+		if (!orderNum && TradeInfo) {
+			try {
+				// 調用後端 API 解密 TradeInfo 取得訂單號
+				const decryptResponse = await event.$fetch<{ OrderNum?: string }>('/api-proxy/api/v1/payments/decrypt', {
+					method: 'POST',
+					headers: getForwardHeaders(event),
+					body: { TradeInfo, TradeSha },
+				});
+
+				if (decryptResponse && decryptResponse.OrderNum) {
+					console.log('[藍新金流 ReturnURL] 從 TradeInfo 解密取得訂單號:', decryptResponse.OrderNum);
+					return sendRedirect(event, `/company/purchase/success?order=${decryptResponse.OrderNum}&status=${Status}`);
+				}
+			}
+			catch (error) {
+				console.error('[藍新金流 ReturnURL] 解密 TradeInfo 失敗:', error);
+			}
+		}
 
 		if (!orderNum) {
-			// 嘗試從後端解析
-			// 注意：這需要後端提供解密 TradeInfo 的 API
-			console.log('[藍新金流 ReturnURL] 嘗試從 TradeInfo 解析訂單號');
-
 			// 暫時方案：重定向到 success 頁面，讓前端顯示處理中狀態
 			// 前端可以通過輪詢方式查詢最新的付款狀態
+			console.log('[藍新金流 ReturnURL] 無法取得訂單號，重定向到處理中狀態');
 			return sendRedirect(event, '/company/purchase/success?status=processing');
 		}
 
