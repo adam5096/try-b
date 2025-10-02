@@ -40,7 +40,7 @@ export default createApiHandler(async (event) => {
 		if (!orderNum && TradeInfo) {
 			try {
 				// 調用後端 API 解密 TradeInfo 取得訂單號
-				const decryptResponse = await event.$fetch('/api-proxy/api/v1/payments/decrypt', {
+				const decryptResponse = await event.$fetch<{ OrderNum?: string }>('/api-proxy/api/v1/payments/decrypt', {
 					method: 'POST',
 					headers: getForwardHeaders(event),
 					body: { TradeInfo, TradeSha },
