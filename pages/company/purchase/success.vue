@@ -155,10 +155,10 @@
 				</h4>
 				<div class="text-center">
 					<p class="text-xl font-medium">
-						{{ hasValidPlan ? `${planStore.plan.plan_duration_days} 天 體驗人數上限 ${planStore.plan.max_participants} 人` : '載入中...' }}
+						{{ validPlan ? `${validPlan.plan_duration_days} 天 體驗人數上限 ${validPlan.max_participants} 人` : '載入中...' }}
 					</p>
 					<p class="mt-2 text-gray-500">
-						{{ hasValidPlan ? `${formatDate(planStore.plan.start_date)} - ${formatDate(planStore.plan.end_date)}` : '載入中...' }}
+						{{ validPlan ? `${formatDate(validPlan.start_date)} - ${formatDate(validPlan.end_date)}` : '載入中...' }}
 					</p>
 				</div>
 			</div>
@@ -224,6 +224,11 @@ const hasValidPlan = computed(() => {
 	return planStore.plan && isActivePlan(planStore.plan);
 });
 
+// 取得有效的方案資料（確保類型安全）
+const validPlan = computed(() => {
+	return planStore.plan && isActivePlan(planStore.plan) ? planStore.plan : null;
+});
+
 // 檢查藍新金流狀態
 const isNewebpaySuccess = computed(() => {
 	return newebpayStatus.value === 'SUCCESS';
@@ -283,7 +288,7 @@ const fetchPaymentResult = async () => {
 		// 不設定 error，而是保持 loading 狀態並顯示處理中訊息
 		isLoading.value = true;
 		ElMessage.info('付款正在處理中，請稍後查看付款狀態');
-		
+
 		// 嘗試輪詢查詢付款狀態（如果有公司 ID）
 		if (authStore.companyId) {
 			// 可以實作輪詢邏輯，但現在先顯示處理中狀態

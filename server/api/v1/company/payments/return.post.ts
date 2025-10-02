@@ -45,12 +45,13 @@ export default createApiHandler(async (event) => {
 					headers: getForwardHeaders(event),
 					body: { TradeInfo, TradeSha },
 				});
-				
+
 				if (decryptResponse && decryptResponse.OrderNum) {
 					console.log('[藍新金流 ReturnURL] 從 TradeInfo 解密取得訂單號:', decryptResponse.OrderNum);
 					return sendRedirect(event, `/company/purchase/success?order=${decryptResponse.OrderNum}&status=${Status}`);
 				}
-			} catch (error) {
+			}
+			catch (error) {
 				console.error('[藍新金流 ReturnURL] 解密 TradeInfo 失敗:', error);
 			}
 		}
