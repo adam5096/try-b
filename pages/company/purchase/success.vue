@@ -41,6 +41,14 @@
 					<SharedCheckIcon class="w-12 h-12 text-green-500" />
 				</div>
 				<div
+					v-else-if="isProcessingStatus"
+					class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full"
+				>
+					<el-icon class="w-12 h-12 text-blue-500">
+						<Loading />
+					</el-icon>
+				</div>
+				<div
 					v-else
 					class="inline-flex items-center justify-center w-20 h-20 bg-yellow-100 rounded-full"
 				>
@@ -53,12 +61,14 @@
 					<span v-if="isLoading">處理中...</span>
 					<span v-else-if="error">處理失敗</span>
 					<span v-else-if="paymentResult?.PaymentStatus === 'Paid'">付款成功！</span>
+					<span v-else-if="isProcessingStatus">付款處理中</span>
 					<span v-else>付款處理中</span>
 				</h3>
 				<p class="mt-2 text-gray-500">
 					<span v-if="isLoading">正在確認付款狀態...</span>
 					<span v-else-if="error">{{ error }}</span>
 					<span v-else-if="paymentResult?.PaymentStatus === 'Paid'">您的方案已成功付款並確認</span>
+					<span v-else-if="isProcessingStatus">正在確認付款狀態，請稍後再查看訂單列表</span>
 					<span v-else>付款正在處理中，請稍後再確認</span>
 				</p>
 			</div>
@@ -145,10 +155,10 @@
 				</h4>
 				<div class="text-center">
 					<p class="text-xl font-medium">
-						90 天 體驗人數上限 50 人
+						{{ validPlan ? `${validPlan.plan_duration_days} 天 體驗人數上限 ${validPlan.max_participants} 人` : '載入中...' }}
 					</p>
 					<p class="mt-2 text-gray-500">
-						2025 年 9 月 10 日 - 2025 年 12 月 9 日
+						{{ validPlan ? `${formatDate(validPlan.start_date)} - ${formatDate(validPlan.end_date)}` : '載入中...' }}
 					</p>
 				</div>
 			</div>
@@ -168,7 +178,9 @@ import { ElMessage } from 'element-plus';
 import { Loading, Close, Warning } from '@element-plus/icons-vue';
 import { companyRoutes as r } from '~/utils/companyRoutes';
 import { useCompanyPlanStore } from '~/stores/company/usePlanStore';
+import { useCompanyAuthStore } from '~/stores/company/useAuthStore';
 import { useCompanyPayment } from '~/composables/api/company/useCompanyPayment';
+import { isActivePlan } from '~/types/company/plan/current';
 import type { PaymentResultResponse } from '~/types/company/payment';
 
 definePageMeta({
@@ -179,6 +191,7 @@ definePageMeta({
 const router = useRouter();
 const route = useRoute();
 const planStore = useCompanyPlanStore();
+const authStore = useCompanyAuthStore();
 const { getPaymentResult } = useCompanyPayment();
 
 // 付款結果資料
@@ -204,6 +217,16 @@ const hasError = computed(() => {
 // 檢查是否為處理中狀態（從藍新金流直接跳轉但未帶訂單號）
 const isProcessingStatus = computed(() => {
 	return route.query.status === 'processing' && !orderNum.value;
+});
+
+// 檢查是否有有效的方案資料
+const hasValidPlan = computed(() => {
+	return planStore.plan && isActivePlan(planStore.plan);
+});
+
+// 取得有效的方案資料（確保類型安全）
+const validPlan = computed(() => {
+	return planStore.plan && isActivePlan(planStore.plan) ? planStore.plan : null;
 });
 
 // 檢查藍新金流狀態
@@ -262,9 +285,18 @@ const fetchPaymentResult = async () => {
 	// 處理處理中狀態（藍新金流回調但未帶訂單號）
 	if (isProcessingStatus.value) {
 		console.warn('[Success 頁面] 處理中狀態：無訂單號');
-		error.value = '正在確認付款狀態，請稍後再查看訂單列表';
-		isLoading.value = false;
-		ElMessage.warning('付款正在處理中，請稍後在計畫列表查看付款狀態');
+		// 不設定 error，而是保持 loading 狀態並顯示處理中訊息
+		isLoading.value = true;
+		ElMessage.info('付款正在處理中，請稍後查看付款狀態');
+
+		// 嘗試輪詢查詢付款狀態（如果有公司 ID）
+		if (authStore.companyId) {
+			// 可以實作輪詢邏輯，但現在先顯示處理中狀態
+			setTimeout(() => {
+				isLoading.value = false;
+				ElMessage.warning('付款處理中，請稍後在計畫列表查看付款狀態');
+			}, 5000);
+		}
 		return;
 	}
 
