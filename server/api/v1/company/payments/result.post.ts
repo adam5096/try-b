@@ -12,38 +12,46 @@ interface PaymentResultResponse {
  * 取得結帳結果 API 端點
  * 根據 e-comp-12-3 規格書實作
  *
- * 端點: GET /api/v1/company/payments/result
- * 用途: 向 ASP.NET 後端取得結帳結果 (使用 orderNum)
+ * 端點: POST /api/v1/payments/result
+ * 用途: 向 ASP.NET 後端取得結帳結果
  */
 export default createApiHandler(async (event) => {
 	try {
-		// 取得查詢參數
-		const query = getQuery(event);
-		const { orderNum } = query;
+		// 取得請求主體
+		const body = await readBody(event);
+		const { TradeInfo, TradeSha } = body;
 
 		console.log('[結帳結果 API] 收到請求:', {
-			hasOrderNum: !!orderNum,
-			orderNum: orderNum,
+			hasTradeInfo: !!TradeInfo,
+			hasTradeSha: !!TradeSha,
+			tradeInfoPreview: TradeInfo ? (TradeInfo as string).substring(0, 20) + '...' : 'none',
 		});
 
 		// 驗證必要參數
-		if (!orderNum) {
-			console.error('[結帳結果 API] 缺少必要參數:', { orderNum: !!orderNum });
+		if (!TradeInfo || !TradeSha) {
+			console.error('[結帳結果 API] 缺少必要參數:', { TradeInfo: !!TradeInfo, TradeSha: !!TradeSha });
 			return {
 				status: 'Failed',
-				error: '缺少 orderNum 參數',
+				error: '缺少 TradeInfo 或 TradeSha 參數',
 			};
 		}
 
+		// 準備請求資料
+		const requestData = {
+			TradeInfo: TradeInfo as string,
+			TradeSha: TradeSha as string,
+		};
+
 		console.log('[結帳結果 API] 準備向 ASP.NET 後端請求:', {
-			orderNum: orderNum,
+			tradeInfoLength: (TradeInfo as string).length,
+			tradeShaLength: (TradeSha as string).length,
 		});
 
-		// 呼叫 ASP.NET 後端 API (使用 GET 方法)
+		// 呼叫 ASP.NET 後端 API (使用 POST 方法)
 		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('/api-proxy/api/v1/payments/result', {
-			method: 'GET',
+			method: 'POST',
 			headers: getForwardHeaders(event),
-			query: { orderNum },
+			body: requestData,
 		});
 
 		console.log('[結帳結果 API] ASP.NET 後端回應:', response);
