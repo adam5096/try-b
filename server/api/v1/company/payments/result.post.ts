@@ -44,8 +44,8 @@ export default createApiHandler(async (event) => {
 			tradeShaLength: (TradeSha as string).length,
 		});
 
-		// 呼叫 ASP.NET 後端 API (直接呼叫，x-www-form-urlencoded 格式)
-		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
+		// 呼叫 ASP.NET 後端 API (使用代理方式，x-www-form-urlencoded 格式)
+		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('/api-proxy/api/v1/payments/result', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
