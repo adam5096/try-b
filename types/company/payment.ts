@@ -38,7 +38,22 @@ export interface PaymentResultResponse {
 	Card4No?: string
 }
 
-// 付款結果導引回應 (GET /api/v1/payments/result)
+// 結帳結果請求 (GET /api/v1/payments/result)
+export interface PaymentResultRequest {
+	TradeInfo: string
+	TradeSha: string
+}
+
+// 結帳結果回應 (GET /api/v1/payments/result)
+export interface PaymentResultResponseNew {
+	status: 'Success' | 'Failed' | 'Pending'
+	orderNo: string
+	amount: string
+	paymentMethod: 'CREDIT' | 'CVS' | 'ATM' | 'SUBSCRIPTION'
+	card4No?: string
+}
+
+// 付款結果導引回應 (GET /api/v1/payments/result) - 舊版保持相容
 export interface PaymentRedirectResponse {
 	Message: string
 	RedirectUrl: string

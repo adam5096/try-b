@@ -2,6 +2,8 @@ import type {
 	CreatePaymentRequest,
 	CreatePaymentResponse,
 	PaymentResultResponse,
+	PaymentResultResponseNew,
+	PaymentResultRequest,
 	PaymentRedirectResponse,
 	NewebPayFormData,
 } from '~/types/company/payment'
@@ -55,17 +57,96 @@ export const useCompanyPayment = () => {
 				headers.authorization = `Bearer ${authStore.token}`
 			}
 
-			const response = await $fetch<PaymentResultResponse>('/api/v1/company/payments/callback', {
+			// 除錯：記錄請求參數
+			console.log('[getPaymentResult] 請求參數:', {
+				orderNum,
+				company_id: authStore.companyId,
+				hasToken: !!authStore.token,
+				tokenPreview: authStore.token ? authStore.token.substring(0, 20) + '...' : 'none',
+			});
+
+			const response = await $fetch<PaymentResultResponse>('/api/v1/payments/callback', {
 				method: 'GET',
 				headers,
-				params: { orderNum },
+				params: {
+					orderNum,
+					company_id: authStore.companyId,
+					companyId: authStore.companyId, // 嘗試不同的參數名稱
+					companyID: authStore.companyId, // 另一種格式
+				},
 			})
 
+			console.log('[getPaymentResult] 成功回應:', response);
 			return response
 		}
 		catch (error) {
 			console.error('查詢付款結果錯誤:', error)
+
+			// 提供更詳細的錯誤資訊
+			if (error instanceof Error) {
+				console.error('錯誤詳情:', {
+					message: error.message,
+					orderNum,
+					companyId: authStore.companyId,
+					hasToken: !!authStore.token,
+				})
+			}
+
 			throw new Error('查詢付款結果時發生錯誤，請稍後再試')
+		}
+	}
+
+	/**
+	 * 取得結帳結果 (使用 TradeInfo 和 TradeSha)
+	 * @param tradeInfo 交易資訊
+	 * @param tradeSha 交易 SHA256 雜湊值
+	 * @returns 結帳結果
+	 */
+	const getPaymentResultByTradeInfo = async (tradeInfo: string, tradeSha: string): Promise<PaymentResultResponseNew> => {
+		try {
+			const headers: Record<string, string> = {
+				'Content-Type': 'application/json',
+			}
+
+			if (authStore.token) {
+				headers.authorization = `Bearer ${authStore.token}`
+			}
+
+			// 除錯：記錄請求參數
+			console.log('[getPaymentResultByTradeInfo] 請求參數:', {
+				tradeInfoLength: tradeInfo.length,
+				tradeShaLength: tradeSha.length,
+				tradeInfoPreview: tradeInfo.substring(0, 20) + '...',
+				tradeShaPreview: tradeSha.substring(0, 20) + '...',
+				hasToken: !!authStore.token,
+			});
+
+			const response = await $fetch<PaymentResultResponseNew>('/api/v1/company/payments/result', {
+				method: 'POST',
+				headers,
+				body: {
+					TradeInfo: tradeInfo,
+					TradeSha: tradeSha,
+				},
+			})
+
+			console.log('[getPaymentResultByTradeInfo] 成功回應:', response);
+			return response
+		}
+		catch (error) {
+			console.error('查詢結帳結果錯誤:', error)
+
+			// 提供更詳細的錯誤資訊
+			if (error instanceof Error) {
+				console.error('錯誤詳情:', {
+					message: error.message,
+					tradeInfoLength: tradeInfo.length,
+					tradeShaLength: tradeSha.length,
+					hasToken: !!authStore.token,
+				})
+			}
+
+			throw new Error('查詢結帳結果時發生錯誤，請稍後再試')
 		}
 	}
 
@@ -196,6 +277,7 @@ export const useCompanyPayment = () => {
 	return {
 		createPayment,
 		getPaymentResult,
+		getPaymentResultByTradeInfo,
 		getPaymentRedirect,
 		submitToNewebPay,
 		validateCreditCard,
