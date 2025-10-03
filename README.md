@@ -1,75 +1,241 @@
-# Nuxt Minimal Starter
+## TRY β 職業體驗平台
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+一個連結人才與企業的職業體驗平台，提供多元的短期體驗計畫，協助使用者在投入職場前探索興趣、找到適合的道路。
 
-## Setup
+### 專案成果
 
-Make sure to install dependencies:
+**1. 完成了什麼任務？**
+- **兩端完整系統開發**：建構體驗者端、企業端端兩個獨立但整合的系統
+- **職業體驗平台核心功能**：實現先體驗後聘用的創新求職模式
+- **全端 Web 應用程式**：從前端 UI 到後端 API 的完整開發與部署 (開發模式屬於前、後端分離)
+- **響應式設計實現**：支援桌機、平板、手機等多裝置體驗
 
+**2. 開發過程中解決了什麼問題？**
+- **跨端權限管理**：解決不同角色（體驗者、企業、管理員）的權限控制與路由保護
+- **API 架構設計**：透過 BFF（Backend for Frontend）模式解決前後端分離的複雜性
+- **資安防護機制**：實現 CSP、Rate Limiting、Cookie 安全等完整的資安防護體系
+
+**3. 滿足了什麼需求？**
+- **求職者需求**：提供低風險的職業探索機會，降低轉職成本與錯聘風險
+- **企業需求**：建立低成本的人才篩選機制，提升招聘效率與精準度
+- **平台管理需求**：實現自動化審核流程與人工覆核機制，確保內容品質
+- **技術需求**：採用現代化技術棧，確保系統的可維護性、擴展性與效能
+
+### 建議體驗流程
+1. 首頁探索 → 了解平台理念與合作夥伴
+2. 角色選擇 → 選擇體驗者或企業身份
+3. 註冊登入 → 完成身份驗證
+4. 瀏覽計畫 → 探索適合的體驗機會
+5. 申請參與 → 提交申請並等待審核
+6. 體驗回饋 → 完成體驗後撰寫評價
+
+---
+
+## 快速開始
+
+### 環境需求
+- Node.js 18+
+- pnpm 9.9.0+
+- Git
+
+### 安裝與啟動
 ```bash
-# npm
-npm install
+# 取得程式碼
+git clone [repository-url]
+cd try-b
 
-# pnpm
+# 安裝依賴
 pnpm install
 
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
+# 啟動開發伺服器
 pnpm dev
 
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
+# 建置正式版
 pnpm build
 
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
+# 本機預覽產出
 pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### 環境變數
+本專案使用 Nuxt Runtime Config：
+- `NUXT_PUBLIC_API_BASE_URL`：生產環境的後端 API 主機，預設為 `https://trybeta.rocket-coding.com`
+
+在開發環境時，所有 API 請求會透過 Nitro 代理 `/api-proxy/**` 轉發到真實後端；生產環境則直接使用 `NUXT_PUBLIC_API_BASE_URL`。
+
+---
+
+## 專案規模統計
+
+### 開發成果
+- **頁面開發統計**：30+ 個完整頁面
+- **元件庫統計**：20+ 個可重用元件
+- **API 端點統計**：20+ 個不重複的 API endpoint
+
+### 系統架構
+- **佈局系統**：6 種不同佈局 (main/company/user/admin/default/blank)
+- **兩端完整系統**：體驗者端、企業端
+- **BFF 架構**：實現 Backend for Frontend 代理層
+
+---
+
+## 技術棧與主要模組
+
+### 前端
+- Nuxt 3（^3.17.6）
+- Vue 3（^3.5）
+- TypeScript
+- Tailwind CSS（整合 `@nuxtjs/tailwindcss`）
+- Element Plus（`@element-plus/nuxt`，`idInjection: false`）
+- Pinia（含 `@pinia-plugin-persistedstate/nuxt`）
+- Nuxt Image（`@nuxt/image`，IPX、遠端圖片白名單、預設輸出 webp、快取 header）
+- Nuxt SEO（`@nuxtjs/seo`、`@nuxtjs/sitemap`，站點 URL: `https://try-b.vercel.app`）
+- `@nuxt/fonts`（Google Fonts：Inter）
+- Font Awesome（自訂插件註冊 `font-awesome-icon`）
+- 日期處理：`dayjs`（插件擴充 `updateLocale`、`relativeTime`、`utc`）
+- Nuxt Security（`nuxt-security`，CSP、Rate Limiting、SRI 等資安功能）
+
+### 開發工具
+- ESLint 9（整合 `@nuxt/eslint`，專案使用 Tab 縮排、不使用分號等 stylistic 設定）
+- Vitest（測試框架，含覆蓋率報告）
+
+### 伺服器端（Nuxt Nitro）BFF - Backend for Frontend
+- 以 Nitro Server 端點作為 API 代理層（例如：`server/api/v1/home/popular.get.ts`）
+- 路由規則：
+  - `/api-proxy/**` → 代理至 `https://trybeta.rocket-coding.com/**`
+  - `/img/**`、`/_ipx/**` → 長時間快取 headers
+- SSR 轉譯：`@popperjs/core`、`element-plus`
+- 允許的遠端圖片來源：`trybeta.rocket-coding.com`、`images.unsplash.com`、`i.imgur.com`
+
+### 資安防護
+- **Content Security Policy (CSP)**：Strict CSP 模式，包含 nonce 支援
+- **Subresource Integrity (SRI)**：確保外部資源完整性
+- **Rate Limiting**：每分鐘 100 請求限制，使用 LRU Cache 存儲
+- **Cookie 安全設定**：httpOnly、secure、sameSite 防護
+- **請求升級**：自動將 HTTP 升級為 HTTPS
+- **腳本限制**：禁止內聯腳本屬性、物件嵌入、base 標籤
+- **統一 API 錯誤處理**：請求追蹤與錯誤分類機制
+
+---
+
+## API 架構與開發約定
+
+### 呼叫策略
+- 統一使用 `$fetch` 進行 HTTP 請求，透過 BFF 架構處理 API 調用
+- 開發環境（`NODE_ENV=development`）：`baseURL = /api-proxy`，由 Nitro 代理轉發至真實後端
+- 生產環境（`NODE_ENV=production`）：`baseURL = NUXT_PUBLIC_API_BASE_URL`
+- 後端實際路徑需包含 `api`（例如：`/api/v1/...`），並透過代理形如：`/api-proxy/api/v1/...`
+
+### 權限與錯誤處理
+- 401 錯誤統一在前端插件攔截（`plugins/api.ts`），依請求前綴自動導向：
+  - `/api/user` → 轉導 `users/login`
+  - `/api/company` → 轉導 `company/login`
+- 導轉附帶 `?redirect=<當前路徑>` 以便登入後回跳。
+
+### UI 與金流/金額顯示慣例
+- Element Plus 優先採用預設設定；盡量避免以 Tailwind 覆寫其元件樣式，僅在自行撰寫的容器元素（如 `div`、`span`）上酌量使用 Tailwind。
+- 金額顯示一律使用「TWD」作為國際貨幣前綴（例如：`TWD 1,000`）。
+
+---
+
+## 專案腳本
+- `pnpm dev`：本機開發
+- `pnpm build`：建置
+- `pnpm preview`：本機預覽產出
+- `pnpm generate`：靜態化（如需）
+- `pnpm lint` / `pnpm lint:fix`：程式碼風格與修復
+- `pnpm test`：執行測試
+- `pnpm test:coverage`：測試覆蓋率報告
+
+---
+
+## 目錄結構（節錄）
+
+```
+try-b/
+├── assets/            # 靜態資源（CSS、圖片）
+├── components/        # Vue 元件（company/shared/users）
+├── composables/       # 組合式函數（含 api 封裝）
+├── layouts/           # 頁面佈局（main/company/user/admin/default/blank）
+├── middleware/        # 路由中介軟體（company-auth、user-auth 等）
+├── pages/             # 頁面（admin/company/users...）
+├── plugins/           # Nuxt 插件（api、dayjs、fontawesome、error-handler）
+├── public/            # 靜態公開資源（favicon、_robots.txt、img/*）
+├── server/            # Nitro API 代理端點（/api/v1/**）
+├── stores/            # Pinia 狀態（user/company/admin）
+├── types/             # TypeScript 型別
+├── utils/             # 工具函數
+└── test/              # 測試檔案
+```
+
+---
+## Public 資料夾（重點）
+- `favicon.ico`：網站小圖示
+- `_robots.txt`：搜尋引擎爬蟲規則
+- `img/`：站內靜態圖片（如 `home/`、`company/`、`admin/`、`users/` 等）
+  - 重要：Nitro 針對 `/img/**` 與 `/_ipx/**` 已設定長時間快取 headers
+  - Nuxt Image 透過 IPX 處理圖片輸出與格式（預設輸出 webp、quality=80）
+
+---
+
+## 路由與頁面
+- `pages/users/*`：使用者端（登入、收藏、申請、計畫詳情、設定、評論等）
+- `pages/company/*`：企業端（登入、計畫建立/管理、申請者管理、購買流程、評論等）
+- `pages/admin/*`：管理員端（儀表板、評論審核、計畫管理、趨勢）
+
+對應中介層：
+- `middleware/user-auth.ts`：使用者權限
+- `middleware/company-auth.global.ts`：企業權限
+- `middleware/company-purchase-first-visit.global.ts`：首次購買流程限制
+
+---
+
+## 程式碼風格
+- 使用 ESLint 9 與 `@nuxt/eslint` 預設規範；專案 stylistic 設定包含：
+  - Tab 縮排
+  - 不使用分號
+  - 多行結尾使用尾逗號
+- 環境區分：開發/生產環境使用不同的 ESLint 規則嚴格度
+
+---
+
+## Git 規範
+
+### Commit（Conventional Commits）
+- `feat:` 新功能
+- `fix:` 修復問題
+- `docs:` 文件更新
+- `style:` 程式碼格式
+- `refactor:` 重構
+- `test:` 測試相關
+- `chore:` 建置/工具
+
+### Branch
+- `main`：生產分支
+- `develop`：開發分支
+- `feature/*`：功能開發
+- `fix/*`：修復
+- `hotfix/*`：緊急修復
+
+### Git Flow（建議）
+1. 從 `develop` 建立功能分支
+2. 功能完成於分支上
+3. 建立 PR 回 `develop`
+4. 測試通過後合併
+5. 週期性由 `develop` 併入 `main`
+
+---
+
+## 部署建議
+- 以 Vercel/Nitro 為主的部署流程；請確認：
+  - `NUXT_PUBLIC_API_BASE_URL` 已設定
+  - 需要代理的路由維持 `/api-proxy/**` → 真實後端
+  - 網站 URL（`nuxt.config.ts` 中 `site.url`）與實際網域一致
+
+---
+
+## 備註
+- 設計工具（Figma、Miro 等）未納入此程式倉庫，若需補充請於此區更新
+- 若需擴充 API，請遵循現有模式：優先 `$fetch`、路徑需含 `api`、開發環境使用 `/api-proxy` 代理、並延續錯誤攔截與導流行為
+- 專案已實現完整的資安防護機制，包括 CSP、認證、速率限制等
+- 測試覆蓋率報告可透過 `pnpm test:coverage` 查看
