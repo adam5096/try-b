@@ -44,14 +44,17 @@ export default createApiHandler(async (event) => {
 			tradeShaLength: (TradeSha as string).length,
 		});
 
-		// 呼叫 ASP.NET 後端 API (使用直連方式)
-		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
+		// 呼叫 ASP.NET 後端 API (使用代理方式，x-www-form-urlencoded 格式)
+		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('/api-proxy/api/v1/payments/result', {
 			method: 'POST',
-			headers: getForwardHeaders(event),
-			body: {
+			headers: {
+				...getForwardHeaders(event),
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: new URLSearchParams({
 				TradeInfo: TradeInfo as string,
 				TradeSha: TradeSha as string,
-			},
+			}),
 		});
 
 		console.log('[結帳結果 API] ASP.NET 後端回應:', response);
