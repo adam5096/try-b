@@ -33,41 +33,37 @@ export default createApiHandler(async (event) => {
 			return {
 				status: 'Failed',
 				error: '缺少 TradeInfo 或 TradeSha 參數',
+				orderNo: '',
+				amount: '',
+				paymentMethod: 'CREDIT',
 			};
 		}
-
-		// 準備請求資料
-		const requestData = {
-			TradeInfo: TradeInfo as string,
-			TradeSha: TradeSha as string,
-		};
 
 		console.log('[結帳結果 API] 準備向 ASP.NET 後端請求:', {
 			tradeInfoLength: (TradeInfo as string).length,
 			tradeShaLength: (TradeSha as string).length,
 		});
 
-		// 呼叫 ASP.NET 後端 API (使用 POST 方法)
-		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('/api-proxy/api/v1/payments/result', {
+		// 呼叫 ASP.NET 後端 API (使用直連方式)
+		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
 			method: 'POST',
 			headers: getForwardHeaders(event),
-			body: requestData,
+			body: {
+				TradeInfo: TradeInfo as string,
+				TradeSha: TradeSha as string,
+			},
 		});
 
 		console.log('[結帳結果 API] ASP.NET 後端回應:', response);
 
-		// 格式化回應資料以符合前端需求
-		const formattedResponse: PaymentResultResponse = {
+		// 直接返回後端回應，確保格式一致
+		return {
 			status: response.status || 'Failed',
 			orderNo: response.orderNo || '',
 			amount: response.amount || '',
 			paymentMethod: response.paymentMethod || 'CREDIT',
 			card4No: response.card4No || undefined,
 		};
-
-		console.log('[結帳結果 API] 格式化回應:', formattedResponse);
-
-		return formattedResponse;
 	}
 	catch (error) {
 		console.error('[結帳結果 API] 處理錯誤:', error);

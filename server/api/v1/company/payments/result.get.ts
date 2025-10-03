@@ -39,8 +39,8 @@ export default createApiHandler(async (event) => {
 			orderNum: orderNum,
 		});
 
-		// 呼叫 ASP.NET 後端 API (使用 GET 方法)
-		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('/api-proxy/api/v1/payments/result', {
+		// 呼叫 ASP.NET 後端 API (使用直連方式)
+		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
 			method: 'GET',
 			headers: getForwardHeaders(event),
 			query: { orderNum },
