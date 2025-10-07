@@ -39,6 +39,7 @@ export default createApiHandler(async (event) => {
 		}
 
 		console.log('[結帳結果 API] 準備向 ASP.NET 後端請求:', {
+			targetUrl: 'https://trybeta.rocket-coding.com/api/v1/payments/result',
 			tradeInfoLength: (TradeInfo as string).length,
 			tradeShaLength: (TradeSha as string).length,
 		});
@@ -60,15 +61,26 @@ export default createApiHandler(async (event) => {
 		});
 
 		console.log('[結帳結果 API] ASP.NET 後端回應:', response);
+		console.log('[結帳結果 API] 回應詳細資訊:', {
+			hasStatus: !!response.status,
+			hasOrderNo: !!response.orderNo,
+			hasAmount: !!response.amount,
+			hasPaymentMethod: !!response.paymentMethod,
+			hasCard4No: !!response.card4No,
+			responseKeys: Object.keys(response),
+		});
 
 		// 直接返回後端回應，確保格式一致
-		return {
+		const finalResponse = {
 			status: response.status || 'Failed',
 			orderNo: response.orderNo || '',
 			amount: response.amount || '',
 			paymentMethod: response.paymentMethod || '',
 			card4No: response.card4No || '',
 		};
+
+		console.log('[結帳結果 API] 最終回應:', finalResponse);
+		return finalResponse;
 	}
 	catch (error) {
 		console.error('[結帳結果 API] 處理錯誤:', error);
