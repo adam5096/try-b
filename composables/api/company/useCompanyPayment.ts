@@ -104,31 +104,31 @@ export const useCompanyPayment = () => {
 	 */
 	const getPaymentResultByTradeInfo = async (tradeInfo: string, tradeSha: string): Promise<PaymentResultResponseNew> => {
 		try {
-		const headers: Record<string, string> = {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		}
+			const headers: Record<string, string> = {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			}
 
-		if (authStore.token) {
-			headers.authorization = `Bearer ${authStore.token}`
-		}
+			if (authStore.token) {
+				headers.authorization = `Bearer ${authStore.token}`
+			}
 
-		// 除錯：記錄請求參數
-		console.log('[getPaymentResultByTradeInfo] 請求參數:', {
-			tradeInfoLength: tradeInfo.length,
-			tradeShaLength: tradeSha.length,
-			tradeInfoPreview: tradeInfo.substring(0, 20) + '...',
-			tradeShaPreview: tradeSha.substring(0, 20) + '...',
-			hasToken: !!authStore.token,
-		});
+			// 除錯：記錄請求參數
+			console.log('[getPaymentResultByTradeInfo] 請求參數:', {
+				tradeInfoLength: tradeInfo.length,
+				tradeShaLength: tradeSha.length,
+				tradeInfoPreview: tradeInfo.substring(0, 20) + '...',
+				tradeShaPreview: tradeSha.substring(0, 20) + '...',
+				hasToken: !!authStore.token,
+			});
 
-		const response = await $fetch<PaymentResultResponseNew>('/api/v1/company/payments/result', {
-			method: 'POST',
-			headers,
-			body: new URLSearchParams({
-				TradeInfo: tradeInfo,
-				TradeSha: tradeSha,
-			}),
-		})
+			const response = await $fetch<PaymentResultResponseNew>('/api/v1/company/payments/result', {
+				method: 'POST',
+				headers,
+				body: new URLSearchParams({
+					TradeInfo: tradeInfo,
+					TradeSha: tradeSha,
+				}),
+			})
 
 			console.log('[getPaymentResultByTradeInfo] 成功回應:', response);
 			return response
