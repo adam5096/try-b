@@ -78,7 +78,7 @@ export default createApiHandler(async (event) => {
 			paymentMethod: response.paymentMethod || '',
 			card4No: response.card4No || '',
 		};
-		
+
 		console.log('[結帳結果 API] 最終回應:', finalResponse);
 		return finalResponse;
 	}
