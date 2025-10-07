@@ -66,8 +66,8 @@ export default createApiHandler(async (event) => {
 			status: response.status || 'Failed',
 			orderNo: response.orderNo || '',
 			amount: response.amount || '',
-			paymentMethod: response.paymentMethod || 'CREDIT',
-			card4No: response.card4No || undefined,
+			paymentMethod: response.paymentMethod || '',
+			card4No: response.card4No || '',
 		};
 	}
 	catch (error) {
@@ -83,7 +83,8 @@ export default createApiHandler(async (event) => {
 			status: 'Failed',
 			orderNo: '',
 			amount: '',
-			paymentMethod: 'CREDIT',
+			paymentMethod: '',
+			card4No: '',
 		};
 	}
 });
