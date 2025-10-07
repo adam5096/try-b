@@ -42,9 +42,13 @@ export default createApiHandler(async (event) => {
 				console.log('[藍新金流 ReturnURL] 嘗試解密 TradeInfo:', { TradeInfo: TradeInfo.substring(0, 20) + '...', TradeSha });
 
 				// 調用後端 API 解密 TradeInfo 取得訂單號
-				const decryptResponse = await event.$fetch<{ OrderNum?: string }>('/api-proxy/api/v1/payments/decrypt', {
+				const decryptResponse = await event.$fetch<{ OrderNum?: string }>('https://trybeta.rocket-coding.com/api/v1/payments/decrypt', {
 					method: 'POST',
-					headers: getForwardHeaders(event),
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json',
+						'User-Agent': 'Nuxt-App/1.0',
+					},
 					body: { TradeInfo, TradeSha },
 				});
 
