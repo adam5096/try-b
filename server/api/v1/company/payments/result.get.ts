@@ -31,7 +31,9 @@ export default createApiHandler(async (event) => {
 			console.error('[結帳結果 API] 缺少必要參數:', { orderNum: !!orderNum });
 			return {
 				status: 'Failed',
-				error: '缺少 orderNum 參數',
+				orderNo: '',
+				amount: '',
+				paymentMethod: 'CREDIT',
 			};
 		}
 
@@ -72,7 +74,6 @@ export default createApiHandler(async (event) => {
 
 		return {
 			status: 'Failed',
-			error: errorMessage,
 			orderNo: '',
 			amount: '',
 			paymentMethod: 'CREDIT',

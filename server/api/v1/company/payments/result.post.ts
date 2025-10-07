@@ -32,7 +32,6 @@ export default createApiHandler(async (event) => {
 			console.error('[結帳結果 API] 缺少必要參數:', { TradeInfo: !!TradeInfo, TradeSha: !!TradeSha });
 			return {
 				status: 'Failed',
-				error: '缺少 TradeInfo 或 TradeSha 參數',
 				orderNo: '',
 				amount: '',
 				paymentMethod: 'CREDIT',
@@ -44,12 +43,16 @@ export default createApiHandler(async (event) => {
 			tradeShaLength: (TradeSha as string).length,
 		});
 
-		// 呼叫 ASP.NET 後端 API (直接呼叫，x-www-form-urlencoded 格式)
+		// 直接呼叫 ASP.NET 後端 API (繞過代理，x-www-form-urlencoded 格式)
+		const headers = {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'Accept': 'application/json',
+			'User-Agent': 'Nuxt-App/1.0',
+		};
+
 		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-			},
+			headers,
 			body: new URLSearchParams({
 				TradeInfo: TradeInfo as string,
 				TradeSha: TradeSha as string,
@@ -78,7 +81,6 @@ export default createApiHandler(async (event) => {
 
 		return {
 			status: 'Failed',
-			error: errorMessage,
 			orderNo: '',
 			amount: '',
 			paymentMethod: 'CREDIT',
