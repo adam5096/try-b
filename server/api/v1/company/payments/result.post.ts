@@ -17,6 +17,9 @@ interface PaymentResultResponse {
  */
 export default createApiHandler(async (event) => {
 	try {
+		// 強制診斷日誌 - 確認線上版本
+		console.log('[診斷] result.post.ts 版本: v2025-01-08-強制直連ASP.NET後端');
+
 		// 取得請求主體
 		const body = await readBody(event);
 		const { TradeInfo, TradeSha } = body;
