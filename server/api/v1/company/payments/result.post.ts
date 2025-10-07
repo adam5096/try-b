@@ -30,13 +30,12 @@ export default createApiHandler(async (event) => {
 		// 驗證必要參數
 		if (!TradeInfo || !TradeSha) {
 			console.error('[結帳結果 API] 缺少必要參數:', { TradeInfo: !!TradeInfo, TradeSha: !!TradeSha });
-			return {
-				status: 'Failed',
-				error: '缺少 TradeInfo 或 TradeSha 參數',
-				orderNo: '',
-				amount: '',
-				paymentMethod: 'CREDIT',
-			};
+		return {
+			status: 'Failed',
+			orderNo: '',
+			amount: '',
+			paymentMethod: 'CREDIT',
+		};
 		}
 
 		console.log('[結帳結果 API] 準備向 ASP.NET 後端請求:', {
@@ -78,7 +77,6 @@ export default createApiHandler(async (event) => {
 
 		return {
 			status: 'Failed',
-			error: errorMessage,
 			orderNo: '',
 			amount: '',
 			paymentMethod: 'CREDIT',
