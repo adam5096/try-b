@@ -1,29 +1,41 @@
-# TRY β 職業體驗平台 - Robots.txt
-# 允許所有搜尋引擎爬取公開內容
+# TRY β 職業體驗平台 - Robots.txt (精確控制版本)
+# 只允許 SEO 重要頁面被爬取，其他頁面明確禁止
 
 User-agent: *
-# 允許爬取所有公開頁面
-Allow: /
 
-# 禁止爬取後台管理頁面
+# === 允許爬取的 SEO 重要頁面 ===
+Allow: /
+Allow: /plan
+Allow: /roles
+
+# === 明確禁止的頁面 ===
+# 後台管理頁面
 Disallow: /admin/
 Disallow: /company/
 Disallow: /users/
 
-# 禁止爬取 API 端點和內部資源
+# API 端點和技術資源
 Disallow: /api/
 Disallow: /_nuxt/
 Disallow: /_ipx/
-
-# 禁止爬取敏感檔案
-Disallow: /*.json$
-Disallow: /*.xml$
 Disallow: /server/
 
-# 允許爬取靜態資源
+# 敏感檔案
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*.env$
+Disallow: /*.config$
+
+# === 允許的靜態資源 ===
 Allow: /img/
 Allow: /favicon.ico
 Allow: /favicon-*.png
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.webp$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
 
-# 指向網站地圖
+# === 網站地圖 ===
 Sitemap: https://try-b.vercel.app/sitemap.xml
