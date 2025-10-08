@@ -47,9 +47,9 @@ export default createApiHandler(async (event) => {
 			tradeShaLength: (TradeSha as string).length,
 		});
 
-		// 直接呼叫 ASP.NET 後端 API (繞過代理，x-www-form-urlencoded 格式)
+		// 直接呼叫 ASP.NET 後端 API (使用 JSON 格式)
 		const headers = {
-			'Content-Type': 'application/x-www-form-urlencoded',
+			'Content-Type': 'application/json',
 			'Accept': 'application/json',
 			'User-Agent': 'Nuxt-App/1.0',
 		};
@@ -57,10 +57,10 @@ export default createApiHandler(async (event) => {
 		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
 			method: 'POST',
 			headers,
-			body: new URLSearchParams({
+			body: {
 				TradeInfo: TradeInfo as string,
 				TradeSha: TradeSha as string,
-			}),
+			},
 		});
 
 		console.log('[結帳結果 API] ASP.NET 後端回應:', response);

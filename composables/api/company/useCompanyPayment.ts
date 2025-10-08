@@ -105,7 +105,7 @@ export const useCompanyPayment = () => {
 	const getPaymentResultByTradeInfo = async (tradeInfo: string, tradeSha: string): Promise<PaymentResultResponseNew> => {
 		try {
 			const headers: Record<string, string> = {
-				'Content-Type': 'application/x-www-form-urlencoded',
+				'Content-Type': 'application/json',
 			}
 
 			if (authStore.token) {
@@ -124,10 +124,10 @@ export const useCompanyPayment = () => {
 			const response = await $fetch<PaymentResultResponseNew>('/api/v1/company/payments/result', {
 				method: 'POST',
 				headers,
-				body: new URLSearchParams({
+				body: {
 					TradeInfo: tradeInfo,
 					TradeSha: tradeSha,
-				}),
+				},
 			})
 
 			console.log('[getPaymentResultByTradeInfo] 成功回應:', response);
