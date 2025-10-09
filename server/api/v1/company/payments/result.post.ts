@@ -18,7 +18,7 @@ interface PaymentResultResponse {
 export default createApiHandler(async (event) => {
 	try {
 		// 強制診斷日誌 - 確認線上版本
-		console.log('[診斷] result.post.ts 版本: v2025-01-09-完整揭露伺服器細節');
+		console.log('[診斷] result.post.ts 版本: v2025-01-09-分析Postman與Vercel差異');
 
 		// 取得請求主體
 		const body = await readBody(event);
@@ -47,11 +47,23 @@ export default createApiHandler(async (event) => {
 			tradeShaLength: (TradeSha as string).length,
 		});
 
-		// 直接呼叫 ASP.NET 後端 API (使用 JSON 格式，與 Postman 一致)
+		// 直接呼叫 ASP.NET 後端 API (使用 JSON 格式，詳細記錄 Headers)
 		const headers = {
 			'Content-Type': 'application/json',
 			'Accept': 'application/json',
+			'User-Agent': 'PostmanRuntime/7.32.3', // 模擬 Postman
 		};
+
+		console.log('[結帳結果 API] 準備發送的 Headers:', headers);
+		console.log('[結帳結果 API] 準備發送的 Body:', {
+			TradeInfo: (TradeInfo as string).substring(0, 20) + '...',
+			TradeSha: TradeSha as string,
+		});
+		console.log('[結帳結果 API] 請求環境資訊:', {
+			vercelRegion: process.env.VERCEL_REGION,
+			nodeVersion: process.version,
+			userAgent: headers['User-Agent'],
+		});
 
 		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
 			method: 'POST',
