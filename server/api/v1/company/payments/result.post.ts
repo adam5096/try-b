@@ -1,4 +1,5 @@
 import { createApiHandler } from '~/server/utils/apiHandler';
+import { createAuthHeaders } from '~/server/utils/headers';
 
 interface PaymentResultResponse {
 	status: string
@@ -18,7 +19,7 @@ interface PaymentResultResponse {
 export default createApiHandler(async (event) => {
 	try {
 		// 強制診斷日誌 - 確認線上版本
-		console.log('[診斷] result.post.ts 版本: v2025-01-09-分析Postman與Vercel差異');
+		console.log('[診斷] result.post.ts 版本: v2025-01-09-統一編程風格使用代理轉發');
 
 		// 取得請求主體
 		const body = await readBody(event);
@@ -42,30 +43,31 @@ export default createApiHandler(async (event) => {
 		}
 
 		console.log('[結帳結果 API] 準備向 ASP.NET 後端請求:', {
-			targetUrl: 'https://trybeta.rocket-coding.com/api/v1/payments/result',
+			targetUrl: '/api-proxy/api/v1/payments/result',
 			tradeInfoLength: (TradeInfo as string).length,
 			tradeShaLength: (TradeSha as string).length,
 		});
 
-		// 直接呼叫 ASP.NET 後端 API (使用 JSON 格式，詳細記錄 Headers)
-		const headers = {
-			'Content-Type': 'application/json',
-			'Accept': 'application/json',
-			'User-Agent': 'PostmanRuntime/7.32.3', // 模擬 Postman
-		};
+		// 使用統一的認證 headers 處理
+		const headers = createAuthHeaders(event, 'companyAuthToken');
+
+		// 檢查是否有認證 token
+		if (!headers.authorization) {
+			throw createError({
+				statusCode: 401,
+				statusMessage: '請登入',
+			});
+		}
 
 		console.log('[結帳結果 API] 準備發送的 Headers:', headers);
 		console.log('[結帳結果 API] 準備發送的 Body:', {
 			TradeInfo: (TradeInfo as string).substring(0, 20) + '...',
 			TradeSha: TradeSha as string,
 		});
-		console.log('[結帳結果 API] 請求環境資訊:', {
-			vercelRegion: process.env.VERCEL_REGION,
-			nodeVersion: process.version,
-			userAgent: headers['User-Agent'],
-		});
 
-		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
+		// 透過 Nitro 的 proxy 設定轉發到真實後端
+		// 規則：必須包含 api 並使用 /api-proxy 進行代理
+		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('/api-proxy/api/v1/payments/result', {
 			method: 'POST',
 			headers,
 			body: {
