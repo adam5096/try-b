@@ -19,7 +19,7 @@ interface PaymentResultResponse {
 export default createApiHandler(async (event) => {
 	try {
 		// 強制診斷日誌 - 確認線上版本
-		console.log('[診斷] result.post.ts 版本: v2025-01-09-統一編程風格使用代理轉發');
+		console.log('[診斷] result.post.ts 版本: v2025-01-09-直接連線ASP.NET後端');
 
 		// 取得請求主體
 		const body = await readBody(event);
@@ -43,7 +43,7 @@ export default createApiHandler(async (event) => {
 		}
 
 		console.log('[結帳結果 API] 準備向 ASP.NET 後端請求:', {
-			targetUrl: '/api-proxy/api/v1/payments/result',
+			targetUrl: 'https://trybeta.rocket-coding.com/api/v1/payments/result',
 			tradeInfoLength: (TradeInfo as string).length,
 			tradeShaLength: (TradeSha as string).length,
 		});
@@ -59,21 +59,25 @@ export default createApiHandler(async (event) => {
 			});
 		}
 
-		console.log('[結帳結果 API] 準備發送的 Headers:', headers);
-		console.log('[結帳結果 API] 準備發送的 Body:', {
-			TradeInfo: (TradeInfo as string).substring(0, 20) + '...',
-			TradeSha: TradeSha as string,
-		});
+		// 添加必要的 Content-Type
+		headers['Content-Type'] = 'application/json; charset=utf-8';
+		headers['Accept'] = 'application/json';
 
-		// 透過 Nitro 的 proxy 設定轉發到真實後端
-		// 規則：必須包含 api 並使用 /api-proxy 進行代理
-		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('/api-proxy/api/v1/payments/result', {
+		// 詳細記錄請求內容
+		const requestBody = {
+			TradeInfo: TradeInfo as string,
+			TradeSha: TradeSha as string,
+		};
+
+		console.log('[結帳結果 API] 準備發送的 Headers:', headers);
+		console.log('[結帳結果 API] 完整 TradeInfo 長度:', (TradeInfo as string).length);
+		console.log('[結帳結果 API] 完整 TradeSha:', TradeSha as string);
+		console.log('[結帳結果 API] 實際發送的 body:', JSON.stringify(requestBody));
+
+		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
 			method: 'POST',
 			headers,
-			body: {
-				TradeInfo: TradeInfo as string,
-				TradeSha: TradeSha as string,
-			},
+			body: requestBody,
 		});
 
 		console.log('[結帳結果 API] ASP.NET 後端回應:', response);
