@@ -136,6 +136,40 @@ export const useCompanyPayment = () => {
 		catch (error) {
 			console.error('查詢結帳結果錯誤:', error)
 
+			// 檢查是否為 API 回應錯誤（包含完整技術細節）
+			if (error && typeof error === 'object' && 'error' in error) {
+				const apiError = error as any;
+
+				// 記錄完整技術錯誤資訊
+				console.error('API 完整技術錯誤資訊:', {
+					type: apiError.error?.type,
+					message: apiError.error?.message,
+					technicalDetails: apiError.error?.technicalDetails,
+					timestamp: apiError.error?.timestamp,
+					environment: apiError.error?.environment,
+					vercelRegion: apiError.error?.vercelRegion,
+					requestId: apiError.error?.requestId,
+				});
+
+				// 完整揭露技術細節給開發人員
+				const techDetails = apiError.error?.technicalDetails;
+				const fullErrorMessage = `查詢結帳結果失敗: ${apiError.error?.message} 
+錯誤類型: ${apiError.error?.type}
+HTTP 狀態: ${techDetails?.httpStatus}
+目標端點: ${techDetails?.endpoint}
+請求方法: ${techDetails?.requestMethod}
+原始錯誤: ${techDetails?.originalError}
+建議解決方案: ${techDetails?.suggestion}
+健康檢查: ${techDetails?.healthCheck}
+可能原因: ${techDetails?.possibleCauses?.join(', ')}
+環境: ${apiError.error?.environment}
+Vercel 區域: ${apiError.error?.vercelRegion}
+請求 ID: ${apiError.error?.requestId}
+時間戳: ${apiError.error?.timestamp}`;
+
+				throw new Error(fullErrorMessage);
+			}
+
 			// 提供更詳細的錯誤資訊
 			if (error instanceof Error) {
 				console.error('錯誤詳情:', {
