@@ -14,13 +14,14 @@ jobs:
     - name: 檢出程式碼
       uses: actions/checkout@v4
       
+    - name: 安裝 pnpm
+      uses: pnpm/action-setup@v4
+        
     - name: 設定 Node.js 20
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        
-    - name: 安裝 pnpm
-      uses: pnpm/action-setup@v4
+        cache: 'pnpm'
         
     - name: 安裝依賴
       run: pnpm install --frozen-lockfile
