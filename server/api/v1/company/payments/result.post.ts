@@ -19,7 +19,7 @@ interface PaymentResultResponse {
 export default createApiHandler(async (event) => {
 	try {
 		// 強制診斷日誌 - 確認線上版本
-		console.log('[診斷] result.post.ts 版本: v2025-01-09-直接連線ASP.NET後端');
+		console.log('[診斷] result.post.ts 版本: v2025-01-09-移除手動Header設定');
 
 		// 取得請求主體
 		const body = await readBody(event);
@@ -58,10 +58,6 @@ export default createApiHandler(async (event) => {
 				statusMessage: '請登入',
 			});
 		}
-
-		// 添加必要的 Content-Type
-		headers['Content-Type'] = 'application/json; charset=utf-8';
-		headers['Accept'] = 'application/json';
 
 		// 詳細記錄請求內容
 		const requestBody = {
