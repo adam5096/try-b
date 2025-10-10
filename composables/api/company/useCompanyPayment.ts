@@ -127,7 +127,6 @@ export const useCompanyPayment = () => {
 				method: 'POST',
 				headers,
 				body: {
-					OrderNo: orderNo,
 					TradeInfo: tradeInfo,
 					TradeSha: tradeSha,
 				},
@@ -189,33 +188,6 @@ Vercel 區域: ${apiError.error?.vercelRegion}
 	}
 
 	/**
-	 * 取得付款導引資訊
-	 * @param orderNum 訂單編號
-	 * @returns 導引資訊
-	 */
-	const getPaymentRedirect = async (orderNum: string): Promise<PaymentRedirectResponse> => {
-		try {
-			const headers: Record<string, string> = {}
-
-			if (authStore.token) {
-				headers.authorization = `Bearer ${authStore.token}`
-			}
-
-			const response = await $fetch<PaymentRedirectResponse>('/api/v1/company/payments/result', {
-				method: 'GET',
-				headers,
-				params: { orderNum },
-			})
-
-			return response
-		}
-		catch (error) {
-			console.error('取得付款導引錯誤:', error)
-			throw new Error('取得付款導引時發生錯誤，請稍後再試')
-		}
-	}
-
-	/**
 	 * 自動提交表單到藍新金流 MPG 交易
 	 * @param paymentData 藍新金流付款資料
 	 * @param payGetWay 付款閘道 URL
@@ -267,57 +239,10 @@ Vercel 區域: ${apiError.error?.vercelRegion}
 		}, 1000)
 	}
 
-	/**
-	 * 驗證信用卡表單
-	 * @param cardData 信用卡資料
-	 * @returns 驗證結果
-	 */
-	const validateCreditCard = (cardData: {
-		cardNumber: string
-		expiryDate: string
-		cvc: string
-		cardEmail: string
-	}): { isValid: boolean, errors: string[] } => {
-		const errors: string[] = []
-
-		// 驗證卡號 (移除空格後檢查)
-		const cardNumber = cardData.cardNumber.replace(/\s/g, '')
-		if (!cardNumber || cardNumber.length !== 16) {
-			errors.push('請輸入完整的信用卡號碼')
-		}
-
-		// 驗證有效期限
-		const expiryDate = cardData.expiryDate.replace(/\s/g, '')
-		if (!expiryDate || expiryDate.length !== 5 || !expiryDate.includes('/')) {
-			errors.push('請輸入正確的有效期限 (MM/YY)')
-		}
-
-		// 驗證 CVC
-		if (!cardData.cvc || cardData.cvc.length !== 3) {
-			errors.push('請輸入正確的安全碼')
-		}
-
-		// 驗證持卡人信箱
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-		if (!cardData.cardEmail.trim()) {
-			errors.push('請輸入持卡人信箱')
-		}
-		else if (!emailRegex.test(cardData.cardEmail)) {
-			errors.push('請輸入正確的信箱格式')
-		}
-
-		return {
-			isValid: errors.length === 0,
-			errors,
-		}
-	}
-
 	return {
 		createPayment,
 		getPaymentResult,
 		getPaymentResultByTradeInfo,
-		getPaymentRedirect,
 		submitToNewebPay,
-		validateCreditCard,
 	}
 }
