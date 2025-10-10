@@ -97,12 +97,13 @@ export const useCompanyPayment = () => {
 	}
 
 	/**
-	 * 取得結帳結果 (使用 TradeInfo 和 TradeSha)
+	 * 取得結帳結果 (使用 OrderNo、TradeInfo 和 TradeSha)
+	 * @param orderNo 訂單編號
 	 * @param tradeInfo 交易資訊
 	 * @param tradeSha 交易 SHA256 雜湊值
 	 * @returns 結帳結果
 	 */
-	const getPaymentResultByTradeInfo = async (tradeInfo: string, tradeSha: string): Promise<PaymentResultResponseNew> => {
+	const getPaymentResultByTradeInfo = async (orderNo: string, tradeInfo: string, tradeSha: string): Promise<PaymentResultResponseNew> => {
 		try {
 			const headers: Record<string, string> = {
 				'Content-Type': 'application/json',
@@ -114,6 +115,7 @@ export const useCompanyPayment = () => {
 
 			// 除錯：記錄請求參數
 			console.log('[getPaymentResultByTradeInfo] 請求參數:', {
+				orderNo,
 				tradeInfoLength: tradeInfo.length,
 				tradeShaLength: tradeSha.length,
 				tradeInfoPreview: tradeInfo.substring(0, 20) + '...',
@@ -125,6 +127,7 @@ export const useCompanyPayment = () => {
 				method: 'POST',
 				headers,
 				body: {
+					OrderNo: orderNo,
 					TradeInfo: tradeInfo,
 					TradeSha: tradeSha,
 				},
@@ -174,6 +177,7 @@ Vercel 區域: ${apiError.error?.vercelRegion}
 			if (error instanceof Error) {
 				console.error('錯誤詳情:', {
 					message: error.message,
+					orderNo,
 					tradeInfoLength: tradeInfo.length,
 					tradeShaLength: tradeSha.length,
 					hasToken: !!authStore.token,
