@@ -88,12 +88,16 @@ export default createApiHandler(async (event) => {
 			});
 		}
 
-		// 詳細記錄請求內容 - 加入 OrderNo 欄位
-		const requestBody = {
-			OrderNo: finalOrderNo,
+		// 詳細記錄請求內容 - 完全省略 OrderNo 屬性
+		const requestBody: any = {
 			TradeInfo: TradeInfo as string,
 			TradeSha: TradeSha as string,
 		};
+
+		// 只有在 OrderNo 存在且不為空時才加入
+		if (finalOrderNo && finalOrderNo.trim() !== '') {
+			requestBody.OrderNo = finalOrderNo;
+		}
 
 		console.log('[結帳結果 API] 準備發送的 Headers:', headers);
 		console.log('[結帳結果 API] 完整 TradeInfo 長度:', (TradeInfo as string).length);

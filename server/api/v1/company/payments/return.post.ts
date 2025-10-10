@@ -15,6 +15,7 @@ import { createApiHandler } from '~/server/utils/apiHandler';
  * - 此端點只負責重定向，不做業務邏輯處理
  * - 前端頁面負責 UI 展示和資料請求
  * - 後端 API 負責資料處理和業務邏輯
+ * - 後端已支援完整解析 1024*8 位元長度的 TradeInfo 資料
  * - 避免在 URL 中暴露敏感資料，改為透過 API 請求取得
  */
 export default createApiHandler(async (event) => {
@@ -39,10 +40,6 @@ export default createApiHandler(async (event) => {
 			return sendRedirect(event, '/company/purchase/success?error=invalid_callback');
 		}
 
-		// 檢查是否有查詢參數中的訂單號（備用方案）
-		const query = getQuery(event);
-		const orderNum = query.orderNum || query.order;
-
 		// 純代理模式：不在此處處理 OrderNo 提取
 		// 將 TradeInfo 和 TradeSha 傳遞給前端，讓後端 API 處理解密
 		console.log('[藍新金流 ReturnURL] 採用純代理模式，OrderNo 提取由後端 API 負責');
@@ -54,19 +51,16 @@ export default createApiHandler(async (event) => {
 
 		console.log('[藍新金流 ReturnURL] 準備重定向到 success 頁面:', {
 			status: Status,
-			hasOrderNum: !!orderNum,
-			orderNum: orderNum || 'null',
 			tradeInfoLength: TradeInfo.length,
+			tradeInfoBits: TradeInfo.length * 8,
 			tradeShaLength: TradeSha.length,
+			note: '後端已支援完整解析 1024*8 位元資料，OrderNo 將由後端 API 自行提取',
 		});
 
-		// 重定向到 success 頁面
-		if (orderNum) {
-			return sendRedirect(event, `/company/purchase/success?order=${orderNum}&status=${Status}&tradeInfo=${encodedTradeInfo}&tradeSha=${encodedTradeSha}`);
-		}
-		else {
-			return sendRedirect(event, `/company/purchase/success?status=${Status}&tradeInfo=${encodedTradeInfo}&tradeSha=${encodedTradeSha}`);
-		}
+		// 重定向到 success 頁面 - 對齊 Postman 成功格式
+		// 根據 Postman 測試結果，後端能成功處理 TradeInfo 和 TradeSha
+		// 不需要傳遞 orderNum，讓後端 API 自行提取
+		return sendRedirect(event, `/company/purchase/success?status=${Status}&tradeInfo=${encodedTradeInfo}&tradeSha=${encodedTradeSha}`);
 	}
 	catch (error) {
 		console.error('[藍新金流 ReturnURL] 處理錯誤:', error);
