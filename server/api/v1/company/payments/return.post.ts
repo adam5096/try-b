@@ -3,14 +3,19 @@ import { createApiHandler } from '~/server/utils/apiHandler';
 /**
  * 藍新金流 ReturnURL 端點 (BFF 代理重定向)
  *
- * 用途：當 ASP.NET 後端需要重定向到前端時，可以透過此端點
+ * 用途：處理藍新金流付款完成後的瀏覽器重定向請求
  *
  * 流程：
- * 1. 藍新金流 → ASP.NET 後端 Return URL
- * 2. ASP.NET 後端 → BFF return.post.ts (此檔案)
- * 3. BFF → 前端 success 頁面
+ * 1. 藍新金流 → 此端點 (POST 請求，包含 TradeInfo, TradeSha, Status)
+ * 2. 此端點 → 重定向到前端 success 頁面 (GET 請求，URL 參數)
+ * 3. 前端頁面 → 渲染 Loading UI，同時請求 result API 取得完整資料
+ * 4. 前端頁面 → 渲染完整付款結果 UI
  *
- * 這樣可以避免跨網域重定向的問題
+ * 設計理念：
+ * - 此端點只負責重定向，不做業務邏輯處理
+ * - 前端頁面負責 UI 展示和資料請求
+ * - 後端 API 負責資料處理和業務邏輯
+ * - 避免在 URL 中暴露敏感資料，改為透過 API 請求取得
  */
 export default createApiHandler(async (event) => {
 	try {
