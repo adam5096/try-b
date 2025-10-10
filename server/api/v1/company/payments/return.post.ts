@@ -1,102 +1,86 @@
 import { createApiHandler } from '~/server/utils/apiHandler';
 
 /**
- * 藍新金流結帳結果查詢端點 (BFF 數據代理)
+ * 藍新金流重定向端點 (Return URL Handler)
  *
- * 用途：前端頁面向後端取得結帳相關數據以渲染 UI
+ * 用途：接收藍新金流的 POST 回調並重定向到前端成功頁面
  *
  * 流程：
- * 1. 藍新金流 → 重定向瀏覽器到前端頁面 (已完成)
- * 2. 前端頁面 → 此端點 (POST 請求，包含 TradeInfo, TradeSha)
- * 3. 此端點 → 轉發到 ASP.NET 後端 result 端點 (POST 請求，body 包含敏感資料)
- * 4. ASP.NET 後端 → 返回結帳結果數據
- * 5. 此端點 → 返回結帳結果給前端頁面渲染 UI
+ * 1. 藍新金流 → POST 到此端點 (包含 Status, TradeInfo, TradeSha)
+ * 2. 此端點 → 重定向瀏覽器到 success.vue 頁面 (帶 URL 參數)
+ * 3. success.vue → 使用 URL 參數查詢結帳結果並渲染 UI
  *
  * 設計理念：
- * - 此端點負責數據查詢，不涉及重定向
- * - 前端頁面負責 UI 展示和用戶互動
- * - 後端 API 負責資料處理和業務邏輯
- * - 後端已支援完整解析 1024*8 位元長度的 TradeInfo 資料
- * - 敏感資料透過 POST body 傳遞，確保安全性
+ * - 此端點負責重定向，不處理業務邏輯
+ * - 將敏感資料 (TradeInfo, TradeSha) 透過 URL 參數傳遞給前端
+ * - 前端頁面負責查詢數據和 UI 渲染
+ * - 保持藍新金流標準的 Return URL 行為
  */
 export default createApiHandler(async (event) => {
 	try {
 		const body = await readBody(event);
 		const { Status, TradeInfo, TradeSha, MerchantID } = body;
 
-		console.log('[結帳結果查詢] 收到查詢請求:', {
+		console.log('[重定向處理] 收到藍新金流回調:', {
+			status: Status,
 			hasTradeInfo: !!TradeInfo,
 			hasTradeSha: !!TradeSha,
 			tradeInfoLength: TradeInfo?.length || 0,
 			tradeShaLength: TradeSha?.length || 0,
+			merchantID: MerchantID,
 		});
 
 		// 驗證必要欄位
 		if (!TradeInfo || !TradeSha) {
-			console.error('[結帳結果查詢] 缺少必要欄位:', {
+			console.error('[重定向處理] 缺少必要欄位:', {
 				hasTradeInfo: !!TradeInfo,
 				hasTradeSha: !!TradeSha,
 			});
-			return {
-				status: 'Error',
-				message: '缺少必要的交易資料',
-			};
+
+			// 重定向到錯誤頁面
+			const errorUrl = `/company/purchase/success?error=invalid_callback&status=${Status || 'UNKNOWN'}`;
+			console.log('[重定向處理] 重定向到錯誤頁面:', errorUrl);
+			return sendRedirect(event, errorUrl, 302);
 		}
 
-		console.log('[結帳結果查詢] 準備向 ASP.NET 後端查詢結帳結果:', {
-			tradeInfoLength: TradeInfo.length,
-			tradeInfoBits: TradeInfo.length * 8,
-			tradeShaLength: TradeSha.length,
-			backendUrl: 'https://trybeta.rocket-coding.com/api/v1/payments/result',
-			note: '後端已支援完整解析 1024*8 位元資料，OrderNo 將由後端 API 自行提取',
+		// 構建重定向 URL，將必要參數編碼後傳遞給前端
+		const redirectParams = new URLSearchParams({
+			status: Status || 'UNKNOWN',
+			tradeInfo: encodeURIComponent(TradeInfo),
+			tradeSha: encodeURIComponent(TradeSha),
 		});
 
-		// 向 ASP.NET 後端查詢結帳結果
-		const backendResultUrl = 'https://trybeta.rocket-coding.com/api/v1/payments/result';
-
-		try {
-			// 轉發 POST 請求到後端查詢結帳結果
-			const response = await $fetch(backendResultUrl, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: {
-					TradeInfo: TradeInfo,
-					TradeSha: TradeSha,
-				},
-			});
-
-			console.log('[結帳結果查詢] 後端回應:', response);
-
-			// 直接返回後端的結帳結果給前端
-			return response;
+		// 如果有 MerchantID，也一併傳遞
+		if (MerchantID) {
+			redirectParams.set('merchantID', MerchantID);
 		}
-		catch (queryError) {
-			console.error('[結帳結果查詢] 查詢失敗:', queryError);
-			// 查詢失敗時返回錯誤訊息
-			return {
-				status: 'Error',
-				message: '查詢結帳結果失敗',
-				error: queryError instanceof Error ? queryError.message : 'Unknown error',
-			};
-		}
+
+		const successUrl = `/company/purchase/success?${redirectParams.toString()}`;
+
+		console.log('[重定向處理] 準備重定向到成功頁面:', {
+			successUrl,
+			status: Status,
+			tradeInfoLength: TradeInfo.length,
+			tradeShaLength: TradeSha.length,
+			note: '前端頁面將使用這些參數查詢結帳結果',
+		});
+
+		// 重定向到前端成功頁面
+		return sendRedirect(event, successUrl, 302);
 	}
 	catch (error) {
-		console.error('[結帳結果查詢] 處理錯誤:', error);
+		console.error('[重定向處理] 處理錯誤:', error);
 
 		// 記錄詳細錯誤資訊
-		console.log('[結帳結果查詢] 錯誤詳情:', {
+		console.log('[重定向處理] 錯誤詳情:', {
 			errorType: error instanceof Error ? error.constructor.name : typeof error,
 			errorMessage: error instanceof Error ? error.message : String(error),
 			timestamp: new Date().toISOString(),
 		});
 
-		// 發生錯誤時返回錯誤訊息
-		return {
-			status: 'Error',
-			message: '處理結帳結果查詢時發生錯誤',
-			error: error instanceof Error ? error.message : 'Unknown error',
-		};
+		// 發生錯誤時重定向到錯誤頁面
+		const errorUrl = `/company/purchase/success?error=processing_error&message=${encodeURIComponent(error instanceof Error ? error.message : 'Unknown error')}`;
+		console.log('[重定向處理] 重定向到錯誤頁面:', errorUrl);
+		return sendRedirect(event, errorUrl, 302);
 	}
 });
