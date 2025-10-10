@@ -1,13 +1,16 @@
 import { createApiHandler } from '~/server/utils/apiHandler';
 
 /**
- * 藍新金流 ReturnURL 端點 (簡化版)
- * 接收藍新金流付款完成後的瀏覽器重定向 POST 請求
+ * 藍新金流 ReturnURL 端點 (BFF 代理重定向)
  *
- * 簡化策略：
- * - 移除解密邏輯，避免後端連線問題
- * - 直接重定向到前端，讓前端處理查詢
- * - 保持必要的參數驗證和錯誤處理
+ * 用途：當 ASP.NET 後端需要重定向到前端時，可以透過此端點
+ *
+ * 流程：
+ * 1. 藍新金流 → ASP.NET 後端 Return URL
+ * 2. ASP.NET 後端 → BFF return.post.ts (此檔案)
+ * 3. BFF → 前端 success 頁面
+ *
+ * 這樣可以避免跨網域重定向的問題
  */
 export default createApiHandler(async (event) => {
 	try {
@@ -35,6 +38,10 @@ export default createApiHandler(async (event) => {
 		const query = getQuery(event);
 		const orderNum = query.orderNum || query.order;
 
+		// 純代理模式：不在此處處理 OrderNo 提取
+		// 將 TradeInfo 和 TradeSha 傳遞給前端，讓後端 API 處理解密
+		console.log('[藍新金流 ReturnURL] 採用純代理模式，OrderNo 提取由後端 API 負責');
+
 		// 將 TradeInfo 和 TradeSha 編碼後傳遞到 success 頁面
 		// 讓前端可以通過這些參數查詢結帳結果
 		const encodedTradeInfo = encodeURIComponent(TradeInfo);
@@ -43,6 +50,7 @@ export default createApiHandler(async (event) => {
 		console.log('[藍新金流 ReturnURL] 準備重定向到 success 頁面:', {
 			status: Status,
 			hasOrderNum: !!orderNum,
+			orderNum: orderNum || 'null',
 			tradeInfoLength: TradeInfo.length,
 			tradeShaLength: TradeSha.length,
 		});
