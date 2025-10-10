@@ -7,8 +7,8 @@ import { createApiHandler } from '~/server/utils/apiHandler';
  *
  * 流程：
  * 1. 藍新金流 → 此端點 (POST 請求，包含 TradeInfo, TradeSha, Status)
- * 2. 此端點 → 重定向到前端 success 頁面 (GET 請求，URL 參數)
- * 3. 前端頁面 → 渲染 Loading UI，同時請求 result API 取得完整資料
+ * 2. 此端點 → 重定向到 ASP.NET 後端 result 端點 (GET 請求，URL 參數)
+ * 3. ASP.NET 後端 → 處理付款結果並重定向到前端 success 頁面
  * 4. 前端頁面 → 渲染完整付款結果 UI
  *
  * 設計理念：
@@ -49,18 +49,19 @@ export default createApiHandler(async (event) => {
 		const encodedTradeInfo = encodeURIComponent(TradeInfo);
 		const encodedTradeSha = encodeURIComponent(TradeSha);
 
-		console.log('[藍新金流 ReturnURL] 準備重定向到 success 頁面:', {
+		console.log('[藍新金流 ReturnURL] 準備重定向到 ASP.NET 後端 result 端點:', {
 			status: Status,
 			tradeInfoLength: TradeInfo.length,
 			tradeInfoBits: TradeInfo.length * 8,
 			tradeShaLength: TradeSha.length,
+			backendUrl: 'https://trybeta.rocket-coding.com/api/v1/payments/result',
 			note: '後端已支援完整解析 1024*8 位元資料，OrderNo 將由後端 API 自行提取',
 		});
 
-		// 重定向到 success 頁面 - 對齊 Postman 成功格式
-		// 根據 Postman 測試結果，後端能成功處理 TradeInfo 和 TradeSha
-		// 不需要傳遞 orderNum，讓後端 API 自行提取
-		return sendRedirect(event, `/company/purchase/success?status=${Status}&tradeInfo=${encodedTradeInfo}&tradeSha=${encodedTradeSha}`);
+		// 重定向到 ASP.NET 後端 result 端點
+		// 根據 e-comp-12-3 規格書，應該重定向到外部後端處理
+		const backendResultUrl = `https://trybeta.rocket-coding.com/api/v1/payments/result?status=${Status}&tradeInfo=${encodedTradeInfo}&tradeSha=${encodedTradeSha}`;
+		return sendRedirect(event, backendResultUrl);
 	}
 	catch (error) {
 		console.error('[藍新金流 ReturnURL] 處理錯誤:', error);

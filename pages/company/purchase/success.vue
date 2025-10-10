@@ -94,7 +94,6 @@
 						</p>
 						<p class="font-medium text-lg">
 							{{ paymentResult.PaymentMethod === 'CREDIT' ? '信用卡' : paymentResult.PaymentMethod }}
-							<span v-if="paymentResult.Card4No"> (末四碼: {{ paymentResult.Card4No }})</span>
 						</p>
 					</div>
 					<div class="md:text-left">
@@ -426,7 +425,6 @@ const queryPaymentStatusFromASP = async (): Promise<PaymentResultResponse | null
 				PaymentStatus: result.status === 'Success' ? 'Paid' : result.status === 'Failed' ? 'Failed' : 'Pending',
 				OrderStatus: 'Active',
 				PaymentMethod: result.paymentMethod,
-				Card4No: result.card4No,
 			};
 
 			return convertedResult;
@@ -863,7 +861,6 @@ const testPaymentResultAPI = async () => {
 			PaymentStatus: result.status === 'Success' ? 'Paid' : result.status === 'Failed' ? 'Failed' : 'Pending',
 			OrderStatus: 'Active',
 			PaymentMethod: result.paymentMethod,
-			Card4No: result.card4No,
 		};
 
 		paymentResult.value = convertedResult;
@@ -919,7 +916,6 @@ const testManualParameters = async () => {
 			PaymentStatus: result.status === 'Success' ? 'Paid' : result.status === 'Failed' ? 'Failed' : 'Pending',
 			OrderStatus: 'Active',
 			PaymentMethod: result.paymentMethod,
-			Card4No: result.card4No,
 		};
 
 		paymentResult.value = convertedResult;

@@ -45,13 +45,14 @@ export interface PaymentResultRequest {
 	TradeSha: string
 }
 
-// 結帳結果回應 (GET /api/v1/payments/result)
+// 結帳結果回應 (POST /api/v1/payments/result)
+// 根據 e-comp-12-3 規格書最新版本
 export interface PaymentResultResponseNew {
 	status: 'Success' | 'Failed' | 'Pending'
 	orderNo: string
+	tradeNo: string
 	amount: string
 	paymentMethod: 'CREDIT' | 'CVS' | 'ATM' | 'SUBSCRIPTION'
-	card4No?: string
 }
 
 // 付款結果導引回應 (GET /api/v1/payments/result) - 舊版保持相容
