@@ -35,18 +35,10 @@
 					</el-icon>
 				</div>
 				<div
-					v-else-if="paymentResult?.PaymentStatus === 'Paid'"
+					v-else-if="paymentResult?.PaymentStatus === 'Success'"
 					class="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full"
 				>
 					<SharedCheckIcon class="w-12 h-12 text-green-500" />
-				</div>
-				<div
-					v-else-if="isProcessingStatus"
-					class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full"
-				>
-					<el-icon class="w-12 h-12 text-blue-500">
-						<Loading />
-					</el-icon>
 				</div>
 				<div
 					v-else
@@ -60,15 +52,13 @@
 				<h3 class="mt-4 text-3xl font-bold">
 					<span v-if="isLoading">處理中...</span>
 					<span v-else-if="error">處理失敗</span>
-					<span v-else-if="paymentResult?.PaymentStatus === 'Paid'">付款成功！</span>
-					<span v-else-if="isProcessingStatus">付款處理中</span>
+					<span v-else-if="paymentResult?.PaymentStatus === 'Success'">付款成功！</span>
 					<span v-else>付款處理中</span>
 				</h3>
 				<p class="mt-2 text-gray-500">
 					<span v-if="isLoading">正在確認付款狀態...</span>
 					<span v-else-if="error">{{ error }}</span>
-					<span v-else-if="paymentResult?.PaymentStatus === 'Paid'">您的方案已成功付款並確認</span>
-					<span v-else-if="isProcessingStatus">正在確認付款狀態，請稍後再查看訂單列表</span>
+					<span v-else-if="paymentResult?.PaymentStatus === 'Success'">您的方案已成功付款並確認</span>
 					<span v-else>付款正在處理中，請稍後再確認</span>
 				</p>
 			</div>
@@ -103,12 +93,12 @@
 						<p
 							class="font-bold text-xl"
 							:class="{
-								'text-green-600': paymentResult.PaymentStatus === 'Paid',
+								'text-green-600': paymentResult.PaymentStatus === 'Success',
 								'text-yellow-600': paymentResult.PaymentStatus === 'Pending',
 								'text-red-600': paymentResult.PaymentStatus === 'Failed',
 							}"
 						>
-							{{ paymentResult.PaymentStatus === 'Paid' ? '已付款'
+							{{ paymentResult.PaymentStatus === 'Success' ? '已付款'
 								: paymentResult.PaymentStatus === 'Pending' ? '處理中' : '付款失敗' }}
 						</p>
 					</div>
@@ -157,7 +147,7 @@
 						{{ validPlan ? `${validPlan.plan_duration_days} 天 體驗人數上限 ${validPlan.max_participants} 人` : '載入中...' }}
 					</p>
 					<p class="mt-2 text-gray-500">
-						{{ validPlan ? `${formatDate(validPlan.start_date)} - ${formatDate(validPlan.end_date)}` : '載入中...' }}
+						{{ validPlan ? `${new Date(validPlan.start_date).toLocaleDateString('zh-TW')} - ${new Date(validPlan.end_date).toLocaleDateString('zh-TW')}` : '載入中...' }}
 					</p>
 				</div>
 			</div>
@@ -166,77 +156,8 @@
 				<el-button @click="goToPlans">
 					返回計畫列表
 				</el-button>
-				<el-button
-					v-if="isProcessingStatus"
-					type="primary"
-					class="ml-4"
-					@click="retryPaymentCheck"
-				>
-					重新查詢付款狀態
-				</el-button>
-				<el-button
-					v-if="isProcessingStatus"
-					type="warning"
-					class="ml-4"
-					@click="testPaymentResultAPI"
-				>
-					測試結帳結果 API
-				</el-button>
-				<el-button
-					v-if="isProcessingStatus"
-					type="info"
-					class="ml-4"
-					@click="showManualTestDialog = true"
-				>
-					手動輸入參數測試
-				</el-button>
 			</div>
 		</div>
-
-		<!-- 手動測試對話框 -->
-		<el-dialog
-			v-model="showManualTestDialog"
-			title="手動輸入參數測試結帳結果 API"
-			width="80%"
-			:before-close="handleCloseDialog"
-		>
-			<div class="space-y-4">
-				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-2">
-						TradeInfo (交易資訊)
-					</label>
-					<el-input
-						v-model="manualTradeInfo"
-						type="textarea"
-						:rows="4"
-						placeholder="請輸入 TradeInfo..."
-						class="w-full"
-					/>
-				</div>
-				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-2">
-						TradeSha (交易 SHA256 雜湊值)
-					</label>
-					<el-input
-						v-model="manualTradeSha"
-						placeholder="請輸入 TradeSha..."
-						class="w-full"
-					/>
-				</div>
-				<div class="flex justify-end space-x-2">
-					<el-button @click="showManualTestDialog = false">
-						取消
-					</el-button>
-					<el-button
-						type="primary"
-						:loading="isManualTestLoading"
-						@click="testManualParameters"
-					>
-						測試 API
-					</el-button>
-				</div>
-			</div>
-		</el-dialog>
 	</div>
 </template>
 
@@ -267,19 +188,6 @@ const paymentResult = ref<PaymentResultResponse | null>(null);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 
-// 重定向監聽和輪詢相關
-const pollingInterval = ref<ReturnType<typeof setInterval> | null>(null);
-const isPolling = ref(false);
-const pollAttempts = ref(0);
-const maxPollAttempts = 10; // 最多輪詢 10 次
-const pollIntervalMs = 3000; // 每 3 秒輪詢一次
-
-// 手動測試相關
-const showManualTestDialog = ref(false);
-const manualTradeInfo = ref('');
-const manualTradeSha = ref('');
-const isManualTestLoading = ref(false);
-
 // 從 URL 查詢參數取得訂單編號和狀態
 const orderNum = computed(() => {
 	return route.query.order as string;
@@ -304,11 +212,6 @@ const newebpayTradeSha = computed(() => {
 // 檢查是否有錯誤狀態
 const hasError = computed(() => {
 	return !!route.query.error;
-});
-
-// 檢查是否為處理中狀態（從藍新金流直接跳轉但未帶訂單號）
-const isProcessingStatus = computed(() => {
-	return route.query.status === 'processing' && !orderNum.value;
 });
 
 // 檢查是否有 TradeInfo 和 TradeSha（可以用來查詢結帳結果）
@@ -387,185 +290,6 @@ const formatAmount = (amount: number) => {
 	return `TWD ${amount.toLocaleString('zh-TW')}`;
 };
 
-// 格式化日期顯示
-const formatDate = (dateString: string) => {
-	const date = new Date(dateString);
-	return date.toLocaleDateString('zh-TW', {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-	});
-};
-
-// 向 ASP 後端查詢付款狀態 (使用 TradeInfo 和 TradeSha)
-const queryPaymentStatusFromASP = async (): Promise<PaymentResultResponse | null> => {
-	try {
-		console.log('[ASP 查詢] 開始查詢付款狀態:', {
-			hasTradeInfo: !!newebpayTradeInfo.value,
-			hasTradeSha: !!newebpayTradeSha.value,
-			tradeInfoLength: newebpayTradeInfo.value?.length || 0,
-			tradeShaLength: newebpayTradeSha.value?.length || 0,
-			companyId: authStore.companyId,
-			timestamp: new Date().toISOString(),
-		});
-
-		// 優先使用 TradeInfo 和 TradeSha 查詢結帳結果
-		if (hasTradeInfo.value) {
-			console.log('[ASP 查詢] 使用 TradeInfo 查詢結帳結果');
-			// 讓後端動態處理 OrderNo，前端只傳遞已知的參數
-			const orderNoToUse = orderNum.value || ''; // 如果沒有 OrderNo，讓後端動態生成
-			const result = await getPaymentResultByTradeInfo(orderNoToUse, newebpayTradeInfo.value!, newebpayTradeSha.value!);
-			console.log('[ASP 查詢] 結帳結果:', result);
-
-			// 轉換為舊格式以保持相容性
-			const convertedResult: PaymentResultResponse = {
-				OrderNum: result.orderNo,
-				CompanyId: authStore.companyId || 0,
-				PlanId: 0, // 這個需要從其他地方取得
-				PaymentStatus: result.status === 'Success' ? 'Paid' : result.status === 'Failed' ? 'Failed' : 'Pending',
-				OrderStatus: 'Active',
-				PaymentMethod: result.paymentMethod,
-			};
-
-			return convertedResult;
-		}
-
-		// 如果沒有 TradeInfo，嘗試使用訂單編號查詢
-		const orderToQuery = orderNum.value;
-		if (orderToQuery) {
-			console.log('[ASP 查詢] 使用訂單編號查詢:', orderToQuery);
-			const result = await getPaymentResult(orderToQuery);
-			console.log('[ASP 查詢] 查詢結果:', result);
-			return result;
-		}
-
-		console.warn('[ASP 查詢] 沒有可用參數可查詢');
-		return null;
-	}
-	catch (error) {
-		console.error('[ASP 查詢] 查詢失敗:', error);
-		return null;
-	}
-};
-
-// 開始輪詢付款狀態
-const startPaymentPolling = (orderNumber?: string) => {
-	if (isPolling.value) {
-		console.log('[輪詢] 已在輪詢中，跳過');
-		return;
-	}
-
-	console.log('[輪詢] 開始輪詢付款狀態:', {
-		hasTradeInfo: hasTradeInfo.value,
-		hasOrderNumber: !!orderNum.value,
-		interval: pollIntervalMs,
-		maxAttempts: maxPollAttempts,
-	});
-
-	isPolling.value = true;
-	pollAttempts.value = 0;
-
-	pollingInterval.value = setInterval(async () => {
-		pollAttempts.value++;
-		console.log(`[輪詢] 第 ${pollAttempts.value} 次嘗試`);
-
-		const result = await queryPaymentStatusFromASP();
-
-		if (result) {
-			// 找到付款結果
-			paymentResult.value = result;
-			isLoading.value = false;
-			isPolling.value = false;
-
-			// 清除輪詢
-			if (pollingInterval.value) {
-				clearInterval(pollingInterval.value);
-				pollingInterval.value = null;
-			}
-
-			// 根據付款狀態顯示訊息
-			if (result.PaymentStatus === 'Paid') {
-				planStore.markPaid();
-				ElMessage.success('付款成功！');
-			}
-			else if (result.PaymentStatus === 'Pending') {
-				ElMessage.info('付款處理中，請稍候');
-			}
-			else {
-				ElMessage.warning(`付款狀態：${result.PaymentStatus}`);
-			}
-
-			console.log('[輪詢] 成功取得付款結果，停止輪詢');
-			return;
-		}
-
-		// 達到最大嘗試次數
-		if (pollAttempts.value >= maxPollAttempts) {
-			console.log('[輪詢] 達到最大嘗試次數，停止輪詢');
-			isPolling.value = false;
-			isLoading.value = false;
-
-			if (pollingInterval.value) {
-				clearInterval(pollingInterval.value);
-				pollingInterval.value = null;
-			}
-
-			ElMessage.warning('付款仍在處理中，請稍後在計畫列表查看付款狀態');
-		}
-	}, pollIntervalMs);
-};
-
-// 停止輪詢
-const stopPaymentPolling = () => {
-	if (pollingInterval.value) {
-		clearInterval(pollingInterval.value);
-		pollingInterval.value = null;
-	}
-	isPolling.value = false;
-	console.log('[輪詢] 已停止付款狀態輪詢');
-};
-
-// 重定向事件監聽器
-const setupRedirectListener = () => {
-	if (!import.meta.client) { return; }
-
-	console.log('[重定向監聽] 設置重定向事件監聽器');
-
-	// 監聽頁面可見性變化（用戶回到頁面時觸發）
-	const handleVisibilityChange = () => {
-		if (!document.hidden && isProcessingStatus.value) {
-			console.log('[重定向監聽] 頁面重新可見，檢查付款狀態');
-			startPaymentPolling();
-		}
-	};
-
-	// 監聽頁面焦點變化
-	const handleFocus = () => {
-		if (isProcessingStatus.value && !isPolling.value) {
-			console.log('[重定向監聽] 頁面獲得焦點，檢查付款狀態');
-			startPaymentPolling();
-		}
-	};
-
-	// 監聽 beforeunload 事件（頁面即將卸載）
-	const handleBeforeUnload = () => {
-		console.log('[重定向監聽] 頁面即將卸載，停止輪詢');
-		stopPaymentPolling();
-	};
-
-	// 添加事件監聽器
-	document.addEventListener('visibilitychange', handleVisibilityChange);
-	window.addEventListener('focus', handleFocus);
-	window.addEventListener('beforeunload', handleBeforeUnload);
-
-	// 返回清理函數
-	return () => {
-		document.removeEventListener('visibilitychange', handleVisibilityChange);
-		window.removeEventListener('focus', handleFocus);
-		window.removeEventListener('beforeunload', handleBeforeUnload);
-	};
-};
-
 // 取得付款結果
 const fetchPaymentResult = async () => {
 	console.log('[Success 頁面] 開始處理付款結果');
@@ -589,55 +313,38 @@ const fetchPaymentResult = async () => {
 		return;
 	}
 
-	// 處理處理中狀態（藍新金流回調但未帶訂單號）
-	if (isProcessingStatus.value) {
-		console.warn('[Success 頁面] 處理中狀態：無訂單號');
-		// 不設定 error，而是保持 loading 狀態並顯示處理中訊息
-		isLoading.value = true;
-		ElMessage.info('付款正在處理中，請稍後查看付款狀態');
-
-		// 立即開始輪詢查詢付款狀態
-		if (authStore.companyId) {
-			console.log('[Success 頁面] 開始輪詢付款狀態');
-			startPaymentPolling();
-		}
-		else {
-			// 如果沒有公司 ID，等待 5 秒後顯示提示
-			setTimeout(() => {
-				isLoading.value = false;
-				ElMessage.warning('付款處理中，請稍後在計畫列表查看付款狀態');
-			}, 5000);
-		}
-		return;
-	}
-
 	// 如果有 TradeInfo 和 TradeSha，直接查詢結帳結果
 	if (hasTradeInfo.value) {
 		console.log('[Success 頁面] 使用 TradeInfo 查詢結帳結果');
 		try {
-			const result = await queryPaymentStatusFromASP();
-			if (result) {
-				paymentResult.value = result;
+			// 讓後端動態處理 OrderNo，前端只傳遞已知的參數
+			const orderNoToUse = orderNum.value || ''; // 如果沒有 OrderNo，讓後端動態生成
+			const result = await getPaymentResultByTradeInfo(orderNoToUse, newebpayTradeInfo.value!, newebpayTradeSha.value!);
+			console.log('[Success 頁面] 結帳結果:', result);
 
-				// 如果付款成功，標記為已付款
-				if (result.PaymentStatus === 'Paid') {
-					planStore.markPaid();
-					ElMessage.success('付款成功！');
-				}
-				else if (result.PaymentStatus === 'Pending') {
-					ElMessage.info('付款處理中，請稍候');
-				}
+			// 直接使用新的 API 格式
+			paymentResult.value = {
+				OrderNum: result.orderNo,
+				CompanyId: authStore.companyId || 0,
+				PlanId: 0, // 這個需要從其他地方取得
+				PaymentStatus: result.status, // 直接使用 'Success', 'Failed', 'Pending'
+				OrderStatus: 'Active',
+				PaymentMethod: result.paymentMethod,
+			};
+
+			// 如果付款成功，標記為已付款
+			if (result.status === 'Success') {
+				planStore.markPaid();
+				ElMessage.success('付款成功！');
 			}
-			else {
-				// 查詢失敗，開始輪詢
-				console.log('[Success 頁面] 查詢失敗，開始輪詢');
-				startPaymentPolling();
+			else if (result.status === 'Pending') {
+				ElMessage.info('付款處理中，請稍候');
 			}
 		}
 		catch (err) {
 			console.error('[Success 頁面] 查詢結帳結果錯誤:', err);
-			// 查詢失敗，開始輪詢
-			startPaymentPolling();
+			error.value = err instanceof Error ? err.message : '查詢結帳結果失敗';
+			ElMessage.error('無法取得付款結果，請稍後再試');
 		}
 		return;
 	}
@@ -677,7 +384,7 @@ const fetchPaymentResult = async () => {
 		paymentResult.value = result;
 
 		// 如果付款成功，標記為已付款
-		if (result.PaymentStatus === 'Paid') {
+		if (result.PaymentStatus === 'Success') {
 			planStore.markPaid();
 			ElMessage.success('付款成功！');
 		}
@@ -695,9 +402,6 @@ const fetchPaymentResult = async () => {
 	}
 };
 
-// 設置重定向監聽器的清理函數
-let cleanupRedirectListener: (() => void) | null = null;
-
 // 進入成功頁：先讓 Header 顯示骨架，取得資料後再標記為已付款
 onMounted(async () => {
 	try {
@@ -707,29 +411,36 @@ onMounted(async () => {
 		// 觸發一次取資料，確保 Header 顯示 loading
 		await Promise.allSettled([planStore.fetchCurrentPlan(), minDelay]);
 
-		// 設置重定向事件監聽器
-		cleanupRedirectListener = setupRedirectListener() || null;
-
 		// 立即檢查是否有 TradeInfo 和 TradeSha，如果有則直接查詢結帳結果
 		if (hasTradeInfo.value) {
 			console.log('[頁面載入] 檢測到 TradeInfo 和 TradeSha，立即查詢結帳結果');
 			try {
-				const result = await queryPaymentStatusFromASP();
-				if (result) {
-					paymentResult.value = result;
+				// 讓後端動態處理 OrderNo，前端只傳遞已知的參數
+				const orderNoToUse = orderNum.value || ''; // 如果沒有 OrderNo，讓後端動態生成
+				const result = await getPaymentResultByTradeInfo(orderNoToUse, newebpayTradeInfo.value!, newebpayTradeSha.value!);
+				console.log('[頁面載入] 結帳結果:', result);
 
-					// 如果付款成功，標記為已付款
-					if (result.PaymentStatus === 'Paid') {
-						planStore.markPaid();
-						ElMessage.success('付款成功！');
-					}
-					else if (result.PaymentStatus === 'Pending') {
-						ElMessage.info('付款處理中，請稍候');
-					}
+				// 直接使用新的 API 格式
+				paymentResult.value = {
+					OrderNum: result.orderNo,
+					CompanyId: authStore.companyId || 0,
+					PlanId: 0, // 這個需要從其他地方取得
+					PaymentStatus: result.status, // 直接使用 'Success', 'Failed', 'Pending'
+					OrderStatus: 'Active',
+					PaymentMethod: result.paymentMethod,
+				};
 
-					isLoading.value = false;
-					return; // 成功取得結果，結束處理
+				// 如果付款成功，標記為已付款
+				if (result.status === 'Success') {
+					planStore.markPaid();
+					ElMessage.success('付款成功！');
 				}
+				else if (result.status === 'Pending') {
+					ElMessage.info('付款處理中，請稍候');
+				}
+
+				isLoading.value = false;
+				return; // 成功取得結果，結束處理
 			}
 			catch (err) {
 				console.error('[頁面載入] 直接查詢結帳結果失敗:', err);
@@ -751,199 +462,12 @@ onMounted(async () => {
 // 頁面卸載時清理資源
 onUnmounted(() => {
 	console.log('[Success 頁面] 頁面卸載，清理資源');
-
-	// 停止輪詢
-	stopPaymentPolling();
-
-	// 清理事件監聽器
-	if (cleanupRedirectListener) {
-		cleanupRedirectListener();
-		cleanupRedirectListener = null;
-	}
+	// 目前沒有需要清理的資源
 });
 
 function goToPlans() {
 	router.push(r.landing());
 }
-
-// 重新查詢付款狀態
-const retryPaymentCheck = async () => {
-	if (!authStore.companyId) {
-		ElMessage.error('無法取得公司資訊');
-		return;
-	}
-
-	try {
-		isLoading.value = true;
-		error.value = null;
-
-		// 停止現有的輪詢
-		stopPaymentPolling();
-
-		// 重置輪詢計數器
-		pollAttempts.value = 0;
-
-		// 嘗試重新取得方案資料
-		await planStore.fetchCurrentPlan();
-
-		// 如果方案已更新為已付款狀態，顯示成功
-		if (planStore.isPayed) {
-			ElMessage.success('付款狀態已確認！');
-			isLoading.value = false;
-			return;
-		}
-
-		// 嘗試使用已知的訂單編號查詢
-		const knownOrderNum = 'ORD20251002002';
-		console.log('[重試查詢] 使用已知訂單號:', knownOrderNum);
-
-		try {
-			const result = await getPaymentResult(knownOrderNum);
-			console.log('[重試查詢] 查詢結果:', result);
-
-			paymentResult.value = result;
-
-			if (result.PaymentStatus === 'Paid') {
-				planStore.markPaid();
-				ElMessage.success('付款成功！訂單狀態已確認');
-				isLoading.value = false;
-				return;
-			}
-			else {
-				ElMessage.info(`付款狀態：${result.PaymentStatus}`);
-			}
-		}
-		catch (orderError) {
-			console.error('[重試查詢] 使用已知訂單號查詢失敗:', orderError);
-			ElMessage.warning('無法查詢訂單狀態，可能後端尚未處理完成');
-		}
-
-		// 開始新的輪詢
-		console.log('[重試查詢] 開始新的輪詢');
-		startPaymentPolling(knownOrderNum);
-	}
-	catch (err) {
-		console.error('重新查詢付款狀態錯誤:', err);
-		ElMessage.error('查詢失敗，請稍後再試');
-		isLoading.value = false;
-	}
-};
-
-// 測試結帳結果 API - 使用規格書中的測試參數
-const testPaymentResultAPI = async () => {
-	try {
-		isLoading.value = true;
-		error.value = null;
-
-		console.log('[測試 API] 開始測試結帳結果 API');
-
-		// 使用規格書中的測試參數 - 讓後端動態生成 OrderNo
-		const testOrderNo = ''; // 空字串，讓後端動態生成
-		const testTradeInfo = '6ba9cce06518b0b02d00987fc4585f1757a10efcd813c9ccd3b5d14aca1d85f8b44dffd9dc3c4b5536839b2420450614cb4aab8a6421dfa710293eb24646e3287cb6693f5f64bf25656ecb309add689806777c2327265d5ca66f2988e9e4826a3cda22057286cc0fe0d9f8b3b508996664846332dbc3054e852a930a730ce1e69f10ee80f5aca2d6819f4e0e40a9239aceea515d8d2bb98f52b0b3b129b6a2b0c92305be287282b97bee95d421238030';
-		const testTradeSha = '764E188109697F5C9BA9BEC8A0BD89D4037FE2616AAC31272D0F5ABB3F523617';
-
-		console.log('[測試 API] 使用測試參數 (讓後端動態生成 OrderNo):', {
-			orderNo: testOrderNo || '將由後端動態生成',
-			tradeInfoLength: testTradeInfo.length,
-			tradeShaLength: testTradeSha.length,
-		});
-
-		// 直接呼叫結帳結果 API
-		const result = await getPaymentResultByTradeInfo(testOrderNo, testTradeInfo, testTradeSha);
-
-		console.log('[測試 API] API 回應:', result);
-
-		// 轉換為舊格式以保持相容性
-		const convertedResult: PaymentResultResponse = {
-			OrderNum: result.orderNo,
-			CompanyId: authStore.companyId || 0,
-			PlanId: 0,
-			PaymentStatus: result.status === 'Success' ? 'Paid' : result.status === 'Failed' ? 'Failed' : 'Pending',
-			OrderStatus: 'Active',
-			PaymentMethod: result.paymentMethod,
-		};
-
-		paymentResult.value = convertedResult;
-
-		// 如果付款成功，標記為已付款
-		if (result.status === 'Success') {
-			planStore.markPaid();
-			ElMessage.success('測試成功！付款狀態已確認');
-		}
-		else {
-			ElMessage.info(`測試結果：${result.status}`);
-		}
-
-		isLoading.value = false;
-	}
-	catch (err) {
-		console.error('[測試 API] 測試失敗:', err);
-		ElMessage.error('測試 API 失敗，請檢查後端連線');
-		isLoading.value = false;
-	}
-};
-
-// 關閉手動測試對話框
-const handleCloseDialog = () => {
-	showManualTestDialog.value = false;
-	manualTradeInfo.value = '';
-	manualTradeSha.value = '';
-};
-
-// 測試手動輸入的參數
-const testManualParameters = async () => {
-	if (!manualTradeInfo.value.trim() || !manualTradeSha.value.trim()) {
-		ElMessage.warning('請輸入 TradeInfo 和 TradeSha');
-		return;
-	}
-
-	try {
-		isManualTestLoading.value = true;
-
-		console.log('[手動測試] 開始測試手動輸入的參數');
-
-		// 直接呼叫結帳結果 API - 讓後端動態生成 OrderNo
-		const orderNoToUse = orderNum.value || ''; // 空字串，讓後端動態生成
-		const result = await getPaymentResultByTradeInfo(orderNoToUse, manualTradeInfo.value, manualTradeSha.value);
-
-		console.log('[手動測試] API 回應:', result);
-
-		// 轉換為舊格式以保持相容性
-		const convertedResult: PaymentResultResponse = {
-			OrderNum: result.orderNo,
-			CompanyId: authStore.companyId || 0,
-			PlanId: 0,
-			PaymentStatus: result.status === 'Success' ? 'Paid' : result.status === 'Failed' ? 'Failed' : 'Pending',
-			OrderStatus: 'Active',
-			PaymentMethod: result.paymentMethod,
-		};
-
-		paymentResult.value = convertedResult;
-
-		// 如果付款成功，標記為已付款
-		if (result.status === 'Success') {
-			planStore.markPaid();
-			ElMessage.success('手動測試成功！付款狀態已確認');
-		}
-		else {
-			ElMessage.info(`手動測試結果：${result.status}`);
-		}
-
-		// 關閉對話框
-		showManualTestDialog.value = false;
-		manualTradeInfo.value = '';
-		manualTradeSha.value = '';
-
-		isLoading.value = false;
-	}
-	catch (err) {
-		console.error('[手動測試] 測試失敗:', err);
-		ElMessage.error('手動測試 API 失敗，請檢查參數和後端連線');
-	}
-	finally {
-		isManualTestLoading.value = false;
-	}
-};
 </script>
 
 <style scoped>
