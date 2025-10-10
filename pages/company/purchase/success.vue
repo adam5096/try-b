@@ -413,7 +413,9 @@ const queryPaymentStatusFromASP = async (): Promise<PaymentResultResponse | null
 		// 優先使用 TradeInfo 和 TradeSha 查詢結帳結果
 		if (hasTradeInfo.value) {
 			console.log('[ASP 查詢] 使用 TradeInfo 查詢結帳結果');
-			const result = await getPaymentResultByTradeInfo(newebpayTradeInfo.value!, newebpayTradeSha.value!);
+			// 讓後端動態處理 OrderNo，前端只傳遞已知的參數
+			const orderNoToUse = orderNum.value || ''; // 如果沒有 OrderNo，讓後端動態生成
+			const result = await getPaymentResultByTradeInfo(orderNoToUse, newebpayTradeInfo.value!, newebpayTradeSha.value!);
 			console.log('[ASP 查詢] 結帳結果:', result);
 
 			// 轉換為舊格式以保持相容性
@@ -837,17 +839,19 @@ const testPaymentResultAPI = async () => {
 
 		console.log('[測試 API] 開始測試結帳結果 API');
 
-		// 使用規格書中的測試參數
+		// 使用規格書中的測試參數 - 讓後端動態生成 OrderNo
+		const testOrderNo = ''; // 空字串，讓後端動態生成
 		const testTradeInfo = '6ba9cce06518b0b02d00987fc4585f1757a10efcd813c9ccd3b5d14aca1d85f8b44dffd9dc3c4b5536839b2420450614cb4aab8a6421dfa710293eb24646e3287cb6693f5f64bf25656ecb309add689806777c2327265d5ca66f2988e9e4826a3cda22057286cc0fe0d9f8b3b508996664846332dbc3054e852a930a730ce1e69f10ee80f5aca2d6819f4e0e40a9239aceea515d8d2bb98f52b0b3b129b6a2b0c92305be287282b97bee95d421238030';
 		const testTradeSha = '764E188109697F5C9BA9BEC8A0BD89D4037FE2616AAC31272D0F5ABB3F523617';
 
-		console.log('[測試 API] 使用測試參數:', {
+		console.log('[測試 API] 使用測試參數 (讓後端動態生成 OrderNo):', {
+			orderNo: testOrderNo || '將由後端動態生成',
 			tradeInfoLength: testTradeInfo.length,
 			tradeShaLength: testTradeSha.length,
 		});
 
 		// 直接呼叫結帳結果 API
-		const result = await getPaymentResultByTradeInfo(testTradeInfo, testTradeSha);
+		const result = await getPaymentResultByTradeInfo(testOrderNo, testTradeInfo, testTradeSha);
 
 		console.log('[測試 API] API 回應:', result);
 
@@ -901,8 +905,9 @@ const testManualParameters = async () => {
 
 		console.log('[手動測試] 開始測試手動輸入的參數');
 
-		// 直接呼叫結帳結果 API
-		const result = await getPaymentResultByTradeInfo(manualTradeInfo.value, manualTradeSha.value);
+		// 直接呼叫結帳結果 API - 讓後端動態生成 OrderNo
+		const orderNoToUse = orderNum.value || ''; // 空字串，讓後端動態生成
+		const result = await getPaymentResultByTradeInfo(orderNoToUse, manualTradeInfo.value, manualTradeSha.value);
 
 		console.log('[手動測試] API 回應:', result);
 

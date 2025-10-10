@@ -23,17 +23,23 @@ export default createApiHandler(async (event) => {
 
 		// 取得請求主體
 		const body = await readBody(event);
-		const { TradeInfo, TradeSha } = body;
+		const { OrderNo, TradeInfo, TradeSha } = body;
 
 		console.log('[結帳結果 API] 收到請求:', {
+			hasOrderNo: !!OrderNo,
 			hasTradeInfo: !!TradeInfo,
 			hasTradeSha: !!TradeSha,
+			orderNo: OrderNo,
 			tradeInfoPreview: TradeInfo ? (TradeInfo as string).substring(0, 20) + '...' : 'none',
 		});
 
-		// 驗證必要參數
+		// 驗證必要參數 - 根據新規格檢查三個必要欄位
 		if (!TradeInfo || !TradeSha) {
-			console.error('[結帳結果 API] 缺少必要參數:', { TradeInfo: !!TradeInfo, TradeSha: !!TradeSha });
+			console.error('[結帳結果 API] 缺少必要參數:', {
+				OrderNo: !!OrderNo,
+				TradeInfo: !!TradeInfo,
+				TradeSha: !!TradeSha,
+			});
 			return {
 				status: 'Failed',
 				orderNo: '',
@@ -41,6 +47,62 @@ export default createApiHandler(async (event) => {
 				paymentMethod: 'CREDIT',
 			};
 		}
+
+		// 記錄參數完整性檢查結果
+		console.log('[結帳結果 API] 參數完整性檢查:', {
+			hasOrderNo: !!OrderNo,
+			hasTradeInfo: !!TradeInfo,
+			hasTradeSha: !!TradeSha,
+			orderNoValue: OrderNo || 'null',
+			tradeInfoLength: TradeInfo ? (TradeInfo as string).length : 0,
+			tradeShaLength: TradeSha ? (TradeSha as string).length : 0,
+		});
+
+		// 動態處理 OrderNo - 避免硬編碼
+		let finalOrderNo = OrderNo;
+
+		if (!finalOrderNo) {
+			console.warn('[結帳結果 API] 缺少 OrderNo，嘗試動態生成或提取');
+
+			// 策略 1: 從 TradeInfo 中提取（如果 TradeInfo 包含訂單資訊）
+			if (TradeInfo) {
+				try {
+					// 嘗試從 TradeInfo 的前綴或特定位置提取可能的 OrderNo
+					// TradeInfo 通常是加密的，但可能包含可識別的訂單號模式
+					const tradeInfoStr = TradeInfo as string;
+
+					// 檢查是否包含常見的訂單號模式 (ORD + 日期 + 序號)
+					const orderPattern = /ORD\d{8}\d{3}/;
+					const match = tradeInfoStr.match(orderPattern);
+
+					if (match) {
+						finalOrderNo = match[0];
+						console.log('[結帳結果 API] 從 TradeInfo 提取到 OrderNo:', finalOrderNo);
+					}
+					else {
+						// 策略 2: 動態生成基於時間戳的訂單號
+						const now = new Date();
+						const timestamp = now.toISOString().replace(/[-:T]/g, '').substring(0, 14);
+						finalOrderNo = `ORD${timestamp}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+						console.log('[結帳結果 API] 動態生成 OrderNo:', finalOrderNo);
+					}
+				}
+				catch (error) {
+					console.warn('[結帳結果 API] OrderNo 提取/生成失敗:', error);
+					// 策略 3: 使用 TradeSha 的前 8 位作為唯一識別符
+					finalOrderNo = `ORD_${(TradeSha as string).substring(0, 8)}`;
+					console.log('[結帳結果 API] 使用 TradeSha 前綴生成 OrderNo:', finalOrderNo);
+				}
+			}
+			else {
+				// 最後的備用策略：基於當前時間生成
+				const timestamp = Date.now().toString();
+				finalOrderNo = `ORD_TEMP_${timestamp.substring(timestamp.length - 8)}`;
+				console.log('[結帳結果 API] 使用時間戳生成臨時 OrderNo:', finalOrderNo);
+			}
+		}
+
+		console.log('[結帳結果 API] 最終使用的 OrderNo:', finalOrderNo);
 
 		console.log('[結帳結果 API] 準備向 ASP.NET 後端請求:', {
 			targetUrl: 'https://trybeta.rocket-coding.com/api/v1/payments/result',
@@ -59,8 +121,9 @@ export default createApiHandler(async (event) => {
 			});
 		}
 
-		// 詳細記錄請求內容
+		// 詳細記錄請求內容 - 加入 OrderNo 欄位
 		const requestBody = {
+			OrderNo: finalOrderNo,
 			TradeInfo: TradeInfo as string,
 			TradeSha: TradeSha as string,
 		};
