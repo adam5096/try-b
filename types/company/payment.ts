@@ -38,8 +38,9 @@ export interface PaymentResultResponse {
 	Card4No?: string
 }
 
-// 結帳結果請求 (GET /api/v1/payments/result)
+// 結帳結果請求 (POST /api/v1/payments/result)
 export interface PaymentResultRequest {
+	OrderNo: string
 	TradeInfo: string
 	TradeSha: string
 }
