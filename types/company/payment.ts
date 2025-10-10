@@ -32,7 +32,7 @@ export interface PaymentResultResponse {
 	OrderNum: string
 	CompanyId: number
 	PlanId: number
-	PaymentStatus: 'Paid' | 'Pending' | 'Failed'
+	PaymentStatus: 'Success' | 'Pending' | 'Failed'
 	OrderStatus: 'Active' | 'Inactive'
 	PaymentMethod: 'CREDIT' | 'CVS' | 'ATM' | 'SUBSCRIPTION'
 	Card4No?: string
