@@ -40,7 +40,7 @@ export interface PaymentResultResponse {
 
 // 結帳結果請求 (POST /api/v1/payments/result)
 export interface PaymentResultRequest {
-	OrderNo: string
+	OrderNo?: string // 可選屬性，讓後端處理 OrderNo 提取
 	TradeInfo: string
 	TradeSha: string
 }
