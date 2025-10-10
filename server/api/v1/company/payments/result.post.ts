@@ -58,51 +58,18 @@ export default createApiHandler(async (event) => {
 			tradeShaLength: TradeSha ? (TradeSha as string).length : 0,
 		});
 
-		// 動態處理 OrderNo - 避免硬編碼
+		// 純代理模式：讓 ASP.NET 後端處理 OrderNo 解密
+		// BFF 只負責轉發請求，不做解密邏輯
 		let finalOrderNo = OrderNo;
 
 		if (!finalOrderNo) {
-			console.warn('[結帳結果 API] 缺少 OrderNo，嘗試動態生成或提取');
-
-			// 策略 1: 從 TradeInfo 中提取（如果 TradeInfo 包含訂單資訊）
-			if (TradeInfo) {
-				try {
-					// 嘗試從 TradeInfo 的前綴或特定位置提取可能的 OrderNo
-					// TradeInfo 通常是加密的，但可能包含可識別的訂單號模式
-					const tradeInfoStr = TradeInfo as string;
-
-					// 檢查是否包含常見的訂單號模式 (ORD + 日期 + 序號)
-					const orderPattern = /ORD\d{8}\d{3}/;
-					const match = tradeInfoStr.match(orderPattern);
-
-					if (match) {
-						finalOrderNo = match[0];
-						console.log('[結帳結果 API] 從 TradeInfo 提取到 OrderNo:', finalOrderNo);
-					}
-					else {
-						// 策略 2: 動態生成基於時間戳的訂單號
-						const now = new Date();
-						const timestamp = now.toISOString().replace(/[-:T]/g, '').substring(0, 14);
-						finalOrderNo = `ORD${timestamp}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
-						console.log('[結帳結果 API] 動態生成 OrderNo:', finalOrderNo);
-					}
-				}
-				catch (error) {
-					console.warn('[結帳結果 API] OrderNo 提取/生成失敗:', error);
-					// 策略 3: 使用 TradeSha 的前 8 位作為唯一識別符
-					finalOrderNo = `ORD_${(TradeSha as string).substring(0, 8)}`;
-					console.log('[結帳結果 API] 使用 TradeSha 前綴生成 OrderNo:', finalOrderNo);
-				}
-			}
-			else {
-				// 最後的備用策略：基於當前時間生成
-				const timestamp = Date.now().toString();
-				finalOrderNo = `ORD_TEMP_${timestamp.substring(timestamp.length - 8)}`;
-				console.log('[結帳結果 API] 使用時間戳生成臨時 OrderNo:', finalOrderNo);
-			}
+			console.warn('[結帳結果 API] 缺少 OrderNo，將由 ASP.NET 後端處理');
+			console.log('[結帳結果 API] BFF 採用純代理模式，解密邏輯由後端負責');
+			// 讓後端處理 OrderNo 的提取和解密
+			finalOrderNo = ''; // 空值，讓後端處理
 		}
 
-		console.log('[結帳結果 API] 最終使用的 OrderNo:', finalOrderNo);
+		console.log('[結帳結果 API] 轉發到後端的 OrderNo:', finalOrderNo || '將由後端處理');
 
 		console.log('[結帳結果 API] 準備向 ASP.NET 後端請求:', {
 			targetUrl: 'https://trybeta.rocket-coding.com/api/v1/payments/result',
