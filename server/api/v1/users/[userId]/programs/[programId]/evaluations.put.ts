@@ -15,8 +15,17 @@ export default createApiHandler(async (event) => {
 	// 讀取請求體
 	const body = await readBody(event);
 
-	// 使用統一的 headers 處理（提交評價需要認證）
-	const headers = getForwardHeaders(event);
+	// 修正：從 cookie 取得用戶認證 token
+	const userToken = getCookie(event, 'userAuthToken');
+	if (!userToken) {
+		throw createError({
+			statusCode: 401,
+			statusMessage: 'Unauthorized: Missing authentication token',
+		});
+	}
+
+	// 使用統一的 headers 處理，並傳入 token
+	const headers = getForwardHeaders(event, userToken);
 
 	// 透過 Nitro 的 proxy 設定轉發到真實後端
 	// 規則：必須包含 api 並使用 /api-proxy 進行代理
