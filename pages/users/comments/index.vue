@@ -205,11 +205,10 @@ async function submitEvaluationForItem(item: ReviewItem) {
 	catch (error: any) {
 		if (error === 'cancel') { return; }
 
-		// 針對 400 Bad Request：直接以彈窗呈現後端訊息（忠實顯示）
+		// 針對 400 Bad Request：統一顯示 AI 審查失敗訊息
 		const status = error?.status || error?.statusCode || error?.response?.status;
-		const bodyMessage = error?.data?.message || error?.response?._data?.message || error?.message;
-		if (status === 400 && bodyMessage) {
-			await ElMessageBox.alert(bodyMessage, '提交失敗', {
+		if (status === 400) {
+			await ElMessageBox.alert('評價內容被判定為不當，請修改後再提交。', '提交失敗', {
 				type: 'error',
 				confirmButtonText: '我知道了',
 			});
@@ -219,18 +218,18 @@ async function submitEvaluationForItem(item: ReviewItem) {
 		// 其他錯誤：保留原本處理邏輯
 		let errorMessage = '提交失敗，請稍後重試';
 
-		// 處理後端錯誤回應（同時兼容大小寫與 _data 來源）
+		// 處理後端錯誤回應（安全考量：不直接揭露技術性錯誤訊息）
 		const backendMessage = error?.data?.Message || error?.data?.message || error?.response?._data?.message;
 		if (backendMessage) {
-			errorMessage = backendMessage;
-
 			// 特殊處理「體驗尚未結束」錯誤
-			if (errorMessage === '體驗尚未結束') {
+			if (backendMessage === '體驗尚未結束') {
 				ElMessage.warning('體驗尚未結束');
 				// 退出編輯模式，收合多行輸入框
 				editingEvaluation.value[item.serial_num] = undefined;
 				return;
 			}
+			// 其他後端訊息統一使用友善提示
+			errorMessage = '提交失敗，請稍後重試';
 		}
 		else if (error?.message) {
 			if (error.message.includes('網路')) {
@@ -243,7 +242,8 @@ async function submitEvaluationForItem(item: ReviewItem) {
 				errorMessage = '服務暫時維護中，請稍後再試';
 			}
 			else {
-				errorMessage = error.message;
+				// 安全考量：不直接顯示技術性錯誤訊息
+				errorMessage = '提交失敗，請稍後重試';
 			}
 		}
 
