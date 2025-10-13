@@ -6,7 +6,7 @@ export const useUserEvaluation = () => {
 		programId: number,
 		payload: SubmitEvaluationPayload,
 	) => {
-		const url = `/api/v1/users/evaluation/${userId}/${programId}`;
+		const url = `/api/v1/users/${userId}/programs/${programId}/evaluations`;
 
 		try {
 			// 取得 user auth token 來設定 headers
