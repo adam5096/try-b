@@ -4,7 +4,7 @@
 export default defineNuxtConfig({
 
 	modules: ['@nuxtjs/tailwindcss', '@nuxt/fonts', // Sitemap 模組
-		'@nuxt/eslint', '@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security', '@nuxt/scripts'],
+		'@nuxt/eslint', '@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security'],
 
 	imports: {
 		dirs: ['stores/**', 'composables/**'],
@@ -37,11 +37,6 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			apiBase: '/api', // 統一使用 /api 前綴，透過 BFF 架構處理
-			// 效能監控配置
-			enableWebVitals: true,
-			enablePerformanceBudget: true,
-			// Google Analytics 配置
-			googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || '', // 請設置環境變數
 		},
 	},
 	build: {
