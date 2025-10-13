@@ -3,8 +3,8 @@
 // eslint-disable-next-line no-undef
 export default defineNuxtConfig({
 
-	modules: ['@nuxtjs/tailwindcss', '@nuxt/fonts', '@nuxt/eslint', // Sitemap 模組
-		'@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security'],
+	modules: ['@nuxtjs/tailwindcss', '@nuxt/fonts', // Sitemap 模組
+		'@nuxt/eslint', '@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security', '@nuxt/scripts'],
 
 	imports: {
 		dirs: ['stores/**', 'composables/**'],
