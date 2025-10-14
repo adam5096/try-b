@@ -4,7 +4,7 @@
 export default defineNuxtConfig({
 
 	modules: ['@nuxtjs/tailwindcss', '@nuxt/fonts', // Sitemap 模組
-		'@nuxt/eslint', '@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security'],
+		'@nuxt/eslint', '@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security', 'nuxt-vue3-google-signin', '@sidebase/nuxt-auth'],
 
 	imports: {
 		dirs: ['stores/**', 'composables/**'],
@@ -204,4 +204,4 @@ export default defineNuxtConfig({
 		// injectPosition: 0,
 		viewer: false,
 	},
-});
+})
