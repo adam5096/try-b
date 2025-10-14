@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import { onBeforeRouteLeave } from 'vue-router';
+import { ElMessageBox, ElMessage } from 'element-plus';
 import type { ReviewItem, ReviewStatus, CommentsQueryParams, SubmitEvaluationPayload } from '~/types/users/comment';
 import { useUserComments } from '~/composables/api/users/useUserComments';
 import { useUserEvaluation } from '~/composables/api/users/useUserEvaluation';
@@ -69,6 +71,40 @@ const submittingEvaluation = ref<{ [key: string]: boolean }>({});
 // 計算屬性
 const totalReviews = computed(() => commentsData.value?.TotalCount || 0);
 const visibleReviews = computed(() => commentsData.value?.Data || []);
+
+// 檢查是否有未完成的編輯
+const hasUnfinishedEdits = computed(() => {
+	return Object.keys(editingEvaluation.value).some(key =>
+		editingEvaluation.value[key] !== undefined,
+	);
+});
+
+// 統一的編輯檢查對話框
+const showEditCheckDialog = async (title: string = '確認離開'): Promise<boolean> => {
+	if (!hasUnfinishedEdits.value) {
+		return true;
+	}
+
+	try {
+		await ElMessageBox.confirm(
+			'您有未完成的評價編輯，請選擇：',
+			title,
+			{
+				confirmButtonText: '放棄編輯並離開',
+				cancelButtonText: '繼續編輯',
+				type: 'warning',
+				distinguishCancelAndClose: true,
+			},
+		);
+		// 使用者選擇放棄編輯
+		editingEvaluation.value = {};
+		return true;
+	}
+	catch (error) {
+		// 使用者選擇繼續編輯或取消
+		return false;
+	}
+};
 
 // 狀態 ID 對應
 const statusIdToText = (statusId: number): ReviewStatus => {
@@ -265,9 +301,69 @@ watch([currentPage, pageSize], () => {
 	loadComments();
 });
 
+// 路由離開前檢查
+onBeforeRouteLeave(async (to, from, next) => {
+	if (hasUnfinishedEdits.value) {
+		const shouldLeave = await showEditCheckDialog('確認離開頁面');
+		if (shouldLeave) {
+			next();
+		}
+		else {
+			next(false);
+		}
+	}
+	else {
+		next();
+	}
+});
+
 // 初始化載入
 onMounted(() => {
 	loadComments();
+
+	// 瀏覽器離開前檢查
+	const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+		if (hasUnfinishedEdits.value) {
+			event.preventDefault();
+			event.returnValue = '您有未完成的評價編輯，確定要離開嗎？';
+			return event.returnValue;
+		}
+	};
+
+	// 頁面可見性變化檢查
+	const handleVisibilityChange = () => {
+		if (document.hidden && hasUnfinishedEdits.value) {
+			ElMessage.info('頁面已隱藏，請注意您的編輯內容');
+		}
+	};
+
+	// 網路中斷檢查
+	const handleOffline = () => {
+		if (hasUnfinishedEdits.value) {
+			ElMessage.warning('網路連線中斷，請注意您的編輯內容');
+		}
+	};
+
+	// 網路恢復檢查
+	const handleOnline = () => {
+		if (hasUnfinishedEdits.value) {
+			ElMessage.success('網路已恢復，您可以繼續編輯評價');
+		}
+	};
+
+	// 添加事件監聽器
+	window.addEventListener('beforeunload', handleBeforeUnload);
+	document.addEventListener('visibilitychange', handleVisibilityChange);
+	window.addEventListener('offline', handleOffline);
+	window.addEventListener('online', handleOnline);
+
+	// 組件卸載前清理
+	onBeforeUnmount(() => {
+		window.removeEventListener('beforeunload', handleBeforeUnload);
+		document.removeEventListener('visibilitychange', handleVisibilityChange);
+		window.removeEventListener('offline', handleOffline);
+		window.removeEventListener('online', handleOnline);
+	});
 });
 </script>
 
