@@ -2,6 +2,7 @@
 import { ref, watchEffect } from 'vue';
 import { useUserAuthStore } from '~/stores/user/useAuthStore';
 import type { UserLoginData } from '~/types/users/user';
+import GoogleLoginButton from '~/components/auth/GoogleLoginButton.vue';
 
 definePageMeta({
 	name: 'user-login',
