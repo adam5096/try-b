@@ -32,27 +32,14 @@
 </template>
 
 <script setup lang="ts">
+const { signIn } = useAuth()
 const isLoading = ref(false)
 
 const handleGoogleLogin = async () => {
 	isLoading.value = true
 	try {
-		// 使用 Google Identity Services
-		const clientId = useRuntimeConfig().public.googleClientId
-
-		// 載入 Google Identity Services
-		if (!windowWithGoogle.google) {
-			await loadGoogleIdentityServices()
-		}
-
-		// 初始化 Google Identity Services
-		windowWithGoogle.google.accounts.id.initialize({
-			client_id: clientId,
-			callback: handleCredentialResponse,
-		})
-
-		// 觸發登入流程
-		windowWithGoogle.google.accounts.id.prompt()
+		// 使用 NuxtAuth 的 signIn 方法
+		await signIn('google', { callbackUrl: '/users' })
 	}
 	catch (error) {
 		console.error('Google login error:', error)
@@ -62,33 +49,4 @@ const handleGoogleLogin = async () => {
 		isLoading.value = false
 	}
 }
-
-// 載入 Google Identity Services
-async function loadGoogleIdentityServices(): Promise<void> {
-	return new Promise((resolve, reject) => {
-		const script = document.createElement('script')
-		script.src = 'https://accounts.google.com/gsi/client'
-		script.onload = () => resolve()
-		script.onerror = () => reject(new Error('Failed to load Google Identity Services'))
-		document.head.appendChild(script)
-	})
-}
-
-// 處理 Google 認證回應
-function handleCredentialResponse(response: any) {
-	const authStore = useUserAuthStore()
-
-	authStore.loginWithGoogle(response.credential)
-		.then(() => {
-			ElMessage.success('Google 登入成功')
-			navigateTo('/users')
-		})
-		.catch((error) => {
-			console.error('Google login failed:', error)
-			ElMessage.error('Google 登入失敗')
-		})
-}
-
-// 使用 any 類型避免 TypeScript 錯誤
-const windowWithGoogle = window as any
 </script>

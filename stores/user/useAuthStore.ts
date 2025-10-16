@@ -3,7 +3,6 @@ import { computed, ref } from 'vue';
 import type { User, UserLoginData, UserRegisterData } from '~/types/users/user';
 import { useUserLogin } from '~/composables/api/users/useUserLogin';
 import { useUserRegister } from '~/composables/api/users/useUserRegister';
-import { useGoogleAuth } from '~/composables/api/users/useGoogleAuth';
 
 export const useUserAuthStore = defineStore('userAuth', () => {
 	const tokenCookie = useCookie<string | null>('userAuthToken');
@@ -50,38 +49,6 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 		}
 	}
 
-	async function loginWithGoogle(idToken: string) {
-		const { loginWithGoogle: performGoogleLogin } = useGoogleAuth();
-		try {
-			const response = await performGoogleLogin(idToken);
-
-			if (response && response.token && response.user) {
-				token.value = response.token;
-				tokenCookie.value = response.token;
-
-				// 將 API 回應的 user 格式轉換為內部 User 格式
-				const mappedUser: User = {
-					id: response.user.Id,
-					name: response.user.Account,
-					account: response.user.Account,
-					email: response.user.Email,
-					role: response.user.Role,
-				};
-
-				user.value = mappedUser;
-				userCookie.value = mappedUser;
-			}
-			else {
-				await logout();
-				throw new Error('Google 登入失敗：回應格式無效或缺少必要資訊');
-			}
-		}
-		catch (err: unknown) {
-			await logout();
-			const message = (err as { data?: { message?: string }, message?: string })?.data?.message || (err as { message?: string })?.message || 'Google 登入失敗：伺服器錯誤';
-			throw new Error(message);
-		}
-	}
 	async function register(registerData: UserRegisterData) {
 		const userRegister = useUserRegister();
 		try {
@@ -126,7 +93,6 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 		token,
 		isLoggedIn,
 		login,
-		loginWithGoogle,
 		register,
 		logout,
 		fetchUser,

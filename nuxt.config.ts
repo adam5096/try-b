@@ -4,7 +4,7 @@
 export default defineNuxtConfig({
 
 	modules: ['@nuxtjs/tailwindcss', '@nuxt/fonts', // Sitemap 模組
-		'@nuxt/eslint', '@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security', 'nuxt-vue3-google-signin', '@sidebase/nuxt-auth'],
+		'@nuxt/eslint', '@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security', '@sidebase/nuxt-auth'],
 
 	imports: {
 		dirs: ['stores/**', 'composables/**'],
@@ -37,8 +37,8 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			apiBase: '/api', // 統一使用 /api 前綴，透過 BFF 架構處理
-			googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
 		},
+		googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
 		googleClientSecret: process.env.NUXT_GOOGLE_CLIENT_SECRET,
 	},
 	build: {
