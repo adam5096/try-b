@@ -49,6 +49,55 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 		}
 	}
 
+	async function loginWithGoogleCode(code: string) {
+		try {
+			// 使用授權碼呼叫後端 API
+			const response = await $fetch<{
+				token: string
+				user: {
+					Id: number
+					Account: string
+					Email: string
+					Role: string
+				}
+			}>('/api/v1/users/google', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: {
+					code: code,
+				},
+			});
+
+			if (response && response.token && response.user) {
+				token.value = response.token;
+				tokenCookie.value = response.token;
+
+				// 將 API 回應的 user 格式轉換為內部 User 格式
+				const mappedUser: User = {
+					id: response.user.Id,
+					name: response.user.Account,
+					account: response.user.Account,
+					email: response.user.Email,
+					role: response.user.Role,
+				};
+
+				user.value = mappedUser;
+				userCookie.value = mappedUser;
+			}
+			else {
+				await logout();
+				throw new Error('Google 登入失敗：回應格式無效或缺少必要資訊');
+			}
+		}
+		catch (err: unknown) {
+			await logout();
+			const message = (err as { data?: { message?: string }, message?: string })?.data?.message || (err as { message?: string })?.message || 'Google 登入失敗：伺服器錯誤';
+			throw new Error(message);
+		}
+	}
+
 	async function register(registerData: UserRegisterData) {
 		const userRegister = useUserRegister();
 		try {
@@ -93,6 +142,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 		token,
 		isLoggedIn,
 		login,
+		loginWithGoogleCode,
 		register,
 		logout,
 		fetchUser,

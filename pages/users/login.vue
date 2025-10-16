@@ -10,13 +10,12 @@ definePageMeta({
 });
 
 const authStore = useUserAuthStore();
-const { status } = useAuth();
 const route = useRoute();
 const router = useRouter();
 
 // Redirect if already logged in
 watchEffect(() => {
-	if (status.value === 'authenticated' || authStore.isLoggedIn) {
+	if (authStore.isLoggedIn) {
 		router.push({ name: 'user-landing' });
 	}
 });

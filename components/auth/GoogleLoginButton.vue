@@ -2,6 +2,7 @@
 	<el-button
 		type="primary"
 		:loading="isLoading"
+		:disabled="!isReady"
 		class="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
 		@click="handleGoogleLogin"
 	>
@@ -32,18 +33,43 @@
 </template>
 
 <script setup lang="ts">
-const { signIn } = useAuth()
+import { useCodeClient } from 'vue3-google-signin'
+import type { ImplicitFlowSuccessResponse, ImplicitFlowErrorResponse } from 'vue3-google-signin';
+
 const isLoading = ref(false)
+const authStore = useUserAuthStore()
+
+const handleOnSuccess = async (response: ImplicitFlowSuccessResponse) => {
+	try {
+		// 使用授權碼與後端溝通
+		await authStore.loginWithGoogleCode(response.code)
+		ElMessage.success('Google 登入成功')
+		navigateTo('/users')
+	}
+	catch (error) {
+		console.error('Google login failed:', error)
+		ElMessage.error('Google 登入失敗')
+	}
+}
+
+const handleOnError = (errorResponse: ImplicitFlowErrorResponse) => {
+	console.error('Google login error:', errorResponse)
+	ElMessage.error('Google 登入失敗，請稍後再試')
+}
+
+const { isReady, login } = useCodeClient({
+	onSuccess: handleOnSuccess,
+	onError: handleOnError,
+})
 
 const handleGoogleLogin = async () => {
 	isLoading.value = true
 	try {
-		// 使用 NuxtAuth 的 signIn 方法
-		await signIn('google', { callbackUrl: '/users' })
+		await login()
 	}
 	catch (error) {
-		console.error('Google login error:', error)
-		ElMessage.error('Google 登入失敗，請稍後再試')
+		console.error('Login trigger error:', error)
+		ElMessage.error('登入觸發失敗')
 	}
 	finally {
 		isLoading.value = false
