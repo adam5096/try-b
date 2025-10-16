@@ -194,7 +194,9 @@ async function handleLogin() {
 			</div>
 
 			<!-- Google 登入按鈕 -->
-			<GoogleLoginButton />
+			<ClientOnly>
+				<GoogleLoginButton />
+			</ClientOnly>
 
 			<div class="text-center text-sm">
 				還沒有帳戶？

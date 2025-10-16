@@ -4,7 +4,12 @@
  */
 export const useGoogleAuth = () => {
 	const config = useRuntimeConfig()
-	const clientId = config.public.googleClientId
+	const clientId = config.public.googleClientId || '835793329309-rhgij07od1g2sfalsl1g5u1284kqbmt3.apps.googleusercontent.com'
+
+	// 檢查 clientId 是否存在
+	if (!clientId) {
+		throw new Error('Google Client ID is not configured')
+	}
 
 	// 載入 Google Identity Services 腳本
 	const loadGoogleScript = (): Promise<void> => {
@@ -26,20 +31,6 @@ export const useGoogleAuth = () => {
 		})
 	}
 
-	// 初始化 Google Identity Services
-	const initializeGoogleAuth = () => {
-		if (!window.google?.accounts?.id) {
-			throw new Error('Google Identity Services not loaded')
-		}
-
-		window.google.accounts.id.initialize({
-			client_id: clientId,
-			callback: handleCredentialResponse,
-			auto_select: false,
-			cancel_on_tap_outside: false,
-		})
-	}
-
 	// 處理認證回應
 	const handleCredentialResponse = (response: any) => {
 		console.log('Google Auth Response:', response)
@@ -52,22 +43,23 @@ export const useGoogleAuth = () => {
 	// 成功回調函數
 	const onSuccessCallback = ref<((response: any) => void) | null>(null)
 
-	// 登入方法
+	// 登入方法 - 使用 ID Token 流程
 	const login = async (onSuccess?: (response: any) => void) => {
 		try {
 			await loadGoogleScript()
-			initializeGoogleAuth()
 
 			if (onSuccess) {
 				onSuccessCallback.value = onSuccess
 			}
 
-			// 觸發 Google 登入流程
-			window.google.accounts.id.prompt((notification: any) => {
-				if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-					console.log('Google One Tap not displayed or skipped')
-				}
+			// 使用 Google Identity Services 的 ID Token 流程
+			window.google.accounts.id.initialize({
+				client_id: clientId,
+				callback: handleCredentialResponse,
 			})
+
+			// 觸發登入彈窗
+			window.google.accounts.id.prompt()
 		}
 		catch (error) {
 			console.error('Google Auth Error:', error)
@@ -75,31 +67,9 @@ export const useGoogleAuth = () => {
 		}
 	}
 
-	// 渲染按鈕方法
-	const renderButton = (element: HTMLElement, onSuccess?: (response: any) => void) => {
-		if (!window.google?.accounts?.id) {
-			throw new Error('Google Identity Services not loaded')
-		}
-
-		if (onSuccess) {
-			onSuccessCallback.value = onSuccess
-		}
-
-		window.google.accounts.id.renderButton(element, {
-			theme: 'outline',
-			size: 'large',
-			type: 'standard',
-			shape: 'rectangular',
-			text: 'signin_with',
-			logo_alignment: 'left',
-		})
-	}
-
 	return {
 		login,
-		renderButton,
 		loadGoogleScript,
-		initializeGoogleAuth,
 	}
 }
 
@@ -109,9 +79,8 @@ declare global {
 		google: {
 			accounts: {
 				id: {
-					initialize: (config: any) => void
-					prompt: (callback?: (notification: any) => void) => void
-					renderButton: (element: HTMLElement, config: any) => void
+					initialize: (config: { client_id: string, callback: (response: any) => void }) => void
+					prompt: () => void
 				}
 			}
 		}

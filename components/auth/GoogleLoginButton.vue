@@ -44,7 +44,7 @@ const handleGoogleLogin = async () => {
 	try {
 		await login(async (response) => {
 			try {
-				// 使用 JWT token 進行登入
+				// 使用 ID Token 進行登入
 				await authStore.loginWithGoogleToken(response.credential)
 				ElMessage.success('Google 登入成功')
 				navigateTo('/users')
