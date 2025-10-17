@@ -3,13 +3,23 @@
 // eslint-disable-next-line no-undef
 export default defineNuxtConfig({
 
-	modules: ['@nuxtjs/tailwindcss', '@nuxt/fonts', // Sitemap 模組
-		'@nuxt/eslint', '@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security'],
+	modules: [
+		'@nuxtjs/tailwindcss',
+		'@nuxt/fonts',
+		'@nuxt/eslint',
+		'@nuxtjs/seo',
+		'@nuxtjs/sitemap',
+		['@element-plus/nuxt', { idInjection: false }],
+		'@nuxt/image',
+		'@pinia/nuxt',
+		'@vueuse/nuxt',
+		'nuxt-security',
+	],
 
 	imports: {
 		dirs: ['stores/**', 'composables/**'],
 	},
-	devtools: { enabled: true },
+	devtools: { enabled: process.env.NODE_ENV === 'development' }, // 只在開發環境啟用
 	app: {
 		head: {
 			link: [
@@ -147,6 +157,8 @@ export default defineNuxtConfig({
 				indent: 'tab', // 使用 Tab 縮排
 			},
 		},
+		// 在開發環境中減少 ESLint 檢查頻率
+		checker: process.env.NODE_ENV === 'development' ? false : true, // 開發環境關閉即時檢查
 	},
 	fonts: {
 		families: [

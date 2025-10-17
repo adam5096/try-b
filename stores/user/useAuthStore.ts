@@ -49,9 +49,9 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 		}
 	}
 
-	async function loginWithGoogleToken(idToken: string) {
+	async function loginWithGoogleToken(googleToken: string) {
 		try {
-			// 使用 ID Token 呼叫後端 API
+			// 使用從後端獲得的 token 進行登入
 			const response = await $fetch<{
 				token: string
 				user: {
@@ -66,7 +66,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 					'Content-Type': 'application/json',
 				},
 				body: {
-					id_token: idToken,
+					token: googleToken,
 				},
 			});
 

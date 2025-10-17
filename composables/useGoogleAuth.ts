@@ -43,7 +43,7 @@ export const useGoogleAuth = () => {
 	// 成功回調函數
 	const onSuccessCallback = ref<((response: any) => void) | null>(null)
 
-	// 登入方法 - 使用 ID Token 流程
+	// 登入方法 - 使用重定向流程避免 COOP 限制
 	const login = async (onSuccess?: (response: any) => void) => {
 		try {
 			await loadGoogleScript()
@@ -52,14 +52,20 @@ export const useGoogleAuth = () => {
 				onSuccessCallback.value = onSuccess
 			}
 
-			// 使用 Google Identity Services 的 ID Token 流程
-			window.google.accounts.id.initialize({
-				client_id: clientId,
-				callback: handleCredentialResponse,
-			})
+			// 使用重定向流程避免 COOP 限制
+			const redirectUri = process.env.NODE_ENV === 'development'
+				? 'http://localhost:3000/users/login'
+				: 'https://try-b.vercel.app/users/login'
 
-			// 觸發登入彈窗
-			window.google.accounts.id.prompt()
+			const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?`
+				+ `client_id=${clientId}&`
+				+ `redirect_uri=${encodeURIComponent(redirectUri)}&`
+				+ `response_type=code&`
+				+ `scope=openid%20email%20profile&`
+				+ `state=${Date.now()}`
+
+			// 直接重定向到 Google 登入頁面
+			window.location.href = authUrl
 		}
 		catch (error) {
 			console.error('Google Auth Error:', error)
@@ -79,8 +85,14 @@ declare global {
 		google: {
 			accounts: {
 				id: {
-					initialize: (config: { client_id: string, callback: (response: any) => void }) => void
-					prompt: () => void
+					initialize: (config: {
+						client_id: string
+						callback: (response: any) => void
+						auto_select?: boolean
+						cancel_on_tap_outside?: boolean
+					}) => void
+					prompt: (callback?: (notification: any) => void) => void
+					renderButton: (element: HTMLElement, config: any) => void
 				}
 			}
 		}

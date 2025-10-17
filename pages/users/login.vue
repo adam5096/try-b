@@ -21,6 +21,53 @@ watchEffect(() => {
 	}
 });
 
+// 處理 Google OAuth 回調
+onMounted(() => {
+	const urlParams = new URLSearchParams(window.location.search);
+	const code = urlParams.get('code');
+	const state = urlParams.get('state');
+
+	if (code && state) {
+		// 處理 Google OAuth 授權碼
+		handleGoogleCallback(code);
+	}
+});
+
+async function handleGoogleCallback(code: string) {
+	try {
+		isLoading.value = true;
+		console.log('收到 Google OAuth 授權碼:', code);
+
+		// 使用授權碼獲取 id_token
+		const response = await $fetch<{
+			token: string
+			user?: any
+		}>('/api/v1/users/google', {
+			method: 'POST',
+			body: { code },
+		});
+
+		console.log('Google 登入回應:', response);
+
+		if (response.token) {
+			// 使用 id_token 進行登入
+			await authStore.loginWithGoogleToken(response.token);
+			ElMessage.success('Google 登入成功');
+			await navigateTo('/users');
+		}
+		else {
+			throw new Error('未收到有效的 token');
+		}
+	}
+	catch (error) {
+		console.error('Google callback error:', error);
+		ElMessage.error('Google 登入失敗，請稍後再試');
+	}
+	finally {
+		isLoading.value = false;
+	}
+}
+
 const loginData = ref<Omit<UserLoginData, 'password'>>({
 	account: '',
 });
