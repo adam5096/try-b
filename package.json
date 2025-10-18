@@ -47,6 +47,7 @@
     "eslint": "^9.0.0",
     "next-auth": "~4.21.1",
     "nuxt": "^3.17.6",
+    "nuxt-mcp": "^0.2.4",
     "nuxt-security": "2.4.0",
     "nuxt-swiper": "2.0.1",
     "pinia": "^3.0.3",
