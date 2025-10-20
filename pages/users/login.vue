@@ -36,7 +36,7 @@ onMounted(() => {
 async function handleGoogleCallback(code: string) {
 	try {
 		isLoading.value = true;
-		console.log('收到 Google OAuth 授權碼:', code);
+
 
 		// 使用授權碼進行登入（BFF 會處理 code 到 id_token 的轉換）
 		const response = await $fetch<{
@@ -47,7 +47,6 @@ async function handleGoogleCallback(code: string) {
 			body: { code },
 		});
 
-		console.log('Google 登入回應:', response);
 
 		if (response.token) {
 			// 使用 JWT token 進行登入
@@ -60,7 +59,7 @@ async function handleGoogleCallback(code: string) {
 		}
 	}
 	catch (error) {
-		console.error('Google callback error:', error);
+		console.error('❌ login.vue: Google callback error:', error);
 		ElMessage.error('Google 登入失敗，請稍後再試');
 	}
 	finally {

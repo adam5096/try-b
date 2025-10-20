@@ -234,56 +234,6 @@ const isNewebpaySuccess = computed(() => {
 	return newebpayStatus.value === 'SUCCESS';
 });
 
-// 調試：在 console 顯示所有查詢參數和完整資訊
-if (import.meta.client) {
-	console.log('[Success 頁面] 藍新金流重定向資訊:', {
-		// URL 查詢參數
-		queryParams: {
-			order: route.query.order,
-			status: route.query.status,
-			error: route.query.error,
-			hasTradeInfo: !!route.query.tradeInfo,
-			hasTradeSha: !!route.query.tradeSha,
-			allParams: route.query,
-		},
-		// 交易資訊
-		tradeInfo: {
-			hasValue: !!newebpayTradeInfo.value,
-			length: newebpayTradeInfo.value?.length || 0,
-			preview: newebpayTradeInfo.value?.substring(0, 20) + '...' || 'none',
-		},
-		tradeSha: {
-			hasValue: !!newebpayTradeSha.value,
-			length: newebpayTradeSha.value?.length || 0,
-			preview: newebpayTradeSha.value?.substring(0, 20) + '...' || 'none',
-		},
-		// 完整的 URL 資訊
-		fullUrl: window.location.href,
-		pathname: window.location.pathname,
-		search: window.location.search,
-		hash: window.location.hash,
-		// 瀏覽器資訊
-		userAgent: navigator.userAgent,
-		referrer: document.referrer,
-		// 時間戳
-		timestamp: new Date().toISOString(),
-	});
-
-	// 額外：檢查是否有 POST 表單數據（在某些情況下可能會有）
-	if (window.history && window.history.state) {
-		console.log('[Success 頁面] 歷史狀態:', window.history.state);
-	}
-
-	// 檢查 sessionStorage 和 localStorage 是否有相關數據
-	const sessionData = sessionStorage.getItem('payment-data');
-	const localData = localStorage.getItem('payment-data');
-	if (sessionData) {
-		console.log('[Success 頁面] SessionStorage 付款數據:', JSON.parse(sessionData));
-	}
-	if (localData) {
-		console.log('[Success 頁面] LocalStorage 付款數據:', JSON.parse(localData));
-	}
-}
 
 // 格式化金額顯示
 const formatAmount = (amount: number) => {
@@ -292,7 +242,6 @@ const formatAmount = (amount: number) => {
 
 // 取得付款結果
 const fetchPaymentResult = async () => {
-	console.log('[Success 頁面] 開始處理付款結果');
 
 	// 處理錯誤狀態
 	if (hasError.value) {
@@ -315,12 +264,10 @@ const fetchPaymentResult = async () => {
 
 	// 如果有 TradeInfo 和 TradeSha，直接查詢結帳結果
 	if (hasTradeInfo.value) {
-		console.log('[Success 頁面] 使用 TradeInfo 查詢結帳結果');
 		try {
 			// 讓後端動態處理 OrderNo，前端只傳遞已知的參數
 			const orderNoToUse = orderNum.value || ''; // 如果沒有 OrderNo，讓後端動態生成
 			const result = await getPaymentResultByTradeInfo(orderNoToUse, newebpayTradeInfo.value!, newebpayTradeSha.value!);
-			console.log('[Success 頁面] 結帳結果:', result);
 
 			// 直接使用新的 API 格式
 			paymentResult.value = {
@@ -377,7 +324,6 @@ const fetchPaymentResult = async () => {
 		return;
 	}
 
-	console.log('[Success 頁面] 準備查詢訂單:', orderNum.value);
 
 	try {
 		const result = await getPaymentResult(orderNum.value);
@@ -405,7 +351,6 @@ const fetchPaymentResult = async () => {
 // 進入成功頁：先讓 Header 顯示骨架，取得資料後再標記為已付款
 onMounted(async () => {
 	try {
-		console.log('[頁面載入] success.vue 頁面開始載入');
 
 		const minDelay = new Promise(resolve => setTimeout(resolve, 800));
 		// 觸發一次取資料，確保 Header 顯示 loading
@@ -413,12 +358,10 @@ onMounted(async () => {
 
 		// 立即檢查是否有 TradeInfo 和 TradeSha，如果有則直接查詢結帳結果
 		if (hasTradeInfo.value) {
-			console.log('[頁面載入] 檢測到 TradeInfo 和 TradeSha，立即查詢結帳結果');
 			try {
 				// 讓後端動態處理 OrderNo，前端只傳遞已知的參數
 				const orderNoToUse = orderNum.value || ''; // 如果沒有 OrderNo，讓後端動態生成
 				const result = await getPaymentResultByTradeInfo(orderNoToUse, newebpayTradeInfo.value!, newebpayTradeSha.value!);
-				console.log('[頁面載入] 結帳結果:', result);
 
 				// 直接使用新的 API 格式
 				paymentResult.value = {
@@ -449,7 +392,6 @@ onMounted(async () => {
 		}
 
 		// 如果沒有 TradeInfo 或查詢失敗，執行原本的處理流程
-		console.log('[頁面載入] 執行原本的付款結果處理流程');
 		await fetchPaymentResult();
 	}
 	catch (err) {
@@ -461,7 +403,6 @@ onMounted(async () => {
 
 // 頁面卸載時清理資源
 onUnmounted(() => {
-	console.log('[Success 頁面] 頁面卸載，清理資源');
 	// 目前沒有需要清理的資源
 });
 

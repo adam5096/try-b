@@ -86,7 +86,9 @@ export default defineNuxtConfig({
 	nitro: {
 		routeRules: {
 			'/api-proxy/**': {
-				proxy: 'https://trybeta.rocket-coding.com/**',
+				proxy: {
+					to: 'https://trybeta.rocket-coding.com/**',
+				},
 			},
 			// API 路由：禁用快取，確保認證資料即時性
 			'/api/**': {

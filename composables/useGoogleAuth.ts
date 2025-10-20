@@ -33,7 +33,6 @@ export const useGoogleAuth = () => {
 
 	// 處理認證回應
 	const handleCredentialResponse = (response: any) => {
-		console.log('Google Auth Response:', response)
 		// 這裡會觸發成功回調
 		if (onSuccessCallback.value) {
 			onSuccessCallback.value(response)
@@ -64,11 +63,12 @@ export const useGoogleAuth = () => {
 				+ `scope=openid%20email%20profile&`
 				+ `state=${Date.now()}`
 
+
 			// 直接重定向到 Google 登入頁面
 			window.location.href = authUrl
 		}
 		catch (error) {
-			console.error('Google Auth Error:', error)
+			console.error('❌ useGoogleAuth Error:', error)
 			throw error
 		}
 	}
