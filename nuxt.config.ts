@@ -48,7 +48,7 @@ export default defineNuxtConfig({
 	},
 	runtimeConfig: {
 		public: {
-			apiBase: '/api', // 統一使用 /api 前綴，透過 BFF 架構處理
+			apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api', // 從環境變數讀取 API 基礎路徑
 			googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
 		},
 		googleClientSecret: process.env.NUXT_GOOGLE_CLIENT_SECRET,

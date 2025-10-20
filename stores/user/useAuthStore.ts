@@ -49,38 +49,28 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 		}
 	}
 
-	async function loginWithGoogleToken(googleToken: string) {
+	async function loginWithGoogleToken(googleResponse: {
+		token: string
+		user?: {
+			Id: number
+			Account: string
+			Email: string
+			Role: string
+		}
+	}) {
 		try {
-			// 使用從後端獲得的 token 進行登入
-			const response = await $fetch<{
-				token: string
-				user: {
-					Id: number
-					Account: string
-					Email: string
-					Role: string
-				}
-			}>('/api/v1/users/google', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: {
-					token: googleToken,
-				},
-			});
-
-			if (response && response.token && response.user) {
-				token.value = response.token;
-				tokenCookie.value = response.token;
+			// 直接使用從 BFF 獲得的 token 和 user 資訊
+			if (googleResponse && googleResponse.token && googleResponse.user) {
+				token.value = googleResponse.token;
+				tokenCookie.value = googleResponse.token;
 
 				// 將 API 回應的 user 格式轉換為內部 User 格式
 				const mappedUser: User = {
-					id: response.user.Id,
-					name: response.user.Account,
-					account: response.user.Account,
-					email: response.user.Email,
-					role: response.user.Role,
+					id: googleResponse.user.Id,
+					name: googleResponse.user.Account,
+					account: googleResponse.user.Account,
+					email: googleResponse.user.Email,
+					role: googleResponse.user.Role,
 				};
 
 				user.value = mappedUser;

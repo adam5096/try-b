@@ -38,7 +38,7 @@ async function handleGoogleCallback(code: string) {
 		isLoading.value = true;
 		console.log('收到 Google OAuth 授權碼:', code);
 
-		// 使用授權碼獲取 id_token
+		// 使用授權碼進行登入（BFF 會處理 code 到 id_token 的轉換）
 		const response = await $fetch<{
 			token: string
 			user?: any
@@ -50,8 +50,8 @@ async function handleGoogleCallback(code: string) {
 		console.log('Google 登入回應:', response);
 
 		if (response.token) {
-			// 使用 id_token 進行登入
-			await authStore.loginWithGoogleToken(response.token);
+			// 使用 JWT token 進行登入
+			await authStore.loginWithGoogleToken(response);
 			ElMessage.success('Google 登入成功');
 			await navigateTo('/users');
 		}
