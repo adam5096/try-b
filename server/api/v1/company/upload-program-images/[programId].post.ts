@@ -11,8 +11,6 @@ export default createApiHandler(async (event) => {
 		});
 	}
 
-	console.log('📤 後端收到圖片上傳請求，programId:', programId);
-
 	// 讀取 FormData 請求體
 	const formData = await readFormData(event);
 
@@ -34,7 +32,6 @@ export default createApiHandler(async (event) => {
 			timeout: 60000, // 60 秒
 		});
 
-		console.log('✅ 後端圖片上傳成功:', data);
 		return data;
 	}
 	catch (error) {

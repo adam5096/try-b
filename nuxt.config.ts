@@ -3,12 +3,24 @@
 // eslint-disable-next-line no-undef
 export default defineNuxtConfig({
 
-	modules: ['@nuxtjs/tailwindcss', '@nuxt/fonts', // Sitemap 模組
-		'@nuxt/eslint', '@nuxtjs/seo', '@nuxtjs/sitemap', ['@element-plus/nuxt', { idInjection: false }], '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-security'],
+	modules: [
+		'@nuxtjs/tailwindcss',
+		'@nuxt/fonts',
+		'@nuxt/eslint',
+		'@nuxtjs/seo',
+		'@nuxtjs/sitemap',
+		['@element-plus/nuxt', { idInjection: false }],
+		'@nuxt/image',
+		'@pinia/nuxt',
+		'@vueuse/nuxt',
+		'nuxt-security',
+		'nuxt-mcp',
+	],
 
 	imports: {
 		dirs: ['stores/**', 'composables/**'],
-	},	devtools: { enabled: true },
+	},
+	devtools: { enabled: process.env.NODE_ENV === 'development' }, // 只在開發環境啟用
 	app: {
 		head: {
 			link: [
@@ -36,8 +48,10 @@ export default defineNuxtConfig({
 	},
 	runtimeConfig: {
 		public: {
-			apiBase: '/api', // 統一使用 /api 前綴，透過 BFF 架構處理
+			apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api', // 從環境變數讀取 API 基礎路徑
+			googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID,
 		},
+		googleClientSecret: process.env.NUXT_GOOGLE_CLIENT_SECRET,
 	},
 	build: {
 		// 確保 SSR 端將以下套件轉譯，避免 CJS/ESM 差異
@@ -72,7 +86,9 @@ export default defineNuxtConfig({
 	nitro: {
 		routeRules: {
 			'/api-proxy/**': {
-				proxy: 'https://trybeta.rocket-coding.com/**',
+				proxy: {
+					to: 'https://trybeta.rocket-coding.com/**',
+				},
 			},
 			// API 路由：禁用快取，確保認證資料即時性
 			'/api/**': {
@@ -144,12 +160,15 @@ export default defineNuxtConfig({
 				indent: 'tab', // 使用 Tab 縮排
 			},
 		},
+		// 在開發環境中減少 ESLint 檢查頻率
+		checker: process.env.NODE_ENV === 'development' ? false : true, // 開發環境關閉即時檢查
 	},
 	fonts: {
 		families: [
 			{ name: 'Inter', provider: 'google', weights: ['400', '700'] },
 		],
 	},
+
 	image: {
 		// 圖片格式和品質設定
 		format: ['webp'],
@@ -204,4 +223,4 @@ export default defineNuxtConfig({
 		// injectPosition: 0,
 		viewer: false,
 	},
-});
+})

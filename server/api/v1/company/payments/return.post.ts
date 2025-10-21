@@ -21,15 +21,6 @@ export default createApiHandler(async (event) => {
 		const body = await readBody(event);
 		const { Status, TradeInfo, TradeSha, MerchantID } = body;
 
-		console.log('[重定向處理] 收到藍新金流回調:', {
-			status: Status,
-			hasTradeInfo: !!TradeInfo,
-			hasTradeSha: !!TradeSha,
-			tradeInfoLength: TradeInfo?.length || 0,
-			tradeShaLength: TradeSha?.length || 0,
-			merchantID: MerchantID,
-		});
-
 		// 驗證必要欄位
 		if (!TradeInfo || !TradeSha) {
 			console.error('[重定向處理] 缺少必要欄位:', {
@@ -39,7 +30,6 @@ export default createApiHandler(async (event) => {
 
 			// 重定向到錯誤頁面
 			const errorUrl = `/company/purchase/success?error=invalid_callback&status=${Status || 'UNKNOWN'}`;
-			console.log('[重定向處理] 重定向到錯誤頁面:', errorUrl);
 			return sendRedirect(event, errorUrl, 302);
 		}
 
@@ -57,30 +47,14 @@ export default createApiHandler(async (event) => {
 
 		const successUrl = `/company/purchase/success?${redirectParams.toString()}`;
 
-		console.log('[重定向處理] 準備重定向到成功頁面:', {
-			successUrl,
-			status: Status,
-			tradeInfoLength: TradeInfo.length,
-			tradeShaLength: TradeSha.length,
-			note: '前端頁面將使用這些參數查詢結帳結果',
-		});
-
 		// 重定向到前端成功頁面
 		return sendRedirect(event, successUrl, 302);
 	}
 	catch (error) {
 		console.error('[重定向處理] 處理錯誤:', error);
 
-		// 記錄詳細錯誤資訊
-		console.log('[重定向處理] 錯誤詳情:', {
-			errorType: error instanceof Error ? error.constructor.name : typeof error,
-			errorMessage: error instanceof Error ? error.message : String(error),
-			timestamp: new Date().toISOString(),
-		});
-
 		// 發生錯誤時重定向到錯誤頁面
 		const errorUrl = `/company/purchase/success?error=processing_error&message=${encodeURIComponent(error instanceof Error ? error.message : 'Unknown error')}`;
-		console.log('[重定向處理] 重定向到錯誤頁面:', errorUrl);
 		return sendRedirect(event, errorUrl, 302);
 	}
 });

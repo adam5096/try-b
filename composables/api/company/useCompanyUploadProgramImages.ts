@@ -16,8 +16,6 @@ export async function uploadProgramImages(programId: number, files: File[]) {
 		formData.append('file', file);
 	}
 
-	console.log('📤 開始上傳圖片，programId:', programId, 'files:', files.length);
-
 	try {
 		// 使用 $fetch 進行圖片上傳，token 處理由 Server API 層負責
 		// 根據 Postman 截圖，正確的 API 路徑應該是 /api/v1/programs/{programId}/images
@@ -28,7 +26,6 @@ export async function uploadProgramImages(programId: number, files: File[]) {
 			timeout: 30000, // 30 秒
 		});
 
-		console.log('✅ 圖片上傳成功:', data);
 		return data;
 	}
 	catch (error) {

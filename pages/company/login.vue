@@ -24,9 +24,7 @@ async function handleLogin() {
 	errorMessage.value = '';
 	let willRedirect = false;
 	try {
-		console.log('開始登入流程...');
 		await authStore.login(loginData.value);
-		console.log('登入 store 完成，開始準備跳轉...');
 
 		const redirectPath = useRoute().query.redirect as string;
 		// 為了讓第一次畫面能以 SSR 預先渲染，登入後改為「全頁重新導向」
@@ -35,12 +33,9 @@ async function handleLogin() {
 			? redirectPath
 			: router.resolve(companyRoutes.landing()).path;
 
-		console.log('準備跳轉至:', targetPath);
-
 		if (import.meta.client) {
 			// 使用 Nuxt 的 navigateTo 進行 SPA 導航，避免快取問題
 			willRedirect = true;
-			console.log('執行頁面跳轉...');
 			await navigateTo(targetPath, { replace: true });
 		}
 	}

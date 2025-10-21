@@ -57,14 +57,6 @@ export const useCompanyPayment = () => {
 				headers.authorization = `Bearer ${authStore.token}`
 			}
 
-			// 除錯：記錄請求參數
-			console.log('[getPaymentResult] 請求參數:', {
-				orderNum,
-				company_id: authStore.companyId,
-				hasToken: !!authStore.token,
-				tokenPreview: authStore.token ? authStore.token.substring(0, 20) + '...' : 'none',
-			});
-
 			const response = await $fetch<PaymentResultResponse>('/api/v1/payments/callback', {
 				method: 'GET',
 				headers,
@@ -76,7 +68,6 @@ export const useCompanyPayment = () => {
 				},
 			})
 
-			console.log('[getPaymentResult] 成功回應:', response);
 			return response
 		}
 		catch (error) {
@@ -113,16 +104,6 @@ export const useCompanyPayment = () => {
 				headers.authorization = `Bearer ${authStore.token}`
 			}
 
-			// 除錯：記錄請求參數
-			console.log('[getPaymentResultByTradeInfo] 請求參數:', {
-				orderNo,
-				tradeInfoLength: tradeInfo.length,
-				tradeShaLength: tradeSha.length,
-				tradeInfoPreview: tradeInfo.substring(0, 20) + '...',
-				tradeShaPreview: tradeSha.substring(0, 20) + '...',
-				hasToken: !!authStore.token,
-			});
-
 			const response = await $fetch<PaymentResultResponseNew>('/api/v1/company/payments/result', {
 				method: 'POST',
 				headers,
@@ -132,7 +113,6 @@ export const useCompanyPayment = () => {
 				},
 			})
 
-			console.log('[getPaymentResultByTradeInfo] 成功回應:', response);
 			return response
 		}
 		catch (error) {

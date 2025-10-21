@@ -74,13 +74,11 @@ export const useCompanyAuthStore = defineStore('companyAuth', () => {
 
 		// ✅ 如果已有使用者資料且無錯誤，不重複請求
 		if (user.value && !userError.value) {
-			console.log('Company user data already exists, skipping fetch');
 			return;
 		}
 
 		// ✅ 如果正在載入中，避免重複請求
 		if (isLoadingUser.value) {
-			console.log('Company user fetch already in progress');
 			return;
 		}
 
