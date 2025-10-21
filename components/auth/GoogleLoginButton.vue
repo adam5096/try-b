@@ -72,7 +72,7 @@
 			>
 				更換其他帳號登入/註冊
 			</button>
-			
+
 			<!-- 清除登入記錄選項 -->
 			<button
 				:disabled="isLoading"
@@ -159,20 +159,20 @@ const handleClearLoginRecord = async () => {
 				type: 'warning',
 			},
 		)
-		
+
 		// 清除 Google 的登入記錄
 		if (import.meta.client) {
 			// 清除本地儲存的 Google 登入狀態
 			localStorage.removeItem('google_auth_state')
 			sessionStorage.removeItem('google_auth_state')
-			
+
 			// 清除所有 Google 相關的儲存
 			localStorage.removeItem('g_state')
 			sessionStorage.removeItem('g_state')
 		}
-		
+
 		ElMessage.success('登入記錄已清除')
-		
+
 		// 重新載入頁面以重新初始化 Google 登入
 		window.location.reload()
 	}
