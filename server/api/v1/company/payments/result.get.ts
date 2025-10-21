@@ -21,7 +21,6 @@ export default createApiHandler(async (event) => {
 		const query = getQuery(event);
 		const { orderNum } = query;
 
-
 		// 驗證必要參數
 		if (!orderNum) {
 			console.error('[結帳結果 API] 缺少必要參數:', { orderNum: !!orderNum });
@@ -33,14 +32,12 @@ export default createApiHandler(async (event) => {
 			};
 		}
 
-
 		// 呼叫 ASP.NET 後端 API (使用直連方式)
 		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
 			method: 'GET',
 			headers: getForwardHeaders(event),
 			query: { orderNum },
 		});
-
 
 		// 格式化回應資料以符合前端需求
 		const formattedResponse: PaymentResultResponse = {
@@ -50,7 +47,6 @@ export default createApiHandler(async (event) => {
 			paymentMethod: response.paymentMethod || 'CREDIT',
 			card4No: response.card4No || undefined,
 		};
-
 
 		return formattedResponse;
 	}

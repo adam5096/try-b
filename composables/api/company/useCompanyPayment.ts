@@ -57,7 +57,6 @@ export const useCompanyPayment = () => {
 				headers.authorization = `Bearer ${authStore.token}`
 			}
 
-
 			const response = await $fetch<PaymentResultResponse>('/api/v1/payments/callback', {
 				method: 'GET',
 				headers,
@@ -104,7 +103,6 @@ export const useCompanyPayment = () => {
 			if (authStore.token) {
 				headers.authorization = `Bearer ${authStore.token}`
 			}
-
 
 			const response = await $fetch<PaymentResultResponseNew>('/api/v1/company/payments/result', {
 				method: 'POST',

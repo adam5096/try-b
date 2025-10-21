@@ -18,11 +18,9 @@ interface PaymentResultResponse {
  */
 export default createApiHandler(async (event) => {
 	try {
-
 		// 取得請求主體
 		const body = await readBody(event);
 		const { OrderNo, TradeInfo, TradeSha } = body;
-
 
 		// 驗證必要參數 - 根據新規格檢查三個必要欄位
 		if (!TradeInfo || !TradeSha) {
@@ -39,7 +37,6 @@ export default createApiHandler(async (event) => {
 			};
 		}
 
-
 		// 純代理模式：讓 ASP.NET 後端處理 OrderNo 解密
 		// BFF 只負責轉發請求，不做解密邏輯
 		let finalOrderNo = OrderNo;
@@ -49,8 +46,6 @@ export default createApiHandler(async (event) => {
 			// 讓後端處理 OrderNo 的提取和解密
 			finalOrderNo = ''; // 空值，讓後端處理
 		}
-
-
 
 		// 使用統一的認證 headers 處理
 		const headers = createAuthHeaders(event, 'companyAuthToken');
@@ -74,13 +69,11 @@ export default createApiHandler(async (event) => {
 			requestBody.OrderNo = finalOrderNo;
 		}
 
-
 		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
 			method: 'POST',
 			headers,
 			body: requestBody,
 		});
-
 
 		// 直接返回後端回應，確保格式一致
 		const finalResponse = {

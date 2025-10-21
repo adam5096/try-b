@@ -58,12 +58,10 @@ export default createApiHandler(async (event) => {
 			})
 		}
 
-
 		// 獲取 redirect URI
 		const redirectUri = process.env.NODE_ENV === 'development'
 			? 'http://localhost:3000/users/login'
 			: 'https://try-b.vercel.app/users/login'
-
 
 		// 準備 Google Token 請求參數
 		const tokenParams = new URLSearchParams({
@@ -73,7 +71,6 @@ export default createApiHandler(async (event) => {
 			grant_type: 'authorization_code',
 			redirect_uri: redirectUri,
 		})
-
 
 		// 向 Google 請求 access_token
 		let tokenResponse
@@ -111,7 +108,6 @@ export default createApiHandler(async (event) => {
 			})
 		}
 
-
 		// 使用 access_token 獲取用戶資訊
 		const userInfoResponse = await $fetch<{
 			id: string
@@ -124,7 +120,6 @@ export default createApiHandler(async (event) => {
 				Authorization: `Bearer ${tokenResponse.access_token}`,
 			},
 		})
-
 
 		// 檢查是否有 id_token，如果沒有則使用用戶資訊
 		let tokenToSend
@@ -143,10 +138,8 @@ export default createApiHandler(async (event) => {
 		// 轉發請求到真實後端 - 直接使用後端 URL
 		const backendUrl = 'https://trybeta.rocket-coding.com/api/v1/users/google'
 
-
 		let backendResponse
 		try {
-
 			// 使用原生 fetch 而非 event.$fetch 來避免 Nitro 的代理問題
 			const controller = new AbortController()
 			const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 秒超時
@@ -163,8 +156,6 @@ export default createApiHandler(async (event) => {
 					),
 				),
 			}
-
-
 
 			const fetchResponse = await fetch(backendUrl, {
 				method: 'POST',
@@ -208,7 +199,6 @@ export default createApiHandler(async (event) => {
 			})
 			throw enhancedError
 		}
-
 
 		// 如果後端回應包含 token，設定 cookie
 		if (backendResponse && (backendResponse as any).token) {
