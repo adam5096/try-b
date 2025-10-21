@@ -43,7 +43,7 @@ export const useGoogleAuth = () => {
 	const onSuccessCallback = ref<((response: any) => void) | null>(null)
 
 	// 登入方法 - 使用重定向流程避免 COOP 限制
-	const login = async (onSuccess?: (response: any) => void) => {
+	const login = async (onSuccess?: (response: any) => void, forceAccountSelection: boolean = true) => {
 		try {
 			await loadGoogleScript()
 
@@ -56,11 +56,15 @@ export const useGoogleAuth = () => {
 				? 'http://localhost:3000/users/login'
 				: 'https://try-b.vercel.app/users/login'
 
+			// 根據參數決定是否強制帳戶選擇
+			const promptParam = forceAccountSelection ? 'prompt=select_account&' : ''
+
 			const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?`
 				+ `client_id=${clientId}&`
 				+ `redirect_uri=${encodeURIComponent(redirectUri)}&`
 				+ `response_type=code&`
 				+ `scope=openid%20email%20profile&`
+				+ `${promptParam}`
 				+ `state=${Date.now()}`
 
 			// 直接重定向到 Google 登入頁面
