@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { ElMessage } from 'element-plus';
 import type { User, UserLoginData, UserRegisterData } from '~/types/users/user';
 import { useUserLogin } from '~/composables/api/users/useUserLogin';
 import { useUserRegister } from '~/composables/api/users/useUserRegister';
@@ -101,13 +102,45 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 	}
 
 	async function logout() {
-		// 這裡可以選擇性地呼叫後端的登出 API
-		// await useFetch('/v1/user/logout', { method: 'POST', baseURL: '/api' });
-
-		user.value = null;
-		userCookie.value = null;
-		token.value = null;
-		tokenCookie.value = null;
+		try {
+			// 先呼叫外部後端登出 API
+			await $fetch('/api/v1/users/logout', {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token.value}`,
+				},
+			})
+			
+			// 外部後端成功後，才清除前端狀態
+			user.value = null;
+			userCookie.value = null;
+			token.value = null;
+			tokenCookie.value = null;
+			
+			// 顯示成功訊息
+			if (import.meta.client) {
+				ElMessage({
+					type: 'success',
+					message: '登出成功',
+					duration: 3000,
+				})
+			}
+		}
+		catch (error: any) {
+			// 外部後端失敗時，保持前端狀態不變，並忠實揭露錯誤
+			const errorMessage = error.data?.message || error.message || '登出失敗，請稍後再試'
+			
+			if (import.meta.client) {
+				ElMessage({
+					type: 'error',
+					message: `登出失敗：${errorMessage}`,
+					duration: 5000,
+				})
+			}
+			
+			// 重新拋出錯誤，讓調用者知道登出失敗
+			throw new Error(`登出失敗：${errorMessage}`)
+		}
 	}
 
 	// 檢查使用者登入狀態的函數
