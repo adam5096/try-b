@@ -23,7 +23,7 @@ export default createApiHandler(async (event) => {
 
 		// 轉發登出請求到外部後端
 		const backendUrl = 'https://trybeta.rocket-coding.com/api/v1/users/logout'
-		
+
 		let backendResponse
 		try {
 			// 使用原生 fetch 避免 Nitro 代理問題
@@ -76,11 +76,11 @@ export default createApiHandler(async (event) => {
 
 		// 外部後端成功後，清除前端 HttpOnly cookie
 		clearUserAuthCookie(event)
-		
+
 		return {
 			success: true,
 			message: '登出成功',
-			backendResponse
+			backendResponse,
 		}
 	}
 	catch (error: any) {

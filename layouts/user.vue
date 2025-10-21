@@ -69,10 +69,10 @@ async function handleLogout() {
 				type: 'warning',
 			},
 		);
-		
+
 		// 執行登出，如果失敗會拋出錯誤
 		await authStore.logout();
-		
+
 		// 只有登出成功才導航到登入頁面
 		await navigateTo({ name: 'user-login' });
 	}
@@ -81,7 +81,7 @@ async function handleLogout() {
 		if (error === 'cancel') {
 			return;
 		}
-		
+
 		// 登出失敗時，使用者仍保持登入狀態
 		// ElMessage 已經在 authStore.logout() 中顯示了錯誤訊息
 		// 這裡不需要額外處理，讓使用者繼續使用
