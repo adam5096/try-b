@@ -21,9 +21,7 @@ const { data: applicantsData, pending, error: applicantsError, refresh: refreshA
 watch(
 	[computed(() => authStore.companyId), computed(() => Array.isArray(route.params.programId) ? route.params.programId[0] : route.params.programId)],
 	([companyId, programId]) => {
-		console.log('監聽參數變化:', { companyId, programId });
 		if (companyId && programId) {
-			console.log('發起申請者資料請求');
 			refreshApplicants();
 		}
 	},
@@ -39,7 +37,6 @@ watch(applicantsError, (error) => {
 
 // 監聽資料變化
 watch(applicantsData, (data) => {
-	console.log('申請者資料:', data);
 }, { immediate: true });
 
 // 監聽資料變化

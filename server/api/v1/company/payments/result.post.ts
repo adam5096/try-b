@@ -18,20 +18,11 @@ interface PaymentResultResponse {
  */
 export default createApiHandler(async (event) => {
 	try {
-		// 強制診斷日誌 - 確認線上版本
-		console.log('[診斷] result.post.ts 版本: v2025-01-09-移除手動Header設定');
 
 		// 取得請求主體
 		const body = await readBody(event);
 		const { OrderNo, TradeInfo, TradeSha } = body;
 
-		console.log('[結帳結果 API] 收到請求:', {
-			hasOrderNo: !!OrderNo,
-			hasTradeInfo: !!TradeInfo,
-			hasTradeSha: !!TradeSha,
-			orderNo: OrderNo,
-			tradeInfoPreview: TradeInfo ? (TradeInfo as string).substring(0, 20) + '...' : 'none',
-		});
 
 		// 驗證必要參數 - 根據新規格檢查三個必要欄位
 		if (!TradeInfo || !TradeSha) {
@@ -48,15 +39,6 @@ export default createApiHandler(async (event) => {
 			};
 		}
 
-		// 記錄參數完整性檢查結果
-		console.log('[結帳結果 API] 參數完整性檢查:', {
-			hasOrderNo: !!OrderNo,
-			hasTradeInfo: !!TradeInfo,
-			hasTradeSha: !!TradeSha,
-			orderNoValue: OrderNo || 'null',
-			tradeInfoLength: TradeInfo ? (TradeInfo as string).length : 0,
-			tradeShaLength: TradeSha ? (TradeSha as string).length : 0,
-		});
 
 		// 純代理模式：讓 ASP.NET 後端處理 OrderNo 解密
 		// BFF 只負責轉發請求，不做解密邏輯
@@ -64,18 +46,11 @@ export default createApiHandler(async (event) => {
 
 		if (!finalOrderNo) {
 			console.warn('[結帳結果 API] 缺少 OrderNo，將由 ASP.NET 後端處理');
-			console.log('[結帳結果 API] BFF 採用純代理模式，解密邏輯由後端負責');
 			// 讓後端處理 OrderNo 的提取和解密
 			finalOrderNo = ''; // 空值，讓後端處理
 		}
 
-		console.log('[結帳結果 API] 轉發到後端的 OrderNo:', finalOrderNo || '將由後端處理');
 
-		console.log('[結帳結果 API] 準備向 ASP.NET 後端請求:', {
-			targetUrl: 'https://trybeta.rocket-coding.com/api/v1/payments/result',
-			tradeInfoLength: (TradeInfo as string).length,
-			tradeShaLength: (TradeSha as string).length,
-		});
 
 		// 使用統一的認證 headers 處理
 		const headers = createAuthHeaders(event, 'companyAuthToken');
@@ -99,10 +74,6 @@ export default createApiHandler(async (event) => {
 			requestBody.OrderNo = finalOrderNo;
 		}
 
-		console.log('[結帳結果 API] 準備發送的 Headers:', headers);
-		console.log('[結帳結果 API] 完整 TradeInfo 長度:', (TradeInfo as string).length);
-		console.log('[結帳結果 API] 完整 TradeSha:', TradeSha as string);
-		console.log('[結帳結果 API] 實際發送的 body:', JSON.stringify(requestBody));
 
 		const response: PaymentResultResponse = await event.$fetch<PaymentResultResponse>('https://trybeta.rocket-coding.com/api/v1/payments/result', {
 			method: 'POST',
@@ -110,15 +81,6 @@ export default createApiHandler(async (event) => {
 			body: requestBody,
 		});
 
-		console.log('[結帳結果 API] ASP.NET 後端回應:', response);
-		console.log('[結帳結果 API] 回應詳細資訊:', {
-			hasStatus: !!response.status,
-			hasOrderNo: !!response.orderNo,
-			hasAmount: !!response.amount,
-			hasPaymentMethod: !!response.paymentMethod,
-			hasCard4No: !!response.card4No,
-			responseKeys: Object.keys(response),
-		});
 
 		// 直接返回後端回應，確保格式一致
 		const finalResponse = {
@@ -129,7 +91,6 @@ export default createApiHandler(async (event) => {
 			card4No: response.card4No || '',
 		};
 
-		console.log('[結帳結果 API] 最終回應:', finalResponse);
 		return finalResponse;
 	}
 	catch (error) {

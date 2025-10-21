@@ -1,6 +1,7 @@
 // @ts-check
 import withNuxt from './.nuxt/eslint.config.mjs';
 
+// 一般環境：寬鬆的規則，平衡開發效率與程式碼品質
 export default withNuxt(
 	{
 		rules: {
@@ -8,9 +9,6 @@ export default withNuxt(
 			'@stylistic/semi': 'off',
 			'@stylistic/semi-spacing': 'off',
 
-			// ASI 錯誤檢查（不強制分號，但檢查潛在問題）
-			'no-unexpected-multiline': 'error', // 檢查意外的多行語句
-			'no-return-await': 'error', // 檢查 return await 問題
 			// 🔴 核心安全規則（必須修復）- 防止運行時錯誤
 			'no-undef': 'error', // 防止未定義變數
 			'no-redeclare': 'error', // 防止重複聲明
@@ -18,6 +16,8 @@ export default withNuxt(
 			'no-debugger': 'error', // 禁止 debugger 語句
 
 			// 🟡 程式碼品質規則（警告級別）- 不阻塞開發
+			'no-unexpected-multiline': 'warn',
+			'no-return-await': 'warn',
 			'no-unused-vars': 'warn', // 未使用變數改為警告
 			'no-empty': 'warn', // 空程式碼塊改為警告
 			'no-unused-expressions': 'warn', // 未使用表達式改為警告
@@ -34,17 +34,12 @@ export default withNuxt(
 			'vue/no-multiple-template-root': 'warn', // 多個根元素改為警告
 			'vue/no-v-html': 'warn', // v-html 使用警告
 
-			// 🟢 格式化規則（所有環境都啟用）- 保持程式碼一致性
+			// 🟢 格式化規則（保持程式碼一致性）
 			'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn', // 環境區分
-			'no-trailing-spaces': 'error', // 尾隨空格錯誤
-			'no-multiple-empty-lines': ['error', { max: 1 }], // 限制連續空行
-			'curly': 'error', // 要求控制語句使用大括號
-
-			// 覆蓋 Nuxt stylistic 規則
-			'@stylistic/max-statements-per-line': 'warn', // 一行多個語句改為警告
-
-			// 格式化規則由 Nuxt stylistic 自動處理
-			// indent, quotes, semi, commaDangle 等
+			'no-trailing-spaces': 'warn', // 尾隨空格改為警告
+			'no-multiple-empty-lines': 'off', // 關閉空行檢查
+			'curly': 'off', // 關閉大括號要求
+			'@stylistic/max-statements-per-line': 'off', // 關閉語句檢查
 		},
 	},
 );

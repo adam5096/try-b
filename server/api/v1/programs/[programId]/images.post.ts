@@ -10,11 +10,9 @@ export default defineEventHandler(async (event) => {
 		});
 	}
 
-	console.log('📤 後端收到圖片上傳請求，programId:', programId);
 
 	// 讀取 FormData 請求體
 	const formData = await readFormData(event);
-	console.log('📤 FormData 內容:', Array.from(formData.entries()).map(([key, value]) => [key, value instanceof File ? `${value.name} (${value.size} bytes)` : value]));
 
 	// 手動建立認證 headers，避免自動轉發 content-type
 	const token = getCookie(event, 'companyAuthToken');
@@ -22,7 +20,6 @@ export default defineEventHandler(async (event) => {
 		authorization: token ? `Bearer ${token}` : '',
 		accept: '*/*',
 	};
-	console.log('📤 認證 headers:', authHeaders);
 
 	try {
 		// 使用 Node.js 原生 fetch 而不是 Nuxt 的 $fetch
@@ -39,7 +36,6 @@ export default defineEventHandler(async (event) => {
 
 		const data = await response.json();
 
-		console.log('✅ 後端圖片上傳成功:', data);
 		return data;
 	}
 	catch (error: any) {

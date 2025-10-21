@@ -2,6 +2,7 @@
 import { ref, watchEffect } from 'vue';
 import { useUserAuthStore } from '~/stores/user/useAuthStore';
 import type { UserLoginData } from '~/types/users/user';
+import GoogleLoginButton from '~/components/auth/GoogleLoginButton.vue';
 
 definePageMeta({
 	name: 'user-login',
@@ -19,6 +20,52 @@ watchEffect(() => {
 		router.push({ name: 'user-landing' });
 	}
 });
+
+// 處理 Google OAuth 回調
+onMounted(() => {
+	const urlParams = new URLSearchParams(window.location.search);
+	const code = urlParams.get('code');
+	const state = urlParams.get('state');
+
+	if (code && state) {
+		// 處理 Google OAuth 授權碼
+		handleGoogleCallback(code);
+	}
+});
+
+async function handleGoogleCallback(code: string) {
+	try {
+		isLoading.value = true;
+
+
+		// 使用授權碼進行登入（BFF 會處理 code 到 id_token 的轉換）
+		const response = await $fetch<{
+			token: string
+			user?: any
+		}>('/api/v1/users/google', {
+			method: 'POST',
+			body: { code },
+		});
+
+
+		if (response.token) {
+			// 使用 JWT token 進行登入
+			await authStore.loginWithGoogleToken(response);
+			ElMessage.success('Google 登入成功');
+			await navigateTo('/users');
+		}
+		else {
+			throw new Error('未收到有效的 token');
+		}
+	}
+	catch (error) {
+		console.error('❌ login.vue: Google callback error:', error);
+		ElMessage.error('Google 登入失敗，請稍後再試');
+	}
+	finally {
+		isLoading.value = false;
+	}
+}
 
 const loginData = ref<Omit<UserLoginData, 'password'>>({
 	account: '',
@@ -181,29 +228,26 @@ async function handleLogin() {
 					</button>
 				</div>
 			</form>
-			<!-- <div class="relative">
-				<div
-					class="absolute inset-0 flex items-center"
-					aria-hidden="true"
-				>
-					<div class="w-full border-t border-gray-300"></div>
+
+			<!-- 分隔線 -->
+			<div class="relative">
+				<div class="absolute inset-0 flex items-center">
+					<div class="w-full border-t border-gray-300" />
 				</div>
 				<div class="relative flex justify-center text-sm">
-					<span class="bg-gray-50 px-2 text-gray-500">或使用其他方式登入</span>
+					<span class="px-2 bg-gray-50 text-gray-500">或</span>
 				</div>
 			</div>
-			<div>
-				<button
-					type="button"
-					class="group relative flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-				>
-					使用 Google 帳戶登入
-				</button>
-			</div>
+
+			<!-- Google 登入按鈕 -->
+			<ClientOnly>
+				<GoogleLoginButton />
+			</ClientOnly>
+
 			<div class="text-center text-sm">
 				還沒有帳戶？
 				<NuxtLink :to="{ name: 'user-register' }">立即註冊</NuxtLink>
-			</div> -->
+			</div>
 		</div>
 	</div>
 </template>

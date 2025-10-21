@@ -1,18 +1,18 @@
 // @ts-check
 import withNuxt from './.nuxt/eslint.config.mjs';
 
-// 開發環境：極度寬鬆的規則，只檢查最關鍵的問題
+// 極簡配置：只檢查最關鍵的問題，最大化開發效率
 export default withNuxt(
 	{
-		name: 'dev-config',
+		name: 'minimal-config',
 		rules: {
-			// 🔴 只保留最關鍵的安全規則（防止運行時錯誤）
+			// 🔴 只保留 4 個最關鍵的安全規則
 			'no-undef': 'error', // 防止未定義變數
 			'no-redeclare': 'error', // 防止重複聲明
 			'no-var': 'error', // 禁止使用 var
 			'no-debugger': 'error', // 禁止 debugger
 
-			// 🟡 其他所有規則都關閉 - 最大化開發效率
+			// 🟢 其他所有規則都關閉 - 專注於開發效率
 			'@stylistic/semi': 'off',
 			'@stylistic/semi-spacing': 'off',
 			'no-unexpected-multiline': 'off',
@@ -28,7 +28,7 @@ export default withNuxt(
 			'vue/no-mutating-props': 'off',
 			'vue/no-multiple-template-root': 'off',
 			'vue/no-v-html': 'off',
-			'no-console': 'off', // 開發環境完全允許 console
+			'no-console': 'off',
 			'no-trailing-spaces': 'off',
 			'no-multiple-empty-lines': 'off',
 			'curly': 'off',

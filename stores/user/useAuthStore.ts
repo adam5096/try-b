@@ -49,6 +49,45 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 		}
 	}
 
+	async function loginWithGoogleToken(googleResponse: {
+		token: string
+		user?: {
+			Id: number
+			Account: string
+			Email: string
+			Role: string
+		}
+	}) {
+		try {
+			// 直接使用從 BFF 獲得的 token 和 user 資訊
+			if (googleResponse && googleResponse.token && googleResponse.user) {
+				token.value = googleResponse.token;
+				tokenCookie.value = googleResponse.token;
+
+				// 將 API 回應的 user 格式轉換為內部 User 格式
+				const mappedUser: User = {
+					id: googleResponse.user.Id,
+					name: googleResponse.user.Account,
+					account: googleResponse.user.Account,
+					email: googleResponse.user.Email,
+					role: googleResponse.user.Role,
+				};
+
+				user.value = mappedUser;
+				userCookie.value = mappedUser;
+			}
+			else {
+				await logout();
+				throw new Error('Google 登入失敗：回應格式無效或缺少必要資訊');
+			}
+		}
+		catch (err: unknown) {
+			await logout();
+			const message = (err as { data?: { message?: string }, message?: string })?.data?.message || (err as { message?: string })?.message || 'Google 登入失敗：伺服器錯誤';
+			throw new Error(message);
+		}
+	}
+
 	async function register(registerData: UserRegisterData) {
 		const userRegister = useUserRegister();
 		try {
@@ -93,6 +132,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 		token,
 		isLoggedIn,
 		login,
+		loginWithGoogleToken,
 		register,
 		logout,
 		fetchUser,
