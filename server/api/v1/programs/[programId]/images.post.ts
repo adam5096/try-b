@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
 		});
 	}
 
-
 	// 讀取 FormData 請求體
 	const formData = await readFormData(event);
 

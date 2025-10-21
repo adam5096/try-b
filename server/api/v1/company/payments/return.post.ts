@@ -21,7 +21,6 @@ export default createApiHandler(async (event) => {
 		const body = await readBody(event);
 		const { Status, TradeInfo, TradeSha, MerchantID } = body;
 
-
 		// 驗證必要欄位
 		if (!TradeInfo || !TradeSha) {
 			console.error('[重定向處理] 缺少必要欄位:', {
@@ -47,7 +46,6 @@ export default createApiHandler(async (event) => {
 		}
 
 		const successUrl = `/company/purchase/success?${redirectParams.toString()}`;
-
 
 		// 重定向到前端成功頁面
 		return sendRedirect(event, successUrl, 302);

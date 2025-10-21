@@ -37,7 +37,6 @@ async function handleGoogleCallback(code: string) {
 	try {
 		isLoading.value = true;
 
-
 		// 使用授權碼進行登入（BFF 會處理 code 到 id_token 的轉換）
 		const response = await $fetch<{
 			token: string
@@ -46,7 +45,6 @@ async function handleGoogleCallback(code: string) {
 			method: 'POST',
 			body: { code },
 		});
-
 
 		if (response.token) {
 			// 使用 JWT token 進行登入

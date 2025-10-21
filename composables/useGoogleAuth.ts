@@ -63,7 +63,6 @@ export const useGoogleAuth = () => {
 				+ `scope=openid%20email%20profile&`
 				+ `state=${Date.now()}`
 
-
 			// 直接重定向到 Google 登入頁面
 			window.location.href = authUrl
 		}

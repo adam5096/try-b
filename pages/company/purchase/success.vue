@@ -234,7 +234,6 @@ const isNewebpaySuccess = computed(() => {
 	return newebpayStatus.value === 'SUCCESS';
 });
 
-
 // 格式化金額顯示
 const formatAmount = (amount: number) => {
 	return `TWD ${amount.toLocaleString('zh-TW')}`;
@@ -242,7 +241,6 @@ const formatAmount = (amount: number) => {
 
 // 取得付款結果
 const fetchPaymentResult = async () => {
-
 	// 處理錯誤狀態
 	if (hasError.value) {
 		const errorType = route.query.error as string;
@@ -324,7 +322,6 @@ const fetchPaymentResult = async () => {
 		return;
 	}
 
-
 	try {
 		const result = await getPaymentResult(orderNum.value);
 		paymentResult.value = result;
@@ -351,7 +348,6 @@ const fetchPaymentResult = async () => {
 // 進入成功頁：先讓 Header 顯示骨架，取得資料後再標記為已付款
 onMounted(async () => {
 	try {
-
 		const minDelay = new Promise(resolve => setTimeout(resolve, 800));
 		// 觸發一次取資料，確保 Header 顯示 loading
 		await Promise.allSettled([planStore.fetchCurrentPlan(), minDelay]);

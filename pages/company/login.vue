@@ -33,7 +33,6 @@ async function handleLogin() {
 			? redirectPath
 			: router.resolve(companyRoutes.landing()).path;
 
-
 		if (import.meta.client) {
 			// 使用 Nuxt 的 navigateTo 進行 SPA 導航，避免快取問題
 			willRedirect = true;
