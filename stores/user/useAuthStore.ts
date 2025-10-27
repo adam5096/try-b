@@ -29,7 +29,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 				// 將 API 回應的 user 格式轉換為內部 User 格式
 				const mappedUser: User = {
 					id: response.user.Id,
-					name: response.user.Account,
+					name: response.user.Name,
 					account: response.user.Account,
 					email: response.user.Email,
 					role: response.user.Role,
@@ -56,6 +56,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 			Id: number
 			Account: string
 			Email: string
+			Name: string
 			Role: string
 		}
 	}) {
@@ -68,7 +69,7 @@ export const useUserAuthStore = defineStore('userAuth', () => {
 				// 將 API 回應的 user 格式轉換為內部 User 格式
 				const mappedUser: User = {
 					id: googleResponse.user.Id,
-					name: googleResponse.user.Account,
+					name: googleResponse.user.Name,
 					account: googleResponse.user.Account,
 					email: googleResponse.user.Email,
 					role: googleResponse.user.Role,

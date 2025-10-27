@@ -1,6 +1,6 @@
 // import type { CompanyUser } from './company';
 
-// Based on the API spec for user registration and login
+// Based on the API spec for user registration and login -- credentials login
 export interface User {
 	id: number
 	name: string
@@ -16,6 +16,15 @@ export interface User {
 export interface UserRegisterData extends UserLoginData {
 	name: string
 	email: string
+}
+
+// 後端 API response 的 user 物件結構 (對齊 API 規格) -- google login
+export interface ApiUserResponse {
+	Id: number
+	Account: string
+	Email: string
+	Name: string
+	Role: string
 }
 
 // Based on the request body for user login API (assumed)

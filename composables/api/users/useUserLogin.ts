@@ -5,6 +5,7 @@ interface ApiUser {
 	Id: number
 	Account: string
 	Email: string
+	Name: string
 	Role: string
 }
 
