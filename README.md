@@ -30,7 +30,7 @@
 ### 2. 開發過程中解決了什麼問題？
 - **跨端權限管理**：解決不同角色（體驗者、企業、管理員）的權限控制與路由保護
 - **API 架構設計**：透過 BFF（Backend for Frontend）模式解決前後端分離的複雜性
-- **資安防護機制**：實現中介層權限控制、API 錯誤處理等完整的資安防護體系
+- **資安防護機制**：實現中介層權限控制、API 錯誤處理等資安防護體系
 - **開發效率優化**：透過現代化技術棧與工具鏈提升開發與維護效率
 
 ### 3. 滿足了什麼需求？
@@ -47,7 +47,7 @@
 | **系統完整性** | 34 個頁面、21 個元件、32 個 API 端點 |
 | **用戶體驗** | 響應式設計，支援桌機、平板、手機 |
 | **技術架構** | 現代化全端 Web 應用，前後端分離 |
-| **安全性** | 完整的權限控制與錯誤處理機制 |
+| **安全性** | 權限控制與錯誤處理機制 |
 | **整合能力** | Google OAuth 登入、第三方支付整合 |
 
 ---
@@ -63,7 +63,7 @@
 - **字體管理**：`@nuxt/fonts`（Google Fonts：Inter）
 - **圖標系統**：Font Awesome（自訂插件註冊）
 - **日期處理**：dayjs（插件擴充 `updateLocale`、`relativeTime`、`utc`）
-- **認證整合**：Google OAuth（`@sidebase/nuxt-auth`、`next-auth`）
+- **認證整合**：Google OAuth
 - **AI 協作**：MCP 整合（`nuxt-mcp`）
 
 ### 後端架構
@@ -85,7 +85,6 @@
 
 ### 開發工具
 - **程式碼品質**：ESLint 9（整合 `@nuxt/eslint`，Tab 縮排、不使用分號）
-- **測試框架**：Vitest（含覆蓋率報告）
 - **部署平台**：Vercel
 - **版本控制**：Git + Conventional Commits
 
@@ -108,13 +107,6 @@ pnpm dev
 
 # 3. 建置正式版
 pnpm build
-```
-
-### 環境變數設定
-```env
-NUXT_PUBLIC_API_BASE=/api
-NUXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id
-NUXT_GOOGLE_CLIENT_SECRET=your_google_client_secret
 ```
 
 ---
@@ -142,8 +134,6 @@ NUXT_GOOGLE_CLIENT_SECRET=your_google_client_secret
 
 - **開發時間**：完整的前後端開發週期
 - **程式碼規模**：34 頁面 + 21 元件 + 32 API
-- **技術債務**：低，採用現代化技術棧
-- **維護性**：高，清晰的架構與完整的測試
 
 ### 開發成果統計
 - **頁面開發**：34 個完整頁面
@@ -187,10 +177,6 @@ NUXT_GOOGLE_CLIENT_SECRET=your_google_client_secret
 - `test:` 測試相關
 - `chore:` 建置/工具
 
-### 測試策略
-- **單元測試**：Vitest 框架
-- **覆蓋率報告**：`pnpm test:coverage`
-- **持續整合**：自動化測試與部署
 
 ---
 
