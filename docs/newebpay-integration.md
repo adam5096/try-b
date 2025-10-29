@@ -14,7 +14,7 @@
 ### 4-2 MPG 交易
 - **表單提交**：使用 POST 方法提交到藍新金流閘道
 - **必要欄位**：MerchantID、TradeInfo、TradeSha、Version
-- **目標視窗**：在新視窗開啟藍新金流付款頁面
+- **目標視窗**：在當前視窗提交，確保付款完成後能正確返回原頁面
 
 ### 4-2-2 付款完成回調機制
 根據藍新金流文件，有兩種回調方式：
@@ -96,7 +96,7 @@ const submitToNewebPay = (paymentData: NewebPayFormData, payGetWay: string): voi
   const form = document.createElement('form')
   form.method = 'POST'
   form.action = payGetWay
-  form.target = '_blank' // 在新視窗開啟
+  // 在當前視窗提交，讓藍新金流完成後能回到原付款頁面
   
   // 添加必要欄位
   // MerchantID, TradeInfo, TradeSha, Version
@@ -199,7 +199,7 @@ ReturnURL: "https://try-b.vercel.app/api/v1/company/payments/return"
 
 1. **加解密處理**：前端不處理加解密，由後端負責
 2. **表單提交**：使用隱藏表單自動提交到藍新金流
-3. **視窗管理**：在新視窗開啟藍新金流頁面
+3. **視窗管理**：在當前視窗提交，確保付款完成後能正確返回原頁面
 4. **狀態管理**：付款成功後更新企業方案狀態
 
 ## 開發建議
