@@ -178,7 +178,8 @@ Vercel 區域: ${apiError.error?.vercelRegion}
 		form.method = 'POST'
 		form.action = payGetWay
 		form.style.display = 'none'
-		form.target = '_blank' // 在新視窗開啟藍新金流頁面
+		// 移除 target='_blank'，改為在當前視窗提交，讓藍新金流完成後能回到原付款頁面
+		form.target = '_self' // 預設就是當前視窗，可以不設定
 
 		// 根據藍新金流 MPG 交易規範添加表單欄位
 		// MerchantID: 商店代號
