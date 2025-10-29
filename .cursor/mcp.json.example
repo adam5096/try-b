@@ -12,7 +12,7 @@
         "-y",
         "@upstash/context7-mcp",
         "--api-key",
-        "ctx7sk-4f749078-565f-4918-90e1-9b8c05c47a0e"
+        "YOUR_CONTEXT7_API_KEY_HERE"
       ]
     },
     "github": {
@@ -21,7 +21,7 @@
         "@modelcontextprotocol/server-github"
       ],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_TOKEN_HERE"
       }
     },
     "chrome-devtools": {
@@ -34,3 +34,4 @@
     }
   }
 }
+

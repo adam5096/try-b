@@ -33,3 +33,6 @@ logs
 # Vitest
 coverage/
 .vitest/
+
+# MCP Configuration (contains API keys)
+.cursor/mcp.json
