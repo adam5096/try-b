@@ -22,18 +22,27 @@ function toggleMenu() {
 	isMenuOpen.value = !isMenuOpen.value;
 }
 
-const handleResize = () => {
-	if (window.innerWidth >= 1024) {
-		isMenuOpen.value = false;
-	}
-};
+let resizeHandler: (() => void) | null = null;
 
 onMounted(() => {
-	window.addEventListener('resize', handleResize);
+	if (!import.meta.client || typeof window === 'undefined') {
+		return;
+	}
+
+	resizeHandler = () => {
+		if (window.innerWidth >= 1024) {
+			isMenuOpen.value = false;
+		}
+	};
+
+	window.addEventListener('resize', resizeHandler);
 });
 
 onBeforeUnmount(() => {
-	window.removeEventListener('resize', handleResize);
+	if (resizeHandler) {
+		window.removeEventListener('resize', resizeHandler);
+		resizeHandler = null;
+	}
 });
 
 // --- Footer State ---
