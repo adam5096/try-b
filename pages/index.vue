@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref } from 'vue';
 import { userRoutes } from '~/utils/userRoutes';
 import { useHomePopularFetch } from '~/composables/api/home/useHomePopularFetch';
 
@@ -23,10 +23,6 @@ useSeoMeta({
 
 // --- 關鍵資源預載入 ---
 useHead({
-	link: [
-		// 僅預載入 LCP 關鍵圖片，避免不必要的預載入
-		{ rel: 'preload', href: '/img/home/home-worker-bg.webp', as: 'image', type: 'image/webp', fetchpriority: 'high' },
-	],
 	script: [
 		{
 			type: 'application/ld+json',
@@ -115,24 +111,6 @@ const testimonials = [
 		date: '2025年11月',
 	},
 ];
-
-// 使用 ClientOnly 來避免 hydration mismatch
-const isClient = ref(false);
-
-const handleResize = () => {
-	if (isClient.value && window.innerWidth >= 1024) {
-		// isMenuOpen.value = false; // This state is now managed by layouts/main.vue
-	}
-};
-
-onMounted(() => {
-	isClient.value = true;
-	window.addEventListener('resize', handleResize);
-});
-
-onBeforeUnmount(() => {
-	window.removeEventListener('resize', handleResize);
-});
 
 const successStories = [
 	{
